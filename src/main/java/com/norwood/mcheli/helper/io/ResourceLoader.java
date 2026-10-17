@@ -1,5 +1,5 @@
-import java.util.Optional;
 /*     */ package com.norwood.mcheli.helper.io;
+import java.util.Optional;
 /*     */ import com.google.common.base.CharMatcher;
 /*     */ import com.google.common.collect.Lists;
 /*     */ import java.io.BufferedInputStream;

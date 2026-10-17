@@ -1,5 +1,5 @@
-import com.norwood.mcheli.eval.eval.exp.WordExpression;
 /*    */ package com.norwood.mcheli.eval.eval.srch;
+import com.norwood.mcheli.eval.eval.exp.WordExpression;
 /*    */ import com.norwood.mcheli.eval.eval.exp.AbstractExpression;
 /*    */ import com.norwood.mcheli.eval.eval.exp.Col1Expression;
 /*    */ import com.norwood.mcheli.eval.eval.exp.Col2Expression;

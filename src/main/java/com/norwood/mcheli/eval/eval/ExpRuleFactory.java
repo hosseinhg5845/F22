@@ -1,5 +1,5 @@
-import com.norwood.mcheli.eval.eval.lex.LexFactory;
 /*     */ package com.norwood.mcheli.eval.eval;
+import com.norwood.mcheli.eval.eval.lex.LexFactory;
 /*     */ import com.norwood.mcheli.eval.eval.exp.AbstractExpression;
 /*     */ import com.norwood.mcheli.eval.eval.rule.AbstractRule;
 /*     */ import com.norwood.mcheli.eval.eval.rule.Col1AfterRule;
