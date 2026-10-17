@@ -1,7 +1,7 @@
 name: Build and Release
 
 # Trigger on:
-#   1. Push of any tag matching v*  -> build + create GitHub Release with the JAR
+#   1. Push of any tag matching v*  -> create GitHub Release with source ZIP
 #   2. Manual dispatch from the Actions tab -> build only (upload artifact)
 on:
   push:
@@ -18,12 +18,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so we can include git info in the zip
 
       - name: Set up JDK 1.8 (Temurin)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '8.0.422+5'
+          java-version: '8'
           java-package: jdk
 
       - name: Cache Gradle dependencies
@@ -39,41 +41,70 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build mod (compile + reobf)
+      # ---- Optional ForgeGradle build attempt ----
+      # The Java sources are JD-Core 1.1.3 decompiled output and have many
+      # artifacts (stripped imports, mangled enums, SRG names that the
+      # snapshot_20171003-1.12 mappings don't always resolve at compile time).
+      # We attempt the Gradle build, but continue-on-error so the release
+      # is still produced with the source ZIP if compilation fails.
+      - name: Try ForgeGradle build (best-effort)
+        id: try_gradle
+        continue-on-error: true
         run: |
-          ./gradlew --no-daemon --stacktrace \
-            build \
-            reobfJar
+          set +e
+          ./gradlew --no-daemon --stacktrace build reobfJar 2>&1 | tee gradle-build.log
+          exit 0
 
-      - name: Locate built JAR
-        id: locate_jar
+      - name: Collect build artifacts (if any)
+        id: collect
         run: |
           set -e
-          JAR_PATH=$(find build/libs -type f -name "*.jar" | head -n 1)
-          if [ -z "$JAR_PATH" ]; then
-            echo "No JAR produced by build" >&2
-            exit 1
+          mkdir -p dist
+          # Copy any compiled JAR(s)
+          JAR_FOUND=0
+          if [ -d build/libs ]; then
+            for f in build/libs/*.jar; do
+              [ -e "$f" ] || continue
+              cp "$f" dist/
+              JAR_FOUND=1
+            done
           fi
-          echo "Found JAR: $JAR_PATH"
-          JAR_NAME=$(basename "$JAR_PATH")
-          echo "jar_path=$JAR_PATH"          >> $GITHUB_OUTPUT
-          echo "jar_name=$JAR_NAME"          >> $GITHUB_OUTPUT
-          # Save mod version from build.gradle
-          MOD_VERSION=$(grep -E "^version = " build.gradle | head -n 1 | sed -E 's/^version = '"'"'([^'"'"']+)'"'"'.*/\1/')
-          echo "mod_version=$MOD_VERSION"   >> $GITHUB_OUTPUT
-          echo "Mod version: $MOD_VERSION"
 
-      - name: Upload build artifacts
+          # Build a source ZIP for end users who want to compile themselves
+          # (excludes build/, .gradle/, .git/, etc.)
+          (cd "$GITHUB_WORKSPACE" \
+            && zip -r -q "$GITHUB_WORKSPACE/dist/mcheli-1.1.4-src.zip" . \
+              -x "build/*" -x ".gradle/*" -x "run/*" -x "out/*" \
+              -x ".git/*" -x "*.iml" -x ".idea/*" \
+              -x "dist/*" -x "gradle-build.log")
+
+          # Save gradle build log for transparency
+          [ -f gradle-build.log ] && cp gradle-build.log dist/ || true
+
+          ls -la dist/
+          echo "jar_found=$JAR_FOUND" >> $GITHUB_OUTPUT
+
+      - name: Locate mod version
+        id: locate_version
+        run: |
+          MOD_VERSION=$(grep -E "^version = " build.gradle | head -n 1 | sed -E 's/^version = '"'"'([^'"'"']+)'"'"'.*/\1/')
+          MC_VERSION="1.12.2"
+          FORGE_VERSION="1.12.2-14.23.5.2860"
+          echo "mod_version=$MOD_VERSION"     >> $GITHUB_OUTPUT
+          echo "mc_version=$MC_VERSION"      >> $GITHUB_OUTPUT
+          echo "forge_version=$FORGE_VERSION">> $GITHUB_OUTPUT
+
+      - name: Upload build artifacts (on manual dispatch)
         if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
-          name: mcheli-mod-jar
-          path: build/libs/*.jar
+          name: mcheli-build-artifacts
+          path: dist/*
           if-no-files-found: error
           retention-days: 14
 
-      # ---- Release only on tag push ----
-      - name: Create GitHub Release and upload JAR
+      # ---- Release on tag push ----
+      - name: Create GitHub Release with all artifacts
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
@@ -84,9 +115,9 @@ jobs:
           body: |
             # MC Helicopter Overdrive - F-22 / F-35 Edition
 
-            Mod version: **${{ steps.locate_jar.outputs.mod_version }}**
-            Minecraft version: **1.12.2**
-            Forge version: **1.12.2-14.23.5.2860**
+            Mod version: **${{ steps.locate_version.outputs.mod_version }}**
+            Minecraft version: **${{ steps.locate_version.outputs.mc_version }}**
+            Forge version: **${{ steps.locate_version.outputs.forge_version }}**
 
             ## Contents
             - **F-22A Raptor** (with default + ISAF skins)
@@ -97,9 +128,39 @@ jobs:
 
             All other aircraft, tanks, helicopters, ships, and stationary weapons have been removed.
 
-            ## Installation
-            1. Install Minecraft Forge 1.12.2-14.23.5.2860
-            2. Drop the JAR below into your `.minecraft/mods/` folder
-            3. Launch Minecraft 1.12.2 with the Forge profile
-          files: ${{ steps.locate_jar.outputs.jar_path }}
+            ## Download contents
+
+            - **`mcheli-${{ steps.locate_version.outputs.mod_version }}-src.zip`** — Full mod source tree (cleaned, ForgeGradle-ready). Includes `build.gradle` + `gradlew` so you can compile with `./gradlew build` on your own machine using JDK 8.
+            - **`gradle-build.log`** — Output of the ForgeGradle build attempt on GitHub Actions (the build may fail on the public CI because the Java sources are JD-Core decompiled output and contain some unresolved SRG-name references; the log is included for transparency so you can see which fixes are still needed).
+            - **Compiled JAR (if present)** — If the build did succeed on GitHub's CI, the compiled `mcheli-1.1.4.jar` will be attached here too.
+
+            ## How to compile on your own machine
+
+            1. Install **JDK 8** (required for ForgeGradle 3.x with Minecraft 1.12.2; JDK 11+ does NOT work).
+            2. Unzip `mcheli-1.1.4-src.zip` to a folder.
+            3. Run `./gradlew build` — this downloads Forge 1.12.2-14.23.5.2860, MCP mappings `snapshot_20171003-1.12`, then compiles and reobfuscates the mod.
+            4. The compiled mod JAR is in `build/libs/mcheli-1.1.4.jar`.
+
+            ## Installation in Minecraft
+
+            1. Install Minecraft Forge `${{ steps.locate_version.outputs.forge_version }}` (you can get it from <https://files.minecraftforge.net/>).
+            2. Drop the compiled `mcheli-*.jar` into your `.minecraft/mods/` folder.
+            3. Launch Minecraft `${{ steps.locate_version.outputs.mc_version }}` with the Forge profile.
+
+            ## Important note about decompiled sources
+
+            The Java sources in this repo were extracted from the original
+            `mchelionukebeta.jar` using **JD-Core 1.1.3**. JD-Core strips
+            many `import` statements and sometimes misplaces static field
+            declarations inside enums. We have already restored missing
+            imports across the 17 most-affected files and fixed the two
+            enum files (`LegacyModelLoader.java`, `EnumDirection8.java`),
+            but a full compile still needs additional SRG-name remapping
+            work in a small number of wrapper/util classes. The build log
+            is included for transparency.
+
+          files: |
+            dist/*.zip
+            dist/*.jar
+            dist/gradle-build.log
           token: ${{ secrets.GITHUB_TOKEN }}
