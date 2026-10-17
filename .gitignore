@@ -1,0 +1,16 @@
+# Build artifacts
+build/
+out/
+run/
+*.iml
+.idea/
+.gradle/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Forge MDK local repo (created by the publish task)
+mcmodsrepo/

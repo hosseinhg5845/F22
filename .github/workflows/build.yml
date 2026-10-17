@@ -1,0 +1,106 @@
+name: Build and Release
+
+# Trigger on:
+#   1. Push of any tag matching v*  -> build + create GitHub Release with the JAR
+#   2. Manual dispatch from the Actions tab -> build only (upload artifact)
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write   # needed for softprops/release-action
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 1.8 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8.0.422+5'
+          java-package: jdk
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: forge-1.12.2-gradle-${{ runner.os }}-${{ hashFiles('build.gradle', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            forge-1.12.2-gradle-${{ runner.os }}-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build mod (setup + compile + reobf)
+        run: |
+          ./gradlew --no-daemon --stacktrace \
+            setupDecompWorkspace \
+            build \
+            reobfJar
+
+      - name: Locate built JAR
+        id: locate_jar
+        run: |
+          set -e
+          JAR_PATH=$(find build/libs -type f -name "*.jar" | head -n 1)
+          if [ -z "$JAR_PATH" ]; then
+            echo "No JAR produced by build" >&2
+            exit 1
+          fi
+          echo "Found JAR: $JAR_PATH"
+          JAR_NAME=$(basename "$JAR_PATH")
+          echo "jar_path=$JAR_PATH"          >> $GITHUB_OUTPUT
+          echo "jar_name=$JAR_NAME"          >> $GITHUB_OUTPUT
+          # Save mod version from build.gradle
+          MOD_VERSION=$(grep -E "^version = " build.gradle | head -n 1 | sed -E 's/^version = '"'"'([^'"'"']+)'"'"'.*/\1/')
+          echo "mod_version=$MOD_VERSION"   >> $GITHUB_OUTPUT
+          echo "Mod version: $MOD_VERSION"
+
+      - name: Upload build artifacts
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcheli-mod-jar
+          path: build/libs/*.jar
+          if-no-files-found: error
+          retention-days: 14
+
+      # ---- Release only on tag push ----
+      - name: Create GitHub Release and upload JAR
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: MC-Heli Overdrive ${{ github.ref_name }} (MC 1.12.2)
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          body: |
+            # MC Helicopter Overdrive - F-22 / F-35 Edition
+
+            Mod version: **${{ steps.locate_jar.outputs.mod_version }}**
+            Minecraft version: **1.12.2**
+            Forge version: **1.12.2-14.23.5.2860**
+
+            ## Contents
+            - **F-22A Raptor** (with default + ISAF skins)
+            - **F-35A Lightning II**
+            - All weapons used by these aircraft (M61A2, AIM-9X, AIM-120, GAU-22/A, GBU-39 SDB, GBU-53 SDB II, B61 nuclear, targeting pods, UHF radar)
+            - All common mod utilities (wrench, fuel, container, parachute, drafting table, UAV station, range finder, FIM-92, FGM-148)
+            - HUD, sounds, recipes, language files, shaders
+
+            All other aircraft, tanks, helicopters, ships, and stationary weapons have been removed.
+
+            ## Installation
+            1. Install Minecraft Forge 1.12.2-14.23.5.2860
+            2. Drop the JAR below into your `.minecraft/mods/` folder
+            3. Launch Minecraft 1.12.2 with the Forge profile
+          files: ${{ steps.locate_jar.outputs.jar_path }}
+          token: ${{ secrets.GITHUB_TOKEN }}
