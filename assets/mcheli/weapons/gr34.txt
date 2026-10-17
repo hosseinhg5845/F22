@@ -1,0 +1,31 @@
+DisplayName = 8cm Wurfgranate 34 Mortar 
+Type = MachineGun1
+Power = 34
+Explosion = 12
+ExplosionBlock = 3
+Acceleration = 4.0
+Gravity = -0.04
+Sight = MissileSight
+Delay = 60
+ReloadTime = 60
+Round = 1
+SoundVolume = 15
+Sound = mortar_gun_snd
+Accuracy = 2.5
+ModelBullet = m69
+BulletColor = 255, 255, 100, 100
+DamageFactor = tank, 1.0
+DamageFactor = plane, 3.0
+DamageFactor = vehicle 2.0
+DamageFactor = heli, 3.0
+DisplayMortarDistance = true
+
+AddMuzzleFlash      =           0.1,   0.55,        1,  220,254,219,104
+AddMuzzleFlash      =           0.0,   0.50,        1,  220,254,219,184
+AddMuzzleFlashSmoke   =              0.2,     10,   4.0,  4.0,       65,  220,160,140,120
+AddMuzzleFlashSmoke   =              0.2,      5,   5.0,  7.0,       55,  200,190,170,150
+
+MaxAmmo = 15
+SuppliedNum = 5
+Item =  1, iron_ingot
+Item =  1, gunpowder

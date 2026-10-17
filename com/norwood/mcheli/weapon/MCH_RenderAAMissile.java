@@ -1,0 +1,45 @@
+/*    */ package com.norwood.mcheli.weapon;
+/*    */ import com.norwood.mcheli.wrapper.W_Entity;
+/*    */ import net.minecraft.client.renderer.entity.RenderManager;
+/*    */ import net.minecraft.entity.Entity;
+/*    */ import net.minecraft.util.ResourceLocation;
+/*    */ import net.minecraft.util.math.Vec3d;
+/*    */ import net.minecraftforge.fml.client.registry.IRenderFactory;
+/*    */ import net.minecraftforge.fml.relauncher.Side;
+/*    */ import net.minecraftforge.fml.relauncher.SideOnly;
+/*    */ import org.lwjgl.opengl.GL11;
+/*    */ 
+/*    */ @SideOnly(Side.CLIENT)
+/*    */ public class MCH_RenderAAMissile extends MCH_RenderBulletBase<MCH_EntityAAMissile> {
+/* 14 */   public static final IRenderFactory<MCH_EntityAAMissile> FACTORY = MCH_RenderAAMissile::new;
+/*    */   
+/*    */   public MCH_RenderAAMissile(RenderManager renderManager) {
+/* 17 */     super(renderManager);
+/* 18 */     this.field_76989_e = 0.5F;
+/*    */   }
+/*    */   
+/*    */   public void renderBullet(MCH_EntityAAMissile entity, double posX, double posY, double posZ, float par8, float par9) {
+/* 22 */     if (entity instanceof MCH_EntityAAMissile) {
+/* 23 */       double mx = entity.prevMotionX + (entity.field_70159_w - entity.prevMotionX) * par9;
+/* 24 */       double my = entity.prevMotionY + (entity.field_70181_x - entity.prevMotionY) * par9;
+/* 25 */       double mz = entity.prevMotionZ + (entity.field_70179_y - entity.prevMotionZ) * par9;
+/* 26 */       GL11.glPushMatrix();
+/* 27 */       GL11.glTranslated(posX, posY, posZ);
+/* 28 */       Vec3d v = MCH_Lib.getYawPitchFromVec(mx, my, mz);
+/* 29 */       GL11.glRotatef((float)v.field_72448_b - 90.0F, 0.0F, -1.0F, 0.0F);
+/* 30 */       GL11.glRotatef((float)v.field_72449_c, -1.0F, 0.0F, 0.0F);
+/* 31 */       renderModel(entity);
+/* 32 */       GL11.glPopMatrix();
+/*    */     } 
+/*    */   }
+/*    */   
+/*    */   protected ResourceLocation getEntityTexture(MCH_EntityAAMissile entity) {
+/* 37 */     return TEX_DEFAULT;
+/*    */   }
+/*    */ }
+
+
+/* Location:              C:\Users\ASUS\Desktop\De-Compile\plmcjar\mchelionukebeta.jar!\com\norwood\mcheli\weapon\MCH_RenderAAMissile.class
+ * Java compiler version: 8 (52.0)
+ * JD-Core Version:       1.1.3
+ */
