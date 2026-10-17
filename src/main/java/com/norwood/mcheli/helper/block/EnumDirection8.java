@@ -14,19 +14,19 @@
 /* 14 */   NORTHEAST(5, 1, "northeast", new Vec3i(1, 0, -1)),
 /* 15 */   EAST(6, 2, "east", new Vec3i(1, 0, 0)),
 /* 16 */   SOUTHEAST(7, 3, "southeast", new Vec3i(1, 0, 1));
-/*    */   static {
-/* 18 */     VALUES = new EnumDirection8[8];
-/*    */ 
-/*    */     
-/* 21 */     for (EnumDirection8 value : values())
-/* 22 */       VALUES[value.index] = value; 
-/*    */   }
-/*    */   
-/*    */   public static final EnumDirection8[] VALUES;
-/*    */   private final int index;
-/*    */   private final int opposite;
-/*    */   private final String name;
-/*    */   private final Vec3i directionVec;
+
+  public static final EnumDirection8[] VALUES;
+  private final int index;
+  private final int opposite;
+  private final String name;
+  private final Vec3i directionVec;
+
+  static {
+    VALUES = new EnumDirection8[8];
+
+    for (EnumDirection8 value : values())
+      VALUES[value.index] = value;
+  }
 /*    */   
 /*    */   EnumDirection8(int index, int opposite, String name, Vec3i dirVec) {
 /* 32 */     this.index = index;
