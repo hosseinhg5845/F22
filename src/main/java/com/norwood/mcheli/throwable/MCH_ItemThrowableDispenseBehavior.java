@@ -1,3 +1,4 @@
+import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 /*    */ package com.norwood.mcheli.throwable;
 /*    */ import net.minecraft.block.BlockDispenser;
 /*    */ import net.minecraft.block.properties.IProperty;

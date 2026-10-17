@@ -1,3 +1,4 @@
+import com.norwood.mcheli.MCH_BaseInfo;
 /*      */ package com.norwood.mcheli.aircraft;
 /*      */ import com.norwood.mcheli.MCH_MOD;
 /*      */ import com.norwood.mcheli.helper.addon.AddonResourceLocation;

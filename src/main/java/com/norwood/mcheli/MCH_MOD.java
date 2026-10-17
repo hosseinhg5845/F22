@@ -1,3 +1,5 @@
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.SidedProxy;
 /*     */ package com.norwood.mcheli;
 /*     */ import com.norwood.mcheli.aircraft.MCH_EntityHitBox;
 /*     */ import com.norwood.mcheli.aircraft.MCH_EntitySeat;

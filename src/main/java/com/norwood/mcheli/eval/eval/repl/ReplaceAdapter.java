@@ -1,3 +1,7 @@
+import com.norwood.mcheli.eval.eval.exp.Col1Expression;
+import com.norwood.mcheli.eval.eval.exp.Col3Expression;
+import com.norwood.mcheli.eval.eval.exp.FunctionExpression;
+import com.norwood.mcheli.eval.eval.exp.WordExpression;
 /*    */ package com.norwood.mcheli.eval.eval.repl;
 /*    */ import com.norwood.mcheli.eval.eval.exp.AbstractExpression;
 /*    */ import com.norwood.mcheli.eval.eval.exp.Col2Expression;
