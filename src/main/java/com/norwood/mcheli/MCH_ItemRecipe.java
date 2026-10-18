@@ -76,19 +76,19 @@
 /*  76 */     registerCommonItemRecipe(registry);
 /*     */     
 /*  78 */     for (MCH_HeliInfo info : ContentRegistries.heli().values()) {
-/*  79 */       addRecipeAndRegisterList((MCH_AircraftInfo)info, (Item)info.item, (MCH_AircraftInfoManager<MCH_AircraftInfo>)MCH_HeliInfoManager.getInstance());
+/*  79 */       addRecipeAndRegisterList((MCH_AircraftInfo)info, (Item)info.item, (MCH_AircraftInfoManager)MCH_HeliInfoManager.getInstance());
 /*     */     }
 /*     */     
 /*  82 */     for (MCP_PlaneInfo info : ContentRegistries.plane().values()) {
-/*  83 */       addRecipeAndRegisterList((MCH_AircraftInfo)info, (Item)info.item, (MCH_AircraftInfoManager<MCH_AircraftInfo>)MCP_PlaneInfoManager.getInstance());
+/*  83 */       addRecipeAndRegisterList((MCH_AircraftInfo)info, (Item)info.item, (MCH_AircraftInfoManager)MCP_PlaneInfoManager.getInstance());
 /*     */     }
 /*     */     
 /*  86 */     for (MCH_TankInfo info : ContentRegistries.tank().values()) {
-/*  87 */       addRecipeAndRegisterList((MCH_AircraftInfo)info, (Item)info.item, (MCH_AircraftInfoManager<MCH_AircraftInfo>)MCH_TankInfoManager.getInstance());
+/*  87 */       addRecipeAndRegisterList((MCH_AircraftInfo)info, (Item)info.item, (MCH_AircraftInfoManager)MCH_TankInfoManager.getInstance());
 /*     */     }
 /*     */     
 /*  90 */     for (MCH_VehicleInfo info : ContentRegistries.vehicle().values()) {
-/*  91 */       addRecipeAndRegisterList((MCH_AircraftInfo)info, (Item)info.item, (MCH_AircraftInfoManager<MCH_AircraftInfo>)MCH_VehicleInfoManager.getInstance());
+/*  91 */       addRecipeAndRegisterList((MCH_AircraftInfo)info, (Item)info.item, (MCH_AircraftInfoManager)MCH_VehicleInfoManager.getInstance());
 /*     */     }
 /*     */     
 /*  94 */     for (MCH_ThrowableInfo info : ContentRegistries.throwable().values()) {

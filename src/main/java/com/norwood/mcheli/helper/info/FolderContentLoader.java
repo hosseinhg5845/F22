@@ -1,4 +1,6 @@
 /*     */ package com.norwood.mcheli.helper.info;
+import java.nio.file.Files;
+import org.apache.commons.lang3.SystemUtils;
 /*     */ import com.google.common.base.CharMatcher;
 /*     */ import com.google.common.collect.Lists;
 /*     */ import java.io.BufferedInputStream;
@@ -11,7 +13,7 @@
 /*     */ import javax.annotation.Nullable;
 /*     */ 
 /*     */ public class FolderContentLoader extends ContentLoader {
-/*  14 */   private static final boolean ON_WINDOWS = OSUtils.IS_WINDOWS;
+/*  14 */   private static final boolean ON_WINDOWS = SystemUtils.IS_OS_WINDOWS;
 /*  15 */   private static final CharMatcher BACKSLASH_MATCHER = CharMatcher.is('\\');
 /*     */   private final File addonFolder;
 /*     */   

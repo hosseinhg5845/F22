@@ -39,7 +39,7 @@
 /*  39 */     return (tintIndex == 0) ? item.primaryColor : item.secondaryColor; } @NotNull
 /*     */   public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @NotNull EnumHand handIn) { MCH_EntityGunner mCH_EntityGunner;
 /*     */     MCH_EntitySeat mCH_EntitySeat;
-/*     */     MCH_EntityAircraft mCH_EntityAircraft;
+/*     */     Entity mCH_EntityAircraft;
 /*  43 */     ItemStack itemstack = player.getHeldItem(handIn);
 /*  44 */     float f = 1.0F;
 /*  45 */     float pitch = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
@@ -100,7 +100,7 @@
 /*     */ 
 /*     */     
 /* 102 */     if (mCH_EntityAircraft instanceof MCH_EntityGunner) {
-/* 103 */       mCH_EntityAircraft.processInitialInteract(player, handIn);
+/* 103 */       ((MCH_EntityGunner)mCH_EntityAircraft).processInitialInteract(player, handIn);
 /* 104 */       return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);
 /*     */     } 
 /* 106 */     if (this.targetType == 1 && !world.isRemote) {
@@ -127,7 +127,7 @@
 /* 127 */       world.spawnEntity((Entity)gunner);
 /* 128 */       gunner.startRiding((Entity)mCH_EntityAircraft);
 /* 129 */       W_WorldFunc.MOD_playSoundAtEntity((Entity)gunner, "wrench", 1.0F, 3.0F);
-/* 130 */       MCH_EntityAircraft ac = (mCH_EntityAircraft instanceof MCH_EntityAircraft) ? mCH_EntityAircraft : ((MCH_EntitySeat)mCH_EntityAircraft).getParent();
+/* 130 */       MCH_EntityAircraft ac = (mCH_EntityAircraft instanceof MCH_EntityAircraft) ? (MCH_EntityAircraft)mCH_EntityAircraft : ((MCH_EntitySeat)mCH_EntityAircraft).getParent();
 /* 131 */       player.sendMessage((ITextComponent)new TextComponentString("The gunner was put on " + TextFormatting.GOLD + 
 /*     */ 
 /*     */ 

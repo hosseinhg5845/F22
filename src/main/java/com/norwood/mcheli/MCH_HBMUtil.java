@@ -115,7 +115,7 @@
 /*     */     try {
 /* 116 */       if (explosionNTInstance != null) {
 /* 117 */         Class<?> exAttribClass = Class.forName("com.hbm.explosion.ExplosionNT$ExAttrib");
-/* 118 */         Object Attrib = Enum.valueOf(exAttribClass, attrib);
+/* 118 */         Object Attrib = Enum.valueOf((Class)exAttribClass, attrib);
 /* 119 */         Method addAttribMethod = explosionNT.getMethod("addAttrib", new Class[] { exAttribClass });
 /* 120 */         addAttribMethod.invoke(explosionNTInstance, new Object[] { Attrib });
 /*     */       } 

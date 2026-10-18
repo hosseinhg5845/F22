@@ -1,4 +1,5 @@
 /*     */ package com.norwood.mcheli;
+import com.norwood.mcheli.command.MCH_Command;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.SidedProxy;

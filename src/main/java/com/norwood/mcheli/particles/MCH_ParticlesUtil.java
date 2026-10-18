@@ -1,4 +1,5 @@
 /*     */ package com.norwood.mcheli.particles;
+import net.minecraft.client.particle.ParticleManager;
 /*     */ 
 /*     */ import com.norwood.mcheli.wrapper.W_Particle;
 /*     */ import java.util.function.Supplier;
@@ -172,7 +173,7 @@
 /* 172 */       } else if (type.startsWith("blockcrack")) {
 /* 173 */         entityfx = create(net.minecraft.client.particle.ParticleDigging.Factory::new, (World)mc.world, x, y, z, mx, my, mz, params);
 /* 174 */       } else if (type.startsWith("blockdust")) {
-/* 175 */         entityfx = create(Factory::new, (World)mc.world, x, y, z, mx, my, mz, params);
+/* 175 */         entityfx = create(net.minecraft.client.particle.ParticleBlockDust.Factory::new, (World)mc.world, x, y, z, mx, my, mz, params);
 /*     */       } 
 /*     */       
 /* 178 */       if (entityfx != null) {
