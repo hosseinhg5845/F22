@@ -62,7 +62,7 @@
 /*     */             
 /*  63 */             _Face face = parseFace(currentLine, lineCount, vertices, textureCoordinates, vertexNormals);
 /*  64 */             group.addFace(face); continue;
-/*  65 */           }  if ((currentLine.startsWith("g ") | currentLine.startsWith("o ")) != 0 && currentLine.charAt(2) == '$') {
+/*  65 */           }  if ((currentLine.startsWith("g ") || currentLine.startsWith("o ")) && currentLine.charAt(2) == '$') {
 /*  66 */             _GroupObject.Builder group2 = parseGroupObject(currentLine, lineCount);
 /*  67 */             if (group2 != null && group != null) {
 /*  68 */               groupObjects.add(group.build());

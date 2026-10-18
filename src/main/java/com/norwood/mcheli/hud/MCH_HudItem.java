@@ -245,7 +245,7 @@
 /* 245 */       reloading = ws.isInPreparation() ? 1 : 0;
 /* 246 */       display_mortar_dist = wi.displayMortarDistance ? 1 : 0;
 /* 247 */       if (wi.delay > wi.reloadTime) {
-/* 248 */         rel_time = ws.countWait / ((wi.delay > 0) ? wi.delay : true);
+/* 248 */         rel_time = ws.countWait / ((wi.delay > 0) ? wi.delay : 1);
 /* 249 */         if (rel_time < 0.0F) {
 /* 250 */           rel_time = -rel_time;
 /*     */         }
@@ -254,7 +254,7 @@
 /* 254 */           rel_time = 1.0F;
 /*     */         }
 /*     */       } else {
-/* 257 */         rel_time = ws.countReloadWait / ((wi.reloadTime > 0) ? wi.reloadTime : true);
+/* 257 */         rel_time = ws.countReloadWait / ((wi.reloadTime > 0) ? wi.reloadTime : 1);
 /*     */       } 
 /*     */       
 /* 260 */       if (wi.maxHeatCount > 0) {
@@ -390,7 +390,7 @@
 /*     */       
 /* 391 */       if (wi.delay > wi.reloadTime) {
 /* 392 */         ReloadSec = (ws.countWait >= 0) ? ws.countWait : -ws.countWait;
-/* 393 */         ReloadPer = ws.countWait / ((wi.delay > 0) ? wi.delay : true);
+/* 393 */         ReloadPer = ws.countWait / ((wi.delay > 0) ? wi.delay : 1);
 /* 394 */         if (ReloadPer < 0.0F) {
 /* 395 */           ReloadPer = -ReloadPer;
 /*     */         }
@@ -400,7 +400,7 @@
 /*     */         }
 /*     */       } else {
 /* 402 */         ReloadSec = ws.countReloadWait;
-/* 403 */         ReloadPer = ws.countReloadWait / ((wi.reloadTime > 0) ? wi.reloadTime : true);
+/* 403 */         ReloadPer = ws.countReloadWait / ((wi.reloadTime > 0) ? wi.reloadTime : 1);
 /*     */       } 
 /*     */       
 /* 406 */       ReloadSec /= 20.0F;

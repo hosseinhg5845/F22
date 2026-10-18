@@ -493,7 +493,7 @@
 /*     */   public void handleItem(@Nullable Entity user, ItemStack itemStack) {
 /* 494 */     if (user != null && !user.isDead && !itemStack.isEmpty() && itemStack.getCount() == 1 && 
 /* 495 */       !this.world.isRemote) {
-/* 496 */       MCH_EntityTank mCH_EntityTank; MCH_EntityAircraft ac = null;
+/* 496 */       MCH_EntityTank mCH_EntityTank = null; MCH_EntityAircraft ac = null;
 /* 497 */       double x = this.posX + this.posUavX;
 /* 498 */       double y = this.posY + this.posUavY;
 /* 499 */       double z = this.posZ + this.posUavZ;

@@ -398,9 +398,9 @@
 /* 398 */             boolean lb = Mouse.isButtonDown(0);
 /* 399 */             boolean rb = Mouse.isButtonDown(1);
 /* 400 */             boolean mb = Mouse.isButtonDown(2);
-/* 401 */             list.add((lb ? (String)TextFormatting.AQUA : "") + "Mouse left button drag : Rotation model");
-/* 402 */             list.add((rb ? (String)TextFormatting.AQUA : "") + "Mouse right button drag : Zoom model");
-/* 403 */             list.add((mb ? (String)TextFormatting.AQUA : "") + "Mouse middle button drag : Move model");
+/* 401 */             list.add((lb ? TextFormatting.AQUA : "") + "Mouse left button drag : Rotation model");
+/* 402 */             list.add((rb ? TextFormatting.AQUA : "") + "Mouse right button drag : Zoom model");
+/* 403 */             list.add((mb ? TextFormatting.AQUA : "") + "Mouse middle button drag : Move model");
 /*     */           } 
 /*     */         } 
 /*     */       }
