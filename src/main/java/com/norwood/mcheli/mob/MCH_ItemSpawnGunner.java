@@ -37,9 +37,9 @@
 /*     */   public static int getColorFromItemStack(ItemStack stack, int tintIndex) {
 /*  38 */     MCH_ItemSpawnGunner item = (MCH_ItemSpawnGunner)stack.getItem();
 /*  39 */     return (tintIndex == 0) ? item.primaryColor : item.secondaryColor; } @NotNull
-/*     */   public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @NotNull EnumHand handIn) { MCH_EntityGunner mCH_EntityGunner;
-/*     */     MCH_EntitySeat mCH_EntitySeat;
-/*     */     Entity mCH_EntityAircraft;
+/*     */   public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, @NotNull EnumHand handIn) { MCH_EntityGunner mCH_EntityGunner = null;
+/*     */     MCH_EntitySeat mCH_EntitySeat = null;
+/*     */     Entity mCH_EntityAircraft = null;
 /*  43 */     ItemStack itemstack = player.getHeldItem(handIn);
 /*  44 */     float f = 1.0F;
 /*  45 */     float pitch = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
