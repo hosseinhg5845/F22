@@ -19,7 +19,7 @@
 /*    */           String s = f.getName().toLowerCase();
 /* 20 */           return (f.isFile() && s.length() >= 5 && s.substring(s.length() - 4).compareTo(".ogg") == 0);
 /*    */         });
-/* 22 */     ListMultimap listMultimap = Multimaps.newListMultimap(Maps.newLinkedHashMap(), Lists::newLinkedList);
+/* 22 */     ListMultimap<String, String> listMultimap = Multimaps.newListMultimap(Maps.newLinkedHashMap(), Lists::newLinkedList);
 /* 23 */     List<String> lines = Lists.newLinkedList();
 /* 24 */     int cnt = 0;
 /* 25 */     if (soundFiles != null) {

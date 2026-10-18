@@ -84,6 +84,8 @@
 /*  84 */     Variable bak = this.var;
 /*  85 */     if (var == null) {
 /*  86 */       mapVariable = new MapVariable();
+/*     */     } else {
+/*     */       mapVariable = (MapVariable) var;
 /*     */     }
 /*     */     
 /*  89 */     this.var = (Variable)mapVariable;
