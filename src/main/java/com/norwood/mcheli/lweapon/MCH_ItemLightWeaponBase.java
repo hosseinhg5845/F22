@@ -20,14 +20,14 @@
 /*    */   
 /*    */   public MCH_ItemLightWeaponBase(int par1, MCH_ItemLightWeaponBullet bullet) {
 /* 22 */     super(par1);
-/* 23 */     func_77656_e(10);
-/* 24 */     func_77625_d(1);
+/* 23 */     setMaxDamage(10);
+/* 24 */     setMaxStackSize(1);
 /* 25 */     this.bullet = bullet;
 /*    */   }
 /*    */   
 /*    */   public static String getName(ItemStack itemStack) {
-/* 29 */     if (!itemStack.func_190926_b() && itemStack.func_77973_b() instanceof MCH_ItemLightWeaponBase) {
-/* 30 */       String name = itemStack.func_77977_a();
+/* 29 */     if (!itemStack.isEmpty() && itemStack.getItem() instanceof MCH_ItemLightWeaponBase) {
+/* 30 */       String name = itemStack.getUnlocalizedName();
 /* 31 */       int li = name.lastIndexOf(":");
 /* 32 */       if (li >= 0) {
 /* 33 */         name = name.substring(li + 1);
@@ -40,14 +40,14 @@
 /*    */ 
 /*    */   
 /*    */   public static boolean isHeld(@Nullable EntityPlayer player) {
-/* 43 */     ItemStack is = (player != null) ? player.func_184614_ca() : ItemStack.field_190927_a;
-/* 44 */     return (!is.func_190926_b() && is.func_77973_b() instanceof MCH_ItemLightWeaponBase && player.func_184612_cw() > 10);
+/* 43 */     ItemStack is = (player != null) ? player.getHeldItemMainhand() : ItemStack.EMPTY;
+/* 44 */     return (!is.isEmpty() && is.getItem() instanceof MCH_ItemLightWeaponBase && player.getItemInUseMaxCount() > 10);
 /*    */   }
 /*    */   
 /*    */   public void onUsingTick(@NotNull ItemStack stack, EntityLivingBase player, int count) {
-/* 48 */     PotionEffect pe = player.func_70660_b(MobEffects.field_76439_r);
-/* 49 */     if (pe != null && pe.func_76459_b() < 220) {
-/* 50 */       player.func_70690_d(new PotionEffect(MobEffects.field_76439_r, 250, 0, false, false));
+/* 48 */     PotionEffect pe = player.getActivePotionEffect(MobEffects.NIGHT_VISION);
+/* 49 */     if (pe != null && pe.getDuration() < 220) {
+/* 50 */       player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 250, 0, false, false));
 /*    */     }
 /*    */   }
 /*    */   
@@ -55,18 +55,18 @@
 /* 55 */     return true;
 /*    */   }
 /*    */   @NotNull
-/*    */   public EnumAction func_77661_b(@NotNull ItemStack par1ItemStack) {
+/*    */   public EnumAction getItemUseAction(@NotNull ItemStack par1ItemStack) {
 /* 59 */     return EnumAction.BOW;
 /*    */   }
 /*    */   
-/*    */   public int func_77626_a(@NotNull ItemStack par1ItemStack) {
+/*    */   public int getMaxItemUseDuration(@NotNull ItemStack par1ItemStack) {
 /* 63 */     return 72000;
 /*    */   }
 /*    */   @NotNull
-/*    */   public ActionResult<ItemStack> func_77659_a(@NotNull World worldIn, EntityPlayer playerIn, @NotNull EnumHand handIn) {
-/* 67 */     ItemStack itemstack = playerIn.func_184586_b(handIn);
-/* 68 */     if (!itemstack.func_190926_b()) {
-/* 69 */       playerIn.func_184598_c(handIn);
+/*    */   public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, EntityPlayer playerIn, @NotNull EnumHand handIn) {
+/* 67 */     ItemStack itemstack = playerIn.getHeldItem(handIn);
+/* 68 */     if (!itemstack.isEmpty()) {
+/* 69 */       playerIn.setActiveHand(handIn);
 /*    */     }
 /*    */     
 /* 72 */     return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);

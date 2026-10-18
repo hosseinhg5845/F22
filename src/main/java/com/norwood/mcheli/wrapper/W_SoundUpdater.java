@@ -10,7 +10,7 @@
 /*    */   protected final SoundHandler theSoundHnadler;
 /*    */   
 /*    */   public W_SoundUpdater(Minecraft minecraft, Entity entity) {
-/* 13 */     this.theSoundHnadler = minecraft.func_147118_V();
+/* 13 */     this.theSoundHnadler = minecraft.getSoundHandler();
 /*    */   }
 /*    */   protected W_Sound es;
 /*    */   public void initEntitySound(String name) {
@@ -25,18 +25,18 @@
 /*    */   public void playEntitySound(String name, Entity entity, float volume, float pitch, boolean par5) {
 /* 26 */     if (isValidSound()) {
 /* 27 */       this.es.setSoundParam(entity, volume, pitch);
-/* 28 */       this.theSoundHnadler.func_147682_a((ISound)this.es);
+/* 28 */       this.theSoundHnadler.playSound((ISound)this.es);
 /*    */     } 
 /*    */   }
 /*    */   
 /*    */   public void stopEntitySound(Entity entity) {
 /* 33 */     if (isValidSound()) {
-/* 34 */       this.theSoundHnadler.func_147683_b((ISound)this.es);
+/* 34 */       this.theSoundHnadler.stopSound((ISound)this.es);
 /*    */     }
 /*    */   }
 /*    */   
 /*    */   public boolean isEntitySoundPlaying(Entity entity) {
-/* 39 */     return (isValidSound() && this.theSoundHnadler.func_147692_c((ISound)this.es));
+/* 39 */     return (isValidSound() && this.theSoundHnadler.isSoundPlaying((ISound)this.es));
 /*    */   }
 /*    */   
 /*    */   public void setEntitySoundPitch(Entity entity, float pitch) {

@@ -32,17 +32,17 @@
 /*    */ 
 /*    */     
 /*    */     public double getX() {
-/* 35 */       return this.target.field_70165_t;
+/* 35 */       return this.target.posX;
 /*    */     }
 /*    */ 
 /*    */     
 /*    */     public double getY() {
-/* 40 */       return this.target.field_70163_u;
+/* 40 */       return this.target.posY;
 /*    */     }
 /*    */ 
 /*    */     
 /*    */     public double getZ() {
-/* 45 */       return this.target.field_70161_v;
+/* 45 */       return this.target.posZ;
 /*    */     }
 /*    */ 
 /*    */     

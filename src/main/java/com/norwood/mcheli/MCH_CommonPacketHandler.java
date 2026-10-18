@@ -15,20 +15,20 @@
 /*     */ {
 /*     */   @HandleSide({Side.CLIENT})
 /*     */   public static void onPacketEffectExplosion(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/*  18 */     if (player.field_70170_p.field_72995_K) {
+/*  18 */     if (player.world.isRemote) {
 /*  19 */       MCH_PacketEffectExplosion pkt = new MCH_PacketEffectExplosion();
 /*  20 */       pkt.readData(data);
-/*  21 */       scheduler.func_152344_a(() -> {
+/*  21 */       scheduler.addScheduledTask(() -> {
 /*     */             Entity exploder = null;
-/*     */             if (player.func_70092_e(pkt.prm.posX, pkt.prm.posY, pkt.prm.posZ) <= 40000.0D) {
+/*     */             if (player.getDistanceSq(pkt.prm.posX, pkt.prm.posY, pkt.prm.posZ) <= 40000.0D) {
 /*     */               if (!pkt.prm.inWater) {
 /*     */                 if (!MCH_Config.DefaultExplosionParticle.prmBool) {
-/*     */                   MCH_Explosion.effectExplosion(player.field_70170_p, exploder, pkt.prm.posX, pkt.prm.posY, pkt.prm.posZ, pkt.prm.size, true, pkt.prm.getAffectedBlockPositions());
+/*     */                   MCH_Explosion.effectExplosion(player.world, exploder, pkt.prm.posX, pkt.prm.posY, pkt.prm.posZ, pkt.prm.size, true, pkt.prm.getAffectedBlockPositions());
 /*     */                 } else {
-/*     */                   MCH_Explosion.DEF_effectExplosion(player.field_70170_p, exploder, pkt.prm.posX, pkt.prm.posY, pkt.prm.posZ, pkt.prm.size, true, pkt.prm.getAffectedBlockPositions());
+/*     */                   MCH_Explosion.DEF_effectExplosion(player.world, exploder, pkt.prm.posX, pkt.prm.posY, pkt.prm.posZ, pkt.prm.size, true, pkt.prm.getAffectedBlockPositions());
 /*     */                 } 
 /*     */               } else {
-/*     */                 MCH_Explosion.effectExplosionInWater(player.field_70170_p, exploder, pkt.prm.posX, pkt.prm.posY, pkt.prm.posZ, pkt.prm.size, true);
+/*     */                 MCH_Explosion.effectExplosionInWater(player.world, exploder, pkt.prm.posX, pkt.prm.posY, pkt.prm.posZ, pkt.prm.size, true);
 /*     */               } 
 /*     */             }
 /*     */           });
@@ -43,17 +43,17 @@
 /*     */   
 /*     */   @HandleSide({Side.SERVER})
 /*     */   public static void onPacketIndOpenScreen(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/*  46 */     if (!player.field_70170_p.field_72995_K) {
+/*  46 */     if (!player.world.isRemote) {
 /*  47 */       MCH_PacketIndOpenScreen pkt = new MCH_PacketIndOpenScreen();
 /*  48 */       pkt.readData(data);
-/*  49 */       scheduler.func_152344_a(() -> {
+/*  49 */       scheduler.addScheduledTask(() -> {
 /*     */             if (pkt.guiID == 3) {
 /*     */               MCH_EntityAircraft ac = MCH_EntityAircraft.getAircraft_RiddenOrControl((Entity)player);
 /*     */               if (ac != null) {
 /*     */                 ac.displayInventory(player);
 /*     */               }
 /*     */             } else {
-/*     */               player.openGui(MCH_MOD.instance, pkt.guiID, player.field_70170_p, (int)player.field_70165_t, (int)player.field_70163_u, (int)player.field_70161_v);
+/*     */               player.openGui(MCH_MOD.instance, pkt.guiID, player.world, (int)player.posX, (int)player.posY, (int)player.posZ);
 /*     */             } 
 /*     */           });
 /*     */     } 
@@ -65,10 +65,10 @@
 /*     */   
 /*     */   @HandleSide({Side.CLIENT})
 /*     */   public static void onPacketNotifyServerSettings(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/*  68 */     if (player.field_70170_p.field_72995_K) {
+/*  68 */     if (player.world.isRemote) {
 /*  69 */       MCH_PacketNotifyServerSettings pkt = new MCH_PacketNotifyServerSettings();
 /*  70 */       pkt.readData(data);
-/*  71 */       scheduler.func_152344_a(() -> {
+/*  71 */       scheduler.addScheduledTask(() -> {
 /*     */             MCH_Lib.DbgLog(false, "onPacketNotifyServerSettings:" + player, new Object[0]);
 /*     */             if (!pkt.enableCamDistChange) {
 /*     */               W_Reflection.setThirdPersonDistance(4.0F);
@@ -92,10 +92,10 @@
 /*     */   public static void onPacketNotifyLock(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
 /*  93 */     MCH_PacketNotifyLock pkt = new MCH_PacketNotifyLock();
 /*  94 */     pkt.readData(data);
-/*  95 */     if (!player.field_70170_p.field_72995_K) {
+/*  95 */     if (!player.world.isRemote) {
 /*  96 */       if (pkt.entityID >= 0) {
-/*  97 */         scheduler.func_152344_a(() -> {
-/*     */               Entity target = player.field_70170_p.func_73045_a(pkt.entityID);
+/*  97 */         scheduler.addScheduledTask(() -> {
+/*     */               Entity target = player.world.getEntityByID(pkt.entityID);
 /*     */               
 /*     */               if (target != null) {
 /*     */                 MCH_EntityAircraft ac;
@@ -113,14 +113,14 @@
 /*     */                       MCH_PacketNotifyLock.sendToPlayer((EntityPlayer)entity);
 /*     */                     }
 /*     */                   } 
-/*     */                 } else if (target.func_184187_bx() != null && target instanceof net.minecraft.entity.player.EntityPlayerMP) {
+/*     */                 } else if (target.getRidingEntity() != null && target instanceof net.minecraft.entity.player.EntityPlayerMP) {
 /*     */                   MCH_PacketNotifyLock.sendToPlayer((EntityPlayer)target);
 /*     */                 } 
 /*     */               } 
 /*     */             });
 /*     */       }
 /*     */     } else {
-/* 123 */       scheduler.func_152344_a(() -> MCH_MOD.proxy.clientLocked());
+/* 123 */       scheduler.addScheduledTask(() -> MCH_MOD.proxy.clientLocked());
 /*     */     } 
 /*     */   }
 /*     */ }

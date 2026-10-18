@@ -10,31 +10,31 @@
 /*    */   }
 /*    */   
 /*    */   public static Block getBlockFromName(@NotNull String name) {
-/* 13 */     return Block.func_149684_b(name);
+/* 13 */     return Block.getBlockFromName(name);
 /*    */   }
 /*    */   
 /*    */   public static Block getSnowLayer() {
-/* 17 */     return W_Blocks.field_150431_aC;
+/* 17 */     return W_Blocks.SNOW_LAYER;
 /*    */   }
 /*    */   
 /*    */   public static boolean isNull(Block block) {
-/* 21 */     return (block == null || block == W_Blocks.field_150350_a);
+/* 21 */     return (block == null || block == W_Blocks.AIR);
 /*    */   }
 /*    */   
 /*    */   public static boolean isEqual(int blockId, Block block) {
-/* 25 */     return Block.func_149680_a(Block.func_149729_e(blockId), block);
+/* 25 */     return Block.isEqualTo(Block.getBlockById(blockId), block);
 /*    */   }
 /*    */   
 /*    */   public static boolean isEqual(Block block1, Block block2) {
-/* 29 */     return Block.func_149680_a(block1, block2);
+/* 29 */     return Block.isEqualTo(block1, block2);
 /*    */   }
 /*    */   
 /*    */   public static Block getWater() {
-/* 33 */     return (Block)W_Blocks.field_150355_j;
+/* 33 */     return (Block)W_Blocks.WATER;
 /*    */   }
 /*    */   @NotNull
 /*    */   public static Block getBlockById(int i) {
-/* 37 */     return Block.func_149729_e(i);
+/* 37 */     return Block.getBlockById(i);
 /*    */   }
 /*    */ }
 

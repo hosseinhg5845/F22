@@ -20,15 +20,15 @@
 /*    */   
 /*    */   public void setOnOff(boolean b) {
 /* 22 */     this.statOnOff = b;
-/* 23 */     this.field_146126_j = this.dispOnOffString + (getOnOff() ? "ON" : "OFF");
+/* 23 */     this.displayString = this.dispOnOffString + (getOnOff() ? "ON" : "OFF");
 /*    */   }
 /*    */   
 /*    */   public void switchOnOff() {
 /* 27 */     setOnOff(!getOnOff());
 /*    */   }
 /*    */   
-/*    */   public boolean func_146116_c(@NotNull Minecraft mc, int x, int y) {
-/* 31 */     if (super.func_146116_c(mc, x, y)) {
+/*    */   public boolean mousePressed(@NotNull Minecraft mc, int x, int y) {
+/* 31 */     if (super.mousePressed(mc, x, y)) {
 /* 32 */       switchOnOff();
 /* 33 */       return true;
 /*    */     } 

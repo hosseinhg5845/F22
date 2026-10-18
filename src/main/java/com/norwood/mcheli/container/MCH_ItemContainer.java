@@ -21,42 +21,42 @@
 /*    */   extends W_Item {
 /*    */   public MCH_ItemContainer(int par1) {
 /* 23 */     super(par1);
-/* 24 */     func_77625_d(1);
+/* 24 */     setMaxStackSize(1);
 /*    */   }
 /*    */   @NotNull
-/*    */   public ActionResult<ItemStack> func_77659_a(@NotNull World worldIn, EntityPlayer playerIn, @NotNull EnumHand handIn) {
-/* 28 */     ItemStack itemstack = playerIn.func_184586_b(handIn);
+/*    */   public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, EntityPlayer playerIn, @NotNull EnumHand handIn) {
+/* 28 */     ItemStack itemstack = playerIn.getHeldItem(handIn);
 /* 29 */     float f = 1.0F;
-/* 30 */     float f1 = playerIn.field_70127_C + (playerIn.field_70125_A - playerIn.field_70127_C) * f;
-/* 31 */     float f2 = playerIn.field_70126_B + (playerIn.field_70177_z - playerIn.field_70126_B) * f;
-/* 32 */     double d0 = playerIn.field_70169_q + (playerIn.field_70165_t - playerIn.field_70169_q) * f;
-/* 33 */     double d1 = playerIn.field_70167_r + (playerIn.field_70163_u - playerIn.field_70167_r) * f + playerIn.func_70047_e();
-/* 34 */     double d2 = playerIn.field_70166_s + (playerIn.field_70161_v - playerIn.field_70166_s) * f;
+/* 30 */     float f1 = playerIn.prevRotationPitch + (playerIn.rotationPitch - playerIn.prevRotationPitch) * f;
+/* 31 */     float f2 = playerIn.prevRotationYaw + (playerIn.rotationYaw - playerIn.prevRotationYaw) * f;
+/* 32 */     double d0 = playerIn.prevPosX + (playerIn.posX - playerIn.prevPosX) * f;
+/* 33 */     double d1 = playerIn.prevPosY + (playerIn.posY - playerIn.prevPosY) * f + playerIn.getEyeHeight();
+/* 34 */     double d2 = playerIn.prevPosZ + (playerIn.posZ - playerIn.prevPosZ) * f;
 /* 35 */     Vec3d vec3 = W_WorldFunc.getWorldVec3(worldIn, d0, d1, d2);
-/* 36 */     float f3 = MathHelper.func_76134_b(-f2 * 0.017453292F - 3.1415927F);
-/* 37 */     float f4 = MathHelper.func_76126_a(-f2 * 0.017453292F - 3.1415927F);
-/* 38 */     float f5 = -MathHelper.func_76134_b(-f1 * 0.017453292F);
-/* 39 */     float f6 = MathHelper.func_76126_a(-f1 * 0.017453292F);
+/* 36 */     float f3 = MathHelper.cos(-f2 * 0.017453292F - 3.1415927F);
+/* 37 */     float f4 = MathHelper.sin(-f2 * 0.017453292F - 3.1415927F);
+/* 38 */     float f5 = -MathHelper.cos(-f1 * 0.017453292F);
+/* 39 */     float f6 = MathHelper.sin(-f1 * 0.017453292F);
 /* 40 */     float f7 = f4 * f5;
 /* 41 */     float f8 = f3 * f5;
 /* 42 */     double d3 = 5.0D;
-/* 43 */     Vec3d vec31 = vec3.func_72441_c(f7 * d3, f6 * d3, f8 * d3);
+/* 43 */     Vec3d vec31 = vec3.addVector(f7 * d3, f6 * d3, f8 * d3);
 /* 44 */     RayTraceResult movingobjectposition = W_WorldFunc.clip(worldIn, vec3, vec31, true);
 /* 45 */     if (movingobjectposition == null) {
 /* 46 */       return ActionResult.newResult(EnumActionResult.PASS, itemstack);
 /*    */     }
-/* 48 */     Vec3d vec32 = playerIn.func_70676_i(f);
+/* 48 */     Vec3d vec32 = playerIn.getLook(f);
 /* 49 */     boolean flag = false;
 /* 50 */     float f9 = 1.0F;
-/* 51 */     List<Entity> list = worldIn.func_72839_b((Entity)playerIn, playerIn
-/* 52 */         .func_174813_aQ().func_72321_a(vec32.field_72450_a * d3, vec32.field_72448_b * d3, vec32.field_72449_c * d3).func_72314_b(f9, f9, f9));
+/* 51 */     List<Entity> list = worldIn.getEntitiesWithinAABBExcludingEntity((Entity)playerIn, playerIn
+/* 52 */         .getEntityBoundingBox().expand(vec32.x * d3, vec32.y * d3, vec32.z * d3).grow(f9, f9, f9));
 /*    */ 
 /*    */     
 /* 55 */     for (Entity entity : list) {
-/* 56 */       if (entity.func_70067_L()) {
-/* 57 */         float f10 = entity.func_70111_Y();
-/* 58 */         AxisAlignedBB axisalignedbb = entity.func_174813_aQ().func_72314_b(f10, f10, f10);
-/* 59 */         if (axisalignedbb.func_72318_a(vec3)) {
+/* 56 */       if (entity.canBeCollidedWith()) {
+/* 57 */         float f10 = entity.getCollisionBorderSize();
+/* 58 */         AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().grow(f10, f10, f10);
+/* 59 */         if (axisalignedbb.contains(vec3)) {
 /* 60 */           flag = true;
 /*    */         }
 /*    */       } 
@@ -66,21 +66,21 @@
 /* 66 */       return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
 /*    */     }
 /* 68 */     if (W_MovingObjectPosition.isHitTypeTile(movingobjectposition)) {
-/* 69 */       int ix = movingobjectposition.func_178782_a().func_177958_n();
-/* 70 */       int j = movingobjectposition.func_178782_a().func_177956_o();
-/* 71 */       int k = movingobjectposition.func_178782_a().func_177952_p();
+/* 69 */       int ix = movingobjectposition.getBlockPos().getX();
+/* 70 */       int j = movingobjectposition.getBlockPos().getY();
+/* 71 */       int k = movingobjectposition.getBlockPos().getZ();
 /* 72 */       MCH_EntityContainer entityboat = new MCH_EntityContainer(worldIn, (ix + 0.5F), (j + 1.0F), (k + 0.5F));
-/* 73 */       entityboat.field_70177_z = (((MathHelper.func_76128_c((playerIn.field_70177_z * 4.0F / 360.0F) + 0.5D) & 0x3) - 1) * 90);
-/* 74 */       if (!worldIn.func_184144_a((Entity)entityboat, entityboat.func_174813_aQ().func_72314_b(-0.1D, -0.1D, -0.1D)).isEmpty()) {
+/* 73 */       entityboat.rotationYaw = (((MathHelper.floor((playerIn.rotationYaw * 4.0F / 360.0F) + 0.5D) & 0x3) - 1) * 90);
+/* 74 */       if (!worldIn.getCollisionBoxes((Entity)entityboat, entityboat.getEntityBoundingBox().grow(-0.1D, -0.1D, -0.1D)).isEmpty()) {
 /* 75 */         return ActionResult.newResult(EnumActionResult.FAIL, itemstack);
 /*    */       }
 /*    */       
-/* 78 */       if (!worldIn.field_72995_K) {
-/* 79 */         worldIn.func_72838_d((Entity)entityboat);
+/* 78 */       if (!worldIn.isRemote) {
+/* 79 */         worldIn.spawnEntity((Entity)entityboat);
 /*    */       }
 /*    */       
-/* 82 */       if (!playerIn.field_71075_bZ.field_75098_d) {
-/* 83 */         itemstack.func_190918_g(1);
+/* 82 */       if (!playerIn.capabilities.isCreativeMode) {
+/* 83 */         itemstack.shrink(1);
 /*    */       }
 /*    */     } 
 /*    */     

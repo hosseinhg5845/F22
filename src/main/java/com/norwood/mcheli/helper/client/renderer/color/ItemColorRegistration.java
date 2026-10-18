@@ -16,7 +16,7 @@
 /*    */   @SubscribeEvent
 /*    */   static void onRegisterItemColor(ColorHandlerEvent.Item event) {
 /* 18 */     ItemColors itemColors = event.getItemColors();
-/* 19 */     itemColors.func_186730_a(MCH_ItemSpawnGunner::getColorFromItemStack, new Item[] { (Item)MCH_MOD.itemSpawnGunnerVsMonster, (Item)MCH_MOD.itemSpawnGunnerVsPlayer });
+/* 19 */     itemColors.registerItemColorHandler(MCH_ItemSpawnGunner::getColorFromItemStack, new Item[] { (Item)MCH_MOD.itemSpawnGunnerVsMonster, (Item)MCH_MOD.itemSpawnGunnerVsPlayer });
 /*    */   }
 /*    */ }
 

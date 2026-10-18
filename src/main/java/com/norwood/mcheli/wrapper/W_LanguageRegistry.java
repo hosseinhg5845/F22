@@ -28,11 +28,11 @@
 /*    */       }
 /*    */       
 /* 30 */       if (o instanceof Item) {
-/* 31 */         ((ArrayList<String>)map.get(lang)).add(((Item)o).func_77658_a() + ".name=" + name);
+/* 31 */         ((ArrayList<String>)map.get(lang)).add(((Item)o).getUnlocalizedName() + ".name=" + name);
 /*    */       }
 /*    */       
 /* 34 */       if (o instanceof Block) {
-/* 35 */         ((ArrayList<String>)map.get(lang)).add(((Block)o).func_149739_a() + ".name=" + name);
+/* 35 */         ((ArrayList<String>)map.get(lang)).add(((Block)o).getUnlocalizedName() + ".name=" + name);
 /* 36 */       } else if (o instanceof net.minecraft.advancements.Advancement) {
 /* 37 */         ((ArrayList<String>)map.get(lang)).add("advancement." + key + "=" + name);
 /* 38 */         ((ArrayList<String>)map.get(lang)).add("advancement." + key + ".desc=" + desc);

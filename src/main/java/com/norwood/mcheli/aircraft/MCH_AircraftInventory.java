@@ -22,25 +22,25 @@
 /*  22 */   public final int SLOT_PARACHUTE0 = 3;
 /*  23 */   public final int SLOT_PARACHUTE1 = 4;
 /*     */   final MCH_EntityAircraft aircraft;
-/*  25 */   private ItemStack[] containerItems = new ItemStack[func_70302_i_()];
+/*  25 */   private ItemStack[] containerItems = new ItemStack[getSizeInventory()];
 /*     */   
 /*     */   public MCH_AircraftInventory(MCH_EntityAircraft ac) {
-/*  28 */     Arrays.fill((Object[])this.containerItems, ItemStack.field_190927_a);
+/*  28 */     Arrays.fill((Object[])this.containerItems, ItemStack.EMPTY);
 /*  29 */     this.aircraft = ac;
 /*     */   }
 /*     */   
 /*     */   public ItemStack getFuelSlotItemStack(int i) {
-/*  33 */     return func_70301_a(i);
+/*  33 */     return getStackInSlot(i);
 /*     */   }
 /*     */   
 /*     */   public ItemStack getParachuteSlotItemStack(int i) {
-/*  37 */     return func_70301_a(3 + i);
+/*  37 */     return getStackInSlot(3 + i);
 /*     */   }
 /*     */   
 /*     */   public boolean haveParachute() {
 /*  41 */     for (int i = 0; i < 2; i++) {
 /*  42 */       ItemStack item = getParachuteSlotItemStack(i);
-/*  43 */       if (!item.func_190926_b() && item.func_77973_b() instanceof com.norwood.mcheli.parachute.MCH_ItemParachute) {
+/*  43 */       if (!item.isEmpty() && item.getItem() instanceof com.norwood.mcheli.parachute.MCH_ItemParachute) {
 /*  44 */         return true;
 /*     */       }
 /*     */     } 
@@ -51,20 +51,20 @@
 /*     */   public void consumeParachute() {
 /*  52 */     for (int i = 0; i < 2; i++) {
 /*  53 */       ItemStack item = getParachuteSlotItemStack(i);
-/*  54 */       if (!item.func_190926_b() && item.func_77973_b() instanceof com.norwood.mcheli.parachute.MCH_ItemParachute) {
-/*  55 */         func_70299_a(3 + i, ItemStack.field_190927_a);
+/*  54 */       if (!item.isEmpty() && item.getItem() instanceof com.norwood.mcheli.parachute.MCH_ItemParachute) {
+/*  55 */         setInventorySlotContents(3 + i, ItemStack.EMPTY);
 /*     */         break;
 /*     */       } 
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   public int func_70302_i_() {
+/*     */   public int getSizeInventory() {
 /*  62 */     return 10;
 /*     */   }
 /*     */   
-/*     */   public boolean func_191420_l() {
+/*     */   public boolean isEmpty() {
 /*  66 */     for (ItemStack itemstack : this.containerItems) {
-/*  67 */       if (!itemstack.func_190926_b()) {
+/*  67 */       if (!itemstack.isEmpty()) {
 /*  68 */         return false;
 /*     */       }
 /*     */     } 
@@ -72,82 +72,82 @@
 /*  72 */     return true;
 /*     */   }
 /*     */   @NotNull
-/*     */   public ItemStack func_70301_a(int var1) {
+/*     */   public ItemStack getStackInSlot(int var1) {
 /*  76 */     return this.containerItems[var1];
 /*     */   }
 /*     */   
 /*     */   public void setDead() {
 /*  80 */     Random rand = new Random();
-/*  81 */     if (this.aircraft.dropContentsWhenDead && !this.aircraft.field_70170_p.field_72995_K)
-/*  82 */       for (int i = 0; i < func_70302_i_(); i++) {
-/*  83 */         ItemStack itemstack = func_70301_a(i);
-/*  84 */         if (!itemstack.func_190926_b()) {
+/*  81 */     if (this.aircraft.dropContentsWhenDead && !this.aircraft.world.isRemote)
+/*  82 */       for (int i = 0; i < getSizeInventory(); i++) {
+/*  83 */         ItemStack itemstack = getStackInSlot(i);
+/*  84 */         if (!itemstack.isEmpty()) {
 /*  85 */           float x = rand.nextFloat() * 0.8F + 0.1F;
 /*  86 */           float y = rand.nextFloat() * 0.8F + 0.1F;
 /*  87 */           float z = rand.nextFloat() * 0.8F + 0.1F;
 /*     */           
-/*  89 */           while (itemstack.func_190916_E() > 0) {
+/*  89 */           while (itemstack.getCount() > 0) {
 /*  90 */             int j = rand.nextInt(21) + 10;
-/*  91 */             if (j > itemstack.func_190916_E()) {
-/*  92 */               j = itemstack.func_190916_E();
+/*  91 */             if (j > itemstack.getCount()) {
+/*  92 */               j = itemstack.getCount();
 /*     */             }
 /*     */             
-/*  95 */             itemstack.func_190918_g(j);
+/*  95 */             itemstack.shrink(j);
 /*     */ 
 /*     */ 
 /*     */ 
 /*     */ 
 /*     */             
-/* 101 */             EntityItem entityitem = new EntityItem(this.aircraft.field_70170_p, this.aircraft.field_70165_t + x, this.aircraft.field_70163_u + y, this.aircraft.field_70161_v + z, new ItemStack(itemstack.func_77973_b(), j, itemstack.func_77960_j()));
+/* 101 */             EntityItem entityitem = new EntityItem(this.aircraft.world, this.aircraft.posX + x, this.aircraft.posY + y, this.aircraft.posZ + z, new ItemStack(itemstack.getItem(), j, itemstack.getMetadata()));
 /*     */             
-/* 103 */             if (itemstack.func_77942_o()) {
-/* 104 */               entityitem.func_92059_d().func_77982_d(itemstack.func_77978_p().func_74737_b());
+/* 103 */             if (itemstack.hasTagCompound()) {
+/* 104 */               entityitem.getItem().setTagCompound(itemstack.getTagCompound().copy());
 /*     */             }
 /*     */             
 /* 107 */             float f3 = 0.05F;
-/* 108 */             entityitem.field_70159_w = ((float)rand.nextGaussian() * f3);
-/* 109 */             entityitem.field_70181_x = ((float)rand.nextGaussian() * f3 + 0.2F);
-/* 110 */             entityitem.field_70179_y = ((float)rand.nextGaussian() * f3);
-/* 111 */             this.aircraft.field_70170_p.func_72838_d((Entity)entityitem);
+/* 108 */             entityitem.motionX = ((float)rand.nextGaussian() * f3);
+/* 109 */             entityitem.motionY = ((float)rand.nextGaussian() * f3 + 0.2F);
+/* 110 */             entityitem.motionZ = ((float)rand.nextGaussian() * f3);
+/* 111 */             this.aircraft.world.spawnEntity((Entity)entityitem);
 /*     */           } 
 /*     */         } 
 /*     */       }  
 /*     */   }
 /*     */   
 /*     */   @NotNull
-/*     */   public ItemStack func_70298_a(int par1, int par2) {
-/* 119 */     if (!this.containerItems[par1].func_190926_b()) {
+/*     */   public ItemStack decrStackSize(int par1, int par2) {
+/* 119 */     if (!this.containerItems[par1].isEmpty()) {
 /*     */       ItemStack itemstack;
-/* 121 */       if (this.containerItems[par1].func_190916_E() <= par2) {
+/* 121 */       if (this.containerItems[par1].getCount() <= par2) {
 /* 122 */         itemstack = this.containerItems[par1];
-/* 123 */         this.containerItems[par1] = ItemStack.field_190927_a;
+/* 123 */         this.containerItems[par1] = ItemStack.EMPTY;
 /*     */       } else {
-/* 125 */         itemstack = this.containerItems[par1].func_77979_a(par2);
-/* 126 */         if (this.containerItems[par1].func_190916_E() == 0) {
-/* 127 */           this.containerItems[par1] = ItemStack.field_190927_a;
+/* 125 */         itemstack = this.containerItems[par1].splitStack(par2);
+/* 126 */         if (this.containerItems[par1].getCount() == 0) {
+/* 127 */           this.containerItems[par1] = ItemStack.EMPTY;
 /*     */         }
 /*     */       } 
 /*     */       
 /* 131 */       return itemstack;
 /*     */     } 
-/* 133 */     return ItemStack.field_190927_a;
+/* 133 */     return ItemStack.EMPTY;
 /*     */   }
 /*     */   
 /*     */   @NotNull
-/*     */   public ItemStack func_70304_b(int par1) {
-/* 138 */     if (!this.containerItems[par1].func_190926_b()) {
+/*     */   public ItemStack removeStackFromSlot(int par1) {
+/* 138 */     if (!this.containerItems[par1].isEmpty()) {
 /* 139 */       ItemStack itemstack = this.containerItems[par1];
-/* 140 */       this.containerItems[par1] = ItemStack.field_190927_a;
+/* 140 */       this.containerItems[par1] = ItemStack.EMPTY;
 /* 141 */       return itemstack;
 /*     */     } 
-/* 143 */     return ItemStack.field_190927_a;
+/* 143 */     return ItemStack.EMPTY;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_70299_a(int par1, ItemStack par2ItemStack) {
+/*     */   public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
 /* 148 */     this.containerItems[par1] = par2ItemStack;
-/* 149 */     if (!par2ItemStack.func_190926_b() && par2ItemStack.func_190916_E() > func_70297_j_()) {
-/* 150 */       par2ItemStack.func_190920_e(func_70297_j_());
+/* 149 */     if (!par2ItemStack.isEmpty() && par2ItemStack.getCount() > getInventoryStackLimit()) {
+/* 150 */       par2ItemStack.setCount(getInventoryStackLimit());
 /*     */     }
 /*     */   }
 /*     */   
@@ -155,7 +155,7 @@
 /* 155 */     return getInvName();
 /*     */   }
 /*     */   @NotNull
-/*     */   public String func_70005_c_() {
+/*     */   public String getName() {
 /* 159 */     return getInvName();
 /*     */   }
 /*     */   
@@ -172,26 +172,26 @@
 /* 172 */     return (this.aircraft.getAcInfo() != null);
 /*     */   }
 /*     */   @NotNull
-/*     */   public ITextComponent func_145748_c_() {
+/*     */   public ITextComponent getDisplayName() {
 /* 176 */     return (ITextComponent)new TextComponentString(getInvName());
 /*     */   }
 /*     */   
-/*     */   public boolean func_145818_k_() {
+/*     */   public boolean hasCustomName() {
 /* 180 */     return isInvNameLocalized();
 /*     */   }
 /*     */   
-/*     */   public int func_70297_j_() {
+/*     */   public int getInventoryStackLimit() {
 /* 184 */     return 64;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_70296_d() {}
+/*     */   public void markDirty() {}
 /*     */   
-/*     */   public boolean func_70300_a(EntityPlayer player) {
-/* 191 */     return (player.func_70068_e((Entity)this.aircraft) <= 144.0D);
+/*     */   public boolean isUsableByPlayer(EntityPlayer player) {
+/* 191 */     return (player.getDistanceSq((Entity)this.aircraft) <= 144.0D);
 /*     */   }
 /*     */   
-/*     */   public boolean func_94041_b(int par1, @NotNull ItemStack par2ItemStack) {
+/*     */   public boolean isItemValidForSlot(int par1, @NotNull ItemStack par2ItemStack) {
 /* 195 */     return true;
 /*     */   }
 /*     */   
@@ -200,34 +200,34 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_174889_b(@NotNull EntityPlayer player) {}
+/*     */   public void openInventory(@NotNull EntityPlayer player) {}
 /*     */ 
 /*     */   
-/*     */   public void func_174886_c(@NotNull EntityPlayer player) {}
+/*     */   public void closeInventory(@NotNull EntityPlayer player) {}
 /*     */   
 /*     */   protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
 /* 209 */     NBTTagList nbttaglist = new NBTTagList();
 /*     */     
 /* 211 */     for (int i = 0; i < this.containerItems.length; i++) {
-/* 212 */       if (!this.containerItems[i].func_190926_b()) {
+/* 212 */       if (!this.containerItems[i].isEmpty()) {
 /* 213 */         NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-/* 214 */         nbttagcompound1.func_74774_a("SlotAC", (byte)i);
-/* 215 */         this.containerItems[i].func_77955_b(nbttagcompound1);
-/* 216 */         nbttaglist.func_74742_a((NBTBase)nbttagcompound1);
+/* 214 */         nbttagcompound1.setByte("SlotAC", (byte)i);
+/* 215 */         this.containerItems[i].writeToNBT(nbttagcompound1);
+/* 216 */         nbttaglist.appendTag((NBTBase)nbttagcompound1);
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 220 */     par1NBTTagCompound.func_74782_a("ItemsAC", (NBTBase)nbttaglist);
+/* 220 */     par1NBTTagCompound.setTag("ItemsAC", (NBTBase)nbttaglist);
 /*     */   }
 /*     */   
 /*     */   protected void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
 /* 224 */     NBTTagList nbttaglist = W_NBTTag.getTagList(par1NBTTagCompound, "ItemsAC", 10);
-/* 225 */     this.containerItems = new ItemStack[func_70302_i_()];
-/* 226 */     Arrays.fill((Object[])this.containerItems, ItemStack.field_190927_a);
+/* 225 */     this.containerItems = new ItemStack[getSizeInventory()];
+/* 226 */     Arrays.fill((Object[])this.containerItems, ItemStack.EMPTY);
 /*     */     
-/* 228 */     for (int i = 0; i < nbttaglist.func_74745_c(); i++) {
+/* 228 */     for (int i = 0; i < nbttaglist.tagCount(); i++) {
 /* 229 */       NBTTagCompound nbttagcompound1 = W_NBTTag.tagAt(nbttaglist, i);
-/* 230 */       int j = nbttagcompound1.func_74771_c("SlotAC") & 0xFF;
+/* 230 */       int j = nbttagcompound1.getByte("SlotAC") & 0xFF;
 /* 231 */       if (j < this.containerItems.length) {
 /* 232 */         this.containerItems[j] = new ItemStack(nbttagcompound1);
 /*     */       }
@@ -237,20 +237,20 @@
 /*     */   
 /*     */   public void onInventoryChanged() {}
 /*     */   
-/*     */   public int func_174887_a_(int id) {
+/*     */   public int getField(int id) {
 /* 241 */     return 0;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_174885_b(int id, int value) {}
+/*     */   public void setField(int id, int value) {}
 /*     */   
-/*     */   public int func_174890_g() {
+/*     */   public int getFieldCount() {
 /* 248 */     return 0;
 /*     */   }
 /*     */   
-/*     */   public void func_174888_l() {
-/* 252 */     for (int i = 0; i < func_70302_i_(); i++)
-/* 253 */       this.containerItems[i] = ItemStack.field_190927_a; 
+/*     */   public void clear() {
+/* 252 */     for (int i = 0; i < getSizeInventory(); i++)
+/* 253 */       this.containerItems[i] = ItemStack.EMPTY; 
 /*     */   }
 /*     */ }
 

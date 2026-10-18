@@ -35,7 +35,7 @@
 /*     */       
 /*  36 */       MCH_AircraftInfo info = this.theAircraft.getAcInfo();
 /*  37 */       boolean isBeforeMoving = this.isMoving;
-/*  38 */       boolean isDead = this.theAircraft.field_70128_L;
+/*  38 */       boolean isDead = this.theAircraft.isDead;
 /*  39 */       if (isDead || (!this.silent && this.aircraftVolume == 0.0F)) {
 /*  40 */         if (isDead) {
 /*  41 */           stopEntitySound((Entity)this.theAircraft);
@@ -67,7 +67,7 @@
 /*  67 */         this.aircraftVolume = info.soundVolume * this.theAircraft.getSoundVolume();
 /*  68 */         this.aircraftPitch = info.soundPitch * this.theAircraft.getSoundPitch();
 /*  69 */         if (!isRide) {
-/*  70 */           double dist = this.thePlayer.func_70011_f(this.theAircraft.field_70165_t, this.thePlayer.field_70163_u, this.theAircraft.field_70161_v);
+/*  70 */           double dist = this.thePlayer.getDistance(this.theAircraft.posX, this.thePlayer.posY, this.theAircraft.posZ);
 /*  71 */           double pitch = this.prevDist - dist;
 /*  72 */           if (Math.abs(pitch) > 0.3D) {
 /*  73 */             this.addPitch = (float)(this.addPitch + pitch / 40.0D);
@@ -110,12 +110,12 @@
 /* 110 */         if (isRide) {
 /* 111 */           updateSoundLocation((Entity)this.theAircraft);
 /*     */         } else {
-/* 113 */           double px = this.thePlayer.field_70165_t;
-/* 114 */           double py = this.thePlayer.field_70163_u;
-/* 115 */           double pz = this.thePlayer.field_70161_v;
-/* 116 */           double dx = this.theAircraft.field_70165_t - px;
-/* 117 */           double dy = this.theAircraft.field_70163_u - py;
-/* 118 */           double dz = this.theAircraft.field_70161_v - pz;
+/* 113 */           double px = this.thePlayer.posX;
+/* 114 */           double py = this.thePlayer.posY;
+/* 115 */           double pz = this.thePlayer.posZ;
+/* 116 */           double dx = this.theAircraft.posX - px;
+/* 117 */           double dy = this.theAircraft.posY - py;
+/* 118 */           double dz = this.theAircraft.posZ - pz;
 /* 119 */           double dist = info.soundRange / 16.0D;
 /* 120 */           dx /= dist;
 /* 121 */           dy /= dist;

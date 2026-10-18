@@ -20,7 +20,7 @@
 /* 20 */       MCH_Color c = (((MCH_EntityBaseBullet)e).getInfo()).color;
 /*    */       
 /* 22 */       for (int y = 0; y < 3; y++) {
-/* 23 */         Block b = W_WorldFunc.getBlock(((W_Entity)e).field_70170_p, (int)(((W_Entity)e).field_70165_t + 0.5D), (int)(((W_Entity)e).field_70163_u + 1.5D - y), (int)(((W_Entity)e).field_70161_v + 0.5D));
+/* 23 */         Block b = W_WorldFunc.getBlock(((W_Entity)e).world, (int)(((W_Entity)e).posX + 0.5D), (int)(((W_Entity)e).posY + 1.5D - y), (int)(((W_Entity)e).posZ + 0.5D));
 /* 24 */         if (b == W_Block.getWater()) {
 /* 25 */           c = (((MCH_EntityBaseBullet)e).getInfo()).colorInWater;
 /*    */           

@@ -24,12 +24,12 @@
 /* 24 */     if (entity == null) {
 /* 25 */       return 0.0D;
 /*    */     }
-/* 27 */     return (entity instanceof EntityLivingBase) ? ((EntityLivingBase)entity).field_191988_bg : 0.0D;
+/* 27 */     return (entity instanceof EntityLivingBase) ? ((EntityLivingBase)entity).moveForward : 0.0D;
 /*    */   }
 /*    */ 
 /*    */   
 /*    */   public static boolean isClientPlayer(@Nullable Entity entity) {
-/* 32 */     return (entity instanceof net.minecraft.entity.player.EntityPlayer && entity.field_70170_p.field_72995_K && W_Entity.isEqual(MCH_MOD.proxy.getClientPlayer(), entity));
+/* 32 */     return (entity instanceof net.minecraft.entity.player.EntityPlayer && entity.world.isRemote && W_Entity.isEqual(MCH_MOD.proxy.getClientPlayer(), entity));
 /*    */   }
 /*    */   
 /*    */   public static boolean isFirstPerson() {

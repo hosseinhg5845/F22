@@ -19,40 +19,40 @@
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   public void func_70071_h_() {
-/* 23 */     super.func_70071_h_();
+/*    */   public void onUpdate() {
+/* 23 */     super.onUpdate();
 /* 24 */     if (this.isSpawnParticle && getInfo() != null && !(getInfo()).disableSmoke) {
 /* 25 */       spawnParticle((getInfo()).trajectoryParticleName, 3, 5.0F * (getInfo()).smokeSize * 0.5F);
 /*    */     }
 /*    */     
 /* 28 */     if (this.shootingEntity != null) {
-/* 29 */       double x = this.field_70165_t - this.shootingEntity.field_70165_t;
-/* 30 */       double y = this.field_70163_u - this.shootingEntity.field_70163_u;
-/* 31 */       double z = this.field_70161_v - this.shootingEntity.field_70161_v;
+/* 29 */       double x = this.posX - this.shootingEntity.posX;
+/* 30 */       double y = this.posY - this.shootingEntity.posY;
+/* 31 */       double z = this.posZ - this.shootingEntity.posZ;
 /* 32 */       if (x * x + y * y + z * z > 1440000.0D) {
-/* 33 */         func_70106_y();
+/* 33 */         setDead();
 /*    */       }
 /*    */       
-/* 36 */       if (!this.field_70170_p.field_72995_K && !this.field_70128_L) {
+/* 36 */       if (!this.world.isRemote && !this.isDead) {
 /* 37 */         onUpdateMotion();
 /*    */       }
-/* 39 */     } else if (!this.field_70170_p.field_72995_K) {
-/* 40 */       func_70106_y();
+/* 39 */     } else if (!this.world.isRemote) {
+/* 40 */       setDead();
 /*    */     } 
 /*    */   }
 /*    */   
 /*    */   public void onUpdateMotion() {
 /* 45 */     Entity e = this.shootingEntity;
-/* 46 */     if (e != null && !e.field_70128_L) {
+/* 46 */     if (e != null && !e.isDead) {
 /* 47 */       MCH_EntityAircraft ac = MCH_EntityAircraft.getAircraft_RiddenOrControl(e);
 /* 48 */       if (ac != null && ac.getTVMissile() == this) {
-/* 49 */         float yaw = e.field_70177_z;
-/* 50 */         float pitch = e.field_70125_A;
-/* 51 */         double tX = (-MathHelper.func_76126_a(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/* 52 */         double tZ = (MathHelper.func_76134_b(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/* 53 */         double tY = -MathHelper.func_76126_a(pitch / 180.0F * 3.1415927F);
+/* 49 */         float yaw = e.rotationYaw;
+/* 50 */         float pitch = e.rotationPitch;
+/* 51 */         double tX = (-MathHelper.sin(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/* 52 */         double tZ = (MathHelper.cos(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/* 53 */         double tY = -MathHelper.sin(pitch / 180.0F * 3.1415927F);
 /* 54 */         setMotion(tX, tY, tZ);
-/* 55 */         func_70101_b(yaw, pitch);
+/* 55 */         setRotation(yaw, pitch);
 /*    */       } 
 /*    */     } 
 /*    */   }

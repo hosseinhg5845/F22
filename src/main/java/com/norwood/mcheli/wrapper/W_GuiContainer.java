@@ -16,45 +16,45 @@
 /*    */   }
 /*    */   
 /*    */   public void drawItemStack(ItemStack item, int x, int y) {
-/* 19 */     if (!item.func_190926_b()) {
-/* 20 */       item.func_77973_b();
-/* 21 */       FontRenderer font = item.func_77973_b().getFontRenderer(item);
+/* 19 */     if (!item.isEmpty()) {
+/* 20 */       item.getItem();
+/* 21 */       FontRenderer font = item.getItem().getFontRenderer(item);
 /* 22 */       if (font == null) {
-/* 23 */         font = this.field_146289_q;
+/* 23 */         font = this.fontRenderer;
 /*    */       }
 /*    */       
 /* 26 */       GL11.glEnable(2929);
 /* 27 */       GL11.glEnable(2896);
-/* 28 */       this.field_146296_j.func_180450_b(item, x, y);
-/* 29 */       this.field_146296_j.func_180453_a(font, item, x, y, null);
-/* 30 */       this.field_73735_i = 0.0F;
-/* 31 */       this.field_146296_j.field_77023_b = 0.0F;
+/* 28 */       this.itemRender.renderItemAndEffectIntoGUI(item, x, y);
+/* 29 */       this.itemRender.renderItemOverlayIntoGUI(font, item, x, y, null);
+/* 30 */       this.zLevel = 0.0F;
+/* 31 */       this.itemRender.zLevel = 0.0F;
 /*    */     } 
 /*    */   }
 /*    */   
 /*    */   public void drawIngredient(Ingredient ingredient, int x, int y) {
-/* 36 */     if (ingredient != Ingredient.field_193370_a) {
-/* 37 */       ItemStack[] itemstacks = ingredient.func_193365_a();
-/* 38 */       int index = MathHelper.func_76141_d(this.time / 20.0F) % itemstacks.length;
+/* 36 */     if (ingredient != Ingredient.EMPTY) {
+/* 37 */       ItemStack[] itemstacks = ingredient.getMatchingStacks();
+/* 38 */       int index = MathHelper.floor(this.time / 20.0F) % itemstacks.length;
 /* 39 */       drawItemStack(itemstacks[index], x, y);
 /*    */     } 
 /*    */   }
 /*    */   
 /*    */   public void drawString(String s, int x, int y, int color) {
-/* 44 */     func_73731_b(this.field_146289_q, s, x, y, color);
+/* 44 */     drawString(this.fontRenderer, s, x, y, color);
 /*    */   }
 /*    */   
 /*    */   public void drawCenteredString(String s, int x, int y, int color) {
-/* 48 */     func_73732_a(this.field_146289_q, s, x, y, color);
+/* 48 */     drawCenteredString(this.fontRenderer, s, x, y, color);
 /*    */   }
 /*    */   
 /*    */   public int getStringWidth(String s) {
-/* 52 */     return this.field_146289_q.func_78256_a(s);
+/* 52 */     return this.fontRenderer.getStringWidth(s);
 /*    */   }
 /*    */   
-/*    */   public void func_73863_a(int mouseX, int mouseY, float partialTicks) {
+/*    */   public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 /* 56 */     this.time += partialTicks;
-/* 57 */     super.func_73863_a(mouseX, mouseY, partialTicks);
+/* 57 */     super.drawScreen(mouseX, mouseY, partialTicks);
 /*    */   }
 /*    */   
 /*    */   public float getAnimationTime() {

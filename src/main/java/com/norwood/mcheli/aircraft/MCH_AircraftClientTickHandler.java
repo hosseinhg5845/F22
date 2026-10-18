@@ -120,7 +120,7 @@
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 123 */     if (this.KeyUnmount.isKeyDown() && !ac.isDestroyed() && ac.func_70302_i_() > 0 && !isPilot) {
+/* 123 */     if (this.KeyUnmount.isKeyDown() && !ac.isDestroyed() && ac.getSizeInventory() > 0 && !isPilot) {
 /* 124 */       MCH_PacketIndOpenScreen.send(3);
 /*     */     }
 /*     */     
@@ -140,7 +140,7 @@
 /* 140 */           send = true;
 /*     */         } 
 /* 142 */       } else if (this.KeyDownFromRack.isKeyDown()) {
-/* 143 */         if (ac.func_184187_bx() != null) {
+/* 143 */         if (ac.getRidingEntity() != null) {
 /* 144 */           pc.isUnmount = 3;
 /* 145 */           send = true;
 /* 146 */         } else if (ac.canDownFromRack()) {
@@ -178,8 +178,8 @@
 /* 178 */         send |= this.KeyBrake.isKeyDown();
 /* 179 */         pc.throttleDown = ac.throttleDown = false;
 /* 180 */         pc.throttleUp = ac.throttleUp = false;
-/* 181 */         double dx = ac.field_70165_t - ac.field_70169_q;
-/* 182 */         double dz = ac.field_70161_v - ac.field_70166_s;
+/* 181 */         double dx = ac.posX - ac.prevPosX;
+/* 182 */         double dz = ac.posZ - ac.prevPosZ;
 /* 183 */         double dist = dx * dx + dz * dz;
 /* 184 */         if (ac.getCurrentThrottle() <= 0.03D && dist < 0.01D) {
 /* 185 */           pc.moveRight = ac.moveRight = false;
@@ -223,9 +223,9 @@
 /* 223 */           pc.useWeapon = true;
 /* 224 */           pc.useWeaponOption1 = ac.getCurrentWeapon((Entity)player).getLastUsedOptionParameter1();
 /* 225 */           pc.useWeaponOption2 = ac.getCurrentWeapon((Entity)player).getLastUsedOptionParameter2();
-/* 226 */           pc.useWeaponPosX = ac.field_70169_q;
-/* 227 */           pc.useWeaponPosY = ac.field_70167_r;
-/* 228 */           pc.useWeaponPosZ = ac.field_70166_s;
+/* 226 */           pc.useWeaponPosX = ac.prevPosX;
+/* 227 */           pc.useWeaponPosY = ac.prevPosY;
+/* 228 */           pc.useWeaponPosZ = ac.prevPosZ;
 /* 229 */           send = true;
 /*     */         } 
 /*     */       } else {
@@ -241,7 +241,7 @@
 /*     */       } 
 /*     */     }
 /*     */     
-/* 244 */     return (send || player.field_70173_aa % 100 == 0);
+/* 244 */     return (send || player.ticksExisted % 100 == 0);
 /*     */   }
 /*     */ }
 

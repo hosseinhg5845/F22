@@ -14,7 +14,7 @@
 /*    */   }
 /*    */   
 /*    */   public AxisAlignedBB getCollisionBoundingBox() {
-/* 17 */     return func_187116_l();
+/* 17 */     return getBoundingBox();
 /*    */   }
 /*    */ }
 

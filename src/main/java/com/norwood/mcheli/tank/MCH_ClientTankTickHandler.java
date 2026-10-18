@@ -63,7 +63,7 @@ import com.norwood.mcheli.aircraft.MCH_AircraftClientTickHandler;
 /*     */     } 
 /*     */     
 /*  64 */     tank.updateRadar(10);
-/*  65 */     tank.updateCameraRotate(player.field_70177_z, player.field_70125_A);
+/*  65 */     tank.updateCameraRotate(player.rotationYaw, player.rotationPitch);
 /*     */   }
 /*     */ 
 /*     */   
@@ -73,18 +73,18 @@ import com.norwood.mcheli.aircraft.MCH_AircraftClientTickHandler;
 /*     */     }
 /*     */     
 /*  74 */     this.isBeforeRiding = this.isRiding;
-/*  75 */     EntityPlayerSP entityPlayerSP = this.mc.field_71439_g;
+/*  75 */     EntityPlayerSP entityPlayerSP = this.mc.player;
 /*  76 */     MCH_EntityTank tank = null;
 /*  77 */     boolean isPilot = true;
 /*  78 */     if (entityPlayerSP != null)
-/*  79 */       if (entityPlayerSP.func_184187_bx() instanceof MCH_EntityTank)
-/*  80 */       { tank = (MCH_EntityTank)entityPlayerSP.func_184187_bx(); }
-/*  81 */       else { Entity entity = entityPlayerSP.func_184187_bx(); if (entity instanceof MCH_EntitySeat) { MCH_EntitySeat seat = (MCH_EntitySeat)entity;
+/*  79 */       if (entityPlayerSP.getRidingEntity() instanceof MCH_EntityTank)
+/*  80 */       { tank = (MCH_EntityTank)entityPlayerSP.getRidingEntity(); }
+/*  81 */       else { Entity entity = entityPlayerSP.getRidingEntity(); if (entity instanceof MCH_EntitySeat) { MCH_EntitySeat seat = (MCH_EntitySeat)entity;
 /*  82 */           if (seat.getParent() instanceof MCH_EntityTank) {
 /*  83 */             isPilot = false;
 /*  84 */             tank = (MCH_EntityTank)seat.getParent();
 /*     */           }  }
-/*  86 */         else { entity = entityPlayerSP.func_184187_bx(); if (entity instanceof MCH_EntityUavStation) { MCH_EntityUavStation uavStation = (MCH_EntityUavStation)entity;
+/*  86 */         else { entity = entityPlayerSP.getRidingEntity(); if (entity instanceof MCH_EntityUavStation) { MCH_EntityUavStation uavStation = (MCH_EntityUavStation)entity;
 /*  87 */             if (uavStation.getControlAircract() instanceof MCH_EntityTank) {
 /*  88 */               tank = (MCH_EntityTank)uavStation.getControlAircract();
 /*     */             } }
@@ -93,7 +93,7 @@ import com.norwood.mcheli.aircraft.MCH_AircraftClientTickHandler;
 /*     */        
 /*  93 */     if (tank != null && tank.getAcInfo() != null) {
 /*  94 */       update((EntityPlayer)entityPlayerSP, tank);
-/*  95 */       MCH_ViewEntityDummy viewEntityDummy = MCH_ViewEntityDummy.getInstance((World)this.mc.field_71441_e);
+/*  95 */       MCH_ViewEntityDummy viewEntityDummy = MCH_ViewEntityDummy.getInstance((World)this.mc.world);
 /*  96 */       viewEntityDummy.update(tank.camera);
 /*  97 */       if (!inGUI) {
 /*  98 */         if (!tank.isDestroyed()) {
@@ -114,7 +114,7 @@ import com.norwood.mcheli.aircraft.MCH_AircraftClientTickHandler;
 /*     */       } 
 /*     */       
 /* 115 */       if (hideHand) {
-/* 116 */         MCH_Lib.disableFirstPersonItemRender(entityPlayerSP.func_184614_ca());
+/* 116 */         MCH_Lib.disableFirstPersonItemRender(entityPlayerSP.getHeldItemMainhand());
 /*     */       }
 /*     */       
 /* 119 */       this.isRiding = true;
@@ -124,7 +124,7 @@ import com.norwood.mcheli.aircraft.MCH_AircraftClientTickHandler;
 /*     */     
 /* 124 */     if (!this.isBeforeRiding && this.isRiding) {
 /* 125 */       W_Reflection.setThirdPersonDistance(tank.thirdPersonDist);
-/* 126 */       MCH_ViewEntityDummy.getInstance((World)this.mc.field_71441_e).func_70107_b(tank.field_70165_t, tank.field_70163_u + 0.5D, tank.field_70161_v);
+/* 126 */       MCH_ViewEntityDummy.getInstance((World)this.mc.world).setPosition(tank.posX, tank.posY + 0.5D, tank.posZ);
 /* 127 */     } else if (this.isBeforeRiding && !this.isRiding) {
 /* 128 */       W_Reflection.restoreDefaultThirdPersonDistance();
 /* 129 */       MCH_Lib.enableFirstPersonItemRender();

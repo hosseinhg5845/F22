@@ -57,7 +57,7 @@
 /*  57 */       setRotLimitPitch(info.minRotationPitch, info.maxRotationPitch, (Entity)player);
 /*     */     }
 /*     */     
-/*  60 */     vehicle.updateCameraRotate(player.field_70177_z, player.field_70125_A);
+/*  60 */     vehicle.updateCameraRotate(player.rotationYaw, player.rotationPitch);
 /*  61 */     vehicle.updateRadar(5);
 /*     */   }
 /*     */ 
@@ -68,13 +68,13 @@
 /*     */     }
 /*     */     
 /*  70 */     this.isBeforeRiding = this.isRiding;
-/*  71 */     EntityPlayerSP entityPlayerSP = this.mc.field_71439_g;
+/*  71 */     EntityPlayerSP entityPlayerSP = this.mc.player;
 /*  72 */     MCH_EntityVehicle vehicle = null;
 /*  73 */     boolean isPilot = true;
 /*  74 */     if (entityPlayerSP != null) {
-/*  75 */       if (entityPlayerSP.func_184187_bx() instanceof MCH_EntityVehicle)
-/*  76 */       { vehicle = (MCH_EntityVehicle)entityPlayerSP.func_184187_bx(); }
-/*  77 */       else { Entity entity = entityPlayerSP.func_184187_bx(); if (entity instanceof MCH_EntitySeat) { MCH_EntitySeat seat = (MCH_EntitySeat)entity;
+/*  75 */       if (entityPlayerSP.getRidingEntity() instanceof MCH_EntityVehicle)
+/*  76 */       { vehicle = (MCH_EntityVehicle)entityPlayerSP.getRidingEntity(); }
+/*  77 */       else { Entity entity = entityPlayerSP.getRidingEntity(); if (entity instanceof MCH_EntitySeat) { MCH_EntitySeat seat = (MCH_EntitySeat)entity;
 /*  78 */           if (seat.getParent() instanceof MCH_EntityVehicle) {
 /*  79 */             isPilot = false;
 /*  80 */             vehicle = (MCH_EntityVehicle)seat.getParent();
@@ -83,9 +83,9 @@
 /*     */     
 /*     */     }
 /*  85 */     if (vehicle != null && vehicle.getAcInfo() != null) {
-/*  86 */       MCH_Lib.disableFirstPersonItemRender(entityPlayerSP.func_184614_ca());
+/*  86 */       MCH_Lib.disableFirstPersonItemRender(entityPlayerSP.getHeldItemMainhand());
 /*  87 */       update((EntityPlayer)entityPlayerSP, vehicle, vehicle.getVehicleInfo());
-/*  88 */       MCH_ViewEntityDummy viewEntityDummy = MCH_ViewEntityDummy.getInstance((World)this.mc.field_71441_e);
+/*  88 */       MCH_ViewEntityDummy viewEntityDummy = MCH_ViewEntityDummy.getInstance((World)this.mc.world);
 /*  89 */       viewEntityDummy.update(vehicle.camera);
 /*  90 */       if (!inGUI) {
 /*  91 */         if (!vehicle.isDestroyed()) {

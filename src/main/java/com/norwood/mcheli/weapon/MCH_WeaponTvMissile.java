@@ -19,7 +19,7 @@
 /*  19 */     this.acceleration = 2.0F;
 /*  20 */     this.explosionPower = 4;
 /*  21 */     this.interval = -100;
-/*  22 */     if (w.field_72995_K) {
+/*  22 */     if (w.isRemote) {
 /*  23 */       this.interval -= 10;
 /*     */     }
 /*     */     
@@ -46,9 +46,9 @@
 /*     */   
 /*     */   public void update(int countWait) {
 /*  48 */     super.update(countWait);
-/*  49 */     if (!this.worldObj.field_72995_K) {
+/*  49 */     if (!this.worldObj.isRemote) {
 /*  50 */       if (this.isTVGuided && this.tick <= 9) {
-/*  51 */         if (this.tick % 3 == 0 && this.lastShotTvMissile != null && !this.lastShotTvMissile.field_70128_L && this.lastShotEntity != null && !this.lastShotEntity.field_70128_L)
+/*  51 */         if (this.tick % 3 == 0 && this.lastShotTvMissile != null && !this.lastShotTvMissile.isDead && this.lastShotEntity != null && !this.lastShotEntity.isDead)
 /*     */         {
 /*     */ 
 /*     */ 
@@ -70,7 +70,7 @@
 /*     */ 
 /*     */   
 /*     */   public boolean shot(MCH_WeaponParam prm) {
-/*  73 */     return this.worldObj.field_72995_K ? shotClient(prm.entity, prm.user) : shotServer(prm);
+/*  73 */     return this.worldObj.isRemote ? shotClient(prm.entity, prm.user) : shotServer(prm);
 /*     */   }
 /*     */   
 /*     */   protected boolean shotClient(Entity entity, Entity user) {
@@ -80,11 +80,11 @@
 /*     */   }
 /*     */   
 /*     */   protected boolean shotServer(MCH_WeaponParam prm) {
-/*  83 */     float yaw = prm.user.field_70177_z + this.fixRotationYaw;
-/*  84 */     float pitch = prm.user.field_70125_A + this.fixRotationPitch;
-/*  85 */     double tX = (-MathHelper.func_76126_a(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/*  86 */     double tZ = (MathHelper.func_76134_b(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/*  87 */     double tY = -MathHelper.func_76126_a(pitch / 180.0F * 3.1415927F);
+/*  83 */     float yaw = prm.user.rotationYaw + this.fixRotationYaw;
+/*  84 */     float pitch = prm.user.rotationPitch + this.fixRotationPitch;
+/*  85 */     double tX = (-MathHelper.sin(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/*  86 */     double tZ = (MathHelper.cos(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/*  87 */     double tY = -MathHelper.sin(pitch / 180.0F * 3.1415927F);
 /*  88 */     this.isTVGuided = (prm.option1 == 0);
 /*  89 */     float acr = this.acceleration;
 /*  90 */     if (!this.isTVGuided) {
@@ -96,7 +96,7 @@
 /*  96 */     e.setParameterFromWeapon(this, prm.entity, prm.user);
 /*  97 */     this.lastShotEntity = prm.entity;
 /*  98 */     this.lastShotTvMissile = e;
-/*  99 */     this.worldObj.func_72838_d((Entity)e);
+/*  99 */     this.worldObj.spawnEntity((Entity)e);
 /* 100 */     playSound(prm.entity);
 /* 101 */     return true;
 /*     */   }

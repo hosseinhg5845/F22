@@ -15,14 +15,14 @@
 /*    */   
 /*    */   public MCH_RenderNull(RenderManager renderManager) {
 /* 17 */     super(renderManager);
-/* 18 */     this.field_76989_e = 0.0F;
+/* 18 */     this.shadowSize = 0.0F;
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   public void func_76986_a(@NotNull Entity entity, double posX, double posY, double posZ, float par8, float tickTime) {}
+/*    */   public void doRender(@NotNull Entity entity, double posX, double posY, double posZ, float par8, float tickTime) {}
 /*    */ 
 /*    */   
-/*    */   protected ResourceLocation func_110775_a(Entity entity) {
+/*    */   protected ResourceLocation getEntityTexture(Entity entity) {
 /* 26 */     return TEX_DEFAULT;
 /*    */   }
 /*    */ }

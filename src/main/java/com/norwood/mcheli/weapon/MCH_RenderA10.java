@@ -14,7 +14,7 @@
 /*    */   
 /*    */   public MCH_RenderA10(RenderManager renderManager) {
 /* 16 */     super(renderManager);
-/* 17 */     this.field_76989_e = 10.5F;
+/* 17 */     this.shadowSize = 10.5F;
 /*    */   }
 /*    */   
 /*    */   public void renderBullet(MCH_EntityA10 e, double posX, double posY, double posZ, float par8, float tickTime) {
@@ -22,8 +22,8 @@
 /* 22 */       e.isRender()) {
 /* 23 */       GL11.glPushMatrix();
 /* 24 */       GL11.glTranslated(posX, posY, posZ);
-/* 25 */       float yaw = -(e.field_70126_B + (e.field_70177_z - e.field_70126_B) * tickTime);
-/* 26 */       float pitch = -(e.field_70127_C + (e.field_70125_A - e.field_70127_C) * tickTime);
+/* 25 */       float yaw = -(e.prevRotationYaw + (e.rotationYaw - e.prevRotationYaw) * tickTime);
+/* 26 */       float pitch = -(e.prevRotationPitch + (e.rotationPitch - e.prevRotationPitch) * tickTime);
 /* 27 */       GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
 /* 28 */       GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
 /* 29 */       bindTexture("textures/bullets/a10.png");

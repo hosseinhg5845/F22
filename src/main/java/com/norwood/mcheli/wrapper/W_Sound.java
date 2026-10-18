@@ -23,12 +23,12 @@
 /* 23 */     setVolumeAndPitch(volume, pitch);
 /* 24 */     Entity entity = W_McClient.getRenderEntity();
 /* 25 */     if (entity != null) {
-/* 26 */       setPosition(entity.field_70165_t, entity.field_70163_u, entity.field_70161_v);
+/* 26 */       setPosition(entity.posX, entity.posY, entity.posZ);
 /*    */     }
 /*    */   }
 /*    */   
 /*    */   public void setRepeat(boolean b) {
-/* 31 */     this.field_147659_g = b;
+/* 31 */     this.repeat = b;
 /*    */   }
 /*    */   
 /*    */   public void setSoundParam(Entity e, float v, float p) {
@@ -42,24 +42,24 @@
 /*    */   }
 /*    */   
 /*    */   public void setVolume(float v) {
-/* 45 */     this.field_147662_b = v;
+/* 45 */     this.volume = v;
 /*    */   }
 /*    */   
 /*    */   public void setPitch(float p) {
-/* 49 */     this.field_147663_c = p;
+/* 49 */     this.pitch = p;
 /*    */   }
 /*    */   
 /*    */   public void setPosition(double x, double y, double z) {
-/* 53 */     this.field_147660_d = (float)x;
-/* 54 */     this.field_147661_e = (float)y;
-/* 55 */     this.field_147658_f = (float)z;
+/* 53 */     this.xPosF = (float)x;
+/* 54 */     this.yPosF = (float)y;
+/* 55 */     this.zPosF = (float)z;
 /*    */   }
 /*    */   
 /*    */   public void setPosition(Entity e) {
-/* 59 */     setPosition(e.field_70165_t, e.field_70163_u, e.field_70161_v);
+/* 59 */     setPosition(e.posX, e.posY, e.posZ);
 /*    */   }
 /*    */   
-/*    */   public void func_73660_a() {}
+/*    */   public void update() {}
 /*    */ }
 
 

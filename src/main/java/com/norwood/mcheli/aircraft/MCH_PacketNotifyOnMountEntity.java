@@ -18,7 +18,7 @@
 /*    */   public static void send(MCH_EntityAircraft ac, Entity rider, int seatId) {
 /* 19 */     if (ac != null && rider != null) {
 /* 20 */       Entity pilot = ac.getRiddenByEntity();
-/* 21 */       if (pilot instanceof EntityPlayer && !pilot.field_70128_L) {
+/* 21 */       if (pilot instanceof EntityPlayer && !pilot.isDead) {
 /* 22 */         MCH_PacketNotifyOnMountEntity s = new MCH_PacketNotifyOnMountEntity();
 /* 23 */         s.entityID_Ac = W_Entity.getEntityId((Entity)ac);
 /* 24 */         s.entityID_rider = W_Entity.getEntityId(rider);

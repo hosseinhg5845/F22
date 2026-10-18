@@ -34,11 +34,11 @@
 /*     */   public MCH_EntityVehicle(World world) {
 /*  35 */     super(world);
 /*  36 */     this.currentSpeed = 0.07D;
-/*  37 */     this.field_70156_m = true;
-/*  38 */     func_70105_a(2.0F, 0.7F);
-/*  39 */     this.field_70159_w = 0.0D;
-/*  40 */     this.field_70181_x = 0.0D;
-/*  41 */     this.field_70179_y = 0.0D;
+/*  37 */     this.preventEntitySpawning = true;
+/*  38 */     setSize(2.0F, 0.7F);
+/*  39 */     this.motionX = 0.0D;
+/*  40 */     this.motionY = 0.0D;
+/*  41 */     this.motionZ = 0.0D;
 /*  42 */     this.isUsedPlayer = false;
 /*  43 */     this.lastRiderYaw = 0.0F;
 /*  44 */     this.lastRiderPitch = 0.0F;
@@ -62,19 +62,19 @@
 /*     */ 
 /*     */   
 /*     */   public void changeType(String type) {
-/*  65 */     MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityVehicle.changeType " + type + " : " + this, new Object[0]);
+/*  65 */     MCH_Lib.DbgLog(this.world, "MCH_EntityVehicle.changeType " + type + " : " + this, new Object[0]);
 /*  66 */     if (!type.isEmpty()) {
 /*  67 */       this.vehicleInfo = MCH_VehicleInfoManager.get(type);
 /*     */     }
 /*     */     
 /*  70 */     if (this.vehicleInfo == null) {
 /*  71 */       MCH_Lib.Log((Entity)this, "##### MCH_EntityVehicle changeVehicleType() Vehicle info null %d, %s, %s", new Object[] { Integer.valueOf(W_Entity.getEntityId((Entity)this)), type, getEntityName() });
-/*  72 */       func_70106_y();
+/*  72 */       setDead();
 /*     */     } else {
 /*  74 */       setAcInfo(this.vehicleInfo);
 /*  75 */       newSeats(getAcInfo().getNumSeatAndRack());
 /*  76 */       this.weapons = createWeapon(1 + getSeatNum());
-/*  77 */       initPartRotation(this.field_70177_z, this.field_70125_A);
+/*  77 */       initPartRotation(this.rotationYaw, this.rotationPitch);
 /*     */     } 
 /*     */   }
 /*     */ 
@@ -84,23 +84,23 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   protected void func_70088_a() {
-/*  88 */     super.func_70088_a();
+/*     */   protected void entityInit() {
+/*  88 */     super.entityInit();
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   protected void func_70014_b(NBTTagCompound par1NBTTagCompound) {
-/*  93 */     super.func_70014_b(par1NBTTagCompound);
+/*     */   protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
+/*  93 */     super.writeEntityToNBT(par1NBTTagCompound);
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   protected void func_70037_a(NBTTagCompound par1NBTTagCompound) {
-/*  98 */     super.func_70037_a(par1NBTTagCompound);
+/*     */   protected void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
+/*  98 */     super.readEntityFromNBT(par1NBTTagCompound);
 /*  99 */     if (this.vehicleInfo == null) {
 /* 100 */       this.vehicleInfo = MCH_VehicleInfoManager.get(getTypeName());
 /* 101 */       if (this.vehicleInfo == null) {
 /* 102 */         MCH_Lib.Log((Entity)this, "##### MCH_EntityVehicle readEntityFromNBT() Vehicle info null %d, %s", new Object[] { Integer.valueOf(W_Entity.getEntityId((Entity)this)), getEntityName() });
-/* 103 */         func_70106_y();
+/* 103 */         setDead();
 /*     */       } else {
 /* 105 */         setAcInfo(this.vehicleInfo);
 /*     */       } 
@@ -113,8 +113,8 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_70106_y() {
-/* 117 */     super.func_70106_y();
+/*     */   public void setDead() {
+/* 117 */     super.setDead();
 /*     */   }
 /*     */ 
 /*     */   
@@ -174,13 +174,13 @@
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 177 */     float breforeUseWeaponPitch = this.field_70125_A;
-/* 178 */     float breforeUseWeaponYaw = this.field_70177_z;
-/* 179 */     this.field_70125_A = prm.user.field_70125_A;
-/* 180 */     this.field_70177_z = prm.user.field_70177_z;
+/* 177 */     float breforeUseWeaponPitch = this.rotationPitch;
+/* 178 */     float breforeUseWeaponYaw = this.rotationYaw;
+/* 179 */     this.rotationPitch = prm.user.rotationPitch;
+/* 180 */     this.rotationYaw = prm.user.rotationYaw;
 /* 181 */     boolean result = super.useCurrentWeapon(prm);
-/* 182 */     this.field_70125_A = breforeUseWeaponPitch;
-/* 183 */     this.field_70177_z = breforeUseWeaponYaw;
+/* 182 */     this.rotationPitch = breforeUseWeaponPitch;
+/* 183 */     this.rotationYaw = breforeUseWeaponYaw;
 /* 184 */     return result;
 /*     */   }
 /*     */ 
@@ -195,50 +195,50 @@
 /*     */   public void onUpdateAircraft() {
 /* 196 */     if (this.vehicleInfo == null) {
 /* 197 */       changeType(getTypeName());
-/* 198 */       this.field_70169_q = this.field_70165_t;
-/* 199 */       this.field_70167_r = this.field_70163_u;
-/* 200 */       this.field_70166_s = this.field_70161_v;
+/* 198 */       this.prevPosX = this.posX;
+/* 199 */       this.prevPosY = this.posY;
+/* 200 */       this.prevPosZ = this.posZ;
 /*     */     } else {
-/* 202 */       if (this.field_70173_aa >= 200 && MCH_Config.FixVehicleAtPlacedPoint.prmBool) {
-/* 203 */         func_184210_p();
-/* 204 */         this.field_70159_w = 0.0D;
-/* 205 */         this.field_70181_x = 0.0D;
-/* 206 */         this.field_70179_y = 0.0D;
-/* 207 */         if (this.field_70170_p.field_72995_K && this.field_70173_aa % 4 == 0) {
-/* 208 */           this.fixPosY = this.field_70163_u;
+/* 202 */       if (this.ticksExisted >= 200 && MCH_Config.FixVehicleAtPlacedPoint.prmBool) {
+/* 203 */         dismountRidingEntity();
+/* 204 */         this.motionX = 0.0D;
+/* 205 */         this.motionY = 0.0D;
+/* 206 */         this.motionZ = 0.0D;
+/* 207 */         if (this.world.isRemote && this.ticksExisted % 4 == 0) {
+/* 208 */           this.fixPosY = this.posY;
 /*     */         }
 /*     */         
-/* 211 */         func_70107_b((this.field_70165_t + this.fixPosX) / 2.0D, (this.field_70163_u + this.fixPosY) / 2.0D, (this.field_70161_v + this.fixPosZ) / 2.0D);
+/* 211 */         setPosition((this.posX + this.fixPosX) / 2.0D, (this.posY + this.fixPosY) / 2.0D, (this.posZ + this.fixPosZ) / 2.0D);
 /*     */       } else {
-/* 213 */         this.fixPosX = this.field_70165_t;
-/* 214 */         this.fixPosY = this.field_70163_u;
-/* 215 */         this.fixPosZ = this.field_70161_v;
+/* 213 */         this.fixPosX = this.posX;
+/* 214 */         this.fixPosY = this.posY;
+/* 215 */         this.fixPosZ = this.posZ;
 /*     */       } 
 /*     */       
 /* 218 */       if (!this.isRequestedSyncStatus) {
 /* 219 */         this.isRequestedSyncStatus = true;
-/* 220 */         if (this.field_70170_p.field_72995_K) {
+/* 220 */         if (this.world.isRemote) {
 /* 221 */           MCH_PacketStatusRequest.requestStatus(this);
 /*     */         }
 /*     */       } 
 /*     */       
 /* 225 */       if (this.lastRiddenByEntity == null && getRiddenByEntity() != null) {
-/* 226 */         (getRiddenByEntity()).field_70125_A = 0.0F;
-/* 227 */         (getRiddenByEntity()).field_70127_C = 0.0F;
+/* 226 */         (getRiddenByEntity()).rotationPitch = 0.0F;
+/* 227 */         (getRiddenByEntity()).prevRotationPitch = 0.0F;
 /* 228 */         initCurrentWeapon(getRiddenByEntity());
 /*     */       } 
 /*     */       
 /* 231 */       updateWeapons();
 /* 232 */       onUpdate_Seats();
 /* 233 */       onUpdate_Control();
-/* 234 */       this.field_70169_q = this.field_70165_t;
-/* 235 */       this.field_70167_r = this.field_70163_u;
-/* 236 */       this.field_70166_s = this.field_70161_v;
-/* 237 */       if (func_70090_H()) {
-/* 238 */         this.field_70125_A *= 0.9F;
+/* 234 */       this.prevPosX = this.posX;
+/* 235 */       this.prevPosY = this.posY;
+/* 236 */       this.prevPosZ = this.posZ;
+/* 237 */       if (isInWater()) {
+/* 238 */         this.rotationPitch *= 0.9F;
 /*     */       }
 /*     */       
-/* 241 */       if (this.field_70170_p.field_72995_K) {
+/* 241 */       if (this.world.isRemote) {
 /* 242 */         onUpdate_Client();
 /*     */       } else {
 /* 244 */         onUpdate_Server();
@@ -247,7 +247,7 @@
 /*     */   }
 /*     */   
 /*     */   protected void onUpdate_Control() {
-/* 250 */     if (getRiddenByEntity() == null || (getRiddenByEntity()).field_70128_L) {
+/* 250 */     if (getRiddenByEntity() == null || (getRiddenByEntity()).isDead) {
 /* 251 */       if (getCurrentThrottle() > 0.0D) {
 /* 252 */         addCurrentThrottle(-0.00125D);
 /*     */       } else {
@@ -261,7 +261,7 @@
 /* 261 */       setCurrentThrottle(0.0D);
 /*     */     }
 /*     */     
-/* 264 */     if (this.field_70170_p.field_72995_K) {
+/* 264 */     if (this.world.isRemote) {
 /* 265 */       if (!W_Lib.isClientPlayer(getRiddenByEntity())) {
 /* 266 */         double ct = getThrottle();
 /* 267 */         if (getCurrentThrottle() > ct) {
@@ -278,21 +278,21 @@
 /*     */   }
 /*     */   
 /*     */   protected void onUpdate_ControlOnGround() {
-/* 281 */     if (!this.field_70170_p.field_72995_K) {
+/* 281 */     if (!this.world.isRemote) {
 /* 282 */       boolean move = false;
 /*     */       
 /* 284 */       double x = 0.0D;
 /* 285 */       double z = 0.0D;
 /* 286 */       if ((getVehicleInfo()).isEnableMove) {
 /* 287 */         if (this.throttleUp) {
-/* 288 */           float yaw = this.field_70177_z;
+/* 288 */           float yaw = this.rotationYaw;
 /* 289 */           x += Math.sin(yaw * Math.PI / 180.0D);
 /* 290 */           z += Math.cos(yaw * Math.PI / 180.0D);
 /* 291 */           move = true;
 /*     */         } 
 /*     */         
 /* 294 */         if (this.throttleDown) {
-/* 295 */           float yaw = this.field_70177_z - 180.0F;
+/* 295 */           float yaw = this.rotationYaw - 180.0F;
 /* 296 */           x += Math.sin(yaw * Math.PI / 180.0D);
 /* 297 */           z += Math.cos(yaw * Math.PI / 180.0D);
 /* 298 */           move = true;
@@ -301,33 +301,33 @@
 /*     */       
 /* 302 */       if ((getVehicleInfo()).isEnableMove) {
 /* 303 */         if (this.moveLeft && !this.moveRight) {
-/* 304 */           this.field_70177_z = (float)(this.field_70177_z - 0.5D);
+/* 304 */           this.rotationYaw = (float)(this.rotationYaw - 0.5D);
 /*     */         }
 /*     */         
 /* 307 */         if (this.moveRight && !this.moveLeft) {
-/* 308 */           this.field_70177_z = (float)(this.field_70177_z + 0.5D);
+/* 308 */           this.rotationYaw = (float)(this.rotationYaw + 0.5D);
 /*     */         }
 /*     */       } 
 /*     */       
 /* 312 */       if (move) {
 /* 313 */         double d = Math.sqrt(x * x + z * z);
-/* 314 */         this.field_70159_w -= x / d * 0.029999999329447746D;
-/* 315 */         this.field_70179_y += z / d * 0.029999999329447746D;
+/* 314 */         this.motionX -= x / d * 0.029999999329447746D;
+/* 315 */         this.motionZ += z / d * 0.029999999329447746D;
 /*     */       } 
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   protected void onUpdate_Particle() {
-/* 321 */     double particlePosY = this.field_70163_u;
+/* 321 */     double particlePosY = this.posY;
 /* 322 */     boolean b = false;
 /*     */     
 /*     */     int y;
 /* 325 */     for (y = 0; y < 5 && !b; y++) {
 /* 326 */       int x; for (x = -1; x <= 1; x++) {
 /* 327 */         for (int z = -1; z <= 1; z++) {
-/* 328 */           int block = W_WorldFunc.getBlockId(this.field_70170_p, (int)(this.field_70165_t + 0.5D) + x, (int)(this.field_70163_u + 0.5D) - y, (int)(this.field_70161_v + 0.5D) + z);
+/* 328 */           int block = W_WorldFunc.getBlockId(this.world, (int)(this.posX + 0.5D) + x, (int)(this.posY + 0.5D) - y, (int)(this.posZ + 0.5D) + z);
 /* 329 */           if (block != 0 && !b) {
-/* 330 */             particlePosY = ((int)(this.field_70163_u + 1.0D) - y);
+/* 330 */             particlePosY = ((int)(this.posY + 1.0D) - y);
 /* 331 */             b = true;
 /*     */           } 
 /*     */         } 
@@ -335,15 +335,15 @@
 /*     */       
 /* 336 */       for (x = -3; b && x <= 3; x++) {
 /* 337 */         for (int zx = -3; zx <= 3; zx++) {
-/* 338 */           if (W_WorldFunc.isBlockWater(this.field_70170_p, (int)(this.field_70165_t + 0.5D) + x, (int)(this.field_70163_u + 0.5D) - y, (int)(this.field_70161_v + 0.5D) + zx)) {
+/* 338 */           if (W_WorldFunc.isBlockWater(this.world, (int)(this.posX + 0.5D) + x, (int)(this.posY + 0.5D) - y, (int)(this.posZ + 0.5D) + zx)) {
 /* 339 */             for (int i = 0; i < 7.0D * getCurrentThrottle(); i++) {
-/* 340 */               this.field_70170_p
-/* 341 */                 .func_175688_a(EnumParticleTypes.WATER_SPLASH, this.field_70165_t + 0.5D + x + (this.field_70146_Z
+/* 340 */               this.world
+/* 341 */                 .spawnParticle(EnumParticleTypes.WATER_SPLASH, this.posX + 0.5D + x + (this.rand
 /*     */                   
-/* 343 */                   .nextDouble() - 0.5D) * 2.0D, particlePosY + this.field_70146_Z
-/* 344 */                   .nextDouble(), this.field_70161_v + 0.5D + zx + (this.field_70146_Z
-/* 345 */                   .nextDouble() - 0.5D) * 2.0D, x + (this.field_70146_Z
-/* 346 */                   .nextDouble() - 0.5D) * 2.0D, -0.3D, zx + (this.field_70146_Z
+/* 343 */                   .nextDouble() - 0.5D) * 2.0D, particlePosY + this.rand
+/* 344 */                   .nextDouble(), this.posZ + 0.5D + zx + (this.rand
+/* 345 */                   .nextDouble() - 0.5D) * 2.0D, x + (this.rand
+/* 346 */                   .nextDouble() - 0.5D) * 2.0D, -0.3D, zx + (this.rand
 /*     */                   
 /* 348 */                   .nextDouble() - 0.5D) * 2.0D, new int[0]);
 /*     */             }
@@ -356,13 +356,13 @@
 /* 356 */     double pn = (5 - y + 1) / 5.0D;
 /* 357 */     if (b) {
 /* 358 */       for (int k = 0; k < (int)(getCurrentThrottle() * 6.0D * pn); k++) {
-/* 359 */         this.field_70170_p
-/* 360 */           .func_175688_a(EnumParticleTypes.EXPLOSION_NORMAL, this.field_70165_t + this.field_70146_Z
+/* 359 */         this.world
+/* 360 */           .spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, this.posX + this.rand
 /*     */             
-/* 362 */             .nextDouble() - 0.5D, particlePosY + this.field_70146_Z
-/* 363 */             .nextDouble() - 0.5D, this.field_70161_v + this.field_70146_Z
-/* 364 */             .nextDouble() - 0.5D, (this.field_70146_Z
-/* 365 */             .nextDouble() - 0.5D) * 2.0D, -0.4D, (this.field_70146_Z
+/* 362 */             .nextDouble() - 0.5D, particlePosY + this.rand
+/* 363 */             .nextDouble() - 0.5D, this.posZ + this.rand
+/* 364 */             .nextDouble() - 0.5D, (this.rand
+/* 365 */             .nextDouble() - 0.5D) * 2.0D, -0.4D, (this.rand
 /*     */             
 /* 367 */             .nextDouble() - 0.5D) * 2.0D, new int[0]);
 /*     */       }
@@ -373,42 +373,42 @@
 /*     */   protected void onUpdate_Client() {
 /* 374 */     updateCameraViewers();
 /* 375 */     if (getRiddenByEntity() != null && W_Lib.isClientPlayer(getRiddenByEntity())) {
-/* 376 */       (getRiddenByEntity()).field_70125_A = (getRiddenByEntity()).field_70127_C;
+/* 376 */       (getRiddenByEntity()).rotationPitch = (getRiddenByEntity()).prevRotationPitch;
 /*     */     }
 /*     */     
 /* 379 */     if (this.aircraftPosRotInc > 0) {
 /* 380 */       double rpinc = this.aircraftPosRotInc;
-/* 381 */       double yaw = MathHelper.func_76138_g(this.aircraftYaw - this.field_70177_z);
-/* 382 */       this.field_70177_z = (float)(this.field_70177_z + yaw / rpinc);
-/* 383 */       this.field_70125_A = (float)(this.field_70125_A + (this.aircraftPitch - this.field_70125_A) / rpinc);
-/* 384 */       func_70107_b(this.field_70165_t + (this.aircraftX - this.field_70165_t) / rpinc, this.field_70163_u + (this.aircraftY - this.field_70163_u) / rpinc, this.field_70161_v + (this.aircraftZ - this.field_70161_v) / rpinc);
+/* 381 */       double yaw = MathHelper.wrapDegrees(this.aircraftYaw - this.rotationYaw);
+/* 382 */       this.rotationYaw = (float)(this.rotationYaw + yaw / rpinc);
+/* 383 */       this.rotationPitch = (float)(this.rotationPitch + (this.aircraftPitch - this.rotationPitch) / rpinc);
+/* 384 */       setPosition(this.posX + (this.aircraftX - this.posX) / rpinc, this.posY + (this.aircraftY - this.posY) / rpinc, this.posZ + (this.aircraftZ - this.posZ) / rpinc);
 /*     */ 
 /*     */ 
 /*     */ 
 /*     */       
-/* 389 */       func_70101_b(this.field_70177_z, this.field_70125_A);
+/* 389 */       setRotation(this.rotationYaw, this.rotationPitch);
 /* 390 */       this.aircraftPosRotInc--;
 /*     */     } else {
-/* 392 */       func_70107_b(this.field_70165_t + this.field_70159_w, this.field_70163_u + this.field_70181_x, this.field_70161_v + this.field_70179_y);
-/* 393 */       if (this.field_70122_E) {
-/* 394 */         this.field_70159_w *= 0.95D;
-/* 395 */         this.field_70179_y *= 0.95D;
+/* 392 */       setPosition(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+/* 393 */       if (this.onGround) {
+/* 394 */         this.motionX *= 0.95D;
+/* 395 */         this.motionZ *= 0.95D;
 /*     */       } 
 /*     */       
-/* 398 */       if (func_70090_H()) {
-/* 399 */         this.field_70159_w *= 0.99D;
-/* 400 */         this.field_70179_y *= 0.99D;
+/* 398 */       if (isInWater()) {
+/* 399 */         this.motionX *= 0.99D;
+/* 400 */         this.motionZ *= 0.99D;
 /*     */       } 
 /*     */     } 
 /*     */     
 /* 404 */     if (getRiddenByEntity() != null);
 /*     */ 
 /*     */     
-/* 407 */     updateCamera(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/* 407 */     updateCamera(this.posX, this.posY, this.posZ);
 /*     */   }
 /*     */   
 /*     */   private void onUpdate_Server() {
-/* 411 */     double prevMotion = Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70179_y * this.field_70179_y);
+/* 411 */     double prevMotion = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 /* 412 */     updateCameraViewers();
 /* 413 */     double dp = 0.0D;
 /* 414 */     if (canFloatWater()) {
@@ -416,23 +416,23 @@
 /*     */     }
 /*     */     
 /* 418 */     if (dp == 0.0D) {
-/* 419 */       this.field_70181_x += (!func_70090_H() ? (getAcInfo()).gravity : (getAcInfo()).gravityInWater);
+/* 419 */       this.motionY += (!isInWater() ? (getAcInfo()).gravity : (getAcInfo()).gravityInWater);
 /* 420 */     } else if (dp < 1.0D) {
-/* 421 */       this.field_70181_x -= 1.0E-4D;
-/* 422 */       this.field_70181_x += 0.007D * getCurrentThrottle();
+/* 421 */       this.motionY -= 1.0E-4D;
+/* 422 */       this.motionY += 0.007D * getCurrentThrottle();
 /*     */     } else {
-/* 424 */       if (this.field_70181_x < 0.0D) {
-/* 425 */         this.field_70181_x /= 2.0D;
+/* 424 */       if (this.motionY < 0.0D) {
+/* 425 */         this.motionY /= 2.0D;
 /*     */       }
 /*     */       
-/* 428 */       this.field_70181_x += 0.007D;
+/* 428 */       this.motionY += 0.007D;
 /*     */     } 
 /*     */     
-/* 431 */     double motion = Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70179_y * this.field_70179_y);
+/* 431 */     double motion = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 /* 432 */     float speedLimit = (getAcInfo()).speed;
 /* 433 */     if (motion > speedLimit) {
-/* 434 */       this.field_70159_w *= speedLimit / motion;
-/* 435 */       this.field_70179_y *= speedLimit / motion;
+/* 434 */       this.motionX *= speedLimit / motion;
+/* 435 */       this.motionZ *= speedLimit / motion;
 /* 436 */       motion = speedLimit;
 /*     */     } 
 /*     */     
@@ -448,17 +448,17 @@
 /*     */       }
 /*     */     } 
 /*     */     
-/* 451 */     if (this.field_70122_E) {
-/* 452 */       this.field_70159_w *= 0.5D;
-/* 453 */       this.field_70179_y *= 0.5D;
+/* 451 */     if (this.onGround) {
+/* 452 */       this.motionX *= 0.5D;
+/* 453 */       this.motionZ *= 0.5D;
 /*     */     } 
 /*     */     
-/* 456 */     func_70091_d(MoverType.SELF, this.field_70159_w, this.field_70181_x, this.field_70179_y);
-/* 457 */     this.field_70181_x *= 0.95D;
-/* 458 */     this.field_70159_w *= 0.99D;
-/* 459 */     this.field_70179_y *= 0.99D;
+/* 456 */     move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+/* 457 */     this.motionY *= 0.95D;
+/* 458 */     this.motionX *= 0.99D;
+/* 459 */     this.motionZ *= 0.99D;
 /* 460 */     onUpdate_updateBlock();
-/* 461 */     if (getRiddenByEntity() != null && (getRiddenByEntity()).field_70128_L) {
+/* 461 */     if (getRiddenByEntity() != null && (getRiddenByEntity()).isDead) {
 /* 462 */       unmountEntity();
 /*     */     }
 /*     */   }

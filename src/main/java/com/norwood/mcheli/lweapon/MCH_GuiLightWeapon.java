@@ -26,14 +26,14 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_73866_w_() {
-/*  30 */     super.func_73866_w_();
+/*     */   public void initGui() {
+/*  30 */     super.initGui();
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public boolean isDrawGui(EntityPlayer player) {
 /*  35 */     if (MCH_ItemLightWeaponBase.isHeld(player)) {
-/*  36 */       Entity re = player.func_184187_bx();
+/*  36 */       Entity re = player.getRidingEntity();
 /*  37 */       return (!(re instanceof com.norwood.mcheli.aircraft.MCH_EntityAircraft) && !(re instanceof com.norwood.mcheli.gltd.MCH_EntityGLTD));
 /*     */     } 
 /*     */     
@@ -47,7 +47,7 @@
 /*  47 */       if (isDrawGui(player)) {
 /*  48 */         MCH_WeaponGuidanceSystem gs = MCH_ClientLightWeaponTickHandler.gs;
 /*  49 */         if (gs != null && MCH_ClientLightWeaponTickHandler.weapon != null && MCH_ClientLightWeaponTickHandler.weapon.getInfo() != null) {
-/*  50 */           PotionEffect pe = player.func_70660_b(MobEffects.field_76439_r);
+/*  50 */           PotionEffect pe = player.getActivePotionEffect(MobEffects.NIGHT_VISION);
 /*  51 */           if (pe != null) {
 /*  52 */             drawNightVisionNoise();
 /*     */           }
@@ -59,25 +59,25 @@
 /*  59 */           GL11.glBlendFunc(770, 771);
 /*  60 */           double dist = 0.0D;
 /*  61 */           if (gs.getTargetEntity() != null) {
-/*  62 */             double dx = (gs.getTargetEntity()).field_70165_t - player.field_70165_t;
-/*  63 */             double dz = (gs.getTargetEntity()).field_70161_v - player.field_70161_v;
+/*  62 */             double dx = (gs.getTargetEntity()).posX - player.posX;
+/*  63 */             double dz = (gs.getTargetEntity()).posZ - player.posZ;
 /*  64 */             dist = Math.sqrt(dx * dx + dz * dz);
 /*     */           } 
 /*     */           
 /*  67 */           boolean canFire = (MCH_ClientLightWeaponTickHandler.weaponMode == 0 || dist >= 40.0D || gs.getLockCount() <= 0);
-/*  68 */           if ("fgm148".equalsIgnoreCase(MCH_ItemLightWeaponBase.getName(player.func_184614_ca()))) {
-/*  69 */             drawGuiFGM148(player, gs, canFire, player.func_184614_ca());
+/*  68 */           if ("fgm148".equalsIgnoreCase(MCH_ItemLightWeaponBase.getName(player.getHeldItemMainhand()))) {
+/*  69 */             drawGuiFGM148(player, gs, canFire, player.getHeldItemMainhand());
 /*  70 */             drawKeyBind(-805306369, true);
 /*     */           } else {
 /*  72 */             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 /*  73 */             W_McClient.MOD_bindTexture("textures/gui/stinger.png");
 /*  74 */             double size = 512.0D;
 /*     */             
-/*  76 */             while (size < this.field_146294_l || size < this.field_146295_m) {
+/*  76 */             while (size < this.width || size < this.height) {
 /*  77 */               size *= 2.0D;
 /*     */             }
 /*     */             
-/*  80 */             drawTexturedModalRectRotate(-(size - this.field_146294_l) / 2.0D, -(size - this.field_146295_m) / 2.0D - 20.0D, size, size, 0.0D, 0.0D, 256.0D, 256.0D, 0.0F);
+/*  80 */             drawTexturedModalRectRotate(-(size - this.width) / 2.0D, -(size - this.height) / 2.0D - 20.0D, size, size, 0.0D, 0.0D, 256.0D, 256.0D, 0.0F);
 /*  81 */             drawKeyBind(-805306369, false);
 /*     */           } 
 /*     */           
@@ -97,7 +97,7 @@
 /*  97 */     int dstBlend = GL11.glGetInteger(3040);
 /*  98 */     GL11.glBlendFunc(1, 1);
 /*  99 */     W_McClient.MOD_bindTexture("textures/gui/alpha.png");
-/* 100 */     drawTexturedModalRectRotate(0.0D, 0.0D, this.field_146294_l, this.field_146295_m, this.rand.nextInt(256), this.rand.nextInt(256), 256.0D, 256.0D, 0.0F);
+/* 100 */     drawTexturedModalRectRotate(0.0D, 0.0D, this.width, this.height, this.rand.nextInt(256), this.rand.nextInt(256), 256.0D, 256.0D, 0.0F);
 /* 101 */     GL11.glBlendFunc(srcBlend, dstBlend);
 /* 102 */     GL11.glDisable(3042);
 /*     */   }
@@ -105,9 +105,9 @@
 /*     */   void drawLock(int color, int colorLock, int cntLock, int cntMax) {
 /* 106 */     int posX = this.centerX;
 /* 107 */     int posY = this.centerY + 20;
-/* 108 */     func_73734_a(posX - 20, posY + 20 + 1, posX - 20 + 40, posY + 20 + 1 + 1 + 3 + 1, color);
+/* 108 */     drawRect(posX - 20, posY + 20 + 1, posX - 20 + 40, posY + 20 + 1 + 1 + 3 + 1, color);
 /* 109 */     float lock = cntLock / cntMax;
-/* 110 */     func_73734_a(posX - 20 + 1, posY + 20 + 1 + 1, posX - 20 + 1 + (int)(38.0D * lock), posY + 20 + 1 + 1 + 3, -2161656);
+/* 110 */     drawRect(posX - 20 + 1, posY + 20 + 1 + 1, posX - 20 + 1 + (int)(38.0D * lock), posY + 20 + 1 + 1 + 3, -2161656);
 /*     */   }
 /*     */   
 /*     */   void drawRange(EntityPlayer player, MCH_WeaponGuidanceSystem gs, boolean canFire, int color1, int color2) {
@@ -116,8 +116,8 @@
 /* 116 */     if (gs.getLockCount() > 0) {
 /* 117 */       Entity target = gs.getLockingEntity();
 /* 118 */       if (target != null) {
-/* 119 */         double dx = target.field_70165_t - player.field_70165_t;
-/* 120 */         double dz = target.field_70161_v - player.field_70161_v;
+/* 119 */         double dx = target.posX - player.posX;
+/* 120 */         double dz = target.posZ - player.posZ;
 /* 121 */         msgLockDist = String.format("[%.2f]", new Object[] { Double.valueOf(Math.sqrt(dx * dx + dz * dz)) });
 /* 122 */         color = canFire ? color1 : color2;
 /* 123 */         if (!MCH_Config.HideKeybind.prmBool && gs.isLockComplete()) {
@@ -132,39 +132,39 @@
 /*     */   void drawGuiFGM148(EntityPlayer player, MCH_WeaponGuidanceSystem gs, boolean canFire, ItemStack itemStack) {
 /*     */     double y, h;
 /* 134 */     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-/* 135 */     double fac = Math.min(this.field_146294_l / 800.0D, this.field_146295_m / 700.0D);
+/* 135 */     double fac = Math.min(this.width / 800.0D, this.height / 700.0D);
 /* 136 */     int size = (int)(1024.0D * fac);
 /* 137 */     size = size / 64 * 64;
 /* 138 */     fac = size / 1024.0D;
-/* 139 */     double left = -(size - this.field_146294_l) / 2.0D;
-/* 140 */     double top = -(size - this.field_146295_m) / 2.0D - 20.0D;
+/* 139 */     double left = -(size - this.width) / 2.0D;
+/* 140 */     double top = -(size - this.height) / 2.0D - 20.0D;
 /* 141 */     double right = left + size;
 /* 142 */     double bottom = top + size;
 /* 143 */     Vec3d pos = MCH_ClientLightWeaponTickHandler.getMartEntityPos();
 /* 144 */     if (gs.getLockCount() > 0) {
 /* 145 */       int scale = (scaleFactor > 0) ? scaleFactor : 2;
 /* 146 */       if (pos == null) {
-/* 147 */         pos = new Vec3d(this.field_146294_l / 2.0D * scale, this.field_146295_m / 2.0D * scale, 0.0D);
+/* 147 */         pos = new Vec3d(this.width / 2.0D * scale, this.height / 2.0D * scale, 0.0D);
 /*     */       }
 /*     */       
 /* 150 */       double IX = 280.0D * fac;
 /* 151 */       double IY = 370.0D * fac;
-/* 152 */       double cx = pos.field_72450_a / scale;
-/* 153 */       double cy = this.field_146295_m - pos.field_72448_b / scale;
+/* 152 */       double cx = pos.x / scale;
+/* 153 */       double cy = this.height - pos.y / scale;
 /* 154 */       double sx = MCH_Lib.RNG(cx, left + IX, right - IX);
 /* 155 */       double sy = MCH_Lib.RNG(cy, top + IY, bottom - IY);
 /* 156 */       if (gs.getLockCount() >= gs.getLockCountMax() / 2) {
-/* 157 */         drawLine(new double[] { -1.0D, sy, (this.field_146294_l + 1), sy, sx, -1.0D, sx, (this.field_146295_m + 1) }, -1593835521);
+/* 157 */         drawLine(new double[] { -1.0D, sy, (this.width + 1), sy, sx, -1.0D, sx, (this.height + 1) }, -1593835521);
 /*     */       }
 /*     */       
-/* 160 */       if (player.field_70173_aa % 6 >= 3) {
+/* 160 */       if (player.ticksExisted % 6 >= 3) {
 /* 161 */         pos = MCH_ClientLightWeaponTickHandler.getMartEntityBBPos();
 /* 162 */         if (pos == null) {
-/* 163 */           pos = new Vec3d((this.field_146294_l / 2.0D - 65.0D) * scale, (this.field_146295_m / 2.0D + 50.0D) * scale, 0.0D);
+/* 163 */           pos = new Vec3d((this.width / 2.0D - 65.0D) * scale, (this.height / 2.0D + 50.0D) * scale, 0.0D);
 /*     */         }
 /*     */         
-/* 166 */         double bx = pos.field_72450_a / scale;
-/* 167 */         double by = this.field_146295_m - pos.field_72448_b / scale;
+/* 166 */         double bx = pos.x / scale;
+/* 167 */         double by = this.height - pos.y / scale;
 /* 168 */         double dx = Math.abs(cx - bx);
 /* 169 */         double dy = Math.abs(cy - by);
 /* 170 */         double p = 1.0D - gs.getLockCount() / gs.getLockCountMax();
@@ -182,16 +182,16 @@
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 185 */     func_73734_a(-1, -1, (int)left + 1, this.field_146295_m + 1, -16777216);
-/* 186 */     func_73734_a((int)right - 1, -1, this.field_146294_l + 1, this.field_146295_m + 1, -16777216);
-/* 187 */     func_73734_a(-1, -1, this.field_146294_l + 1, (int)top + 1, -16777216);
-/* 188 */     func_73734_a(-1, (int)bottom - 1, this.field_146294_l + 1, this.field_146295_m + 1, -16777216);
+/* 185 */     drawRect(-1, -1, (int)left + 1, this.height + 1, -16777216);
+/* 186 */     drawRect((int)right - 1, -1, this.width + 1, this.height + 1, -16777216);
+/* 187 */     drawRect(-1, -1, this.width + 1, (int)top + 1, -16777216);
+/* 188 */     drawRect(-1, (int)bottom - 1, this.width + 1, this.height + 1, -16777216);
 /* 189 */     GL11.glEnable(3042);
 /* 190 */     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 /* 191 */     W_McClient.MOD_bindTexture("textures/gui/javelin.png");
 /* 192 */     drawTexturedModalRectRotate(left, top, size, size, 0.0D, 0.0D, 256.0D, 256.0D, 0.0F);
 /* 193 */     W_McClient.MOD_bindTexture("textures/gui/javelin2.png");
-/* 194 */     PotionEffect pe = player.func_70660_b(MobEffects.field_76439_r);
+/* 194 */     PotionEffect pe = player.getActivePotionEffect(MobEffects.NIGHT_VISION);
 /* 195 */     if (pe == null) {
 /* 196 */       double d1 = 247.0D;
 /* 197 */       y = 211.0D;
@@ -200,7 +200,7 @@
 /* 200 */       drawTexturedRect(left + d1 * fac, top + y * fac, (d2 - d1) * fac, (h - y) * fac, d1, y, d2 - d1, h - y, 1024.0D, 1024.0D);
 /*     */     } 
 /*     */     
-/* 203 */     if (player.func_184612_cw() <= 60) {
+/* 203 */     if (player.getItemInUseMaxCount() <= 60) {
 /* 204 */       double d1 = 130.0D;
 /* 205 */       y = 334.0D;
 /* 206 */       double d2 = 257.0D;
@@ -255,7 +255,7 @@
 /*     */ 
 /*     */ 
 /*     */     
-/* 258 */     if (itemStack.func_77960_j() >= itemStack.func_77958_k()) {
+/* 258 */     if (itemStack.getMetadata() >= itemStack.getMaxDamage()) {
 /* 259 */       double var54 = 512.0D;
 /* 260 */       double var65 = 670.0D;
 /* 261 */       double var76 = 645.0D;

@@ -22,11 +22,11 @@
 /*    */   
 /*    */   public static void enableDummyItemRenderer() {
 /* 24 */     if (instance == null) {
-/* 25 */       instance = new MCH_ItemRendererDummy(Minecraft.func_71410_x());
+/* 25 */       instance = new MCH_ItemRendererDummy(Minecraft.getMinecraft());
 /*    */     }
 /*    */     
-/* 28 */     if (!(mc.field_71460_t.field_78516_c instanceof MCH_ItemRendererDummy)) {
-/* 29 */       backupItemRenderer = mc.field_71460_t.field_78516_c;
+/* 28 */     if (!(mc.entityRenderer.itemRenderer instanceof MCH_ItemRendererDummy)) {
+/* 29 */       backupItemRenderer = mc.entityRenderer.itemRenderer;
 /*    */     }
 /*    */     
 /* 32 */     W_EntityRenderer.setItemRenderer(mc, instance);
@@ -38,13 +38,13 @@
 /*    */     }
 /*    */   }
 /*    */   
-/*    */   public void func_78440_a(float par1) {
-/* 42 */     if (mc.field_71439_g == null) {
-/* 43 */       super.func_78440_a(par1);
-/* 44 */     } else if (!(mc.field_71439_g.func_184187_bx() instanceof com.norwood.mcheli.aircraft.MCH_EntityAircraft) && 
-/* 45 */       !(mc.field_71439_g.func_184187_bx() instanceof com.norwood.mcheli.uav.MCH_EntityUavStation) && 
-/* 46 */       !(mc.field_71439_g.func_184187_bx() instanceof com.norwood.mcheli.gltd.MCH_EntityGLTD)) {
-/* 47 */       super.func_78440_a(par1);
+/*    */   public void renderItemInFirstPerson(float par1) {
+/* 42 */     if (mc.player == null) {
+/* 43 */       super.renderItemInFirstPerson(par1);
+/* 44 */     } else if (!(mc.player.getRidingEntity() instanceof com.norwood.mcheli.aircraft.MCH_EntityAircraft) && 
+/* 45 */       !(mc.player.getRidingEntity() instanceof com.norwood.mcheli.uav.MCH_EntityUavStation) && 
+/* 46 */       !(mc.player.getRidingEntity() instanceof com.norwood.mcheli.gltd.MCH_EntityGLTD)) {
+/* 47 */       super.renderItemInFirstPerson(par1);
 /*    */     } 
 /*    */   }
 /*    */ }

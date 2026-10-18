@@ -18,18 +18,18 @@
 /*     */ {
 /*     */   @HandleSide({Side.SERVER})
 /*     */   public static void onPacket_PlayerControl(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/*  21 */     if (!player.field_70170_p.field_72995_K) {
+/*  21 */     if (!player.world.isRemote) {
 /*  22 */       MCH_HeliPacketPlayerControl pc = new MCH_HeliPacketPlayerControl();
 /*  23 */       pc.readData(data);
-/*  24 */       scheduler.func_152344_a(() -> {
+/*  24 */       scheduler.addScheduledTask(() -> {
 /*     */             MCH_EntityHeli heli = null;
-/*     */             if (player.func_184187_bx() instanceof MCH_EntityHeli) {
-/*     */               heli = (MCH_EntityHeli)player.func_184187_bx();
-/*     */             } else if (player.func_184187_bx() instanceof MCH_EntitySeat) {
-/*     */               if (((MCH_EntitySeat)player.func_184187_bx()).getParent() instanceof MCH_EntityHeli)
-/*     */                 heli = (MCH_EntityHeli)((MCH_EntitySeat)player.func_184187_bx()).getParent(); 
+/*     */             if (player.getRidingEntity() instanceof MCH_EntityHeli) {
+/*     */               heli = (MCH_EntityHeli)player.getRidingEntity();
+/*     */             } else if (player.getRidingEntity() instanceof MCH_EntitySeat) {
+/*     */               if (((MCH_EntitySeat)player.getRidingEntity()).getParent() instanceof MCH_EntityHeli)
+/*     */                 heli = (MCH_EntityHeli)((MCH_EntitySeat)player.getRidingEntity()).getParent(); 
 /*     */             } else {
-/*     */               Entity patt1776$temp = player.func_184187_bx();
+/*     */               Entity patt1776$temp = player.getRidingEntity();
 /*     */               if (patt1776$temp instanceof MCH_EntityUavStation) {
 /*     */                 MCH_EntityUavStation uavStation = (MCH_EntityUavStation)patt1776$temp;
 /*     */                 if (uavStation.getControlAircract() instanceof MCH_EntityHeli)
@@ -78,11 +78,11 @@
 /*     */                 if (pc.useFlareType > 0)
 /*     */                   heli.useFlare(pc.useFlareType); 
 /*     */                 if (pc.unhitchChainId >= 0) {
-/*     */                   Entity e = player.field_70170_p.func_73045_a(pc.unhitchChainId);
+/*     */                   Entity e = player.world.getEntityByID(pc.unhitchChainId);
 /*     */                   if (e instanceof MCH_EntityChain) {
 /*     */                     if (((MCH_EntityChain)e).towedEntity instanceof com.norwood.mcheli.container.MCH_EntityContainer && MCH_Lib.getBlockIdY((Entity)heli, 3, -20) == 0 && player instanceof EntityPlayerMP)
 /*     */                       MCH_CriteriaTriggers.RELIEF_SUPPLIES.trigger((EntityPlayerMP)player); 
-/*     */                     e.func_70106_y();
+/*     */                     e.setDead();
 /*     */                   } 
 /*     */                 } 
 /*     */                 if (pc.openGui)

@@ -23,17 +23,17 @@
 /*    */   
 /*    */   @Nullable
 /*    */   @Deprecated
-/*    */   public ResourceLocation func_188021_a(@NotNull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
-/* 27 */     return this.bakedModel.func_188617_f().func_188021_a(stack, worldIn, entityIn);
+/*    */   public ResourceLocation applyOverride(@NotNull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
+/* 27 */     return this.bakedModel.getOverrides().applyOverride(stack, worldIn, entityIn);
 /*    */   }
 /*    */   @NotNull
 /*    */   public IBakedModel handleItemState(@NotNull IBakedModel originalModel, @NotNull ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity) {
 /* 31 */     PooledModelParameters.setItemAndUser(stack, entity);
-/* 32 */     return this.bakedModel.func_188617_f().handleItemState(originalModel, stack, world, entity);
+/* 32 */     return this.bakedModel.getOverrides().handleItemState(originalModel, stack, world, entity);
 /*    */   }
 /*    */   @NotNull
 /*    */   public ImmutableList<ItemOverride> getOverrides() {
-/* 36 */     return this.bakedModel.func_188617_f().getOverrides();
+/* 36 */     return this.bakedModel.getOverrides().getOverrides();
 /*    */   }
 /*    */ }
 

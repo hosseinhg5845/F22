@@ -78,14 +78,14 @@
 /*    */     //   39: putfield isBeforeRiding : Z
 /*    */     //   42: aload_0
 /*    */     //   43: getfield mc : Lnet/minecraft/client/Minecraft;
-/*    */     //   46: getfield field_71439_g : Lnet/minecraft/client/entity/EntityPlayerSP;
+/*    */     //   46: getfield player : Lnet/minecraft/client/entity/EntityPlayerSP;
 /*    */     //   49: astore_2
 /*    */     //   50: aconst_null
 /*    */     //   51: astore_3
 /*    */     //   52: aload_2
 /*    */     //   53: ifnull -> 130
 /*    */     //   56: aload_2
-/*    */     //   57: invokevirtual func_184187_bx : ()Lnet/minecraft/entity/Entity;
+/*    */     //   57: invokevirtual getRidingEntity : ()Lnet/minecraft/entity/Entity;
 /*    */     //   60: astore #5
 /*    */     //   62: aload #5
 /*    */     //   64: instanceof com/norwood/mcheli/aircraft/MCH_EntitySeat
@@ -136,7 +136,7 @@
 /*    */     //   163: aload_2
 /*    */     //   164: ifnull -> 177
 /*    */     //   167: aload_2
-/*    */     //   168: invokevirtual func_184187_bx : ()Lnet/minecraft/entity/Entity;
+/*    */     //   168: invokevirtual getRidingEntity : ()Lnet/minecraft/entity/Entity;
 /*    */     //   171: instanceof com/norwood/mcheli/aircraft/MCH_EntityAircraft
 /*    */     //   174: ifne -> 180
 /*    */     //   177: invokestatic restoreDefaultThirdPersonDistance : ()V

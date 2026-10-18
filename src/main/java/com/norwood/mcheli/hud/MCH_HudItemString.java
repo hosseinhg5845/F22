@@ -34,7 +34,7 @@
 /*     */   public void execute() {
 /*  35 */     int x = (int)(centerX + calc(this.posX));
 /*  36 */     int y = (int)(centerY + calc(this.posY));
-/*  37 */     int worldTime = (int)((ac.field_70170_p.func_72820_D() + 6000L) % 24000L);
+/*  37 */     int worldTime = (int)((ac.world.getWorldTime() + 6000L) % 24000L);
 /*  38 */     Date date = new Date();
 /*  39 */     Object[] prm = new Object[this.args.length];
 /*  40 */     double hp_per = (ac.getMaxHP() > 0) ? (ac.getHP() / ac.getMaxHP()) : 0.0D;
@@ -69,25 +69,25 @@
 /*  69 */           prm[i] = Double.valueOf(hp_per * 100.0D);
 /*     */           break;
 /*     */         case POS_X:
-/*  72 */           prm[i] = Double.valueOf(ac.field_70165_t);
+/*  72 */           prm[i] = Double.valueOf(ac.posX);
 /*     */           break;
 /*     */         case POS_Y:
-/*  75 */           prm[i] = Double.valueOf(ac.field_70163_u);
+/*  75 */           prm[i] = Double.valueOf(ac.posY);
 /*     */           break;
 /*     */         case POS_Z:
-/*  78 */           prm[i] = Double.valueOf(ac.field_70161_v);
+/*  78 */           prm[i] = Double.valueOf(ac.posZ);
 /*     */           break;
 /*     */         case MOTION_X:
-/*  81 */           prm[i] = Double.valueOf(ac.field_70159_w);
+/*  81 */           prm[i] = Double.valueOf(ac.motionX);
 /*     */           break;
 /*     */         case MOTION_Y:
-/*  84 */           prm[i] = Double.valueOf(ac.field_70181_x);
+/*  84 */           prm[i] = Double.valueOf(ac.motionY);
 /*     */           break;
 /*     */         case MOTION_Z:
-/*  87 */           prm[i] = Double.valueOf(ac.field_70179_y);
+/*  87 */           prm[i] = Double.valueOf(ac.motionZ);
 /*     */           break;
 /*     */         case INVENTORY:
-/*  90 */           prm[i] = Integer.valueOf(ac.func_70302_i_());
+/*  90 */           prm[i] = Integer.valueOf(ac.getSizeInventory());
 /*     */           break;
 /*     */         case WPN_NAME:
 /*  93 */           prm[i] = WeaponName;
@@ -149,13 +149,13 @@
 /* 149 */           prm[i] = Float.valueOf(-ac.getRotPitch());
 /*     */           break;
 /*     */         case ROLL:
-/* 152 */           prm[i] = Float.valueOf(MathHelper.func_76142_g(ac.getRotRoll()));
+/* 152 */           prm[i] = Float.valueOf(MathHelper.wrapDegrees(ac.getRotRoll()));
 /*     */           break;
 /*     */         case PLYR_YAW:
-/* 155 */           prm[i] = Double.valueOf(MCH_Lib.getRotate360((player.field_70177_z + 180.0F)));
+/* 155 */           prm[i] = Double.valueOf(MCH_Lib.getRotate360((player.rotationYaw + 180.0F)));
 /*     */           break;
 /*     */         case PLYR_PITCH:
-/* 158 */           prm[i] = Float.valueOf(-player.field_70125_A);
+/* 158 */           prm[i] = Float.valueOf(-player.rotationPitch);
 /*     */           break;
 /*     */         case TVM_POS_X:
 /* 161 */           prm[i] = Double.valueOf(TVM_PosX);

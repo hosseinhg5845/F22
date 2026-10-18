@@ -21,7 +21,7 @@
 /*     */   
 /*     */   public MCH_RenderTank(RenderManager renderManager) {
 /*  23 */     super(renderManager);
-/*  24 */     this.field_76989_e = 2.0F;
+/*  24 */     this.shadowSize = 2.0F;
 /*     */   }
 /*     */ 
 /*     */ 
@@ -51,58 +51,58 @@
 /*     */       
 /*  52 */       for (MCH_EntityWheel w : tank.WheelMng.wheels) {
 /*  53 */         GL11.glPushMatrix();
-/*  54 */         GL11.glTranslated(w.field_70165_t - tank.field_70165_t + posX, w.field_70163_u - tank.field_70163_u + posY + 0.25D, w.field_70161_v - tank.field_70161_v + posZ);
-/*  55 */         GL11.glScalef(w.field_70130_N, w.field_70131_O / 2.0F, w.field_70130_N);
+/*  54 */         GL11.glTranslated(w.posX - tank.posX + posX, w.posY - tank.posY + posY + 0.25D, w.posZ - tank.posZ + posZ);
+/*  55 */         GL11.glScalef(w.width, w.height / 2.0F, w.width);
 /*  56 */         bindTexture("textures/seat_pilot.png");
 /*  57 */         debugModel.renderAll();
 /*  58 */         GL11.glPopMatrix();
 /*     */       } 
 /*     */       
 /*  61 */       GL11.glColor4f(0.75F, 0.75F, 0.75F, 1.0F);
-/*  62 */       Tessellator tessellator = Tessellator.func_178181_a();
-/*  63 */       BufferBuilder builder = tessellator.func_178180_c();
-/*  64 */       builder.func_181668_a(1, DefaultVertexFormats.field_181706_f);
+/*  62 */       Tessellator tessellator = Tessellator.getInstance();
+/*  63 */       BufferBuilder builder = tessellator.getBuffer();
+/*  64 */       builder.begin(1, DefaultVertexFormats.POSITION_COLOR);
 /*  65 */       Vec3d wp = tank.getTransformedPosition(tank.WheelMng.weightedCenter);
-/*  66 */       wp = wp.func_178786_a(tank.field_70165_t, tank.field_70163_u, tank.field_70161_v);
+/*  66 */       wp = wp.subtract(tank.posX, tank.posY, tank.posZ);
 /*     */       
 /*  68 */       for (int i = 0; i < tank.WheelMng.wheels.length / 2; i++) {
 /*  69 */         MCH_ColorInt cint = new MCH_ColorInt(((i & 0x4) > 0) ? 16711680 : 0, ((i & 0x2) > 0) ? 65280 : 0, ((i & 0x1) > 0) ? 255 : 0, 192);
 /*  70 */         MCH_EntityWheel w1 = tank.WheelMng.wheels[i * 2];
 /*  71 */         MCH_EntityWheel w2 = tank.WheelMng.wheels[i * 2 + 1];
 /*  72 */         if (w1.isPlus) {
-/*  73 */           builder.func_181662_b(w2.field_70165_t - tank.field_70165_t + posX, w2.field_70163_u - tank.field_70163_u + posY, w2.field_70161_v - tank.field_70161_v + posZ)
-/*  74 */             .func_181669_b(cint.r, cint.g, cint.b, cint.a)
-/*  75 */             .func_181675_d();
-/*  76 */           builder.func_181662_b(w1.field_70165_t - tank.field_70165_t + posX, w1.field_70163_u - tank.field_70163_u + posY, w1.field_70161_v - tank.field_70161_v + posZ)
-/*  77 */             .func_181669_b(cint.r, cint.g, cint.b, cint.a)
-/*  78 */             .func_181675_d();
-/*  79 */           builder.func_181662_b(w1.field_70165_t - tank.field_70165_t + posX, w1.field_70163_u - tank.field_70163_u + posY, w1.field_70161_v - tank.field_70161_v + posZ)
-/*  80 */             .func_181669_b(cint.r, cint.g, cint.b, cint.a)
-/*  81 */             .func_181675_d();
-/*  82 */           builder.func_181662_b(posX + wp.field_72450_a, posY + wp.field_72448_b, posZ + wp.field_72449_c).func_181669_b(cint.r, cint.g, cint.b, cint.a).func_181675_d();
-/*  83 */           builder.func_181662_b(posX + wp.field_72450_a, posY + wp.field_72448_b, posZ + wp.field_72449_c).func_181669_b(cint.r, cint.g, cint.b, cint.a).func_181675_d();
-/*  84 */           builder.func_181662_b(w2.field_70165_t - tank.field_70165_t + posX, w2.field_70163_u - tank.field_70163_u + posY, w2.field_70161_v - tank.field_70161_v + posZ)
-/*  85 */             .func_181669_b(cint.r, cint.g, cint.b, cint.a)
-/*  86 */             .func_181675_d();
+/*  73 */           builder.pos(w2.posX - tank.posX + posX, w2.posY - tank.posY + posY, w2.posZ - tank.posZ + posZ)
+/*  74 */             .color(cint.r, cint.g, cint.b, cint.a)
+/*  75 */             .endVertex();
+/*  76 */           builder.pos(w1.posX - tank.posX + posX, w1.posY - tank.posY + posY, w1.posZ - tank.posZ + posZ)
+/*  77 */             .color(cint.r, cint.g, cint.b, cint.a)
+/*  78 */             .endVertex();
+/*  79 */           builder.pos(w1.posX - tank.posX + posX, w1.posY - tank.posY + posY, w1.posZ - tank.posZ + posZ)
+/*  80 */             .color(cint.r, cint.g, cint.b, cint.a)
+/*  81 */             .endVertex();
+/*  82 */           builder.pos(posX + wp.x, posY + wp.y, posZ + wp.z).color(cint.r, cint.g, cint.b, cint.a).endVertex();
+/*  83 */           builder.pos(posX + wp.x, posY + wp.y, posZ + wp.z).color(cint.r, cint.g, cint.b, cint.a).endVertex();
+/*  84 */           builder.pos(w2.posX - tank.posX + posX, w2.posY - tank.posY + posY, w2.posZ - tank.posZ + posZ)
+/*  85 */             .color(cint.r, cint.g, cint.b, cint.a)
+/*  86 */             .endVertex();
 /*     */         } else {
-/*  88 */           builder.func_181662_b(w1.field_70165_t - tank.field_70165_t + posX, w1.field_70163_u - tank.field_70163_u + posY, w1.field_70161_v - tank.field_70161_v + posZ)
-/*  89 */             .func_181669_b(cint.r, cint.g, cint.b, cint.a)
-/*  90 */             .func_181675_d();
-/*  91 */           builder.func_181662_b(w2.field_70165_t - tank.field_70165_t + posX, w2.field_70163_u - tank.field_70163_u + posY, w2.field_70161_v - tank.field_70161_v + posZ)
-/*  92 */             .func_181669_b(cint.r, cint.g, cint.b, cint.a)
-/*  93 */             .func_181675_d();
-/*  94 */           builder.func_181662_b(w2.field_70165_t - tank.field_70165_t + posX, w2.field_70163_u - tank.field_70163_u + posY, w2.field_70161_v - tank.field_70161_v + posZ)
-/*  95 */             .func_181669_b(cint.r, cint.g, cint.b, cint.a)
-/*  96 */             .func_181675_d();
-/*  97 */           builder.func_181662_b(posX + wp.field_72450_a, posY + wp.field_72448_b, posZ + wp.field_72449_c).func_181669_b(cint.r, cint.g, cint.b, cint.a).func_181675_d();
-/*  98 */           builder.func_181662_b(posX + wp.field_72450_a, posY + wp.field_72448_b, posZ + wp.field_72449_c).func_181669_b(cint.r, cint.g, cint.b, cint.a).func_181675_d();
-/*  99 */           builder.func_181662_b(w1.field_70165_t - tank.field_70165_t + posX, w1.field_70163_u - tank.field_70163_u + posY, w1.field_70161_v - tank.field_70161_v + posZ)
-/* 100 */             .func_181669_b(cint.r, cint.g, cint.b, cint.a)
-/* 101 */             .func_181675_d();
+/*  88 */           builder.pos(w1.posX - tank.posX + posX, w1.posY - tank.posY + posY, w1.posZ - tank.posZ + posZ)
+/*  89 */             .color(cint.r, cint.g, cint.b, cint.a)
+/*  90 */             .endVertex();
+/*  91 */           builder.pos(w2.posX - tank.posX + posX, w2.posY - tank.posY + posY, w2.posZ - tank.posZ + posZ)
+/*  92 */             .color(cint.r, cint.g, cint.b, cint.a)
+/*  93 */             .endVertex();
+/*  94 */           builder.pos(w2.posX - tank.posX + posX, w2.posY - tank.posY + posY, w2.posZ - tank.posZ + posZ)
+/*  95 */             .color(cint.r, cint.g, cint.b, cint.a)
+/*  96 */             .endVertex();
+/*  97 */           builder.pos(posX + wp.x, posY + wp.y, posZ + wp.z).color(cint.r, cint.g, cint.b, cint.a).endVertex();
+/*  98 */           builder.pos(posX + wp.x, posY + wp.y, posZ + wp.z).color(cint.r, cint.g, cint.b, cint.a).endVertex();
+/*  99 */           builder.pos(w1.posX - tank.posX + posX, w1.posY - tank.posY + posY, w1.posZ - tank.posZ + posZ)
+/* 100 */             .color(cint.r, cint.g, cint.b, cint.a)
+/* 101 */             .endVertex();
 /*     */         } 
 /*     */       } 
 /*     */       
-/* 105 */       tessellator.func_78381_a();
+/* 105 */       tessellator.draw();
 /*     */     } 
 /*     */   }
 /*     */ 

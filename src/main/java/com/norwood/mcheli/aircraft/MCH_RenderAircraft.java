@@ -58,7 +58,7 @@
 /*   58 */       .getClass().toString().indexOf("flansmod.common.driveables.EntityPlane") > 0 || entity
 /*   59 */       .getClass().toString().indexOf("flansmod.common.driveables.EntityVehicle") > 0) && entity
 /*      */       
-/*   61 */       .func_184187_bx() instanceof MCH_EntitySeat)
+/*   61 */       .getRidingEntity() instanceof MCH_EntitySeat)
 /*   62 */     { return !renderingEntity; }
 /*      */ 
 /*      */     
@@ -70,19 +70,19 @@
 /*   70 */       ac.isSearchLightON()) {
 /*   71 */       Entity entity = ac.getEntityBySeatId(1);
 /*   72 */       if (entity != null) {
-/*   73 */         ac.lastSearchLightYaw = entity.field_70177_z;
-/*   74 */         ac.lastSearchLightPitch = entity.field_70125_A;
+/*   73 */         ac.lastSearchLightYaw = entity.rotationYaw;
+/*   74 */         ac.lastSearchLightPitch = entity.rotationPitch;
 /*      */       } else {
 /*   76 */         entity = ac.getEntityBySeatId(0);
 /*   77 */         if (entity != null) {
-/*   78 */           ac.lastSearchLightYaw = entity.field_70177_z;
-/*   79 */           ac.lastSearchLightPitch = entity.field_70125_A;
+/*   78 */           ac.lastSearchLightYaw = entity.rotationYaw;
+/*   79 */           ac.lastSearchLightPitch = entity.rotationPitch;
 /*      */         } 
 /*      */       } 
 /*      */       
 /*   83 */       float yaw = ac.lastSearchLightYaw;
 /*   84 */       float pitch = ac.lastSearchLightPitch;
-/*   85 */       RenderHelper.func_74518_a();
+/*   85 */       RenderHelper.disableStandardItemLighting();
 /*   86 */       GL11.glDisable(3553);
 /*   87 */       GL11.glShadeModel(7425);
 /*   88 */       GL11.glEnable(3042);
@@ -94,7 +94,7 @@
 /*      */       
 /*   95 */       for (MCH_AircraftInfo.SearchLight sl : info.searchLights) {
 /*   96 */         GL11.glPushMatrix();
-/*   97 */         GL11.glTranslated(sl.pos.field_72450_a, sl.pos.field_72448_b, sl.pos.field_72449_c);
+/*   97 */         GL11.glTranslated(sl.pos.x, sl.pos.y, sl.pos.z);
 /*   98 */         if (!sl.fixDir) {
 /*   99 */           GL11.glRotatef(yaw - ac.getRotYaw() + sl.yaw, 0.0F, -1.0F, 0.0F);
 /*  100 */           GL11.glRotatef(pitch + 90.0F - ac.getRotPitch() + sl.pitch, 1.0F, 0.0F, 0.0F);
@@ -110,19 +110,19 @@
 /*      */         
 /*  111 */         float height = sl.height;
 /*  112 */         float width = sl.width / 2.0F;
-/*  113 */         Tessellator tessellator = Tessellator.func_178181_a();
-/*  114 */         BufferBuilder builder = tessellator.func_178180_c();
-/*  115 */         builder.func_181668_a(6, DefaultVertexFormats.field_181706_f);
+/*  113 */         Tessellator tessellator = Tessellator.getInstance();
+/*  114 */         BufferBuilder builder = tessellator.getBuffer();
+/*  115 */         builder.begin(6, DefaultVertexFormats.POSITION_COLOR);
 /*  116 */         MCH_ColorInt cs = new MCH_ColorInt(sl.colorStart);
 /*  117 */         MCH_ColorInt ce = new MCH_ColorInt(sl.colorEnd);
-/*  118 */         builder.func_181662_b(0.0D, 0.0D, 0.0D).func_181669_b(cs.r, cs.g, cs.b, cs.a).func_181675_d();
+/*  118 */         builder.pos(0.0D, 0.0D, 0.0D).color(cs.r, cs.g, cs.b, cs.a).endVertex();
 /*      */         
 /*  120 */         for (int i = 0; i < 25; i++) {
 /*  121 */           float angle = (float)(15.0D * i / 180.0D * Math.PI);
-/*  122 */           builder.func_181662_b((MathHelper.func_76126_a(angle) * width), height, (MathHelper.func_76134_b(angle) * width)).func_181669_b(ce.r, ce.g, ce.b, ce.a).func_181675_d();
+/*  122 */           builder.pos((MathHelper.sin(angle) * width), height, (MathHelper.cos(angle) * width)).color(ce.r, ce.g, ce.b, ce.a).endVertex();
 /*      */         } 
 /*      */         
-/*  125 */         tessellator.func_78381_a();
+/*  125 */         tessellator.draw();
 /*  126 */         GL11.glPopMatrix();
 /*      */       } 
 /*      */       
@@ -131,7 +131,7 @@
 /*  131 */       GL11.glEnable(3553);
 /*  132 */       GL11.glEnable(3008);
 /*  133 */       GL11.glBlendFunc(770, 771);
-/*  134 */       RenderHelper.func_74519_b();
+/*  134 */       RenderHelper.enableStandardItemLighting();
 /*      */     } 
 /*      */   }
 /*      */ 
@@ -173,9 +173,9 @@
 /*      */       
 /*  174 */       for (MCH_AircraftInfo.Hatch t : info.lightHatchList) {
 /*  175 */         GL11.glPushMatrix();
-/*  176 */         GL11.glTranslated(t.pos.field_72450_a, t.pos.field_72448_b, t.pos.field_72449_c);
-/*  177 */         GL11.glRotated((rot * t.maxRot), t.rot.field_72450_a, t.rot.field_72448_b, t.rot.field_72449_c);
-/*  178 */         GL11.glTranslated(-t.pos.field_72450_a, -t.pos.field_72448_b, -t.pos.field_72449_c);
+/*  176 */         GL11.glTranslated(t.pos.x, t.pos.y, t.pos.z);
+/*  177 */         GL11.glRotated((rot * t.maxRot), t.rot.x, t.rot.y, t.rot.z);
+/*  178 */         GL11.glTranslated(-t.pos.x, -t.pos.y, -t.pos.z);
 /*  179 */         renderPart(t.model, info.model, t.modelName);
 /*  180 */         GL11.glPopMatrix();
 /*      */       } 
@@ -188,9 +188,9 @@
 /*      */       
 /*  189 */       for (MCH_AircraftInfo.PartWheel t : info.partSteeringWheel) {
 /*  190 */         GL11.glPushMatrix();
-/*  191 */         GL11.glTranslated(t.pos.field_72450_a, t.pos.field_72448_b, t.pos.field_72449_c);
-/*  192 */         GL11.glRotated((rot * t.rotDir), t.rot.field_72450_a, t.rot.field_72448_b, t.rot.field_72449_c);
-/*  193 */         GL11.glTranslated(-t.pos.field_72450_a, -t.pos.field_72448_b, -t.pos.field_72449_c);
+/*  191 */         GL11.glTranslated(t.pos.x, t.pos.y, t.pos.z);
+/*  192 */         GL11.glRotated((rot * t.rotDir), t.rot.x, t.rot.y, t.rot.z);
+/*  193 */         GL11.glTranslated(-t.pos.x, -t.pos.y, -t.pos.z);
 /*  194 */         renderPart(t.model, info.model, t.modelName);
 /*  195 */         GL11.glPopMatrix();
 /*      */       } 
@@ -203,12 +203,12 @@
 /*      */       
 /*  204 */       for (MCH_AircraftInfo.PartWheel t : info.partWheel) {
 /*  205 */         GL11.glPushMatrix();
-/*  206 */         GL11.glTranslated(t.pos2.field_72450_a, t.pos2.field_72448_b, t.pos2.field_72449_c);
-/*  207 */         GL11.glRotated((yaw * t.rotDir), t.rot.field_72450_a, t.rot.field_72448_b, t.rot.field_72449_c);
-/*  208 */         GL11.glTranslated(-t.pos2.field_72450_a, -t.pos2.field_72448_b, -t.pos2.field_72449_c);
-/*  209 */         GL11.glTranslated(t.pos.field_72450_a, t.pos.field_72448_b, t.pos.field_72449_c);
+/*  206 */         GL11.glTranslated(t.pos2.x, t.pos2.y, t.pos2.z);
+/*  207 */         GL11.glRotated((yaw * t.rotDir), t.rot.x, t.rot.y, t.rot.z);
+/*  208 */         GL11.glTranslated(-t.pos2.x, -t.pos2.y, -t.pos2.z);
+/*  209 */         GL11.glTranslated(t.pos.x, t.pos.y, t.pos.z);
 /*  210 */         GL11.glRotatef(ac.prevRotWheel + (ac.rotWheel - ac.prevRotWheel) * tickTime, 1.0F, 0.0F, 0.0F);
-/*  211 */         GL11.glTranslated(-t.pos.field_72450_a, -t.pos.field_72448_b, -t.pos.field_72449_c);
+/*  211 */         GL11.glTranslated(-t.pos.x, -t.pos.y, -t.pos.z);
 /*  212 */         renderPart(t.model, info.model, t.modelName);
 /*  213 */         GL11.glPopMatrix();
 /*      */       } 
@@ -227,9 +227,9 @@
 /*  227 */         rot = MCH_Lib.smooth(rot, prevRot, tickTime);
 /*  228 */         MCH_AircraftInfo.RotPart h = info.partRotPart.get(i);
 /*  229 */         GL11.glPushMatrix();
-/*  230 */         GL11.glTranslated(h.pos.field_72450_a, h.pos.field_72448_b, h.pos.field_72449_c);
-/*  231 */         GL11.glRotatef(rot, (float)h.rot.field_72450_a, (float)h.rot.field_72448_b, (float)h.rot.field_72449_c);
-/*  232 */         GL11.glTranslated(-h.pos.field_72450_a, -h.pos.field_72448_b, -h.pos.field_72449_c);
+/*  230 */         GL11.glTranslated(h.pos.x, h.pos.y, h.pos.z);
+/*  231 */         GL11.glRotatef(rot, (float)h.rot.x, (float)h.rot.y, (float)h.rot.z);
+/*  232 */         GL11.glTranslated(-h.pos.x, -h.pos.y, -h.pos.z);
 /*  233 */         renderPart(h.model, info.model, h.modelName);
 /*  234 */         GL11.glPopMatrix();
 /*      */       } 
@@ -408,13 +408,13 @@
 /*      */     //   192: ifeq -> 279
 /*      */     //   195: aload_1
 /*      */     //   196: getfield turretPosition : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   199: getfield field_72450_a : D
+/*      */     //   199: getfield x : D
 /*      */     //   202: aload_1
 /*      */     //   203: getfield turretPosition : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   206: getfield field_72448_b : D
+/*      */     //   206: getfield y : D
 /*      */     //   209: aload_1
 /*      */     //   210: getfield turretPosition : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   213: getfield field_72449_c : D
+/*      */     //   213: getfield z : D
 /*      */     //   216: invokestatic glTranslated : (DDD)V
 /*      */     //   219: aload_0
 /*      */     //   220: invokevirtual getLastRiderYaw : ()F
@@ -424,7 +424,7 @@
 /*      */     //   228: aload_0
 /*      */     //   229: getfield prevLastRiderYaw : F
 /*      */     //   232: aload_0
-/*      */     //   233: getfield field_70126_B : F
+/*      */     //   233: getfield prevRotationYaw : F
 /*      */     //   236: fsub
 /*      */     //   237: fload_2
 /*      */     //   238: invokestatic smooth : (FFF)F
@@ -436,26 +436,26 @@
 /*      */     //   249: invokestatic glRotatef : (FFFF)V
 /*      */     //   252: aload_1
 /*      */     //   253: getfield turretPosition : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   256: getfield field_72450_a : D
+/*      */     //   256: getfield x : D
 /*      */     //   259: dneg
 /*      */     //   260: aload_1
 /*      */     //   261: getfield turretPosition : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   264: getfield field_72448_b : D
+/*      */     //   264: getfield y : D
 /*      */     //   267: dneg
 /*      */     //   268: aload_1
 /*      */     //   269: getfield turretPosition : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   272: getfield field_72449_c : D
+/*      */     //   272: getfield z : D
 /*      */     //   275: dneg
 /*      */     //   276: invokestatic glTranslated : (DDD)V
 /*      */     //   279: aload #7
 /*      */     //   281: getfield pos : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   284: getfield field_72450_a : D
+/*      */     //   284: getfield x : D
 /*      */     //   287: aload #7
 /*      */     //   289: getfield pos : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   292: getfield field_72448_b : D
+/*      */     //   292: getfield y : D
 /*      */     //   295: aload #7
 /*      */     //   297: getfield pos : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   300: getfield field_72449_c : D
+/*      */     //   300: getfield z : D
 /*      */     //   303: invokestatic glTranslated : (DDD)V
 /*      */     //   306: aload #7
 /*      */     //   308: getfield yaw : Z
@@ -478,28 +478,28 @@
 /*      */     //   348: aload #4
 /*      */     //   350: ifnull -> 380
 /*      */     //   353: aload #4
-/*      */     //   355: getfield field_70177_z : F
+/*      */     //   355: getfield rotationYaw : F
 /*      */     //   358: aload_0
 /*      */     //   359: invokevirtual getRotYaw : ()F
 /*      */     //   362: fsub
 /*      */     //   363: fstore #9
 /*      */     //   365: aload #4
-/*      */     //   367: getfield field_70126_B : F
+/*      */     //   367: getfield prevRotationYaw : F
 /*      */     //   370: aload_0
-/*      */     //   371: getfield field_70126_B : F
+/*      */     //   371: getfield prevRotationYaw : F
 /*      */     //   374: fsub
 /*      */     //   375: fstore #10
 /*      */     //   377: goto -> 402
 /*      */     //   380: aload_0
 /*      */     //   381: invokevirtual getLastRiderYaw : ()F
 /*      */     //   384: aload_0
-/*      */     //   385: getfield field_70177_z : F
+/*      */     //   385: getfield rotationYaw : F
 /*      */     //   388: fsub
 /*      */     //   389: fstore #9
 /*      */     //   391: aload_0
 /*      */     //   392: getfield prevLastRiderYaw : F
 /*      */     //   395: aload_0
-/*      */     //   396: getfield field_70126_B : F
+/*      */     //   396: getfield prevRotationYaw : F
 /*      */     //   399: fsub
 /*      */     //   400: fstore #10
 /*      */     //   402: fload #9
@@ -545,7 +545,7 @@
 /*      */     //   479: aload_0
 /*      */     //   480: getfield prevLastRiderYaw : F
 /*      */     //   483: aload_0
-/*      */     //   484: getfield field_70126_B : F
+/*      */     //   484: getfield prevRotationYaw : F
 /*      */     //   487: fsub
 /*      */     //   488: fload_2
 /*      */     //   489: invokestatic smooth : (FFF)F
@@ -571,7 +571,7 @@
 /*      */     //   528: ifeq -> 597
 /*      */     //   531: aload #8
 /*      */     //   533: getfield defaultRotationYaw : F
-/*      */     //   536: invokestatic func_76142_g : (F)F
+/*      */     //   536: invokestatic wrapDegrees : (F)F
 /*      */     //   539: fstore #10
 /*      */     //   541: fload #10
 /*      */     //   543: ldc_w 45.0
@@ -615,10 +615,10 @@
 /*      */     //   627: aload #4
 /*      */     //   629: ifnull -> 649
 /*      */     //   632: aload #4
-/*      */     //   634: getfield field_70125_A : F
+/*      */     //   634: getfield rotationPitch : F
 /*      */     //   637: fstore #10
 /*      */     //   639: aload #4
-/*      */     //   641: getfield field_70127_C : F
+/*      */     //   641: getfield prevRotationPitch : F
 /*      */     //   644: fstore #11
 /*      */     //   646: goto -> 661
 /*      */     //   649: aload_0
@@ -744,28 +744,28 @@
 /*      */     //   883: fload #10
 /*      */     //   885: aload #7
 /*      */     //   887: getfield rot : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   890: getfield field_72450_a : D
+/*      */     //   890: getfield x : D
 /*      */     //   893: d2f
 /*      */     //   894: aload #7
 /*      */     //   896: getfield rot : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   899: getfield field_72448_b : D
+/*      */     //   899: getfield y : D
 /*      */     //   902: d2f
 /*      */     //   903: aload #7
 /*      */     //   905: getfield rot : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   908: getfield field_72449_c : D
+/*      */     //   908: getfield z : D
 /*      */     //   911: d2f
 /*      */     //   912: invokestatic glRotatef : (FFFF)V
 /*      */     //   915: aload #7
 /*      */     //   917: getfield pos : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   920: getfield field_72450_a : D
+/*      */     //   920: getfield x : D
 /*      */     //   923: dneg
 /*      */     //   924: aload #7
 /*      */     //   926: getfield pos : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   929: getfield field_72448_b : D
+/*      */     //   929: getfield y : D
 /*      */     //   932: dneg
 /*      */     //   933: aload #7
 /*      */     //   935: getfield pos : Lnet/minecraft/util/math/Vec3d;
-/*      */     //   938: getfield field_72449_c : D
+/*      */     //   938: getfield z : D
 /*      */     //   941: dneg
 /*      */     //   942: invokestatic glTranslated : (DDD)V
 /*      */     //   945: aload #7
@@ -1031,17 +1031,17 @@
 /*      */ 
 /*      */   
 /*      */   public static void renderWeaponChild(MCH_EntityAircraft ac, MCH_AircraftInfo info, MCH_AircraftInfo.PartWeaponChild w, MCH_WeaponSet ws, Entity e, float tickTime) {
-/*  402 */     GL11.glTranslated(w.pos.field_72450_a, w.pos.field_72448_b, w.pos.field_72449_c);
+/*  402 */     GL11.glTranslated(w.pos.x, w.pos.y, w.pos.z);
 /*  403 */     if (w.yaw) {
 /*  404 */       float rotYaw, prevYaw; if (ws != null) {
 /*  405 */         rotYaw = ws.rotationYaw - ws.defaultRotationYaw;
 /*  406 */         prevYaw = ws.prevRotationYaw - ws.defaultRotationYaw;
 /*  407 */       } else if (e != null) {
-/*  408 */         rotYaw = e.field_70177_z - ac.getRotYaw();
-/*  409 */         prevYaw = e.field_70126_B - ac.field_70126_B;
+/*  408 */         rotYaw = e.rotationYaw - ac.getRotYaw();
+/*  409 */         prevYaw = e.prevRotationYaw - ac.prevRotationYaw;
 /*      */       } else {
-/*  411 */         rotYaw = ac.getLastRiderYaw() - ac.field_70177_z;
-/*  412 */         prevYaw = ac.prevLastRiderYaw - ac.field_70126_B;
+/*  411 */         rotYaw = ac.getLastRiderYaw() - ac.rotationYaw;
+/*  412 */         prevYaw = ac.prevLastRiderYaw - ac.prevRotationYaw;
 /*      */       } 
 /*      */       
 /*  415 */       if (rotYaw - prevYaw > 180.0F) {
@@ -1055,7 +1055,7 @@
 /*      */     
 /*  424 */     boolean rev_sign = false;
 /*  425 */     if (ws != null && (int)ws.defaultRotationYaw != 0) {
-/*  426 */       float t = MathHelper.func_76142_g(ws.defaultRotationYaw);
+/*  426 */       float t = MathHelper.wrapDegrees(ws.defaultRotationYaw);
 /*  427 */       rev_sign = ((t >= 45.0F && t <= 135.0F) || (t <= -45.0F && t >= -135.0F));
 /*  428 */       GL11.glRotatef(-ws.defaultRotationYaw, 0.0F, -1.0F, 0.0F);
 /*      */     } 
@@ -1065,8 +1065,8 @@
 /*  433 */         rotPitch = ws.rotationPitch;
 /*  434 */         prevPitch = ws.prevRotationPitch;
 /*  435 */       } else if (e != null) {
-/*  436 */         rotPitch = e.field_70125_A;
-/*  437 */         prevPitch = e.field_70127_C;
+/*  436 */         rotPitch = e.rotationPitch;
+/*  437 */         prevPitch = e.prevRotationPitch;
 /*      */       } else {
 /*  439 */         rotPitch = ac.getLastRiderPitch();
 /*  440 */         prevPitch = ac.prevLastRiderPitch;
@@ -1099,7 +1099,7 @@
 /*  467 */       GL11.glRotatef(ws.defaultRotationYaw, 0.0F, -1.0F, 0.0F);
 /*      */     }
 /*      */     
-/*  470 */     GL11.glTranslated(-w.pos.field_72450_a, -w.pos.field_72448_b, -w.pos.field_72449_c);
+/*  470 */     GL11.glTranslated(-w.pos.x, -w.pos.y, -w.pos.z);
 /*  471 */     renderPart(w.model, info.model, w.modelName);
 /*      */   }
 /*      */   
@@ -1110,9 +1110,9 @@
 /*      */       
 /*  479 */       for (MCH_AircraftInfo.TrackRoller t : info.partTrackRoller) {
 /*  480 */         GL11.glPushMatrix();
-/*  481 */         GL11.glTranslated(t.pos.field_72450_a, t.pos.field_72448_b, t.pos.field_72449_c);
+/*  481 */         GL11.glTranslated(t.pos.x, t.pos.y, t.pos.z);
 /*  482 */         GL11.glRotatef(prevRot[t.side] + (rot[t.side] - prevRot[t.side]) * tickTime, 1.0F, 0.0F, 0.0F);
-/*  483 */         GL11.glTranslated(-t.pos.field_72450_a, -t.pos.field_72448_b, -t.pos.field_72449_c);
+/*  483 */         GL11.glTranslated(-t.pos.x, -t.pos.y, -t.pos.z);
 /*  484 */         renderPart(t.model, info.model, t.modelName);
 /*  485 */         GL11.glPopMatrix();
 /*      */       } 
@@ -1122,21 +1122,21 @@
 /*      */   public static void renderCrawlerTrack(MCH_EntityAircraft ac, MCH_AircraftInfo info, float tickTime) {
 /*  491 */     if (!info.partCrawlerTrack.isEmpty()) {
 /*  492 */       int prevWidth = GL11.glGetInteger(2833);
-/*  493 */       Tessellator tessellator = Tessellator.func_178181_a();
-/*  494 */       BufferBuilder builder = tessellator.func_178180_c();
+/*  493 */       Tessellator tessellator = Tessellator.getInstance();
+/*  494 */       BufferBuilder builder = tessellator.getBuffer();
 /*      */       
 /*  496 */       for (MCH_AircraftInfo.CrawlerTrack c : info.partCrawlerTrack) {
 /*  497 */         GL11.glPointSize(c.len * 20.0F);
 /*  498 */         if (MCH_Config.TestMode.prmBool) {
 /*  499 */           GL11.glDisable(3553);
 /*  500 */           GL11.glDisable(3042);
-/*  501 */           builder.func_181668_a(0, DefaultVertexFormats.field_181706_f);
+/*  501 */           builder.begin(0, DefaultVertexFormats.POSITION_COLOR);
 /*      */           
 /*  503 */           for (int j = 0; j < c.cx.length; j++) {
-/*  504 */             builder.func_181662_b(c.z, c.cx[j], c.cy[j]).func_181669_b((int)(255.0F / c.cx.length * j), 80, 255 - (int)(255.0F / c.cx.length * j), 255).func_181675_d();
+/*  504 */             builder.pos(c.z, c.cx[j], c.cy[j]).color((int)(255.0F / c.cx.length * j), 80, 255 - (int)(255.0F / c.cx.length * j), 255).endVertex();
 /*      */           }
 /*      */           
-/*  507 */           tessellator.func_78381_a();
+/*  507 */           tessellator.draw();
 /*      */         } 
 /*      */         
 /*  510 */         GL11.glEnable(3553);
@@ -1195,11 +1195,11 @@
 /*  563 */           float r = ac.partHatch.rotation / ac.partHatch.rotationMax;
 /*  564 */           float pr = ac.partHatch.prevRotation / ac.partHatch.rotationMax;
 /*  565 */           float f = pr + (r - pr) * tickTime;
-/*  566 */           GL11.glTranslated(h.pos.field_72450_a * f, h.pos.field_72448_b * f, h.pos.field_72449_c * f);
+/*  566 */           GL11.glTranslated(h.pos.x * f, h.pos.y * f, h.pos.z * f);
 /*      */         } else {
-/*  568 */           GL11.glTranslated(h.pos.field_72450_a, h.pos.field_72448_b, h.pos.field_72449_c);
-/*  569 */           GL11.glRotatef((prevRot + (rot - prevRot) * tickTime) * h.maxRotFactor, (float)h.rot.field_72450_a, (float)h.rot.field_72448_b, (float)h.rot.field_72449_c);
-/*  570 */           GL11.glTranslated(-h.pos.field_72450_a, -h.pos.field_72448_b, -h.pos.field_72449_c);
+/*  568 */           GL11.glTranslated(h.pos.x, h.pos.y, h.pos.z);
+/*  569 */           GL11.glRotatef((prevRot + (rot - prevRot) * tickTime) * h.maxRotFactor, (float)h.rot.x, (float)h.rot.y, (float)h.rot.z);
+/*  570 */           GL11.glTranslated(-h.pos.x, -h.pos.y, -h.pos.z);
 /*      */         } 
 /*      */         
 /*  573 */         renderPart(h.model, info.model, h.modelName);
@@ -1214,10 +1214,10 @@
 /*      */       
 /*  583 */       for (MCH_AircraftInfo.Throttle h : info.partThrottle) {
 /*  584 */         GL11.glPushMatrix();
-/*  585 */         GL11.glTranslated(h.pos.field_72450_a, h.pos.field_72448_b, h.pos.field_72449_c);
-/*  586 */         GL11.glRotatef(throttle * h.rot2, (float)h.rot.field_72450_a, (float)h.rot.field_72448_b, (float)h.rot.field_72449_c);
-/*  587 */         GL11.glTranslated(-h.pos.field_72450_a, -h.pos.field_72448_b, -h.pos.field_72449_c);
-/*  588 */         GL11.glTranslated(h.slide.field_72450_a * throttle, h.slide.field_72448_b * throttle, h.slide.field_72449_c * throttle);
+/*  585 */         GL11.glTranslated(h.pos.x, h.pos.y, h.pos.z);
+/*  586 */         GL11.glRotatef(throttle * h.rot2, (float)h.rot.x, (float)h.rot.y, (float)h.rot.z);
+/*  587 */         GL11.glTranslated(-h.pos.x, -h.pos.y, -h.pos.z);
+/*  588 */         GL11.glTranslated(h.slide.x * throttle, h.slide.y * throttle, h.slide.z * throttle);
 /*  589 */         renderPart(h.model, info.model, h.modelName);
 /*  590 */         GL11.glPopMatrix();
 /*      */       } 
@@ -1233,11 +1233,11 @@
 /*  601 */         float r = ws.rot / 90.0F;
 /*  602 */         float pr = ws.prevRot / 90.0F;
 /*  603 */         float f = pr + (r - pr) * tickTime;
-/*  604 */         GL11.glTranslated(w.pos.field_72450_a * f, w.pos.field_72448_b * f, w.pos.field_72449_c * f);
+/*  604 */         GL11.glTranslated(w.pos.x * f, w.pos.y * f, w.pos.z * f);
 /*      */       } else {
-/*  606 */         GL11.glTranslated(w.pos.field_72450_a, w.pos.field_72448_b, w.pos.field_72449_c);
-/*  607 */         GL11.glRotatef((ws.prevRot + (ws.rot - ws.prevRot) * tickTime) * w.maxRotFactor, (float)w.rot.field_72450_a, (float)w.rot.field_72448_b, (float)w.rot.field_72449_c);
-/*  608 */         GL11.glTranslated(-w.pos.field_72450_a, -w.pos.field_72448_b, -w.pos.field_72449_c);
+/*  606 */         GL11.glTranslated(w.pos.x, w.pos.y, w.pos.z);
+/*  607 */         GL11.glRotatef((ws.prevRot + (ws.rot - ws.prevRot) * tickTime) * w.maxRotFactor, (float)w.rot.x, (float)w.rot.y, (float)w.rot.z);
+/*  608 */         GL11.glTranslated(-w.pos.x, -w.pos.y, -w.pos.z);
 /*      */       } 
 /*      */       
 /*  611 */       renderPart(w.model, info.model, w.modelName);
@@ -1256,7 +1256,7 @@
 /*      */       
 /*  625 */       for (MCH_AircraftInfo.Camera c : info.cameraList) {
 /*  626 */         GL11.glPushMatrix();
-/*  627 */         GL11.glTranslated(c.pos.field_72450_a, c.pos.field_72448_b, c.pos.field_72449_c);
+/*  627 */         GL11.glTranslated(c.pos.x, c.pos.y, c.pos.z);
 /*  628 */         if (c.yawSync) {
 /*  629 */           GL11.glRotatef(yaw, 0.0F, -1.0F, 0.0F);
 /*      */         }
@@ -1265,7 +1265,7 @@
 /*  633 */           GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
 /*      */         }
 /*      */         
-/*  636 */         GL11.glTranslated(-c.pos.field_72450_a, -c.pos.field_72448_b, -c.pos.field_72449_c);
+/*  636 */         GL11.glTranslated(-c.pos.x, -c.pos.y, -c.pos.z);
 /*  637 */         renderPart(c.model, info.model, c.modelName);
 /*  638 */         GL11.glPopMatrix();
 /*      */       } 
@@ -1283,11 +1283,11 @@
 /*  651 */           float r = ac.partCanopy.rotation / ac.partCanopy.rotationMax;
 /*  652 */           float pr = ac.partCanopy.prevRotation / ac.partCanopy.rotationMax;
 /*  653 */           float f = pr + (r - pr) * tickTime;
-/*  654 */           GL11.glTranslated(c.pos.field_72450_a * f, c.pos.field_72448_b * f, c.pos.field_72449_c * f);
+/*  654 */           GL11.glTranslated(c.pos.x * f, c.pos.y * f, c.pos.z * f);
 /*      */         } else {
-/*  656 */           GL11.glTranslated(c.pos.field_72450_a, c.pos.field_72448_b, c.pos.field_72449_c);
-/*  657 */           GL11.glRotatef((prevRot + (rot - prevRot) * tickTime) * c.maxRotFactor, (float)c.rot.field_72450_a, (float)c.rot.field_72448_b, (float)c.rot.field_72449_c);
-/*  658 */           GL11.glTranslated(-c.pos.field_72450_a, -c.pos.field_72448_b, -c.pos.field_72449_c);
+/*  656 */           GL11.glTranslated(c.pos.x, c.pos.y, c.pos.z);
+/*  657 */           GL11.glRotatef((prevRot + (rot - prevRot) * tickTime) * c.maxRotFactor, (float)c.rot.x, (float)c.rot.y, (float)c.rot.z);
+/*  658 */           GL11.glTranslated(-c.pos.x, -c.pos.y, -c.pos.z);
 /*      */         } 
 /*      */         
 /*  661 */         renderPart(c.model, info.model, c.modelName);
@@ -1304,40 +1304,40 @@
 /*  672 */       float revPr = 90.0F - prevRot;
 /*  673 */       float rot1 = prevRot + (rot - prevRot) * tickTime;
 /*  674 */       float rot1Rev = revPr + (revR - revPr) * tickTime;
-/*  675 */       float rotHatch = 90.0F * MathHelper.func_76126_a(rot1 * 2.0F * 3.1415927F / 180.0F) * 3.0F;
+/*  675 */       float rotHatch = 90.0F * MathHelper.sin(rot1 * 2.0F * 3.1415927F / 180.0F) * 3.0F;
 /*  676 */       if (rotHatch > 90.0F) {
 /*  677 */         rotHatch = 90.0F;
 /*      */       }
 /*      */       
 /*  680 */       for (MCH_AircraftInfo.LandingGear n : info.landingGear) {
 /*  681 */         GL11.glPushMatrix();
-/*  682 */         GL11.glTranslated(n.pos.field_72450_a, n.pos.field_72448_b, n.pos.field_72449_c);
+/*  682 */         GL11.glTranslated(n.pos.x, n.pos.y, n.pos.z);
 /*  683 */         if (!n.reverse) {
 /*  684 */           if (!n.hatch) {
-/*  685 */             GL11.glRotatef(rot1 * n.maxRotFactor, (float)n.rot.field_72450_a, (float)n.rot.field_72448_b, (float)n.rot.field_72449_c);
+/*  685 */             GL11.glRotatef(rot1 * n.maxRotFactor, (float)n.rot.x, (float)n.rot.y, (float)n.rot.z);
 /*      */           } else {
-/*  687 */             GL11.glRotatef(rotHatch * n.maxRotFactor, (float)n.rot.field_72450_a, (float)n.rot.field_72448_b, (float)n.rot.field_72449_c);
+/*  687 */             GL11.glRotatef(rotHatch * n.maxRotFactor, (float)n.rot.x, (float)n.rot.y, (float)n.rot.z);
 /*      */           } 
 /*      */         } else {
-/*  690 */           GL11.glRotatef(rot1Rev * n.maxRotFactor, (float)n.rot.field_72450_a, (float)n.rot.field_72448_b, (float)n.rot.field_72449_c);
+/*  690 */           GL11.glRotatef(rot1Rev * n.maxRotFactor, (float)n.rot.x, (float)n.rot.y, (float)n.rot.z);
 /*      */         } 
 /*      */         
 /*  693 */         if (n.enableRot2) {
 /*  694 */           if (!n.reverse) {
-/*  695 */             GL11.glRotatef(rot1 * n.maxRotFactor2, (float)n.rot2.field_72450_a, (float)n.rot2.field_72448_b, (float)n.rot2.field_72449_c);
+/*  695 */             GL11.glRotatef(rot1 * n.maxRotFactor2, (float)n.rot2.x, (float)n.rot2.y, (float)n.rot2.z);
 /*      */           } else {
-/*  697 */             GL11.glRotatef(rot1Rev * n.maxRotFactor2, (float)n.rot2.field_72450_a, (float)n.rot2.field_72448_b, (float)n.rot2.field_72449_c);
+/*  697 */             GL11.glRotatef(rot1Rev * n.maxRotFactor2, (float)n.rot2.x, (float)n.rot2.y, (float)n.rot2.z);
 /*      */           } 
 /*      */         }
 /*      */         
-/*  701 */         GL11.glTranslated(-n.pos.field_72450_a, -n.pos.field_72448_b, -n.pos.field_72449_c);
+/*  701 */         GL11.glTranslated(-n.pos.x, -n.pos.y, -n.pos.z);
 /*  702 */         if (n.slide != null) {
 /*  703 */           float f = rot / 90.0F;
 /*  704 */           if (n.reverse) {
 /*  705 */             f = 1.0F - f;
 /*      */           }
 /*      */           
-/*  708 */           GL11.glTranslated(f * n.slide.field_72450_a, f * n.slide.field_72448_b, f * n.slide.field_72449_c);
+/*  708 */           GL11.glTranslated(f * n.slide.x, f * n.slide.y, f * n.slide.z);
 /*      */         } 
 /*      */         
 /*  711 */         renderPart(n.model, info.model, n.modelName);
@@ -1347,33 +1347,33 @@
 /*      */   }
 /*      */   
 /*      */   public static void renderEntityMarker(Entity entity) {
-/*  718 */     EntityPlayerSP entityPlayerSP = (Minecraft.func_71410_x()).field_71439_g;
+/*  718 */     EntityPlayerSP entityPlayerSP = (Minecraft.getMinecraft()).player;
 /*  719 */     if (entityPlayerSP != null && 
 /*  720 */       !W_Entity.isEqual((Entity)entityPlayerSP, entity)) {
 /*  721 */       MCH_EntityAircraft ac = null;
-/*  722 */       if (entityPlayerSP.func_184187_bx() instanceof MCH_EntityAircraft) {
-/*  723 */         ac = (MCH_EntityAircraft)entityPlayerSP.func_184187_bx();
-/*  724 */       } else if (entityPlayerSP.func_184187_bx() instanceof MCH_EntitySeat) {
-/*  725 */         ac = ((MCH_EntitySeat)entityPlayerSP.func_184187_bx()).getParent();
-/*  726 */       } else if (entityPlayerSP.func_184187_bx() instanceof MCH_EntityUavStation) {
-/*  727 */         ac = ((MCH_EntityUavStation)entityPlayerSP.func_184187_bx()).getControlAircract();
+/*  722 */       if (entityPlayerSP.getRidingEntity() instanceof MCH_EntityAircraft) {
+/*  723 */         ac = (MCH_EntityAircraft)entityPlayerSP.getRidingEntity();
+/*  724 */       } else if (entityPlayerSP.getRidingEntity() instanceof MCH_EntitySeat) {
+/*  725 */         ac = ((MCH_EntitySeat)entityPlayerSP.getRidingEntity()).getParent();
+/*  726 */       } else if (entityPlayerSP.getRidingEntity() instanceof MCH_EntityUavStation) {
+/*  727 */         ac = ((MCH_EntityUavStation)entityPlayerSP.getRidingEntity()).getControlAircract();
 /*      */       } 
 /*      */       
 /*  730 */       if (ac != null && 
 /*  731 */         !W_Entity.isEqual((Entity)ac, entity)) {
 /*  732 */         MCH_WeaponGuidanceSystem gs = ac.getCurrentWeapon((Entity)entityPlayerSP).getCurrentWeapon().getGuidanceSystem();
 /*  733 */         if (gs != null && gs.canLockEntity(entity)) {
-/*  734 */           RenderManager rm = Minecraft.func_71410_x().func_175598_ae();
-/*  735 */           double dist = entity.func_70068_e(rm.field_78734_h);
-/*  736 */           double x = entity.field_70165_t - TileEntityRendererDispatcher.field_147554_b;
-/*  737 */           double y = entity.field_70163_u - TileEntityRendererDispatcher.field_147555_c;
-/*  738 */           double z = entity.field_70161_v - TileEntityRendererDispatcher.field_147552_d;
+/*  734 */           RenderManager rm = Minecraft.getMinecraft().getRenderManager();
+/*  735 */           double dist = entity.getDistanceSq(rm.renderViewEntity);
+/*  736 */           double x = entity.posX - TileEntityRendererDispatcher.staticPlayerX;
+/*  737 */           double y = entity.posY - TileEntityRendererDispatcher.staticPlayerY;
+/*  738 */           double z = entity.posZ - TileEntityRendererDispatcher.staticPlayerZ;
 /*  739 */           if (dist < 10000.0D) {
 /*  740 */             GL11.glPushMatrix();
-/*  741 */             GL11.glTranslatef((float)x, (float)y + entity.field_70131_O + 0.5F, (float)z);
+/*  741 */             GL11.glTranslatef((float)x, (float)y + entity.height + 0.5F, (float)z);
 /*  742 */             GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-/*  743 */             GL11.glRotatef(-rm.field_78735_i, 0.0F, 1.0F, 0.0F);
-/*  744 */             GL11.glRotatef(rm.field_78732_j, 1.0F, 0.0F, 0.0F);
+/*  743 */             GL11.glRotatef(-rm.playerViewY, 0.0F, 1.0F, 0.0F);
+/*  744 */             GL11.glRotatef(rm.playerViewX, 1.0F, 0.0F, 0.0F);
 /*  745 */             GL11.glScalef(-0.02666667F, -0.02666667F, 0.02666667F);
 /*  746 */             GL11.glDisable(2896);
 /*  747 */             GL11.glTranslatef(0.0F, 9.374999F, 0.0F);
@@ -1382,45 +1382,45 @@
 /*  750 */             GL11.glBlendFunc(770, 771);
 /*  751 */             GL11.glDisable(3553);
 /*  752 */             int prevWidth = GL11.glGetInteger(2849);
-/*  753 */             float size = Math.max(entity.field_70130_N, entity.field_70131_O) * 20.0F;
+/*  753 */             float size = Math.max(entity.width, entity.height) * 20.0F;
 /*  754 */             if (entity instanceof MCH_EntityAircraft) {
 /*  755 */               size *= 2.0F;
 /*      */             }
 /*      */             
-/*  758 */             Tessellator tessellator = Tessellator.func_178181_a();
-/*  759 */             BufferBuilder builder = tessellator.func_178180_c();
-/*  760 */             builder.func_181668_a(2, MCH_Verts.POS_COLOR_LMAP);
+/*  758 */             Tessellator tessellator = Tessellator.getInstance();
+/*  759 */             BufferBuilder builder = tessellator.getBuffer();
+/*  760 */             builder.begin(2, MCH_Verts.POS_COLOR_LMAP);
 /*  761 */             boolean isLockEntity = gs.isLockingEntity(entity);
 /*  762 */             if (isLockEntity) {
 /*  763 */               GL11.glLineWidth(MCH_Gui.scaleFactor * 1.5F);
-/*  764 */               builder.func_181662_b((-size - 1.0F), 0.0D, 0.0D).func_181666_a(1.0F, 0.0F, 0.0F, 1.0F).func_187314_a(0, 240).func_181675_d();
-/*  765 */               builder.func_181662_b((-size - 1.0F), (size * 2.0F), 0.0D).func_181666_a(1.0F, 0.0F, 0.0F, 1.0F).func_187314_a(0, 240).func_181675_d();
-/*  766 */               builder.func_181662_b((size + 1.0F), (size * 2.0F), 0.0D).func_181666_a(1.0F, 0.0F, 0.0F, 1.0F).func_187314_a(0, 240).func_181675_d();
-/*  767 */               builder.func_181662_b((size + 1.0F), 0.0D, 0.0D).func_181666_a(1.0F, 0.0F, 0.0F, 1.0F).func_187314_a(0, 240).func_181675_d();
+/*  764 */               builder.pos((-size - 1.0F), 0.0D, 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).lightmap(0, 240).endVertex();
+/*  765 */               builder.pos((-size - 1.0F), (size * 2.0F), 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).lightmap(0, 240).endVertex();
+/*  766 */               builder.pos((size + 1.0F), (size * 2.0F), 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).lightmap(0, 240).endVertex();
+/*  767 */               builder.pos((size + 1.0F), 0.0D, 0.0D).color(1.0F, 0.0F, 0.0F, 1.0F).lightmap(0, 240).endVertex();
 /*      */             } else {
 /*  769 */               GL11.glLineWidth(MCH_Gui.scaleFactor);
-/*  770 */               builder.func_181662_b((-size - 1.0F), 0.0D, 0.0D).func_181666_a(1.0F, 0.3F, 0.0F, 8.0F).func_187314_a(0, 240).func_181675_d();
-/*  771 */               builder.func_181662_b((-size - 1.0F), (size * 2.0F), 0.0D).func_181666_a(1.0F, 0.3F, 0.0F, 8.0F).func_187314_a(0, 240).func_181675_d();
-/*  772 */               builder.func_181662_b((size + 1.0F), (size * 2.0F), 0.0D).func_181666_a(1.0F, 0.3F, 0.0F, 8.0F).func_187314_a(0, 240).func_181675_d();
-/*  773 */               builder.func_181662_b((size + 1.0F), 0.0D, 0.0D).func_181666_a(1.0F, 0.3F, 0.0F, 8.0F).func_187314_a(0, 240).func_181675_d();
+/*  770 */               builder.pos((-size - 1.0F), 0.0D, 0.0D).color(1.0F, 0.3F, 0.0F, 8.0F).lightmap(0, 240).endVertex();
+/*  771 */               builder.pos((-size - 1.0F), (size * 2.0F), 0.0D).color(1.0F, 0.3F, 0.0F, 8.0F).lightmap(0, 240).endVertex();
+/*  772 */               builder.pos((size + 1.0F), (size * 2.0F), 0.0D).color(1.0F, 0.3F, 0.0F, 8.0F).lightmap(0, 240).endVertex();
+/*  773 */               builder.pos((size + 1.0F), 0.0D, 0.0D).color(1.0F, 0.3F, 0.0F, 8.0F).lightmap(0, 240).endVertex();
 /*      */             } 
 /*      */             
-/*  776 */             tessellator.func_78381_a();
+/*  776 */             tessellator.draw();
 /*  777 */             GL11.glPopMatrix();
-/*  778 */             if (!ac.isUAV() && isLockEntity && (Minecraft.func_71410_x()).field_71474_y.field_74320_O == 0) {
+/*  778 */             if (!ac.isUAV() && isLockEntity && (Minecraft.getMinecraft()).gameSettings.thirdPersonView == 0) {
 /*  779 */               GL11.glPushMatrix();
-/*  780 */               builder.func_181668_a(1, MCH_Verts.POS_COLOR_LMAP);
+/*  780 */               builder.begin(1, MCH_Verts.POS_COLOR_LMAP);
 /*  781 */               GL11.glLineWidth(1.0F);
-/*  782 */               builder.func_181662_b(x, y + (entity.field_70131_O / 2.0F), z).func_181666_a(1.0F, 0.0F, 0.0F, 1.0F).func_187314_a(0, 240).func_181675_d();
-/*  783 */               builder.func_181662_b(ac.field_70142_S - TileEntityRendererDispatcher.field_147554_b, ac.field_70137_T - TileEntityRendererDispatcher.field_147555_c - 1.0D, ac.field_70136_U - TileEntityRendererDispatcher.field_147552_d)
+/*  782 */               builder.pos(x, y + (entity.height / 2.0F), z).color(1.0F, 0.0F, 0.0F, 1.0F).lightmap(0, 240).endVertex();
+/*  783 */               builder.pos(ac.lastTickPosX - TileEntityRendererDispatcher.staticPlayerX, ac.lastTickPosY - TileEntityRendererDispatcher.staticPlayerY - 1.0D, ac.lastTickPosZ - TileEntityRendererDispatcher.staticPlayerZ)
 /*      */ 
 /*      */ 
 /*      */ 
 /*      */                 
-/*  788 */                 .func_181666_a(1.0F, 0.0F, 0.0F, 1.0F)
-/*  789 */                 .func_187314_a(0, 240)
-/*  790 */                 .func_181675_d();
-/*  791 */               tessellator.func_78381_a();
+/*  788 */                 .color(1.0F, 0.0F, 0.0F, 1.0F)
+/*  789 */                 .lightmap(0, 240)
+/*  790 */                 .endVertex();
+/*  791 */               tessellator.draw();
 /*  792 */               GL11.glPopMatrix();
 /*      */             } 
 /*      */             
@@ -1440,19 +1440,19 @@
 /*      */   
 /*      */   public static void renderRope(MCH_EntityAircraft ac, MCH_AircraftInfo info, double x, double y, double z, float tickTime) {
 /*  810 */     GL11.glPushMatrix();
-/*  811 */     Tessellator tessellator = Tessellator.func_178181_a();
-/*  812 */     BufferBuilder builder = tessellator.func_178180_c();
+/*  811 */     Tessellator tessellator = Tessellator.getInstance();
+/*  812 */     BufferBuilder builder = tessellator.getBuffer();
 /*  813 */     if (ac.isRepelling()) {
 /*  814 */       GL11.glDisable(3553);
 /*  815 */       GL11.glDisable(2896);
 /*      */       
 /*  817 */       for (int i = 0; i < info.repellingHooks.size(); i++) {
-/*  818 */         builder.func_181668_a(3, DefaultVertexFormats.field_181706_f);
-/*  819 */         builder.func_181662_b(((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.field_72450_a, ((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.field_72448_b, ((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.field_72449_c).func_181669_b(0, 0, 0, 255).func_181675_d();
-/*  820 */         builder.func_181662_b(((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.field_72450_a, ((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.field_72448_b + ac.ropesLength, ((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.field_72449_c)
-/*  821 */           .func_181669_b(0, 0, 0, 255)
-/*  822 */           .func_181675_d();
-/*  823 */         tessellator.func_78381_a();
+/*  818 */         builder.begin(3, DefaultVertexFormats.POSITION_COLOR);
+/*  819 */         builder.pos(((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.x, ((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.y, ((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.z).color(0, 0, 0, 255).endVertex();
+/*  820 */         builder.pos(((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.x, ((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.y + ac.ropesLength, ((MCH_AircraftInfo.RepellingHook)info.repellingHooks.get(i)).pos.z)
+/*  821 */           .color(0, 0, 0, 255)
+/*  822 */           .endVertex();
+/*  823 */         tessellator.draw();
 /*      */       } 
 /*      */       
 /*  826 */       GL11.glEnable(2896);
@@ -1466,7 +1466,7 @@
 /*  834 */     MCH_AircraftInfo info = entity.getAcInfo();
 /*  835 */     if (info != null) {
 /*  836 */       GL11.glPushMatrix();
-/*  837 */       float yaw = calcRot(entity.getRotYaw(), ((MCH_EntityAircraft)entity).field_70126_B, tickTime);
+/*  837 */       float yaw = calcRot(entity.getRotYaw(), ((MCH_EntityAircraft)entity).prevRotationYaw, tickTime);
 /*  838 */       float pitch = entity.calcRotPitch(tickTime);
 /*  839 */       float roll = calcRot(entity.getRotRoll(), ((MCH_EntityAircraft)entity).prevRotationRoll, tickTime);
 /*  840 */       if (MCH_Config.EnableModEntityRender.prmBool) {
@@ -1474,7 +1474,7 @@
 /*      */       }
 /*      */       
 /*  844 */       if (!shouldSkipRender((Entity)entity)) {
-/*  845 */         setCommonRenderParam(info.smoothShading, entity.func_70070_b());
+/*  845 */         setCommonRenderParam(info.smoothShading, entity.getBrightnessForRender());
 /*  846 */         if (entity.isDestroyed()) {
 /*  847 */           GL11.glColor4f(0.15F, 0.15F, 0.15F, 1.0F);
 /*      */         } else {
@@ -1501,51 +1501,51 @@
 /*  869 */     return true;
 /*      */   }
 /*      */   
-/*      */   public void func_76979_b(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
-/*  873 */     if (entity.func_90999_ad()) {
+/*      */   public void doRenderShadowAndFire(Entity entity, double x, double y, double z, float yaw, float partialTicks) {
+/*  873 */     if (entity.canRenderOnFire()) {
 /*  874 */       renderEntityOnFire(entity, x, y, z, partialTicks);
 /*      */     }
 /*      */   }
 /*      */   
 /*      */   private void renderEntityOnFire(Entity entity, double x, double y, double z, float tick) {
 /*  879 */     GL11.glDisable(2896);
-/*  880 */     TextureMap texturemap = Minecraft.func_71410_x().func_147117_R();
-/*  881 */     TextureAtlasSprite textureatlassprite = texturemap.func_110572_b("minecraft:blocks/fire_layer_0");
-/*  882 */     TextureAtlasSprite textureatlassprite1 = texturemap.func_110572_b("minecraft:blocks/fire_layer_1");
+/*  880 */     TextureMap texturemap = Minecraft.getMinecraft().getTextureMapBlocks();
+/*  881 */     TextureAtlasSprite textureatlassprite = texturemap.getAtlasSprite("minecraft:blocks/fire_layer_0");
+/*  882 */     TextureAtlasSprite textureatlassprite1 = texturemap.getAtlasSprite("minecraft:blocks/fire_layer_1");
 /*  883 */     GL11.glPushMatrix();
 /*  884 */     GL11.glTranslatef((float)x, (float)y, (float)z);
-/*  885 */     float f1 = entity.field_70130_N * 1.4F;
+/*  885 */     float f1 = entity.width * 1.4F;
 /*  886 */     GL11.glScalef(f1 * 2.0F, f1 * 2.0F, f1 * 2.0F);
-/*  887 */     Tessellator tessellator = Tessellator.func_178181_a();
-/*  888 */     BufferBuilder bufferbuilder = tessellator.func_178180_c();
+/*  887 */     Tessellator tessellator = Tessellator.getInstance();
+/*  888 */     BufferBuilder bufferbuilder = tessellator.getBuffer();
 /*  889 */     float f2 = 1.5F;
 /*  890 */     float f3 = 0.0F;
-/*  891 */     float f4 = entity.field_70131_O / f1;
-/*  892 */     float f5 = (float)(entity.field_70163_u + (entity.func_174813_aQ()).field_72338_b);
-/*  893 */     GL11.glRotatef(-this.field_76990_c.field_78735_i, 0.0F, 1.0F, 0.0F);
+/*  891 */     float f4 = entity.height / f1;
+/*  892 */     float f5 = (float)(entity.posY + (entity.getEntityBoundingBox()).minY);
+/*  893 */     GL11.glRotatef(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
 /*  894 */     GL11.glTranslatef(0.0F, 0.0F, -0.3F + (int)f4 * 0.02F);
 /*  895 */     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 /*  896 */     float f6 = 0.0F;
 /*  897 */     int i = 0;
-/*  898 */     bufferbuilder.func_181668_a(7, DefaultVertexFormats.field_181707_g);
+/*  898 */     bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
 /*      */     
 /*  900 */     while (f4 > 0.0F) {
 /*  901 */       TextureAtlasSprite textureatlassprite2 = (i % 2 == 0) ? textureatlassprite : textureatlassprite1;
-/*  902 */       func_110776_a(TextureMap.field_110575_b);
-/*  903 */       float f7 = textureatlassprite2.func_94209_e();
-/*  904 */       float f8 = textureatlassprite2.func_94206_g();
-/*  905 */       float f9 = textureatlassprite2.func_94212_f();
-/*  906 */       float f10 = textureatlassprite2.func_94210_h();
+/*  902 */       bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+/*  903 */       float f7 = textureatlassprite2.getMinU();
+/*  904 */       float f8 = textureatlassprite2.getMinV();
+/*  905 */       float f9 = textureatlassprite2.getMaxU();
+/*  906 */       float f10 = textureatlassprite2.getMaxV();
 /*  907 */       if (i / 2 % 2 == 0) {
 /*  908 */         float f11 = f9;
 /*  909 */         f9 = f7;
 /*  910 */         f7 = f11;
 /*      */       } 
 /*      */       
-/*  913 */       bufferbuilder.func_181662_b((f2 - f3), (0.0F - f5), f6).func_187315_a(f9, f10).func_181675_d();
-/*  914 */       bufferbuilder.func_181662_b((-f2 - f3), (0.0F - f5), f6).func_187315_a(f7, f10).func_181675_d();
-/*  915 */       bufferbuilder.func_181662_b((-f2 - f3), (1.4F - f5), f6).func_187315_a(f7, f8).func_181675_d();
-/*  916 */       bufferbuilder.func_181662_b((f2 - f3), (1.4F - f5), f6).func_187315_a(f9, f8).func_181675_d();
+/*  913 */       bufferbuilder.pos((f2 - f3), (0.0F - f5), f6).tex(f9, f10).endVertex();
+/*  914 */       bufferbuilder.pos((-f2 - f3), (0.0F - f5), f6).tex(f7, f10).endVertex();
+/*  915 */       bufferbuilder.pos((-f2 - f3), (1.4F - f5), f6).tex(f7, f8).endVertex();
+/*  916 */       bufferbuilder.pos((f2 - f3), (1.4F - f5), f6).tex(f9, f8).endVertex();
 /*  917 */       f4 -= 0.45F;
 /*  918 */       f5 -= 0.45F;
 /*  919 */       f2 *= 0.9F;
@@ -1553,7 +1553,7 @@
 /*  921 */       i++;
 /*      */     } 
 /*      */     
-/*  924 */     tessellator.func_78381_a();
+/*  924 */     tessellator.draw();
 /*  925 */     GL11.glPopMatrix();
 /*  926 */     GL11.glEnable(2896);
 /*      */   }
@@ -1562,10 +1562,10 @@
 /*  930 */     if (ac == MCH_ClientCommonTickHandler.ridingAircraft) {
 /*  931 */       int bk = MCH_ClientCommonTickHandler.cameraMode;
 /*  932 */       MCH_ClientCommonTickHandler.cameraMode = 0;
-/*  933 */       func_110776_a(MCH_Utils.suffix(path));
+/*  933 */       bindTexture(MCH_Utils.suffix(path));
 /*  934 */       MCH_ClientCommonTickHandler.cameraMode = bk;
 /*      */     } else {
-/*  936 */       func_110776_a(MCH_Utils.suffix(path));
+/*  936 */       bindTexture(MCH_Utils.suffix(path));
 /*      */     } 
 /*      */   }
 /*      */   
@@ -1590,28 +1590,28 @@
 /*  958 */       boolean isClientPlayer = W_Lib.isClientPlayer(entity);
 /*  959 */       if (!isClientPlayer || !W_Lib.isFirstPerson() || (isPilot && ac.getCameraId() > 0)) {
 /*  960 */         GL11.glPushMatrix();
-/*  961 */         if (entity.field_70173_aa == 0) {
-/*  962 */           entity.field_70142_S = entity.field_70165_t;
-/*  963 */           entity.field_70137_T = entity.field_70163_u;
-/*  964 */           entity.field_70136_U = entity.field_70161_v;
+/*  961 */         if (entity.ticksExisted == 0) {
+/*  962 */           entity.lastTickPosX = entity.posX;
+/*  963 */           entity.lastTickPosY = entity.posY;
+/*  964 */           entity.lastTickPosZ = entity.posZ;
 /*      */         } 
 /*      */         
-/*  967 */         double x = entity.field_70142_S + (entity.field_70165_t - entity.field_70142_S) * tickTime;
-/*  968 */         double y = entity.field_70137_T + (entity.field_70163_u - entity.field_70137_T) * tickTime;
-/*  969 */         double z = entity.field_70136_U + (entity.field_70161_v - entity.field_70136_U) * tickTime;
-/*  970 */         float f1 = entity.field_70126_B + (entity.field_70177_z - entity.field_70126_B) * tickTime;
-/*  971 */         int i = entity.func_70070_b();
-/*  972 */         if (entity.func_70027_ad()) {
+/*  967 */         double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * tickTime;
+/*  968 */         double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * tickTime;
+/*  969 */         double z = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * tickTime;
+/*  970 */         float f1 = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * tickTime;
+/*  971 */         int i = entity.getBrightnessForRender();
+/*  972 */         if (entity.isBurning()) {
 /*  973 */           i = 15728880;
 /*      */         }
 /*      */         
 /*  976 */         int j = i % 65536;
 /*  977 */         int k = i / 65536;
-/*  978 */         OpenGlHelper.func_77475_a(OpenGlHelper.field_77476_b, j, k);
+/*  978 */         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j, k);
 /*  979 */         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-/*  980 */         double dx = x - TileEntityRendererDispatcher.field_147554_b;
-/*  981 */         double dy = y - TileEntityRendererDispatcher.field_147555_c;
-/*  982 */         double dz = z - TileEntityRendererDispatcher.field_147552_d;
+/*  980 */         double dx = x - TileEntityRendererDispatcher.staticPlayerX;
+/*  981 */         double dy = y - TileEntityRendererDispatcher.staticPlayerY;
+/*  982 */         double dz = z - TileEntityRendererDispatcher.staticPlayerZ;
 /*  983 */         GL11.glTranslated(dx, dy, dz);
 /*  984 */         GL11.glRotatef(yaw, 0.0F, -1.0F, 0.0F);
 /*  985 */         GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
@@ -1621,34 +1621,34 @@
 /*  989 */         GL11.glTranslated(-dx, -dy, -dz);
 /*  990 */         boolean bk = renderingEntity;
 /*  991 */         renderingEntity = true;
-/*  992 */         Entity ridingEntity = entity.func_184187_bx();
+/*  992 */         Entity ridingEntity = entity.getRidingEntity();
 /*  993 */         if (!W_Lib.isEntityLivingBase(entity) && !(entity instanceof MCH_IEntityCanRideAircraft)) {
-/*  994 */           entity.func_184210_p();
+/*  994 */           entity.dismountRidingEntity();
 /*      */         }
 /*      */         
 /*  997 */         EntityLivingBase entityLiving = (entity instanceof EntityLivingBase) ? (EntityLivingBase)entity : null;
 /*  998 */         float bkPitch = 0.0F;
 /*  999 */         float bkPrevPitch = 0.0F;
 /* 1000 */         if (isPilot && entityLiving != null) {
-/* 1001 */           entityLiving.field_70761_aq = ac.getRotYaw();
-/* 1002 */           entityLiving.field_70760_ar = ac.getRotYaw();
+/* 1001 */           entityLiving.renderYawOffset = ac.getRotYaw();
+/* 1002 */           entityLiving.prevRenderYawOffset = ac.getRotYaw();
 /* 1003 */           if (ac.getCameraId() > 0) {
-/* 1004 */             entityLiving.field_70759_as = ac.getRotYaw();
-/* 1005 */             entityLiving.field_70758_at = ac.getRotYaw();
-/* 1006 */             bkPitch = entityLiving.field_70125_A;
-/* 1007 */             bkPrevPitch = entityLiving.field_70127_C;
-/* 1008 */             entityLiving.field_70125_A = ac.getRotPitch();
-/* 1009 */             entityLiving.field_70127_C = ac.getRotPitch();
+/* 1004 */             entityLiving.rotationYawHead = ac.getRotYaw();
+/* 1005 */             entityLiving.prevRotationYawHead = ac.getRotYaw();
+/* 1006 */             bkPitch = entityLiving.rotationPitch;
+/* 1007 */             bkPrevPitch = entityLiving.prevRotationPitch;
+/* 1008 */             entityLiving.rotationPitch = ac.getRotPitch();
+/* 1009 */             entityLiving.prevRotationPitch = ac.getRotPitch();
 /*      */           } 
 /*      */         } 
 /*      */         
-/* 1013 */         W_EntityRenderer.renderEntityWithPosYaw(this.field_76990_c, entity, dx, dy, dz, f1, tickTime, false);
+/* 1013 */         W_EntityRenderer.renderEntityWithPosYaw(this.renderManager, entity, dx, dy, dz, f1, tickTime, false);
 /* 1014 */         if (isPilot && entityLiving != null && ac.getCameraId() > 0) {
-/* 1015 */           entityLiving.field_70125_A = bkPitch;
-/* 1016 */           entityLiving.field_70127_C = bkPrevPitch;
+/* 1015 */           entityLiving.rotationPitch = bkPitch;
+/* 1016 */           entityLiving.prevRotationPitch = bkPrevPitch;
 /*      */         } 
 /*      */         
-/* 1019 */         entity.func_184220_m(ridingEntity);
+/* 1019 */         entity.startRiding(ridingEntity);
 /* 1020 */         renderingEntity = bk;
 /* 1021 */         GL11.glPopMatrix();
 /*      */       } 
@@ -1658,8 +1658,8 @@
 /*      */ 
 /*      */   
 /*      */   public float calcRot(float rot, float prevRot, float tickTime) {
-/* 1029 */     rot = MathHelper.func_76142_g(rot);
-/* 1030 */     prevRot = MathHelper.func_76142_g(prevRot);
+/* 1029 */     rot = MathHelper.wrapDegrees(rot);
+/* 1030 */     prevRot = MathHelper.wrapDegrees(prevRot);
 /* 1031 */     if (rot - prevRot < -180.0F) {
 /* 1032 */       prevRot -= 360.0F;
 /* 1033 */     } else if (prevRot - rot < -180.0F) {
@@ -1673,7 +1673,7 @@
 /* 1041 */     if (MCH_Config.TestMode.prmBool && debugModel != null) {
 /* 1042 */       GL11.glPushMatrix();
 /* 1043 */       GL11.glTranslated(x, y, z);
-/* 1044 */       GL11.glScalef(e.field_70130_N, e.field_70131_O, e.field_70130_N);
+/* 1044 */       GL11.glScalef(e.width, e.height, e.width);
 /* 1045 */       bindTexture("textures/hit_box.png");
 /* 1046 */       debugModel.renderAll();
 /* 1047 */       GL11.glPopMatrix();
@@ -1682,7 +1682,7 @@
 /*      */       
 /* 1051 */       for (MCH_BoundingBox bb : e.extraBoundingBox) {
 /* 1052 */         GL11.glPushMatrix();
-/* 1053 */         GL11.glTranslated(bb.rotatedOffset.field_72450_a, bb.rotatedOffset.field_72448_b, bb.rotatedOffset.field_72449_c);
+/* 1053 */         GL11.glTranslated(bb.rotatedOffset.x, bb.rotatedOffset.y, bb.rotatedOffset.z);
 /* 1054 */         GL11.glPushMatrix();
 /* 1055 */         GL11.glScalef(bb.width, bb.height, bb.width);
 /* 1056 */         bindTexture("textures/bounding_box.png");
@@ -1703,27 +1703,27 @@
 /* 1071 */     GL11.glPushMatrix();
 /* 1072 */     GL11.glTranslatef(0.0F, 0.5F + (float)(bb.offsetY * 0.0D + bb.height), 0.0F);
 /* 1073 */     GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-/* 1074 */     GL11.glRotatef(-this.field_76990_c.field_78735_i, 0.0F, 1.0F, 0.0F);
-/* 1075 */     GL11.glRotatef(this.field_76990_c.field_78732_j, 1.0F, 0.0F, 0.0F);
+/* 1074 */     GL11.glRotatef(-this.renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+/* 1075 */     GL11.glRotatef(this.renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
 /* 1076 */     GL11.glScalef(-f1, -f1, f1);
 /* 1077 */     GL11.glDisable(2896);
 /* 1078 */     GL11.glEnable(3042);
-/* 1079 */     OpenGlHelper.func_148821_a(770, 771, 1, 0);
+/* 1079 */     OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 /* 1080 */     GL11.glDisable(3553);
-/* 1081 */     FontRenderer fontrenderer = func_76983_a();
-/* 1082 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 1083 */     BufferBuilder builder = tessellator.func_178180_c();
-/* 1084 */     builder.func_181668_a(7, DefaultVertexFormats.field_181706_f);
-/* 1085 */     int i = fontrenderer.func_78256_a(s) / 2;
-/* 1086 */     builder.func_181662_b((-i - 1), -1.0D, 0.1D).func_181666_a(0.0F, 0.0F, 0.0F, 0.4F).func_181675_d();
-/* 1087 */     builder.func_181662_b((-i - 1), 8.0D, 0.1D).func_181666_a(0.0F, 0.0F, 0.0F, 0.4F).func_181675_d();
-/* 1088 */     builder.func_181662_b((i + 1), 8.0D, 0.1D).func_181666_a(0.0F, 0.0F, 0.0F, 0.4F).func_181675_d();
-/* 1089 */     builder.func_181662_b((i + 1), -1.0D, 0.1D).func_181666_a(0.0F, 0.0F, 0.0F, 0.4F).func_181675_d();
-/* 1090 */     tessellator.func_78381_a();
+/* 1081 */     FontRenderer fontrenderer = getFontRendererFromRenderManager();
+/* 1082 */     Tessellator tessellator = Tessellator.getInstance();
+/* 1083 */     BufferBuilder builder = tessellator.getBuffer();
+/* 1084 */     builder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+/* 1085 */     int i = fontrenderer.getStringWidth(s) / 2;
+/* 1086 */     builder.pos((-i - 1), -1.0D, 0.1D).color(0.0F, 0.0F, 0.0F, 0.4F).endVertex();
+/* 1087 */     builder.pos((-i - 1), 8.0D, 0.1D).color(0.0F, 0.0F, 0.0F, 0.4F).endVertex();
+/* 1088 */     builder.pos((i + 1), 8.0D, 0.1D).color(0.0F, 0.0F, 0.0F, 0.4F).endVertex();
+/* 1089 */     builder.pos((i + 1), -1.0D, 0.1D).color(0.0F, 0.0F, 0.0F, 0.4F).endVertex();
+/* 1090 */     tessellator.draw();
 /* 1091 */     GL11.glEnable(3553);
 /* 1092 */     GL11.glDepthMask(false);
 /* 1093 */     int color = (bb.damegeFactor > 1.0F) ? 16711680 : ((bb.damegeFactor < 1.0F) ? 65535 : 16777215);
-/* 1094 */     fontrenderer.func_78276_b(s, -fontrenderer.func_78256_a(s) / 2, 0, 0xC0000000 | color);
+/* 1094 */     fontrenderer.drawString(s, -fontrenderer.getStringWidth(s) / 2, 0, 0xC0000000 | color);
 /* 1095 */     GL11.glDepthMask(true);
 /* 1096 */     GL11.glEnable(2896);
 /* 1097 */     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -1738,7 +1738,7 @@
 /* 1106 */       GL11.glRotatef(yaw, 0.0F, -1.0F, 0.0F);
 /* 1107 */       GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
 /* 1108 */       GL11.glRotatef(roll, 0.0F, 0.0F, 1.0F);
-/* 1109 */       GL11.glTranslated(seat.pos.field_72450_a, seat.pos.field_72448_b, seat.pos.field_72449_c);
+/* 1109 */       GL11.glTranslated(seat.pos.x, seat.pos.y, seat.pos.z);
 /* 1110 */       GL11.glScalef(1.0F, 1.0F, 1.0F);
 /* 1111 */       bindTexture("textures/seat_pilot.png");
 /* 1112 */       debugModel.renderAll();

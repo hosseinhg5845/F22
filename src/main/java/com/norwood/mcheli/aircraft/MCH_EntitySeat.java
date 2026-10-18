@@ -30,78 +30,78 @@
 /*     */   
 /*     */   public MCH_EntitySeat(World world) {
 /*  32 */     super(world);
-/*  33 */     func_70105_a(1.0F, 1.0F);
-/*  34 */     this.field_70159_w = 0.0D;
-/*  35 */     this.field_70181_x = 0.0D;
-/*  36 */     this.field_70179_y = 0.0D;
+/*  33 */     setSize(1.0F, 1.0F);
+/*  34 */     this.motionX = 0.0D;
+/*  35 */     this.motionY = 0.0D;
+/*  36 */     this.motionZ = 0.0D;
 /*  37 */     this.seatID = -1;
 /*  38 */     setParent((MCH_EntityAircraft)null);
 /*  39 */     this.parentSearchCount = 0;
 /*  40 */     this.lastRiddenByEntity = null;
-/*  41 */     this.field_70158_ak = true;
-/*  42 */     this.field_70178_ae = true;
+/*  41 */     this.ignoreFrustumCheck = true;
+/*  42 */     this.isImmuneToFire = true;
 /*     */   }
 /*     */   
 /*     */   public MCH_EntitySeat(World world, double x, double y, double z) {
 /*  46 */     this(world);
-/*  47 */     func_70107_b(x, y + 1.0D, z);
-/*  48 */     this.field_70169_q = x;
-/*  49 */     this.field_70167_r = y + 1.0D;
-/*  50 */     this.field_70166_s = z;
+/*  47 */     setPosition(x, y + 1.0D, z);
+/*  48 */     this.prevPosX = x;
+/*  49 */     this.prevPosY = y + 1.0D;
+/*  50 */     this.prevPosZ = z;
 /*     */   }
 /*     */   
-/*     */   protected boolean func_70041_e_() {
+/*     */   protected boolean canTriggerWalking() {
 /*  54 */     return false;
 /*     */   }
 /*     */   
-/*     */   public AxisAlignedBB func_70114_g(Entity par1Entity) {
-/*  58 */     return par1Entity.func_174813_aQ();
+/*     */   public AxisAlignedBB getCollisionBox(Entity par1Entity) {
+/*  58 */     return par1Entity.getEntityBoundingBox();
 /*     */   }
 /*     */   
-/*     */   public AxisAlignedBB func_70046_E() {
-/*  62 */     return func_174813_aQ();
+/*     */   public AxisAlignedBB getCollisionBoundingBox() {
+/*  62 */     return getEntityBoundingBox();
 /*     */   }
 /*     */   
-/*     */   public double func_70042_X() {
+/*     */   public double getMountedYOffset() {
 /*  66 */     return -0.3D;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public boolean func_70097_a(DamageSource par1DamageSource, float par2) {
-/*  71 */     return (getParent() != null && getParent().func_70097_a(par1DamageSource, par2));
+/*     */   public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+/*  71 */     return (getParent() != null && getParent().attackEntityFrom(par1DamageSource, par2));
 /*     */   }
 /*     */   
-/*     */   public boolean func_70067_L() {
-/*  75 */     return !this.field_70128_L;
+/*     */   public boolean canBeCollidedWith() {
+/*  75 */     return !this.isDead;
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
-/*     */   public void func_180426_a(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport) {}
+/*     */   public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport) {}
 /*     */   
-/*     */   public void func_70106_y() {
-/*  83 */     super.func_70106_y();
+/*     */   public void setDead() {
+/*  83 */     super.setDead();
 /*     */   }
 /*     */   
-/*     */   public void func_70071_h_() {
-/*  87 */     super.func_70071_h_();
-/*  88 */     this.field_70143_R = 0.0F;
+/*     */   public void onUpdate() {
+/*  87 */     super.onUpdate();
+/*  88 */     this.fallDistance = 0.0F;
 /*  89 */     Entity riddenByEntity = getRiddenByEntity();
 /*  90 */     if (riddenByEntity != null) {
-/*  91 */       riddenByEntity.field_70143_R = 0.0F;
+/*  91 */       riddenByEntity.fallDistance = 0.0F;
 /*     */     }
 /*     */     
 /*  94 */     if (this.lastRiddenByEntity == null && riddenByEntity != null) {
 /*  95 */       if (getParent() != null) {
-/*  96 */         MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntitySeat.onUpdate:SeatID=%d", new Object[] { Integer.valueOf(this.seatID), riddenByEntity.toString() });
+/*  96 */         MCH_Lib.DbgLog(this.world, "MCH_EntitySeat.onUpdate:SeatID=%d", new Object[] { Integer.valueOf(this.seatID), riddenByEntity.toString() });
 /*  97 */         getParent().onMountPlayerSeat(this, riddenByEntity);
 /*     */       } 
 /*  99 */     } else if (this.lastRiddenByEntity != null && riddenByEntity == null && getParent() != null) {
-/* 100 */       MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntitySeat.onUpdate:SeatID=%d", new Object[] { Integer.valueOf(this.seatID), this.lastRiddenByEntity.toString() });
+/* 100 */       MCH_Lib.DbgLog(this.world, "MCH_EntitySeat.onUpdate:SeatID=%d", new Object[] { Integer.valueOf(this.seatID), this.lastRiddenByEntity.toString() });
 /* 101 */       getParent().onUnmountPlayerSeat(this, this.lastRiddenByEntity);
 /*     */     } 
 /*     */     
-/* 104 */     if (this.field_70170_p.field_72995_K) {
+/* 104 */     if (this.world.isRemote) {
 /* 105 */       onUpdate_Client();
 /*     */     } else {
 /* 107 */       onUpdate_Server();
@@ -117,45 +117,45 @@
 /*     */   private void onUpdate_Server() {
 /* 118 */     checkDetachmentAndDelete();
 /* 119 */     Entity riddenByEntity = getRiddenByEntity();
-/* 120 */     if (riddenByEntity == null || riddenByEntity.field_70128_L);
+/* 120 */     if (riddenByEntity == null || riddenByEntity.isDead);
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_184232_k(@NotNull Entity passenger) {
+/*     */   public void updatePassenger(@NotNull Entity passenger) {
 /* 125 */     updatePosition(passenger);
 /*     */   }
 /*     */   
 /*     */   public void updatePosition(@Nullable Entity ridEnt) {
 /* 129 */     if (ridEnt != null) {
-/* 130 */       ridEnt.func_70107_b(this.field_70165_t, this.field_70163_u, this.field_70161_v);
-/* 131 */       ridEnt.field_70159_w = ridEnt.field_70181_x = ridEnt.field_70179_y = 0.0D;
+/* 130 */       ridEnt.setPosition(this.posX, this.posY, this.posZ);
+/* 131 */       ridEnt.motionX = ridEnt.motionY = ridEnt.motionZ = 0.0D;
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   public void updateRotation(@Nullable Entity ridEnt, float yaw, float pitch) {
 /* 136 */     if (ridEnt != null) {
-/* 137 */       ridEnt.field_70177_z = yaw;
-/* 138 */       ridEnt.field_70125_A = pitch;
+/* 137 */       ridEnt.rotationYaw = yaw;
+/* 138 */       ridEnt.rotationPitch = pitch;
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   protected void checkDetachmentAndDelete() {
-/* 143 */     if (!this.field_70128_L && (this.seatID < 0 || getParent() == null || (getParent()).field_70128_L)) {
-/* 144 */       if (getParent() != null && (getParent()).field_70128_L) {
+/* 143 */     if (!this.isDead && (this.seatID < 0 || getParent() == null || (getParent()).isDead)) {
+/* 144 */       if (getParent() != null && (getParent()).isDead) {
 /* 145 */         this.parentSearchCount = 100000000;
 /*     */       }
 /*     */       
 /* 148 */       if (this.parentSearchCount >= 1200) {
-/* 149 */         func_70106_y();
-/* 150 */         if (!this.field_70170_p.field_72995_K) {
+/* 149 */         setDead();
+/* 150 */         if (!this.world.isRemote) {
 /* 151 */           Entity riddenByEntity = getRiddenByEntity();
 /* 152 */           if (riddenByEntity != null) {
-/* 153 */             riddenByEntity.func_184210_p();
+/* 153 */             riddenByEntity.dismountRidingEntity();
 /*     */           }
 /*     */         } 
 /*     */         
 /* 157 */         setParent((MCH_EntityAircraft)null);
-/* 158 */         MCH_Lib.DbgLog(this.field_70170_p, "[Error]座席エンティティは本体が見つからないため削除 seat=%d, parentUniqueID=%s", new Object[] { Integer.valueOf(this.seatID), this.parentUniqueID });
+/* 158 */         MCH_Lib.DbgLog(this.world, "[Error]座席エンティティは本体が見つからないため削除 seat=%d, parentUniqueID=%s", new Object[] { Integer.valueOf(this.seatID), this.parentUniqueID });
 /*     */       } else {
 /* 160 */         this.parentSearchCount++;
 /*     */       } 
@@ -164,14 +164,14 @@
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   protected void func_70014_b(NBTTagCompound par1NBTTagCompound) {
-/* 168 */     par1NBTTagCompound.func_74768_a("SeatID", this.seatID);
-/* 169 */     par1NBTTagCompound.func_74778_a("ParentUniqueID", this.parentUniqueID);
+/*     */   protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
+/* 168 */     par1NBTTagCompound.setInteger("SeatID", this.seatID);
+/* 169 */     par1NBTTagCompound.setString("ParentUniqueID", this.parentUniqueID);
 /*     */   }
 /*     */   
-/*     */   protected void func_70037_a(NBTTagCompound par1NBTTagCompound) {
-/* 173 */     this.seatID = par1NBTTagCompound.func_74762_e("SeatID");
-/* 174 */     this.parentUniqueID = par1NBTTagCompound.func_74779_i("ParentUniqueID");
+/*     */   protected void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
+/* 173 */     this.seatID = par1NBTTagCompound.getInteger("SeatID");
+/* 174 */     this.parentUniqueID = par1NBTTagCompound.getString("ParentUniqueID");
 /*     */   }
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
@@ -188,26 +188,26 @@
 /* 188 */     return (riddenByEntity != null && getParent() != null && getParent().getIsGunnerMode(riddenByEntity));
 /*     */   }
 /*     */   
-/*     */   public boolean func_184230_a(@NotNull EntityPlayer player, @NotNull EnumHand hand) {
+/*     */   public boolean processInitialInteract(@NotNull EntityPlayer player, @NotNull EnumHand hand) {
 /* 192 */     if (getParent() != null && !getParent().isDestroyed()) {
 /* 193 */       if (!getParent().checkTeam(player)) {
 /* 194 */         return false;
 /*     */       }
-/* 196 */       ItemStack itemStack = player.func_184586_b(hand);
-/* 197 */       if (!itemStack.func_190926_b() && itemStack.func_77973_b() instanceof com.norwood.mcheli.tool.MCH_ItemWrench)
-/* 198 */         return getParent().func_184230_a(player, hand); 
-/* 199 */       if (!itemStack.func_190926_b() && itemStack.func_77973_b() instanceof com.norwood.mcheli.mob.MCH_ItemSpawnGunner) {
-/* 200 */         return getParent().func_184230_a(player, hand);
+/* 196 */       ItemStack itemStack = player.getHeldItem(hand);
+/* 197 */       if (!itemStack.isEmpty() && itemStack.getItem() instanceof com.norwood.mcheli.tool.MCH_ItemWrench)
+/* 198 */         return getParent().processInitialInteract(player, hand); 
+/* 199 */       if (!itemStack.isEmpty() && itemStack.getItem() instanceof com.norwood.mcheli.mob.MCH_ItemSpawnGunner) {
+/* 200 */         return getParent().processInitialInteract(player, hand);
 /*     */       }
 /* 202 */       Entity riddenByEntity = getRiddenByEntity();
 /* 203 */       if (riddenByEntity != null)
 /* 204 */         return false; 
-/* 205 */       if (player.func_184187_bx() != null)
+/* 205 */       if (player.getRidingEntity() != null)
 /* 206 */         return false; 
 /* 207 */       if (!canRideMob((Entity)player)) {
 /* 208 */         return false;
 /*     */       }
-/* 210 */       player.func_184220_m((Entity)this);
+/* 210 */       player.startRiding((Entity)this);
 /* 211 */       return true;
 /*     */     } 
 /*     */ 
@@ -226,7 +226,7 @@
 /* 226 */     this.parent = parent;
 /* 227 */     Entity riddenByEntity = getRiddenByEntity();
 /* 228 */     if (riddenByEntity != null) {
-/* 229 */       MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntitySeat.setParent:SeatID=%d %s : " + getParent(), new Object[] { Integer.valueOf(this.seatID), riddenByEntity.toString() });
+/* 229 */       MCH_Lib.DbgLog(this.world, "MCH_EntitySeat.setParent:SeatID=%d %s : " + getParent(), new Object[] { Integer.valueOf(this.seatID), riddenByEntity.toString() });
 /* 230 */       if (getParent() != null) {
 /* 231 */         getParent().onMountPlayerSeat(this, riddenByEntity);
 /*     */       }
@@ -236,7 +236,7 @@
 /*     */   
 /*     */   @Nullable
 /*     */   public Entity getRiddenByEntity() {
-/* 239 */     List<Entity> passengers = func_184188_bt();
+/* 239 */     List<Entity> passengers = getPassengers();
 /* 240 */     return passengers.isEmpty() ? null : passengers.get(0);
 /*     */   }
 /*     */ }

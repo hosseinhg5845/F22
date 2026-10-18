@@ -19,11 +19,11 @@
 /* 19 */     this.id = id;
 /*    */   }
 /*    */   @NotNull
-/*    */   public ResourceLocation func_192163_a() {
+/*    */   public ResourceLocation getId() {
 /* 23 */     return this.id;
 /*    */   }
 /*    */   
-/*    */   public void func_192165_a(@NotNull PlayerAdvancements playerAdvancementsIn, @NotNull ICriterionTrigger.Listener<MCH_SimpleListeners.SimpleInstance> listener) {
+/*    */   public void addListener(@NotNull PlayerAdvancements playerAdvancementsIn, @NotNull ICriterionTrigger.Listener<MCH_SimpleListeners.SimpleInstance> listener) {
 /* 27 */     MCH_SimpleListeners listeners = this.listeners.get(playerAdvancementsIn);
 /* 28 */     if (listeners == null) {
 /* 29 */       listeners = new MCH_SimpleListeners(playerAdvancementsIn);
@@ -33,7 +33,7 @@
 /* 33 */     listeners.add(listener);
 /*    */   }
 /*    */   
-/*    */   public void func_192164_b(@NotNull PlayerAdvancements playerAdvancementsIn, @NotNull ICriterionTrigger.Listener<MCH_SimpleListeners.SimpleInstance> listener) {
+/*    */   public void removeListener(@NotNull PlayerAdvancements playerAdvancementsIn, @NotNull ICriterionTrigger.Listener<MCH_SimpleListeners.SimpleInstance> listener) {
 /* 37 */     MCH_SimpleListeners listeners = this.listeners.get(playerAdvancementsIn);
 /* 38 */     if (listeners != null) {
 /* 39 */       listeners.remove(listener);
@@ -43,7 +43,7 @@
 /*    */     } 
 /*    */   }
 /*    */   
-/*    */   public void func_192167_a(@NotNull PlayerAdvancements playerAdvancementsIn) {
+/*    */   public void removeAllListeners(@NotNull PlayerAdvancements playerAdvancementsIn) {
 /* 47 */     this.listeners.remove(playerAdvancementsIn);
 /*    */   }
 /*    */   
@@ -52,7 +52,7 @@
 /*    */   }
 /*    */   
 /*    */   public void trigger(EntityPlayerMP player) {
-/* 55 */     MCH_SimpleListeners listener = this.listeners.get(player.func_192039_O());
+/* 55 */     MCH_SimpleListeners listener = this.listeners.get(player.getAdvancements());
 /* 56 */     if (listener != null)
 /* 57 */       listener.trigger(); 
 /*    */   }

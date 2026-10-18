@@ -42,11 +42,11 @@
 /*    */   }
 /*    */   
 /*    */   public static boolean canCraft(EntityPlayer player, IRecipe recipe) {
-/* 45 */     for (Ingredient ingredient : recipe.func_192400_c()) {
-/* 46 */       if (ingredient != Ingredient.field_193370_a) {
+/* 45 */     for (Ingredient ingredient : recipe.getIngredients()) {
+/* 46 */       if (ingredient != Ingredient.EMPTY) {
 /* 47 */         boolean flag = false;
 /*    */         
-/* 49 */         for (ItemStack itemstack : player.field_71071_by.field_70462_a) {
+/* 49 */         for (ItemStack itemstack : player.inventory.mainInventory) {
 /* 50 */           if (ingredient.apply(itemstack)) {
 /* 51 */             flag = true;
 /*    */             
@@ -63,14 +63,14 @@
 /*    */   }
 /*    */   
 /*    */   public static boolean consumeInventory(EntityPlayer player, IRecipe recipe) {
-/* 66 */     for (Ingredient ingredient : recipe.func_192400_c()) {
-/* 67 */       if (ingredient != Ingredient.field_193370_a) {
+/* 66 */     for (Ingredient ingredient : recipe.getIngredients()) {
+/* 67 */       if (ingredient != Ingredient.EMPTY) {
 /* 68 */         int i = 0;
 /* 69 */         boolean flag = false;
 /*    */         
-/* 71 */         for (ItemStack itemstack : player.field_71071_by.field_70462_a) {
+/* 71 */         for (ItemStack itemstack : player.inventory.mainInventory) {
 /* 72 */           if (ingredient.apply(itemstack)) {
-/* 73 */             player.field_71071_by.func_70298_a(i, 1);
+/* 73 */             player.inventory.decrStackSize(i, 1);
 /* 74 */             flag = true;
 /*    */             
 /*    */             break;

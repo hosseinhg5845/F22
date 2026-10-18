@@ -27,7 +27,7 @@
 /*     */   public String lastConfigFileName;
 /*     */   
 /*     */   public String getDataDir() {
-/*  30 */     return MCH_Utils.getServer().func_71270_I();
+/*  30 */     return MCH_Utils.getServer().getFolderName();
 /*     */   }
 /*     */ 
 /*     */   
@@ -155,7 +155,7 @@
 /*     */   }
 /*     */   
 /*     */   public boolean isSinglePlayer() {
-/* 158 */     return MCH_Utils.getServer().func_71264_H();
+/* 158 */     return MCH_Utils.getServer().isSinglePlayer();
 /*     */   }
 /*     */ 
 /*     */   

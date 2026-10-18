@@ -11,25 +11,25 @@
 /*    */   public EntityBulletTest(World par1World) {
 /* 12 */     super(par1World);
 /* 13 */     setName("m230");
-/* 14 */     func_70105_a(1.0F, 1.0F);
+/* 14 */     setSize(1.0F, 1.0F);
 /* 15 */     this.explosionPower = 3;
 /* 16 */     setPower(22);
-/* 17 */     this.firstPos = Vec3d.field_186680_a;
+/* 17 */     this.firstPos = Vec3d.ZERO;
 /* 18 */     this.acceleration = 4.0D;
 /* 19 */     this.explosionPower = 1;
 /* 20 */     this.delayFuse = 100;
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   public void func_70037_a(NBTTagCompound par1nbtTagCompound) {
-/* 25 */     this.field_70159_w = 1.0D;
+/*    */   public void readEntityFromNBT(NBTTagCompound par1nbtTagCompound) {
+/* 25 */     this.motionX = 1.0D;
 /*    */   }
 /*    */ 
 /*    */   
 /*    */   public boolean checkValid() {
-/* 30 */     double x = this.field_70165_t - this.firstPos.field_72450_a;
-/* 31 */     double z = this.field_70161_v - this.firstPos.field_72449_c;
-/* 32 */     return (x * x + z * z < 3.38724E7D && this.field_70163_u > -10.0D);
+/* 30 */     double x = this.posX - this.firstPos.x;
+/* 31 */     double z = this.posZ - this.firstPos.z;
+/* 32 */     return (x * x + z * z < 3.38724E7D && this.posY > -10.0D);
 /*    */   }
 /*    */ }
 

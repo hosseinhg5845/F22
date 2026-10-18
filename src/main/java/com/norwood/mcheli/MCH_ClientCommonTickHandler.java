@@ -132,7 +132,7 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */   
 /*     */   public static double getCurrentStickY() {
 /* 133 */     double inv = 1.0D;
-/* 134 */     if ((Minecraft.func_71410_x()).field_71474_y.field_74338_d) {
+/* 134 */     if ((Minecraft.getMinecraft()).gameSettings.invertMouse) {
 /* 135 */       inv = -inv;
 /*     */     }
 /*     */     
@@ -170,8 +170,8 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /* 169 */       k.update();
 /*     */     }
 /*     */     
-/* 172 */     EntityPlayerSP entityPlayerSP = this.mc.field_71439_g;
-/* 173 */     if (entityPlayerSP != null && this.mc.field_71462_r == null) {
+/* 172 */     EntityPlayerSP entityPlayerSP = this.mc.player;
+/* 173 */     if (entityPlayerSP != null && this.mc.currentScreen == null) {
 /* 174 */       if (MCH_ServerSettings.enableCamDistChange && (this.KeyCamDistUp.isKeyDown() || this.KeyCamDistDown.isKeyDown())) {
 /* 175 */         int camdist = (int)W_Reflection.getThirdPersonDistance();
 /* 176 */         if (this.KeyCamDistUp.isKeyDown() && camdist < 72) {
@@ -191,7 +191,7 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */         } 
 /*     */       } 
 /*     */       
-/* 193 */       if (this.mc.field_71462_r == null && (!this.mc.func_71356_B() || MCH_Config.DebugLog)) {
+/* 193 */       if (this.mc.currentScreen == null && (!this.mc.isSingleplayer() || MCH_Config.DebugLog)) {
 /* 194 */         isDrawScoreboard = this.KeyScoreboard.isKeyPress();
 /* 195 */         if (!isDrawScoreboard && this.KeyMultiplayManager.isKeyDown()) {
 /* 196 */           MCH_PacketIndOpenScreen.send(5);
@@ -206,7 +206,7 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /* 205 */       sendLDCount = 0;
 /*     */     } 
 /*     */     
-/* 208 */     boolean inOtherGui = (this.mc.field_71462_r != null);
+/* 208 */     boolean inOtherGui = (this.mc.currentScreen != null);
 /*     */     
 /* 210 */     for (MCH_ClientTickHandlerBase t : this.ticks) {
 /* 211 */       t.onTick(inOtherGui);
@@ -238,14 +238,14 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */ 
 /*     */   
 /*     */   public void onTickPre() {
-/* 240 */     if (this.mc.field_71439_g != null && this.mc.field_71441_e != null) {
+/* 240 */     if (this.mc.player != null && this.mc.world != null) {
 /* 241 */       onTick();
 /*     */     }
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public void onTickPost() {
-/* 247 */     if (this.mc.field_71439_g != null && this.mc.field_71441_e != null) {
+/* 247 */     if (this.mc.player != null && this.mc.world != null) {
 /* 248 */       MCH_GuiTargetMarker.onClientTick();
 /*     */     }
 /*     */   }
@@ -255,7 +255,7 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /* 254 */     prevMouseDeltaY = mouseDeltaY;
 /* 255 */     mouseDeltaX = 0.0D;
 /* 256 */     mouseDeltaY = 0.0D;
-/* 257 */     if (this.mc.field_71415_G && Display.isActive() && this.mc.field_71462_r == null) {
+/* 257 */     if (this.mc.inGameHasFocus && Display.isActive() && this.mc.currentScreen == null) {
 /* 258 */       if (stickMode) {
 /* 259 */         if (Math.abs(mouseRollDeltaX) < getMaxStickLength() * 0.2D) {
 /* 260 */           mouseRollDeltaX *= (1.0F - 0.15F * partialTicks);
@@ -266,14 +266,14 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */         }
 /*     */       } 
 /*     */       
-/* 268 */       this.mc.field_71417_B.func_74374_c();
-/* 269 */       float f1 = this.mc.field_71474_y.field_74341_c * 0.6F + 0.2F;
+/* 268 */       this.mc.mouseHelper.mouseXYChange();
+/* 269 */       float f1 = this.mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
 /* 270 */       float f2 = f1 * f1 * f1 * 8.0F;
 /* 271 */       double ms = MCH_Config.MouseSensitivity.prmDouble * 0.1D;
-/* 272 */       mouseDeltaX = ms * this.mc.field_71417_B.field_74377_a * f2;
-/* 273 */       mouseDeltaY = ms * this.mc.field_71417_B.field_74375_b * f2;
+/* 272 */       mouseDeltaX = ms * this.mc.mouseHelper.deltaX * f2;
+/* 273 */       mouseDeltaY = ms * this.mc.mouseHelper.deltaY * f2;
 /* 274 */       byte inv = 1;
-/* 275 */       if (this.mc.field_71474_y.field_74338_d) {
+/* 275 */       if (this.mc.gameSettings.invertMouse) {
 /* 276 */         inv = -1;
 /*     */       }
 /*     */       
@@ -285,7 +285,7 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /* 284 */       mouseRollDeltaY += mouseDeltaY * inv;
 /* 285 */       double dist = mouseRollDeltaX * mouseRollDeltaX + mouseRollDeltaY * mouseRollDeltaY;
 /* 286 */       if (dist > 1.0D) {
-/* 287 */         dist = MathHelper.func_76133_a(dist);
+/* 287 */         dist = MathHelper.sqrt(dist);
 /* 288 */         double d = Math.min(dist, getMaxStickLength());
 /*     */         
 /* 290 */         mouseRollDeltaX /= dist;
@@ -300,12 +300,12 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */   public void onRenderTickPre(float partialTicks) {
 /* 300 */     MCH_GuiTargetMarker.clearMarkEntityPos();
 /* 301 */     if (!MCH_ServerSettings.enableDebugBoundingBox) {
-/* 302 */       Minecraft.func_71410_x().func_175598_ae().func_178629_b(false);
+/* 302 */       Minecraft.getMinecraft().getRenderManager().setDebugBoundingBox(false);
 /*     */     }
 /*     */     
 /* 305 */     MCH_ClientEventHook.haveSearchLightAircraft.clear();
-/* 306 */     if (this.mc != null && this.mc.field_71441_e != null) {
-/* 307 */       for (Object o : (Minecraft.func_71410_x()).field_71441_e.field_72996_f) {
+/* 306 */     if (this.mc != null && this.mc.world != null) {
+/* 307 */       for (Object o : (Minecraft.getMinecraft()).world.loadedEntityList) {
 /* 308 */         if (o instanceof MCH_EntityAircraft && ((MCH_EntityAircraft)o).haveSearchLight()) {
 /* 309 */           MCH_ClientEventHook.haveSearchLightAircraft.add((MCH_EntityAircraft)o);
 /*     */         }
@@ -313,30 +313,30 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */     }
 /*     */     
 /* 314 */     if (!W_McClient.isGamePaused()) {
-/* 315 */       EntityPlayerSP entityPlayerSP = this.mc.field_71439_g;
+/* 315 */       EntityPlayerSP entityPlayerSP = this.mc.player;
 /* 316 */       if (entityPlayerSP != null) {
-/* 317 */         ItemStack currentItemstack = entityPlayerSP.func_184586_b(EnumHand.MAIN_HAND);
-/* 318 */         if (currentItemstack.func_77973_b() instanceof com.norwood.mcheli.tool.MCH_ItemWrench && entityPlayerSP.func_184605_cv() > 0) {
+/* 317 */         ItemStack currentItemstack = entityPlayerSP.getHeldItem(EnumHand.MAIN_HAND);
+/* 318 */         if (currentItemstack.getItem() instanceof com.norwood.mcheli.tool.MCH_ItemWrench && entityPlayerSP.getItemInUseCount() > 0) {
 /* 319 */           W_Reflection.setItemRendererMainProgress(1.0F);
 /*     */         }
 /*     */         
 /* 322 */         ridingAircraft = MCH_EntityAircraft.getAircraft_RiddenOrControl((Entity)entityPlayerSP);
 /* 323 */         if (ridingAircraft != null)
 /* 324 */         { cameraMode = ridingAircraft.getCameraMode((EntityPlayer)entityPlayerSP); }
-/* 325 */         else { Entity entity = entityPlayerSP.func_184187_bx(); if (entity instanceof MCH_EntityGLTD) { MCH_EntityGLTD gltd = (MCH_EntityGLTD)entity;
+/* 325 */         else { Entity entity = entityPlayerSP.getRidingEntity(); if (entity instanceof MCH_EntityGLTD) { MCH_EntityGLTD gltd = (MCH_EntityGLTD)entity;
 /* 326 */             cameraMode = gltd.camera.getMode(0); }
 /*     */           else
 /* 328 */           { cameraMode = 0; }
 /*     */            }
 /*     */         
 /* 331 */         MCH_EntityAircraft ac = null;
-/* 332 */         if (entityPlayerSP.func_184187_bx() instanceof com.norwood.mcheli.helicopter.MCH_EntityHeli || entityPlayerSP
-/* 333 */           .func_184187_bx() instanceof com.norwood.mcheli.plane.MCP_EntityPlane || entityPlayerSP
-/* 334 */           .func_184187_bx() instanceof com.norwood.mcheli.tank.MCH_EntityTank)
-/* 335 */         { ac = (MCH_EntityAircraft)entityPlayerSP.func_184187_bx(); }
-/* 336 */         else if (entityPlayerSP.func_184187_bx() instanceof MCH_EntityUavStation)
-/* 337 */         { ac = ((MCH_EntityUavStation)entityPlayerSP.func_184187_bx()).getControlAircract(); }
-/* 338 */         else { Entity entity = entityPlayerSP.func_184187_bx(); if (entity instanceof MCH_EntityVehicle) { MCH_EntityVehicle vehicle = (MCH_EntityVehicle)entity;
+/* 332 */         if (entityPlayerSP.getRidingEntity() instanceof com.norwood.mcheli.helicopter.MCH_EntityHeli || entityPlayerSP
+/* 333 */           .getRidingEntity() instanceof com.norwood.mcheli.plane.MCP_EntityPlane || entityPlayerSP
+/* 334 */           .getRidingEntity() instanceof com.norwood.mcheli.tank.MCH_EntityTank)
+/* 335 */         { ac = (MCH_EntityAircraft)entityPlayerSP.getRidingEntity(); }
+/* 336 */         else if (entityPlayerSP.getRidingEntity() instanceof MCH_EntityUavStation)
+/* 337 */         { ac = ((MCH_EntityUavStation)entityPlayerSP.getRidingEntity()).getControlAircract(); }
+/* 338 */         else { Entity entity = entityPlayerSP.getRidingEntity(); if (entity instanceof MCH_EntityVehicle) { MCH_EntityVehicle vehicle = (MCH_EntityVehicle)entity;
 /* 339 */             vehicle.setupAllRiderRenderPosition(partialTicks, (EntityPlayer)entityPlayerSP); }
 /*     */            }
 /*     */         
@@ -381,7 +381,7 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */           } 
 /*     */           
 /* 382 */           if (ac.getAcInfo() == null) {
-/* 383 */             entityPlayerSP.func_70082_c((float)mouseDeltaX, (float)mouseDeltaY);
+/* 383 */             entityPlayerSP.turn((float)mouseDeltaX, (float)mouseDeltaY);
 /*     */           } else {
 /* 385 */             ac.setAngles((Entity)entityPlayerSP, fixRot, fixYaw, fixPitch, (float)(mouseDeltaX + prevMouseDeltaX) / 2.0F, (float)(mouseDeltaY + prevMouseDeltaY) / 2.0F, (float)mouseRollDeltaX, (float)mouseRollDeltaY, partialTicks - prevTick);
 /*     */           } 
@@ -397,15 +397,15 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */ 
 /*     */           
 /* 398 */           ac.setupAllRiderRenderPosition(partialTicks, (EntityPlayer)entityPlayerSP);
-/* 399 */           double dist = MathHelper.func_76133_a(mouseRollDeltaX * mouseRollDeltaX + mouseRollDeltaY * mouseRollDeltaY);
+/* 399 */           double dist = MathHelper.sqrt(mouseRollDeltaX * mouseRollDeltaX + mouseRollDeltaY * mouseRollDeltaY);
 /* 400 */           if (!stickMode || dist < getMaxStickLength() * 0.1D) {
 /* 401 */             mouseRollDeltaX *= 0.95D;
 /* 402 */             mouseRollDeltaY *= 0.95D;
 /*     */           } 
 /*     */           
-/* 405 */           float roll = MathHelper.func_76142_g(ac.getRotRoll());
-/* 406 */           float yaw = MathHelper.func_76142_g(ac.getRotYaw() - ((EntityPlayer)entityPlayerSP).field_70177_z);
-/* 407 */           roll *= MathHelper.func_76134_b((float)(yaw * Math.PI / 180.0D));
+/* 405 */           float roll = MathHelper.wrapDegrees(ac.getRotRoll());
+/* 406 */           float yaw = MathHelper.wrapDegrees(ac.getRotYaw() - ((EntityPlayer)entityPlayerSP).rotationYaw);
+/* 407 */           roll *= MathHelper.cos((float)(yaw * Math.PI / 180.0D));
 /* 408 */           if (ac.getTVMissile() != null && W_Lib.isClientPlayer((ac.getTVMissile()).shootingEntity) && ac.getIsGunnerMode((Entity)entityPlayerSP)) {
 /* 409 */             roll = 0.0F;
 /*     */           }
@@ -413,7 +413,7 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /* 412 */           W_Reflection.setCameraRoll(roll);
 /* 413 */           correctViewEntityDummy((Entity)entityPlayerSP);
 /*     */         } else {
-/* 415 */           MCH_EntitySeat seat = (entityPlayerSP.func_184187_bx() instanceof MCH_EntitySeat) ? (MCH_EntitySeat)entityPlayerSP.func_184187_bx() : null;
+/* 415 */           MCH_EntitySeat seat = (entityPlayerSP.getRidingEntity() instanceof MCH_EntitySeat) ? (MCH_EntitySeat)entityPlayerSP.getRidingEntity() : null;
 /* 416 */           if (seat != null && seat.getParent() != null) {
 /* 417 */             updateMouseDelta(stickMode, partialTicks);
 /* 418 */             ac = seat.getParent();
@@ -431,7 +431,7 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /* 430 */             v = W_Vec3.rotateRoll((float)((ac.calcRotRoll(partialTicks) / 180.0F) * Math.PI), v);
 /* 431 */             MCH_WeaponSet ws = ac.getCurrentWeapon((Entity)entityPlayerSP);
 /* 432 */             mouseDeltaY *= (ws != null && ws.getInfo() != null) ? (ws.getInfo()).cameraRotationSpeedPitch : 1.0D;
-/* 433 */             entityPlayerSP.func_70082_c((float)mouseDeltaX, (float)mouseDeltaY);
+/* 433 */             entityPlayerSP.turn((float)mouseDeltaX, (float)mouseDeltaY);
 /* 434 */             float y = ac.getRotYaw();
 /* 435 */             float p = ac.getRotPitch();
 /* 436 */             float r = ac.getRotRoll();
@@ -440,19 +440,19 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /* 439 */             ac.setRotRoll(ac.calcRotRoll(partialTicks));
 /* 440 */             float revRoll = 0.0F;
 /* 441 */             if (fixRotx) {
-/* 442 */               ((EntityPlayer)entityPlayerSP).field_70177_z = ac.getRotYaw() + seatInfox.fixYaw;
-/* 443 */               ((EntityPlayer)entityPlayerSP).field_70125_A = ac.getRotPitch() + seatInfox.fixPitch;
-/* 444 */               if (((EntityPlayer)entityPlayerSP).field_70125_A > 90.0F) {
-/* 445 */                 ((EntityPlayer)entityPlayerSP).field_70127_C -= (((EntityPlayer)entityPlayerSP).field_70125_A - 90.0F) * 2.0F;
-/* 446 */                 ((EntityPlayer)entityPlayerSP).field_70125_A -= (((EntityPlayer)entityPlayerSP).field_70125_A - 90.0F) * 2.0F;
-/* 447 */                 ((EntityPlayer)entityPlayerSP).field_70126_B += 180.0F;
-/* 448 */                 ((EntityPlayer)entityPlayerSP).field_70177_z += 180.0F;
+/* 442 */               ((EntityPlayer)entityPlayerSP).rotationYaw = ac.getRotYaw() + seatInfox.fixYaw;
+/* 443 */               ((EntityPlayer)entityPlayerSP).rotationPitch = ac.getRotPitch() + seatInfox.fixPitch;
+/* 444 */               if (((EntityPlayer)entityPlayerSP).rotationPitch > 90.0F) {
+/* 445 */                 ((EntityPlayer)entityPlayerSP).prevRotationPitch -= (((EntityPlayer)entityPlayerSP).rotationPitch - 90.0F) * 2.0F;
+/* 446 */                 ((EntityPlayer)entityPlayerSP).rotationPitch -= (((EntityPlayer)entityPlayerSP).rotationPitch - 90.0F) * 2.0F;
+/* 447 */                 ((EntityPlayer)entityPlayerSP).prevRotationYaw += 180.0F;
+/* 448 */                 ((EntityPlayer)entityPlayerSP).rotationYaw += 180.0F;
 /* 449 */                 revRoll = 180.0F;
-/* 450 */               } else if (((EntityPlayer)entityPlayerSP).field_70125_A < -90.0F) {
-/* 451 */                 ((EntityPlayer)entityPlayerSP).field_70127_C -= (((EntityPlayer)entityPlayerSP).field_70125_A - 90.0F) * 2.0F;
-/* 452 */                 ((EntityPlayer)entityPlayerSP).field_70125_A -= (((EntityPlayer)entityPlayerSP).field_70125_A - 90.0F) * 2.0F;
-/* 453 */                 ((EntityPlayer)entityPlayerSP).field_70126_B += 180.0F;
-/* 454 */                 ((EntityPlayer)entityPlayerSP).field_70177_z += 180.0F;
+/* 450 */               } else if (((EntityPlayer)entityPlayerSP).rotationPitch < -90.0F) {
+/* 451 */                 ((EntityPlayer)entityPlayerSP).prevRotationPitch -= (((EntityPlayer)entityPlayerSP).rotationPitch - 90.0F) * 2.0F;
+/* 452 */                 ((EntityPlayer)entityPlayerSP).rotationPitch -= (((EntityPlayer)entityPlayerSP).rotationPitch - 90.0F) * 2.0F;
+/* 453 */                 ((EntityPlayer)entityPlayerSP).prevRotationYaw += 180.0F;
+/* 454 */                 ((EntityPlayer)entityPlayerSP).rotationYaw += 180.0F;
 /* 455 */                 revRoll = 180.0F;
 /*     */               } 
 /*     */             } 
@@ -463,9 +463,9 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /* 462 */             ac.setRotRoll(r);
 /* 463 */             mouseRollDeltaX *= 0.9D;
 /* 464 */             mouseRollDeltaY *= 0.9D;
-/* 465 */             float roll = MathHelper.func_76142_g(ac.getRotRoll());
-/* 466 */             float yaw = MathHelper.func_76142_g(ac.getRotYaw() - ((EntityPlayer)entityPlayerSP).field_70177_z);
-/* 467 */             roll *= MathHelper.func_76134_b((float)(yaw * Math.PI / 180.0D));
+/* 465 */             float roll = MathHelper.wrapDegrees(ac.getRotRoll());
+/* 466 */             float yaw = MathHelper.wrapDegrees(ac.getRotYaw() - ((EntityPlayer)entityPlayerSP).rotationYaw);
+/* 467 */             roll *= MathHelper.cos((float)(yaw * Math.PI / 180.0D));
 /* 468 */             if (ac.getTVMissile() != null && W_Lib.isClientPlayer((ac.getTVMissile()).shootingEntity) && ac.getIsGunnerMode((Entity)entityPlayerSP)) {
 /* 469 */               roll = 0.0F;
 /*     */             }
@@ -485,23 +485,23 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */         
 /* 485 */         if (ac != null) {
 /* 486 */           if (ac.getSeatIdByEntity((Entity)entityPlayerSP) == 0 && !ac.isDestroyed()) {
-/* 487 */             ac.lastRiderYaw = ((EntityPlayer)entityPlayerSP).field_70177_z;
-/* 488 */             ac.prevLastRiderYaw = ((EntityPlayer)entityPlayerSP).field_70126_B;
-/* 489 */             ac.lastRiderPitch = ((EntityPlayer)entityPlayerSP).field_70125_A;
-/* 490 */             ac.prevLastRiderPitch = ((EntityPlayer)entityPlayerSP).field_70127_C;
+/* 487 */             ac.lastRiderYaw = ((EntityPlayer)entityPlayerSP).rotationYaw;
+/* 488 */             ac.prevLastRiderYaw = ((EntityPlayer)entityPlayerSP).prevRotationYaw;
+/* 489 */             ac.lastRiderPitch = ((EntityPlayer)entityPlayerSP).rotationPitch;
+/* 490 */             ac.prevLastRiderPitch = ((EntityPlayer)entityPlayerSP).prevRotationPitch;
 /*     */           } 
 /*     */           
 /* 493 */           ac.updateWeaponsRotation();
 /*     */         } 
 /*     */         
-/* 496 */         MCH_ViewEntityDummy mCH_ViewEntityDummy = MCH_ViewEntityDummy.getInstance(((EntityPlayer)entityPlayerSP).field_70170_p);
+/* 496 */         MCH_ViewEntityDummy mCH_ViewEntityDummy = MCH_ViewEntityDummy.getInstance(((EntityPlayer)entityPlayerSP).world);
 /* 497 */         if (mCH_ViewEntityDummy != null) {
-/* 498 */           ((Entity)mCH_ViewEntityDummy).field_70177_z = ((EntityPlayer)entityPlayerSP).field_70177_z;
-/* 499 */           ((Entity)mCH_ViewEntityDummy).field_70126_B = ((EntityPlayer)entityPlayerSP).field_70126_B;
+/* 498 */           ((Entity)mCH_ViewEntityDummy).rotationYaw = ((EntityPlayer)entityPlayerSP).rotationYaw;
+/* 499 */           ((Entity)mCH_ViewEntityDummy).prevRotationYaw = ((EntityPlayer)entityPlayerSP).prevRotationYaw;
 /* 500 */           if (ac != null) {
 /* 501 */             MCH_WeaponSet wi = ac.getCurrentWeapon((Entity)entityPlayerSP);
 /* 502 */             if (wi != null && wi.getInfo() != null && (wi.getInfo()).fixCameraPitch) {
-/* 503 */               ((Entity)mCH_ViewEntityDummy).field_70125_A = ((Entity)mCH_ViewEntityDummy).field_70127_C = 0.0F;
+/* 503 */               ((Entity)mCH_ViewEntityDummy).rotationPitch = ((Entity)mCH_ViewEntityDummy).prevRotationPitch = 0.0F;
 /*     */             }
 /*     */           } 
 /*     */         } 
@@ -512,28 +512,28 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */   }
 /*     */   
 /*     */   public void correctViewEntityDummy(Entity entity) {
-/* 514 */     MCH_ViewEntityDummy mCH_ViewEntityDummy = MCH_ViewEntityDummy.getInstance(entity.field_70170_p);
+/* 514 */     MCH_ViewEntityDummy mCH_ViewEntityDummy = MCH_ViewEntityDummy.getInstance(entity.world);
 /* 515 */     if (mCH_ViewEntityDummy != null) {
-/* 516 */       if (((Entity)mCH_ViewEntityDummy).field_70177_z - ((Entity)mCH_ViewEntityDummy).field_70126_B > 180.0F) {
-/* 517 */         ((Entity)mCH_ViewEntityDummy).field_70126_B += 360.0F;
-/* 518 */       } else if (((Entity)mCH_ViewEntityDummy).field_70177_z - ((Entity)mCH_ViewEntityDummy).field_70126_B < -180.0F) {
-/* 519 */         ((Entity)mCH_ViewEntityDummy).field_70126_B -= 360.0F;
+/* 516 */       if (((Entity)mCH_ViewEntityDummy).rotationYaw - ((Entity)mCH_ViewEntityDummy).prevRotationYaw > 180.0F) {
+/* 517 */         ((Entity)mCH_ViewEntityDummy).prevRotationYaw += 360.0F;
+/* 518 */       } else if (((Entity)mCH_ViewEntityDummy).rotationYaw - ((Entity)mCH_ViewEntityDummy).prevRotationYaw < -180.0F) {
+/* 519 */         ((Entity)mCH_ViewEntityDummy).prevRotationYaw -= 360.0F;
 /*     */       } 
 /*     */     }
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public void onPlayerTickPre(EntityPlayer player) {
-/* 526 */     if (player.field_70170_p.field_72995_K) {
-/* 527 */       ItemStack currentItemstack = player.func_184586_b(EnumHand.MAIN_HAND);
-/* 528 */       if (!currentItemstack.func_190926_b() && currentItemstack
-/* 529 */         .func_77973_b() instanceof com.norwood.mcheli.tool.MCH_ItemWrench && player
-/* 530 */         .func_184605_cv() > 0 && player
-/* 531 */         .func_184607_cu() != currentItemstack) {
-/* 532 */         int maxdm = currentItemstack.func_77958_k();
-/* 533 */         int dm = currentItemstack.func_77960_j();
+/* 526 */     if (player.world.isRemote) {
+/* 527 */       ItemStack currentItemstack = player.getHeldItem(EnumHand.MAIN_HAND);
+/* 528 */       if (!currentItemstack.isEmpty() && currentItemstack
+/* 529 */         .getItem() instanceof com.norwood.mcheli.tool.MCH_ItemWrench && player
+/* 530 */         .getItemInUseCount() > 0 && player
+/* 531 */         .getActiveItemStack() != currentItemstack) {
+/* 532 */         int maxdm = currentItemstack.getMaxDamage();
+/* 533 */         int dm = currentItemstack.getMetadata();
 /* 534 */         if (dm <= maxdm && dm > 0) {
-/* 535 */           player.func_184598_c(EnumHand.MAIN_HAND);
+/* 535 */           player.setActiveHand(EnumHand.MAIN_HAND);
 /*     */         }
 /*     */       } 
 /*     */     } 
@@ -541,18 +541,18 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */ 
 /*     */   
 /*     */   public void onRenderTickPost(float partialTicks) {
-/* 543 */     if (this.mc.field_71439_g != null) {
-/* 544 */       MCH_ClientTickHandlerBase.applyRotLimit((Entity)this.mc.field_71439_g);
-/* 545 */       MCH_ViewEntityDummy mCH_ViewEntityDummy = MCH_ViewEntityDummy.getInstance(this.mc.field_71439_g.field_70170_p);
+/* 543 */     if (this.mc.player != null) {
+/* 544 */       MCH_ClientTickHandlerBase.applyRotLimit((Entity)this.mc.player);
+/* 545 */       MCH_ViewEntityDummy mCH_ViewEntityDummy = MCH_ViewEntityDummy.getInstance(this.mc.player.world);
 /* 546 */       if (mCH_ViewEntityDummy != null) {
-/* 547 */         ((Entity)mCH_ViewEntityDummy).field_70125_A = this.mc.field_71439_g.field_70125_A;
-/* 548 */         ((Entity)mCH_ViewEntityDummy).field_70177_z = this.mc.field_71439_g.field_70177_z;
-/* 549 */         ((Entity)mCH_ViewEntityDummy).field_70127_C = this.mc.field_71439_g.field_70127_C;
-/* 550 */         ((Entity)mCH_ViewEntityDummy).field_70126_B = this.mc.field_71439_g.field_70126_B;
+/* 547 */         ((Entity)mCH_ViewEntityDummy).rotationPitch = this.mc.player.rotationPitch;
+/* 548 */         ((Entity)mCH_ViewEntityDummy).rotationYaw = this.mc.player.rotationYaw;
+/* 549 */         ((Entity)mCH_ViewEntityDummy).prevRotationPitch = this.mc.player.prevRotationPitch;
+/* 550 */         ((Entity)mCH_ViewEntityDummy).prevRotationYaw = this.mc.player.prevRotationYaw;
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 554 */     if (this.mc.field_71462_r == null || this.mc.field_71462_r instanceof net.minecraft.client.gui.GuiChat || this.mc.field_71462_r
+/* 554 */     if (this.mc.currentScreen == null || this.mc.currentScreen instanceof net.minecraft.client.gui.GuiChat || this.mc.currentScreen
 /*     */       
 /* 556 */       .getClass().toString().contains("GuiDriveableController")) {
 /* 557 */       for (MCH_Gui gui : this.guis) {
@@ -566,7 +566,7 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /* 565 */       drawGui(this.gui_SwnGnr, partialTicks);
 /* 566 */       drawGui(this.gui_EMarker, partialTicks);
 /* 567 */       if (isDrawScoreboard) {
-/* 568 */         MCH_GuiScoreboard.drawList(this.mc, this.mc.field_71466_p, false);
+/* 568 */         MCH_GuiScoreboard.drawList(this.mc, this.mc.fontRenderer, false);
 /*     */       }
 /*     */       
 /* 571 */       drawGui(this.gui_Title, partialTicks);
@@ -574,8 +574,8 @@ import com.norwood.mcheli.wrapper.W_TickHandler;
 /*     */   }
 /*     */   
 /*     */   public boolean drawGui(MCH_Gui gui, float partialTicks) {
-/* 576 */     if (gui.isDrawGui((EntityPlayer)this.mc.field_71439_g)) {
-/* 577 */       gui.func_73863_a(0, 0, partialTicks);
+/* 576 */     if (gui.isDrawGui((EntityPlayer)this.mc.player)) {
+/* 577 */       gui.drawScreen(0, 0, partialTicks);
 /* 578 */       return true;
 /*     */     } 
 /* 580 */     return false;

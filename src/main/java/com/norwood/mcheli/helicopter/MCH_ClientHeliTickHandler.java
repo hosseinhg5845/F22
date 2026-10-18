@@ -65,7 +65,7 @@ import com.norwood.mcheli.aircraft.MCH_AircraftClientTickHandler;
 /*     */       }
 /*     */     } 
 /*     */     
-/*  67 */     heli.updateCameraRotate(player.field_70177_z, player.field_70125_A);
+/*  67 */     heli.updateCameraRotate(player.rotationYaw, player.rotationPitch);
 /*  68 */     heli.updateRadar(5);
 /*     */   }
 /*     */ 
@@ -76,18 +76,18 @@ import com.norwood.mcheli.aircraft.MCH_AircraftClientTickHandler;
 /*     */     }
 /*     */     
 /*  77 */     this.isBeforeRiding = this.isRiding;
-/*  78 */     EntityPlayerSP entityPlayerSP = this.mc.field_71439_g;
+/*  78 */     EntityPlayerSP entityPlayerSP = this.mc.player;
 /*  79 */     MCH_EntityHeli heli = null;
 /*  80 */     boolean isPilot = true;
 /*  81 */     if (entityPlayerSP != null)
-/*  82 */       if (entityPlayerSP.func_184187_bx() instanceof MCH_EntityHeli)
-/*  83 */       { heli = (MCH_EntityHeli)entityPlayerSP.func_184187_bx(); }
-/*  84 */       else { Entity entity = entityPlayerSP.func_184187_bx(); if (entity instanceof MCH_EntitySeat) { MCH_EntitySeat seat = (MCH_EntitySeat)entity;
+/*  82 */       if (entityPlayerSP.getRidingEntity() instanceof MCH_EntityHeli)
+/*  83 */       { heli = (MCH_EntityHeli)entityPlayerSP.getRidingEntity(); }
+/*  84 */       else { Entity entity = entityPlayerSP.getRidingEntity(); if (entity instanceof MCH_EntitySeat) { MCH_EntitySeat seat = (MCH_EntitySeat)entity;
 /*  85 */           if (seat.getParent() instanceof MCH_EntityHeli) {
 /*  86 */             isPilot = false;
 /*  87 */             heli = (MCH_EntityHeli)seat.getParent();
 /*     */           }  }
-/*  89 */         else { entity = entityPlayerSP.func_184187_bx(); if (entity instanceof MCH_EntityUavStation) { MCH_EntityUavStation uavStation = (MCH_EntityUavStation)entity;
+/*  89 */         else { entity = entityPlayerSP.getRidingEntity(); if (entity instanceof MCH_EntityUavStation) { MCH_EntityUavStation uavStation = (MCH_EntityUavStation)entity;
 /*  90 */             if (uavStation.getControlAircract() instanceof MCH_EntityHeli) {
 /*  91 */               heli = (MCH_EntityHeli)uavStation.getControlAircract();
 /*     */             } }
@@ -96,7 +96,7 @@ import com.norwood.mcheli.aircraft.MCH_AircraftClientTickHandler;
 /*     */        
 /*  96 */     if (heli != null && heli.getAcInfo() != null) {
 /*  97 */       update((EntityPlayer)entityPlayerSP, heli, isPilot);
-/*  98 */       MCH_ViewEntityDummy viewEntityDummy = MCH_ViewEntityDummy.getInstance((World)this.mc.field_71441_e);
+/*  98 */       MCH_ViewEntityDummy viewEntityDummy = MCH_ViewEntityDummy.getInstance((World)this.mc.world);
 /*  99 */       viewEntityDummy.update(heli.camera);
 /* 100 */       if (!inGUI) {
 /* 101 */         if (!heli.isDestroyed()) {
@@ -117,7 +117,7 @@ import com.norwood.mcheli.aircraft.MCH_AircraftClientTickHandler;
 /*     */       } 
 /*     */       
 /* 118 */       if (hideHand) {
-/* 119 */         MCH_Lib.disableFirstPersonItemRender(entityPlayerSP.func_184614_ca());
+/* 119 */         MCH_Lib.disableFirstPersonItemRender(entityPlayerSP.getHeldItemMainhand());
 /*     */       }
 /*     */       
 /* 122 */       this.isRiding = true;

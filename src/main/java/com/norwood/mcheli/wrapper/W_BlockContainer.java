@@ -10,12 +10,12 @@
 /* 10 */     super(par2Material);
 /*    */   }
 /*    */   @NotNull
-/*    */   public Block func_149715_a(float f) {
-/* 14 */     return super.func_149715_a(f);
+/*    */   public Block setLightLevel(float f) {
+/* 14 */     return super.setLightLevel(f);
 /*    */   }
 /*    */   @NotNull
-/*    */   public Block func_149663_c(@NotNull String s) {
-/* 18 */     return super.func_149663_c(s);
+/*    */   public Block setUnlocalizedName(@NotNull String s) {
+/* 18 */     return super.setUnlocalizedName(s);
 /*    */   }
 /*    */ }
 

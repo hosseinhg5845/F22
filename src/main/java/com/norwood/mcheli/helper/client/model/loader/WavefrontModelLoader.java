@@ -16,7 +16,7 @@
 /*    */ {
 /*    */   public _IModelCustom load(IResourceManager resourceManager, ResourceLocation location) throws IOException, _ModelFormatException {
 /* 18 */     ResourceLocation modelLocation = withExtension(location);
-/* 19 */     IResource resource = resourceManager.func_110536_a(modelLocation);
+/* 19 */     IResource resource = resourceManager.getResource(modelLocation);
 /* 20 */     return (_IModelCustom)new W_WavefrontObject(modelLocation, resource);
 /*    */   }
 /*    */ 

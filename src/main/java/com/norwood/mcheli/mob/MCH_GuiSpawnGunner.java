@@ -21,16 +21,16 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_73866_w_() {
-/*  25 */     super.func_73866_w_();
+/*     */   public void initGui() {
+/*  25 */     super.initGui();
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public boolean isDrawGui(EntityPlayer player) {
-/*  30 */     return (player != null && player.field_70170_p != null && 
+/*  30 */     return (player != null && player.world != null && 
 /*     */       
-/*  32 */       !player.func_184614_ca().func_190926_b() && player
-/*  33 */       .func_184614_ca().func_77973_b() instanceof MCH_ItemSpawnGunner);
+/*  32 */       !player.getHeldItemMainhand().isEmpty() && player
+/*  33 */       .getHeldItemMainhand().getItem() instanceof MCH_ItemSpawnGunner);
 /*     */   }
 /*     */ 
 /*     */   
@@ -46,41 +46,41 @@
 /*     */     MCH_EntityGunner mCH_EntityGunner;
 /*     */     MCH_EntityAircraft mCH_EntityAircraft;
 /*  48 */     float f = 1.0F;
-/*  49 */     float pitch = player.field_70127_C + (player.field_70125_A - player.field_70127_C) * f;
-/*  50 */     float yaw = player.field_70126_B + (player.field_70177_z - player.field_70126_B) * f;
-/*  51 */     double dx = player.field_70169_q + (player.field_70165_t - player.field_70169_q) * f;
-/*  52 */     double dy = player.field_70167_r + (player.field_70163_u - player.field_70167_r) * f + player.func_70047_e();
-/*  53 */     double dz = player.field_70166_s + (player.field_70161_v - player.field_70166_s) * f;
+/*  49 */     float pitch = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
+/*  50 */     float yaw = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
+/*  51 */     double dx = player.prevPosX + (player.posX - player.prevPosX) * f;
+/*  52 */     double dy = player.prevPosY + (player.posY - player.prevPosY) * f + player.getEyeHeight();
+/*  53 */     double dz = player.prevPosZ + (player.posZ - player.prevPosZ) * f;
 /*  54 */     Vec3d vec3 = new Vec3d(dx, dy, dz);
-/*  55 */     float f3 = MathHelper.func_76134_b(-yaw * 0.017453292F - 3.1415927F);
-/*  56 */     float f4 = MathHelper.func_76126_a(-yaw * 0.017453292F - 3.1415927F);
-/*  57 */     float f5 = -MathHelper.func_76134_b(-pitch * 0.017453292F);
-/*  58 */     float f6 = MathHelper.func_76126_a(-pitch * 0.017453292F);
+/*  55 */     float f3 = MathHelper.cos(-yaw * 0.017453292F - 3.1415927F);
+/*  56 */     float f4 = MathHelper.sin(-yaw * 0.017453292F - 3.1415927F);
+/*  57 */     float f5 = -MathHelper.cos(-pitch * 0.017453292F);
+/*  58 */     float f6 = MathHelper.sin(-pitch * 0.017453292F);
 /*  59 */     float f7 = f4 * f5;
 /*  60 */     float f8 = f3 * f5;
 /*  61 */     double d3 = 5.0D;
-/*  62 */     Vec3d vec31 = vec3.func_72441_c(f7 * d3, f6 * d3, f8 * d3);
+/*  62 */     Vec3d vec31 = vec3.addVector(f7 * d3, f6 * d3, f8 * d3);
 /*  63 */     Entity target = null;
-/*  64 */     List<MCH_EntityGunner> list = player.field_70170_p.func_72872_a(MCH_EntityGunner.class, player.func_174813_aQ().func_72314_b(5.0D, 5.0D, 5.0D));
+/*  64 */     List<MCH_EntityGunner> list = player.world.getEntitiesWithinAABB(MCH_EntityGunner.class, player.getEntityBoundingBox().grow(5.0D, 5.0D, 5.0D));
 /*     */     
 /*  66 */     for (MCH_EntityGunner gunner : list) {
-/*  67 */       if (gunner.func_174813_aQ().func_72327_a(vec3, vec31) != null && (target == null || player.func_70068_e((Entity)gunner) < player.func_70068_e(target))) {
+/*  67 */       if (gunner.getEntityBoundingBox().calculateIntercept(vec3, vec31) != null && (target == null || player.getDistanceSq((Entity)gunner) < player.getDistanceSq(target))) {
 /*  68 */         mCH_EntityGunner = gunner;
 /*     */       }
 /*     */     } 
 /*     */     
 /*  72 */     if (mCH_EntityGunner == null) {
-/*  73 */       MCH_EntitySeat mCH_EntitySeat; MCH_ItemSpawnGunner item = (MCH_ItemSpawnGunner)player.func_184614_ca().func_77973_b();
-/*  74 */       if (item.targetType == 1 && !player.field_70170_p.field_72995_K) {
-/*  75 */         player.func_96124_cp();
+/*  73 */       MCH_EntitySeat mCH_EntitySeat; MCH_ItemSpawnGunner item = (MCH_ItemSpawnGunner)player.getHeldItemMainhand().getItem();
+/*  74 */       if (item.targetType == 1 && !player.world.isRemote) {
+/*  75 */         player.getTeam();
 /*     */       }
-/*  77 */       List<MCH_EntitySeat> list1 = player.field_70170_p.func_72872_a(MCH_EntitySeat.class, player.func_174813_aQ().func_72314_b(5.0D, 5.0D, 5.0D));
+/*  77 */       List<MCH_EntitySeat> list1 = player.world.getEntitiesWithinAABB(MCH_EntitySeat.class, player.getEntityBoundingBox().grow(5.0D, 5.0D, 5.0D));
 /*     */       
 /*  79 */       for (MCH_EntitySeat seat : list1) {
 /*  80 */         if (seat.getParent() != null && seat
 /*  81 */           .getParent().getAcInfo() != null && seat
-/*  82 */           .func_174813_aQ().func_72327_a(vec3, vec31) != null && (mCH_EntityGunner == null || player
-/*  83 */           .func_70068_e((Entity)seat) < player.func_70068_e((Entity)mCH_EntityGunner))) {
+/*  82 */           .getEntityBoundingBox().calculateIntercept(vec3, vec31) != null && (mCH_EntityGunner == null || player
+/*  83 */           .getDistanceSq((Entity)seat) < player.getDistanceSq((Entity)mCH_EntityGunner))) {
 /*  84 */           if (seat.getRiddenByEntity() instanceof MCH_EntityGunner) {
 /*  85 */             Entity entity = seat.getRiddenByEntity(); continue;
 /*     */           } 
@@ -91,13 +91,13 @@
 /*     */       
 /*  92 */       if (mCH_EntitySeat == null) {
 /*     */         
-/*  94 */         List<MCH_EntityAircraft> list2 = player.field_70170_p.func_72872_a(MCH_EntityAircraft.class, player.func_174813_aQ().func_72314_b(5.0D, 5.0D, 5.0D));
+/*  94 */         List<MCH_EntityAircraft> list2 = player.world.getEntitiesWithinAABB(MCH_EntityAircraft.class, player.getEntityBoundingBox().grow(5.0D, 5.0D, 5.0D));
 /*     */         
 /*  96 */         for (MCH_EntityAircraft ac : list2) {
 /*  97 */           if (!ac.isUAV() && ac
 /*  98 */             .getAcInfo() != null && ac
-/*  99 */             .func_174813_aQ().func_72327_a(vec3, vec31) != null && (mCH_EntitySeat == null || player
-/* 100 */             .func_70068_e((Entity)ac) < player.func_70068_e((Entity)mCH_EntitySeat))) {
+/*  99 */             .getEntityBoundingBox().calculateIntercept(vec3, vec31) != null && (mCH_EntitySeat == null || player
+/* 100 */             .getDistanceSq((Entity)ac) < player.getDistanceSq((Entity)mCH_EntitySeat))) {
 /* 101 */             if (ac.getRiddenByEntity() instanceof MCH_EntityGunner) {
 /* 102 */               Entity entity = ac.getRiddenByEntity(); continue;
 /*     */             } 
@@ -120,7 +120,7 @@
 /* 120 */       GL11.glBlendFunc(770, 771);
 /* 121 */       double size = 512.0D;
 /*     */       
-/* 123 */       while (size < this.field_146294_l || size < this.field_146295_m) {
+/* 123 */       while (size < this.width || size < this.height) {
 /* 124 */         size *= 2.0D;
 /*     */       }
 /*     */       
@@ -128,16 +128,16 @@
 /* 128 */       GL11.glDisable(3042);
 /* 129 */       double factor = size / 512.0D;
 /* 130 */       double SCALE_FACTOR = scaleFactor * factor;
-/* 131 */       double CX = this.field_146297_k.field_71443_c / 2.0D;
-/* 132 */       double CY = this.field_146297_k.field_71440_d / 2.0D;
+/* 131 */       double CX = this.mc.displayWidth / 2.0D;
+/* 132 */       double CY = this.mc.displayHeight / 2.0D;
 /* 133 */       double px = (CX - 0.0D) / SCALE_FACTOR;
 /* 134 */       double py = (CY + 0.0D) / SCALE_FACTOR;
 /* 135 */       GL11.glPushMatrix();
 /* 136 */       if (entity instanceof MCH_EntityGunner) { MCH_EntityGunner gunner = (MCH_EntityGunner)entity;
 /* 137 */         String seatName = "";
-/* 138 */         if (gunner.func_184187_bx() instanceof MCH_EntitySeat) {
-/* 139 */           seatName = "(seat " + (((MCH_EntitySeat)gunner.func_184187_bx()).seatID + 2) + ")";
-/* 140 */         } else if (gunner.func_184187_bx() instanceof MCH_EntityAircraft) {
+/* 138 */         if (gunner.getRidingEntity() instanceof MCH_EntitySeat) {
+/* 139 */           seatName = "(seat " + (((MCH_EntitySeat)gunner.getRidingEntity()).seatID + 2) + ")";
+/* 140 */         } else if (gunner.getRidingEntity() instanceof MCH_EntityAircraft) {
 /* 141 */           seatName = "(seat 1)";
 /*     */         } 
 /*     */         

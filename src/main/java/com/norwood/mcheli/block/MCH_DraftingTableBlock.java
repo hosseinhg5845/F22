@@ -33,46 +33,46 @@
 /*     */   private final boolean isLighting;
 /*     */   
 /*     */   public MCH_DraftingTableBlock(int blockId, boolean isOn) {
-/*  36 */     super(blockId, Material.field_151573_f);
-/*  37 */     func_180632_j(this.field_176227_L.func_177621_b().func_177226_a((IProperty)DIRECTION8, (Comparable)EnumDirection8.NORTH));
-/*  38 */     func_149672_a(SoundType.field_185852_e);
-/*  39 */     func_149711_c(0.2F);
+/*  36 */     super(blockId, Material.IRON);
+/*  37 */     setDefaultState(this.blockState.getBaseState().withProperty((IProperty)DIRECTION8, (Comparable)EnumDirection8.NORTH));
+/*  38 */     setSoundType(SoundType.METAL);
+/*  39 */     setHardness(0.2F);
 /*  40 */     this.isLighting = isOn;
 /*  41 */     if (isOn) {
-/*  42 */       func_149715_a(1.0F);
+/*  42 */       setLightLevel(1.0F);
 /*     */     }
 /*     */   }
 /*     */ 
 /*     */ 
 /*     */   
-/*     */   public boolean func_180639_a(World world, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer player, @NotNull EnumHand hand, @NotNull EnumFacing facing, float par7, float par8, float par9) {
-/*  49 */     if (!world.field_72995_K) {
-/*  50 */       if (!player.func_70093_af()) {
-/*  51 */         MCH_Lib.DbgLog(player.field_70170_p, "MCH_DraftingTableGui.MCH_DraftingTableGui OPEN GUI (%d, %d, %d)", new Object[] {
+/*     */   public boolean onBlockActivated(World world, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer player, @NotNull EnumHand hand, @NotNull EnumFacing facing, float par7, float par8, float par9) {
+/*  49 */     if (!world.isRemote) {
+/*  50 */       if (!player.isSneaking()) {
+/*  51 */         MCH_Lib.DbgLog(player.world, "MCH_DraftingTableGui.MCH_DraftingTableGui OPEN GUI (%d, %d, %d)", new Object[] {
 /*     */ 
 /*     */               
-/*  54 */               Integer.valueOf(pos.func_177958_n()), 
-/*  55 */               Integer.valueOf(pos.func_177956_o()), 
-/*  56 */               Integer.valueOf(pos.func_177952_p())
+/*  54 */               Integer.valueOf(pos.getX()), 
+/*  55 */               Integer.valueOf(pos.getY()), 
+/*  56 */               Integer.valueOf(pos.getZ())
 /*     */             });
-/*  58 */         player.openGui(MCH_MOD.instance, 4, world, pos.func_177958_n(), pos.func_177956_o(), pos.func_177952_p());
+/*  58 */         player.openGui(MCH_MOD.instance, 4, world, pos.getX(), pos.getY(), pos.getZ());
 /*     */       } else {
-/*  60 */         EnumDirection8 dir = (EnumDirection8)state.func_177229_b((IProperty)DIRECTION8);
+/*  60 */         EnumDirection8 dir = (EnumDirection8)state.getValue((IProperty)DIRECTION8);
 /*  61 */         MCH_Lib.DbgLog(world, "MCH_DraftingTableBlock.onBlockActivated:yaw=%d Light %s", new Object[] { Integer.valueOf((int)dir.getAngle()), this.isLighting ? "OFF->ON" : "ON->OFF" });
 /*  62 */         if (this.isLighting) {
-/*  63 */           world.func_180501_a(pos, MCH_MOD.blockDraftingTable.func_176223_P().func_177226_a((IProperty)DIRECTION8, (Comparable)dir), 2);
+/*  63 */           world.setBlockState(pos, MCH_MOD.blockDraftingTable.getDefaultState().withProperty((IProperty)DIRECTION8, (Comparable)dir), 2);
 /*     */         } else {
-/*  65 */           world.func_180501_a(pos, MCH_MOD.blockDraftingTableLit.func_176223_P().func_177226_a((IProperty)DIRECTION8, (Comparable)dir), 2);
+/*  65 */           world.setBlockState(pos, MCH_MOD.blockDraftingTableLit.getDefaultState().withProperty((IProperty)DIRECTION8, (Comparable)dir), 2);
 /*     */         } 
 /*     */         
-/*  68 */         world.func_184133_a(null, pos, SoundEvents.field_187909_gi, SoundCategory.BLOCKS, 0.3F, 0.5F);
+/*  68 */         world.playSound(null, pos, SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 0.5F);
 /*     */       } 
 /*     */     }
 /*     */     
 /*  72 */     return true;
 /*     */   }
 /*     */   
-/*     */   public TileEntity func_149915_a(@NotNull World world, int a) {
+/*     */   public TileEntity createNewTileEntity(@NotNull World world, int a) {
 /*  76 */     return new MCH_DraftingTableTileEntity();
 /*     */   }
 /*     */   
@@ -84,11 +84,11 @@
 /*  84 */     return true;
 /*     */   }
 /*     */   
-/*     */   public boolean func_149686_d(IBlockState state) {
+/*     */   public boolean isFullCube(IBlockState state) {
 /*  88 */     return false;
 /*     */   }
 /*     */   
-/*     */   public boolean func_149662_c(IBlockState state) {
+/*     */   public boolean isOpaqueCube(IBlockState state) {
 /*  92 */     return false;
 /*     */   }
 /*     */   
@@ -100,35 +100,35 @@
 /* 100 */     return false;
 /*     */   }
 /*     */   
-/*     */   public EnumPushReaction func_149656_h(IBlockState state) {
+/*     */   public EnumPushReaction getMobilityFlag(IBlockState state) {
 /* 104 */     return EnumPushReaction.DESTROY;
 /*     */   }
 /*     */   
-/*     */   public IBlockState func_180642_a(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
-/* 108 */     return func_176223_P().func_177226_a((IProperty)DIRECTION8, (Comparable)EnumDirection8.fromAngle(MCH_Lib.getRotate360(placer.field_70177_z)));
+/*     */   public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+/* 108 */     return getDefaultState().withProperty((IProperty)DIRECTION8, (Comparable)EnumDirection8.fromAngle(MCH_Lib.getRotate360(placer.rotationYaw)));
 /*     */   }
 /*     */   
-/*     */   public void func_180633_a(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack itemStack) {
-/* 112 */     float pyaw = (float)MCH_Lib.getRotate360(entity.field_70177_z);
+/*     */   public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase entity, ItemStack itemStack) {
+/* 112 */     float pyaw = (float)MCH_Lib.getRotate360(entity.rotationYaw);
 /* 113 */     pyaw += 22.5F;
 /* 114 */     int yaw = (int)(pyaw / 45.0F);
 /* 115 */     if (yaw < 0) {
 /* 116 */       yaw = yaw % 8 + 8;
 /*     */     }
 /*     */     
-/* 119 */     world.func_180501_a(pos, state.func_177226_a((IProperty)DIRECTION8, (Comparable)EnumDirection8.fromAngle(MCH_Lib.getRotate360(entity.field_70177_z))), 2);
+/* 119 */     world.setBlockState(pos, state.withProperty((IProperty)DIRECTION8, (Comparable)EnumDirection8.fromAngle(MCH_Lib.getRotate360(entity.rotationYaw))), 2);
 /* 120 */     MCH_Lib.DbgLog(world, "MCH_DraftingTableBlock.onBlockPlacedBy:yaw=%d", new Object[] { Integer.valueOf(yaw) });
 /*     */   }
 /*     */   
-/*     */   public boolean func_149710_n(IBlockState state) {
+/*     */   public boolean getUseNeighborBrightness(IBlockState state) {
 /* 124 */     return true;
 /*     */   }
 /*     */   
-/*     */   public Item func_180660_a(IBlockState state, Random rand, int fortune) {
+/*     */   public Item getItemDropped(IBlockState state, Random rand, int fortune) {
 /* 128 */     return W_Item.getItemFromBlock((Block)MCH_MOD.blockDraftingTable);
 /*     */   }
 /*     */   
-/*     */   public ItemStack func_185473_a(World worldIn, BlockPos pos, IBlockState state) {
+/*     */   public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
 /* 132 */     return new ItemStack((Block)MCH_MOD.blockDraftingTable);
 /*     */   }
 /*     */   
@@ -136,15 +136,15 @@
 /* 136 */     return new ItemStack((Block)MCH_MOD.blockDraftingTable);
 /*     */   }
 /*     */   
-/*     */   public int func_176201_c(IBlockState state) {
-/* 140 */     return ((EnumDirection8)state.func_177229_b((IProperty)DIRECTION8)).getIndex();
+/*     */   public int getMetaFromState(IBlockState state) {
+/* 140 */     return ((EnumDirection8)state.getValue((IProperty)DIRECTION8)).getIndex();
 /*     */   }
 /*     */   
-/*     */   public IBlockState func_176203_a(int meta) {
-/* 144 */     return func_176223_P().func_177226_a((IProperty)DIRECTION8, (Comparable)EnumDirection8.getFront(meta));
+/*     */   public IBlockState getStateFromMeta(int meta) {
+/* 144 */     return getDefaultState().withProperty((IProperty)DIRECTION8, (Comparable)EnumDirection8.getFront(meta));
 /*     */   }
 /*     */   
-/*     */   protected BlockStateContainer func_180661_e() {
+/*     */   protected BlockStateContainer createBlockState() {
 /* 148 */     return new BlockStateContainer((Block)this, new IProperty[] { (IProperty)DIRECTION8 });
 /*     */   }
 /*     */ }

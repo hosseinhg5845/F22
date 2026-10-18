@@ -30,7 +30,7 @@
 /*    */   
 /*    */   public void trigger() {
 /* 32 */     for (ICriterionTrigger.Listener<SimpleInstance> listener : this.listeners)
-/* 33 */       listener.func_192159_a(this.playerAdvancements); 
+/* 33 */       listener.grantCriterion(this.playerAdvancements); 
 /*    */   }
 /*    */   
 /*    */   public static class SimpleInstance

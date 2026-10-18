@@ -9,15 +9,15 @@
 /*    */ 
 /*    */ public class W_McClient {
 /*    */   public static void playSoundClick(float volume, float pitch) {
-/* 12 */     playSound(SoundEvents.field_187909_gi, volume, pitch);
+/* 12 */     playSound(SoundEvents.UI_BUTTON_CLICK, volume, pitch);
 /*    */   }
 /*    */   
 /*    */   public static void playSound(SoundEvent sound, float volume, float pitch) {
-/* 16 */     Minecraft.func_71410_x().func_147118_V().func_147682_a((ISound)new W_Sound(sound, volume, pitch));
+/* 16 */     Minecraft.getMinecraft().getSoundHandler().playSound((ISound)new W_Sound(sound, volume, pitch));
 /*    */   }
 /*    */   
 /*    */   public static void DEF_playSoundFX(String name, float volume, float pitch) {
-/* 20 */     Minecraft.func_71410_x().func_147118_V().func_147682_a((ISound)new W_Sound(new ResourceLocation(name), volume, pitch));
+/* 20 */     Minecraft.getMinecraft().getSoundHandler().playSound((ISound)new W_Sound(new ResourceLocation(name), volume, pitch));
 /*    */   }
 /*    */   
 /*    */   public static void MOD_playSoundFX(String name, float volume, float pitch) {
@@ -28,24 +28,24 @@
 /*    */   public static void addSound(String name) {}
 /*    */   
 /*    */   public static void DEF_bindTexture(String tex) {
-/* 31 */     (Minecraft.func_71410_x()).field_71446_o.func_110577_a(new ResourceLocation(tex));
+/* 31 */     (Minecraft.getMinecraft()).renderEngine.bindTexture(new ResourceLocation(tex));
 /*    */   }
 /*    */   
 /*    */   public static void MOD_bindTexture(String tex) {
-/* 35 */     (Minecraft.func_71410_x()).field_71446_o.func_110577_a(new ResourceLocation(W_MOD.DOMAIN, tex));
+/* 35 */     (Minecraft.getMinecraft()).renderEngine.bindTexture(new ResourceLocation(W_MOD.DOMAIN, tex));
 /*    */   }
 /*    */   
 /*    */   public static boolean isGamePaused() {
-/* 39 */     Minecraft mc = Minecraft.func_71410_x();
-/* 40 */     return mc.func_147113_T();
+/* 39 */     Minecraft mc = Minecraft.getMinecraft();
+/* 40 */     return mc.isGamePaused();
 /*    */   }
 /*    */   
 /*    */   public static Entity getRenderEntity() {
-/* 44 */     return Minecraft.func_71410_x().func_175606_aa();
+/* 44 */     return Minecraft.getMinecraft().getRenderViewEntity();
 /*    */   }
 /*    */   
 /*    */   public static void setRenderEntity(EntityLivingBase entity) {
-/* 48 */     Minecraft.func_71410_x().func_175607_a((Entity)entity);
+/* 48 */     Minecraft.getMinecraft().setRenderViewEntity((Entity)entity);
 /*    */   }
 /*    */ }
 

@@ -18,8 +18,8 @@
 /*    */   public void renderBullet(MCH_EntityBaseBullet entity, double posX, double posY, double posZ, float yaw, float tickTime) {
 /* 19 */     GL11.glPushMatrix();
 /* 20 */     GL11.glTranslated(posX, posY, posZ);
-/* 21 */     GL11.glRotatef(-entity.field_70177_z, 0.0F, 1.0F, 0.0F);
-/* 22 */     GL11.glRotatef(entity.field_70125_A, 1.0F, 0.0F, 0.0F);
+/* 21 */     GL11.glRotatef(-entity.rotationYaw, 0.0F, 1.0F, 0.0F);
+/* 22 */     GL11.glRotatef(entity.rotationPitch, 1.0F, 0.0F, 0.0F);
 /* 23 */     renderModel(entity);
 /* 24 */     GL11.glPopMatrix();
 /*    */   }

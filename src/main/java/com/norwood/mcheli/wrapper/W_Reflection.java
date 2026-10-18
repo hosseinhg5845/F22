@@ -14,7 +14,7 @@
 /*    */ public class W_Reflection
 /*    */ {
 /*    */   public static RenderManager getRenderManager(Render<?> render) {
-/* 17 */     return render.func_177068_d();
+/* 17 */     return render.getRenderManager();
 /*    */   }
 /*    */   
 /*    */   public static void restoreDefaultThirdPersonDistance() {
@@ -41,8 +41,8 @@
 /*    */   
 /*    */   public static void setCameraZoom(float zoom) {
 /*    */     try {
-/* 44 */       Minecraft mc = Minecraft.func_71410_x();
-/* 45 */       ObfuscationReflectionHelper.setPrivateValue(EntityRenderer.class, mc.field_71460_t, Float.valueOf(zoom), "field_78503_V");
+/* 44 */       Minecraft mc = Minecraft.getMinecraft();
+/* 45 */       ObfuscationReflectionHelper.setPrivateValue(EntityRenderer.class, mc.entityRenderer, Float.valueOf(zoom), "cameraZoom");
 /* 46 */       MCH_CameraManager.setCameraZoom(zoom);
 /* 47 */     } catch (Exception var2) {
 /* 48 */       var2.printStackTrace();
@@ -51,15 +51,15 @@
 /*    */   
 /*    */   public static void setCreativeDigSpeed(int n) {
 /*    */     try {
-/* 54 */       Minecraft mc = Minecraft.func_71410_x();
-/* 55 */       ObfuscationReflectionHelper.setPrivateValue(PlayerControllerMP.class, mc.field_71442_b, Integer.valueOf(n), "field_78781_i");
+/* 54 */       Minecraft mc = Minecraft.getMinecraft();
+/* 55 */       ObfuscationReflectionHelper.setPrivateValue(PlayerControllerMP.class, mc.playerController, Integer.valueOf(n), "blockHitDelay");
 /* 56 */     } catch (Exception var2) {
 /* 57 */       var2.printStackTrace();
 /*    */     } 
 /*    */   }
 /*    */   
 /*    */   public static ItemRenderer getItemRenderer() {
-/* 62 */     return (Minecraft.func_71410_x()).field_71460_t.field_78516_c;
+/* 62 */     return (Minecraft.getMinecraft()).entityRenderer.itemRenderer;
 /*    */   }
 /*    */ 
 /*    */   
@@ -69,16 +69,16 @@
 /*    */   @Nonnull
 /*    */   public static ItemStack getItemRendererMainHand() {
 /*    */     try {
-/* 72 */       return (ItemStack)ObfuscationReflectionHelper.getPrivateValue(ItemRenderer.class, getItemRenderer(), "field_187467_d");
+/* 72 */       return (ItemStack)ObfuscationReflectionHelper.getPrivateValue(ItemRenderer.class, getItemRenderer(), "itemStackMainHand");
 /* 73 */     } catch (Exception var1) {
 /* 74 */       var1.printStackTrace();
-/* 75 */       return ItemStack.field_190927_a;
+/* 75 */       return ItemStack.EMPTY;
 /*    */     } 
 /*    */   }
 /*    */   
 /*    */   public static void setItemRendererMainHand(ItemStack itemToRender) {
 /*    */     try {
-/* 81 */       ObfuscationReflectionHelper.setPrivateValue(ItemRenderer.class, getItemRenderer(), itemToRender, "field_187467_d");
+/* 81 */       ObfuscationReflectionHelper.setPrivateValue(ItemRenderer.class, getItemRenderer(), itemToRender, "itemStackMainHand");
 /* 82 */     } catch (Exception var2) {
 /* 83 */       var2.printStackTrace();
 /*    */     } 
@@ -86,7 +86,7 @@
 /*    */   
 /*    */   public static void setItemRendererMainProgress(float equippedProgress) {
 /*    */     try {
-/* 89 */       ObfuscationReflectionHelper.setPrivateValue(ItemRenderer.class, getItemRenderer(), Float.valueOf(equippedProgress), "field_187469_f");
+/* 89 */       ObfuscationReflectionHelper.setPrivateValue(ItemRenderer.class, getItemRenderer(), Float.valueOf(equippedProgress), "equippedProgressMainHand");
 /* 90 */     } catch (Exception var2) {
 /* 91 */       var2.printStackTrace();
 /*    */     } 

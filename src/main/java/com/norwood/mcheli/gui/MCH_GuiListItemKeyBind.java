@@ -26,16 +26,16 @@
 /*    */ 
 /*    */   
 /*    */   public void mouseReleased(int x, int y) {
-/* 29 */     this.button.func_146118_a(x, y);
-/* 30 */     this.buttonReset.func_146118_a(x, y);
+/* 29 */     this.button.mouseReleased(x, y);
+/* 30 */     this.buttonReset.mouseReleased(x, y);
 /*    */   }
 /*    */ 
 /*    */   
 /*    */   public boolean mousePressed(Minecraft mc, int x, int y) {
-/* 35 */     if (this.button.func_146116_c(mc, x, y)) {
+/* 35 */     if (this.button.mousePressed(mc, x, y)) {
 /* 36 */       this.lastPushButton = this.button;
 /* 37 */       return true;
-/* 38 */     }  if (this.buttonReset.func_146116_c(mc, x, y)) {
+/* 38 */     }  if (this.buttonReset.mousePressed(mc, x, y)) {
 /* 39 */       this.lastPushButton = this.buttonReset;
 /* 40 */       return true;
 /*    */     } 
@@ -46,12 +46,12 @@
 /*    */   
 /*    */   public void draw(Minecraft mc, int mouseX, int mouseY, int posX, int posY, float partialTicks) {
 /* 48 */     int y = 6;
-/* 49 */     this.button.func_73731_b(mc.field_71466_p, this.displayString, posX + 10, posY + y, -1);
-/* 50 */     this.button.field_146129_i = posY;
-/* 51 */     this.button.func_191745_a(mc, mouseX, mouseY, partialTicks);
-/* 52 */     this.buttonReset.field_146124_l = (this.keycode != this.defaultKeycode);
-/* 53 */     this.buttonReset.field_146129_i = posY;
-/* 54 */     this.buttonReset.func_191745_a(mc, mouseX, mouseY, partialTicks);
+/* 49 */     this.button.drawString(mc.fontRenderer, this.displayString, posX + 10, posY + y, -1);
+/* 50 */     this.button.y = posY;
+/* 51 */     this.button.drawButton(mc, mouseX, mouseY, partialTicks);
+/* 52 */     this.buttonReset.enabled = (this.keycode != this.defaultKeycode);
+/* 53 */     this.buttonReset.y = posY;
+/* 54 */     this.buttonReset.drawButton(mc, mouseX, mouseY, partialTicks);
 /*    */   }
 /*    */   
 /*    */   public void applyKeycode() {
@@ -65,7 +65,7 @@
 /*    */   public void setKeycode(int k) {
 /* 66 */     if (k != 0 && !MCH_KeyName.getDescOrName(k).isEmpty()) {
 /* 67 */       this.keycode = k;
-/* 68 */       this.button.field_146126_j = MCH_KeyName.getDescOrName(k);
+/* 68 */       this.button.displayString = MCH_KeyName.getDescOrName(k);
 /*    */     } 
 /*    */   }
 /*    */ }

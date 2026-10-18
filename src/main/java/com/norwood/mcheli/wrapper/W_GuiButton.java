@@ -15,7 +15,7 @@
 /*    */   }
 /*    */   
 /*    */   public static void setVisible(GuiButton button, boolean b) {
-/* 18 */     button.field_146125_m = b;
+/* 18 */     button.visible = b;
 /*    */   }
 /*    */   
 /*    */   public void addHoverString(String s) {
@@ -27,33 +27,33 @@
 /*    */   }
 /*    */   
 /*    */   public boolean isVisible() {
-/* 30 */     return this.field_146125_m;
+/* 30 */     return this.visible;
 /*    */   }
 /*    */   
 /*    */   public void setVisible(boolean b) {
-/* 34 */     this.field_146125_m = b;
+/* 34 */     this.visible = b;
 /*    */   }
 /*    */   
 /*    */   public void enableBlend() {
 /* 38 */     GL11.glEnable(3042);
-/* 39 */     OpenGlHelper.func_148821_a(770, 771, 1, 0);
+/* 39 */     OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 /* 40 */     GL11.glBlendFunc(770, 771);
 /*    */   }
 /*    */   
 /*    */   public boolean isOnMouseOver() {
-/* 44 */     return this.field_146123_n;
+/* 44 */     return this.hovered;
 /*    */   }
 /*    */   
 /*    */   public void setOnMouseOver(boolean b) {
-/* 48 */     this.field_146123_n = b;
+/* 48 */     this.hovered = b;
 /*    */   }
 /*    */   
 /*    */   public int getWidth() {
-/* 52 */     return this.field_146120_f;
+/* 52 */     return this.width;
 /*    */   }
 /*    */   
 /*    */   public int getHeight() {
-/* 56 */     return this.field_146121_g;
+/* 56 */     return this.height;
 /*    */   }
 /*    */ }
 

@@ -25,7 +25,7 @@
 /*     */   
 /*     */   public MCH_Parts(Entity parent, int shiftBit, DataParameter<Integer> dataKey, String name) {
 /*  27 */     this.parent = parent;
-/*  28 */     this.dataManager = parent.func_184212_Q();
+/*  28 */     this.dataManager = parent.getDataManager();
 /*  29 */     this.shift = shiftBit;
 /*  30 */     this.dataKey = dataKey;
 /*  31 */     this.status = ((getDataWatcherValue() & 1 << this.shift) != 0);
@@ -33,7 +33,7 @@
 /*     */   }
 /*     */   
 /*     */   public int getDataWatcherValue() {
-/*  36 */     return ((Integer)this.dataManager.func_187225_a(this.dataKey)).intValue();
+/*  36 */     return ((Integer)this.dataManager.get(this.dataKey)).intValue();
 /*     */   }
 /*     */   
 /*     */   public void setStatusServer(boolean stat) {
@@ -41,7 +41,7 @@
 /*     */   }
 /*     */   
 /*     */   public void setStatusServer(boolean stat, boolean playSound) {
-/*  44 */     if (!this.parent.field_70170_p.field_72995_K && getStatus() != stat) {
+/*  44 */     if (!this.parent.world.isRemote && getStatus() != stat) {
 /*  45 */       MCH_Lib.DbgLog(false, "setStatusServer(ID=%d %s :%s -> %s)", new Object[] { Integer.valueOf(this.shift), this.partName, getStatus() ? "ON" : "OFF", stat ? "ON" : "OFF" });
 /*  46 */       updateDataWatcher(stat);
 /*  47 */       playSound(this.soundSwitching);
@@ -59,9 +59,9 @@
 /*  59 */     int currentStatus = getDataWatcherValue();
 /*  60 */     int mask = 1 << this.shift;
 /*  61 */     if (!stat) {
-/*  62 */       this.dataManager.func_187227_b(this.dataKey, Integer.valueOf(currentStatus & (mask ^ 0xFFFFFFFF)));
+/*  62 */       this.dataManager.set(this.dataKey, Integer.valueOf(currentStatus & (mask ^ 0xFFFFFFFF)));
 /*     */     } else {
-/*  64 */       this.dataManager.func_187227_b(this.dataKey, Integer.valueOf(currentStatus | mask));
+/*  64 */       this.dataManager.set(this.dataKey, Integer.valueOf(currentStatus | mask));
 /*     */     } 
 /*     */     
 /*  67 */     this.status = stat;
@@ -80,7 +80,7 @@
 /*     */   }
 /*     */   
 /*     */   public void updateStatusClient(int statFromDataWatcher) {
-/*  83 */     if (this.parent.field_70170_p.field_72995_K) {
+/*  83 */     if (this.parent.world.isRemote) {
 /*  84 */       this.status = ((statFromDataWatcher & 1 << this.shift) != 0);
 /*     */     }
 /*     */   }
@@ -112,7 +112,7 @@
 /*     */   }
 /*     */   
 /*     */   public void playSound(Sound snd) {
-/* 115 */     if (!snd.name.isEmpty() && !this.parent.field_70170_p.field_72995_K)
+/* 115 */     if (!snd.name.isEmpty() && !this.parent.world.isRemote)
 /* 116 */       W_WorldFunc.MOD_playSoundAtEntity(this.parent, snd.name, snd.volume, snd.pitch); 
 /*     */   }
 /*     */   

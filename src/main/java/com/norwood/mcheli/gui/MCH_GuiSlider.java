@@ -26,14 +26,14 @@
 /*  26 */     setSliderValue(defaultSliderPos);
 /*     */   }
 /*     */   
-/*     */   public int func_146114_a(boolean mouseOver) {
+/*     */   public int getHoverState(boolean mouseOver) {
 /*  30 */     return 0;
 /*     */   }
 /*     */   
-/*     */   protected void func_146119_b(@NotNull Minecraft mc, int x, int y) {
+/*     */   protected void mouseDragged(@NotNull Minecraft mc, int x, int y) {
 /*  34 */     if (isVisible()) {
 /*  35 */       if (this.isMousePress) {
-/*  36 */         this.currentSlider = (x - this.field_146128_h + 4) / (this.field_146120_f - 8);
+/*  36 */         this.currentSlider = (x - this.x + 4) / (this.width - 8);
 /*  37 */         if (this.currentSlider < 0.0F) {
 /*  38 */           this.currentSlider = 0.0F;
 /*     */         }
@@ -47,16 +47,16 @@
 /*     */       } 
 /*     */       
 /*  49 */       GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-/*  50 */       func_73729_b(this.field_146128_h + (int)(this.currentSlider * (this.field_146120_f - 8)), this.field_146129_i, 0, 66, 4, 20);
-/*  51 */       func_73729_b(this.field_146128_h + (int)(this.currentSlider * (this.field_146120_f - 8)) + 4, this.field_146129_i, 196, 66, 4, 20);
+/*  50 */       drawTexturedModalRect(this.x + (int)(this.currentSlider * (this.width - 8)), this.y, 0, 66, 4, 20);
+/*  51 */       drawTexturedModalRect(this.x + (int)(this.currentSlider * (this.width - 8)) + 4, this.y, 196, 66, 4, 20);
 /*  52 */       if (!MCH_Key.isKeyDown(-100)) {
-/*  53 */         func_146118_a(x, y);
+/*  53 */         mouseReleased(x, y);
 /*     */       }
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   public void updateDisplayString() {
-/*  59 */     this.field_146126_j = String.format(this.stringFormat, new Object[] { Float.valueOf(denormalizeValue(this.currentSlider)) });
+/*  59 */     this.displayString = String.format(this.stringFormat, new Object[] { Float.valueOf(denormalizeValue(this.currentSlider)) });
 /*     */   }
 /*     */   
 /*     */   public float getSliderValue() {
@@ -81,16 +81,16 @@
 /*     */   }
 /*     */   
 /*     */   public float normalizeValue(float f) {
-/*  84 */     return MathHelper.func_76131_a((snapToStepClamp(f) - this.valueMin) / (this.valueMax - this.valueMin), 0.0F, 1.0F);
+/*  84 */     return MathHelper.clamp((snapToStepClamp(f) - this.valueMin) / (this.valueMax - this.valueMin), 0.0F, 1.0F);
 /*     */   }
 /*     */   
 /*     */   public float denormalizeValue(float f) {
-/*  88 */     return snapToStepClamp(this.valueMin + (this.valueMax - this.valueMin) * MathHelper.func_76131_a(f, 0.0F, 1.0F));
+/*  88 */     return snapToStepClamp(this.valueMin + (this.valueMax - this.valueMin) * MathHelper.clamp(f, 0.0F, 1.0F));
 /*     */   }
 /*     */   
 /*     */   public float snapToStepClamp(float f) {
 /*  92 */     f = snapToStep(f);
-/*  93 */     return MathHelper.func_76131_a(f, this.valueMin, this.valueMax);
+/*  93 */     return MathHelper.clamp(f, this.valueMin, this.valueMax);
 /*     */   }
 /*     */   
 /*     */   protected float snapToStep(float f) {
@@ -101,9 +101,9 @@
 /* 101 */     return f;
 /*     */   }
 /*     */   
-/*     */   public boolean func_146116_c(@NotNull Minecraft mc, int x, int y) {
-/* 105 */     if (super.func_146116_c(mc, x, y)) {
-/* 106 */       this.currentSlider = (x - this.field_146128_h + 4) / (this.field_146120_f - 8);
+/*     */   public boolean mousePressed(@NotNull Minecraft mc, int x, int y) {
+/* 105 */     if (super.mousePressed(mc, x, y)) {
+/* 106 */       this.currentSlider = (x - this.x + 4) / (this.width - 8);
 /* 107 */       if (this.currentSlider < 0.0F) {
 /* 108 */         this.currentSlider = 0.0F;
 /*     */       }
@@ -120,7 +120,7 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_146118_a(int mouseX, int mouseY) {
+/*     */   public void mouseReleased(int mouseX, int mouseY) {
 /* 124 */     this.isMousePress = false;
 /*     */   }
 /*     */ }

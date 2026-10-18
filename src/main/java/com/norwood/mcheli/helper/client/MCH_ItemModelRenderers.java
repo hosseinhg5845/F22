@@ -30,7 +30,7 @@
 /*    */   
 /*    */   @SubscribeEvent
 /*    */   static void onModelRegistryEvent(ModelRegistryEvent event) {
-/* 33 */     registerModelLocation(Item.func_150898_a((Block)MCH_MOD.blockDraftingTable));
+/* 33 */     registerModelLocation(Item.getItemFromBlock((Block)MCH_MOD.blockDraftingTable));
 /* 34 */     ModelLoader.setCustomStateMapper((Block)MCH_MOD.blockDraftingTable, blockIn -> Maps.newHashMap());
 /* 35 */     ModelLoader.setCustomStateMapper((Block)MCH_MOD.blockDraftingTableLit, blockIn -> Maps.newHashMap());
 /* 36 */     registerModelLocation((Item)MCH_MOD.itemSpawnGunnerVsMonster);
@@ -62,9 +62,9 @@
 /*    */   @SubscribeEvent
 /*    */   static void onBakedModelEvent(ModelBakeEvent event) {
 /* 64 */     for (Map.Entry<ModelResourceLocation, IItemModelRenderer> entry : renderers.entrySet()) {
-/* 65 */       IBakedModel bakedmodel = (IBakedModel)event.getModelRegistry().func_82594_a(entry.getKey());
+/* 65 */       IBakedModel bakedmodel = (IBakedModel)event.getModelRegistry().getObject(entry.getKey());
 /* 66 */       if (bakedmodel != null) {
-/* 67 */         event.getModelRegistry().func_82595_a(entry.getKey(), new MCH_BakedModel(bakedmodel, entry.getValue()));
+/* 67 */         event.getModelRegistry().putObject(entry.getKey(), new MCH_BakedModel(bakedmodel, entry.getValue()));
 /*    */       }
 /*    */     } 
 /*    */   }

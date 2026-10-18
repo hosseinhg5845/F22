@@ -17,7 +17,7 @@
 /* 17 */           W_NetworkRegistry.packetHandler.onPacket(data, (EntityPlayer)MCH_Lib.getClientPlayer(), ctx);
 /*    */         }
 /*    */       } else {
-/* 20 */         W_NetworkRegistry.packetHandler.onPacket(data, (EntityPlayer)(ctx.getServerHandler()).field_147369_b, ctx);
+/* 20 */         W_NetworkRegistry.packetHandler.onPacket(data, (EntityPlayer)(ctx.getServerHandler()).player, ctx);
 /*    */       } 
 /* 22 */     } catch (Exception var4) {
 /* 23 */       var4.printStackTrace();

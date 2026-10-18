@@ -4,7 +4,7 @@
 /*   */ 
 /*   */ public class W_KeyBinding {
 /*   */   public static int getKeyCode(KeyBinding k) {
-/* 7 */     return k.func_151463_i();
+/* 7 */     return k.getKeyCode();
 /*   */   }
 /*   */ }
 

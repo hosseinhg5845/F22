@@ -40,7 +40,7 @@
 /*     */     } 
 /*     */     
 /*  42 */     this.index = idx;
-/*  43 */     this.displayName = (this.recipe != null) ? this.recipe.func_77571_b().func_82833_r() : "None";
+/*  43 */     this.displayName = (this.recipe != null) ? this.recipe.getRecipeOutput().getDisplayName() : "None";
 /*  44 */     this.descTexture = getDescTexture(this.recipe);
 /*  45 */     this.descPage = 0;
 /*  46 */     this.descMaxPage = this.descTexture.size();
@@ -72,7 +72,7 @@
 /*  72 */     this.infoItem = new ArrayList<>();
 /*  73 */     this.infoData = new ArrayList<>();
 /*  74 */     if (info != null) {
-/*  75 */       getAcInfoTextSub("Name", info.getItemStack().func_82833_r());
+/*  75 */       getAcInfoTextSub("Name", info.getItemStack().getDisplayName());
 /*  76 */       getAcInfoTextSub("HP", "" + info.maxHp);
 /*  77 */       int seatNum = !info.isUAV ? info.getNumSeat() : (info.getNumSeat() - 1);
 /*  78 */       getAcInfoTextSub("Num of Seat", "" + seatNum);
@@ -177,7 +177,7 @@
 /* 177 */     List<ResourceLocation> list = new ArrayList<>();
 /* 178 */     if (r != null) {
 /* 179 */       for (int i = 0; i < 20; i++) {
-/* 180 */         String itemName = r.func_77571_b().func_77977_a();
+/* 180 */         String itemName = r.getRecipeOutput().getUnlocalizedName();
 /* 181 */         if (itemName.startsWith("tile.")) {
 /* 182 */           itemName = itemName.substring(5);
 /*     */         }

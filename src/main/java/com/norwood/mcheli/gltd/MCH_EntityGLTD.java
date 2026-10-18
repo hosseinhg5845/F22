@@ -34,9 +34,9 @@
 /*     */ 
 /*     */ public class MCH_EntityGLTD extends W_Entity implements IEntitySinglePassenger {
 /*     */   public static final float Y_OFFSET = 0.25F;
-/*  37 */   private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.func_187226_a(MCH_EntityGLTD.class, DataSerializers.field_187192_b);
-/*  38 */   private static final DataParameter<Integer> FORWARD_DIR = EntityDataManager.func_187226_a(MCH_EntityGLTD.class, DataSerializers.field_187192_b);
-/*  39 */   private static final DataParameter<Integer> DAMAGE_TAKEN = EntityDataManager.func_187226_a(MCH_EntityGLTD.class, DataSerializers.field_187192_b);
+/*  37 */   private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(MCH_EntityGLTD.class, DataSerializers.VARINT);
+/*  38 */   private static final DataParameter<Integer> FORWARD_DIR = EntityDataManager.createKey(MCH_EntityGLTD.class, DataSerializers.VARINT);
+/*  39 */   private static final DataParameter<Integer> DAMAGE_TAKEN = EntityDataManager.createKey(MCH_EntityGLTD.class, DataSerializers.VARINT);
 /*     */   public final MCH_Camera camera;
 /*     */   public final MCH_WeaponCAS weaponCAS;
 /*     */   public boolean zoomDir;
@@ -63,14 +63,14 @@
 /*     */   
 /*     */   public MCH_EntityGLTD(World world) {
 /*  65 */     super(world);
-/*  66 */     this.field_70156_m = true;
-/*  67 */     func_70105_a(0.5F, 0.5F);
+/*  66 */     this.preventEntitySpawning = true;
+/*  67 */     setSize(0.5F, 0.5F);
 /*  68 */     this.camera = new MCH_Camera(world, (Entity)this);
 /*  69 */     MCH_WeaponInfo wi = MCH_WeaponInfoManager.get("a10gau8");
-/*  70 */     this.weaponCAS = new MCH_WeaponCAS(world, Vec3d.field_186680_a, 0.0F, 0.0F, "a10gau8", wi);
+/*  70 */     this.weaponCAS = new MCH_WeaponCAS(world, Vec3d.ZERO, 0.0F, 0.0F, "a10gau8", wi);
 /*  71 */     this.weaponCAS.interval += (this.weaponCAS.interval > 0) ? 150 : 65386;
 /*  72 */     this.weaponCAS.displayName = "A-10 GAU-8 Avenger";
-/*  73 */     this.field_70158_ak = true;
+/*  73 */     this.ignoreFrustumCheck = true;
 /*  74 */     this.countWait = 0;
 /*  75 */     this.retryRiddenByEntityCheck = 0;
 /*  76 */     this.lastRiddenByEntity = null;
@@ -84,44 +84,44 @@
 /*     */   
 /*     */   public MCH_EntityGLTD(World par1World, double x, double y, double z) {
 /*  86 */     this(par1World);
-/*  87 */     func_70107_b(x, y, z);
-/*  88 */     this.field_70159_w = 0.0D;
-/*  89 */     this.field_70181_x = 0.0D;
-/*  90 */     this.field_70179_y = 0.0D;
-/*  91 */     this.field_70169_q = x;
-/*  92 */     this.field_70167_r = y;
-/*  93 */     this.field_70166_s = z;
+/*  87 */     setPosition(x, y, z);
+/*  88 */     this.motionX = 0.0D;
+/*  89 */     this.motionY = 0.0D;
+/*  90 */     this.motionZ = 0.0D;
+/*  91 */     this.prevPosX = x;
+/*  92 */     this.prevPosY = y;
+/*  93 */     this.prevPosZ = z;
 /*  94 */     this.camera.setPosition(x, y, z);
 /*     */   }
 /*     */   
-/*     */   protected boolean func_70041_e_() {
+/*     */   protected boolean canTriggerWalking() {
 /*  98 */     return false;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   protected void func_70088_a() {
-/* 103 */     this.field_70180_af.func_187214_a(TIME_SINCE_HIT, Integer.valueOf(0));
-/* 104 */     this.field_70180_af.func_187214_a(FORWARD_DIR, Integer.valueOf(1));
-/* 105 */     this.field_70180_af.func_187214_a(DAMAGE_TAKEN, Integer.valueOf(0));
+/*     */   protected void entityInit() {
+/* 103 */     this.dataManager.register(TIME_SINCE_HIT, Integer.valueOf(0));
+/* 104 */     this.dataManager.register(FORWARD_DIR, Integer.valueOf(1));
+/* 105 */     this.dataManager.register(DAMAGE_TAKEN, Integer.valueOf(0));
 /*     */   }
 /*     */   
-/*     */   public AxisAlignedBB func_70114_g(Entity par1Entity) {
-/* 109 */     return par1Entity.func_174813_aQ();
+/*     */   public AxisAlignedBB getCollisionBox(Entity par1Entity) {
+/* 109 */     return par1Entity.getEntityBoundingBox();
 /*     */   }
 /*     */   
-/*     */   public AxisAlignedBB func_70046_E() {
-/* 113 */     return func_174813_aQ();
+/*     */   public AxisAlignedBB getCollisionBoundingBox() {
+/* 113 */     return getEntityBoundingBox();
 /*     */   }
 /*     */   
-/*     */   public double func_70042_X() {
-/* 117 */     return this.field_70131_O * 0.0D - 0.3D;
+/*     */   public double getMountedYOffset() {
+/* 117 */     return this.height * 0.0D - 0.3D;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public boolean func_70097_a(DamageSource ds, float damage) {
-/* 122 */     if (func_180431_b(ds))
+/*     */   public boolean attackEntityFrom(DamageSource ds, float damage) {
+/* 122 */     if (isEntityInvulnerable(ds))
 /* 123 */       return false; 
-/* 124 */     if (!this.field_70170_p.field_72995_K && !this.field_70128_L) {
+/* 124 */     if (!this.world.isRemote && !this.isDead) {
 /* 125 */       damage = MCH_Config.applyDamageByExternal((Entity)this, ds, damage);
 /* 126 */       if (!MCH_Multiplay.canAttackEntity(ds, (Entity)this)) {
 /* 127 */         return false;
@@ -129,21 +129,21 @@
 /* 129 */       setForwardDirection(-getForwardDirection());
 /* 130 */       setTimeSinceHit(10);
 /* 131 */       setDamageTaken((int)(getDamageTaken() + damage * 100.0F));
-/* 132 */       func_70018_K();
-/* 133 */       boolean flag = (ds.func_76346_g() instanceof EntityPlayer && ((EntityPlayer)ds.func_76346_g()).field_71075_bZ.field_75098_d);
+/* 132 */       markVelocityChanged();
+/* 133 */       boolean flag = (ds.getTrueSource() instanceof EntityPlayer && ((EntityPlayer)ds.getTrueSource()).capabilities.isCreativeMode);
 /* 134 */       if (flag || getDamageTaken() > 40.0F) {
 /* 135 */         Entity riddenByEntity = getRiddenByEntity();
 /* 136 */         this.camera.initCamera(0, riddenByEntity);
 /* 137 */         if (riddenByEntity != null) {
-/* 138 */           riddenByEntity.func_184220_m((Entity)this);
+/* 138 */           riddenByEntity.startRiding((Entity)this);
 /*     */         }
 /*     */         
 /* 141 */         if (!flag) {
-/* 142 */           func_145778_a((Item)MCH_MOD.itemGLTD, 1, 0.0F);
+/* 142 */           dropItemWithOffset((Item)MCH_MOD.itemGLTD, 1, 0.0F);
 /*     */         }
 /*     */         
-/* 145 */         W_WorldFunc.MOD_playSoundEffect(this.field_70170_p, this.field_70165_t, this.field_70163_u, this.field_70161_v, "hit", 1.0F, 1.0F);
-/* 146 */         func_70106_y();
+/* 145 */         W_WorldFunc.MOD_playSoundEffect(this.world, this.posX, this.posY, this.posZ, "hit", 1.0F, 1.0F);
+/* 146 */         setDead();
 /*     */       } 
 /*     */       
 /* 149 */       return true;
@@ -154,11 +154,11 @@
 /*     */ 
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
-/*     */   public void func_70057_ab() {}
+/*     */   public void performHurtAnimation() {}
 /*     */ 
 /*     */   
-/*     */   public boolean func_70067_L() {
-/* 161 */     return !this.field_70128_L;
+/*     */   public boolean canBeCollidedWith() {
+/* 161 */     return !this.isDead;
 /*     */   }
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
@@ -166,9 +166,9 @@
 /* 166 */     if (this.isBoatEmpty) {
 /* 167 */       this.gltdPosRotInc = par9 + 5;
 /*     */     } else {
-/* 169 */       double x = par1 - this.field_70165_t;
-/* 170 */       double y = par3 - this.field_70163_u;
-/* 171 */       double z = par5 - this.field_70161_v;
+/* 169 */       double x = par1 - this.posX;
+/* 170 */       double y = par3 - this.posY;
+/* 171 */       double z = par5 - this.posZ;
 /* 172 */       if (x * x + y * y + z * z <= 1.0D) {
 /*     */         return;
 /*     */       }
@@ -181,20 +181,20 @@
 /* 181 */     this.gltdZ = par5;
 /* 182 */     this.gltdYaw = par7;
 /* 183 */     this.gltdPitch = par8;
-/* 184 */     this.field_70159_w = this.velocityX;
-/* 185 */     this.field_70181_x = this.velocityY;
-/* 186 */     this.field_70179_y = this.velocityZ;
+/* 184 */     this.motionX = this.velocityX;
+/* 185 */     this.motionY = this.velocityY;
+/* 186 */     this.motionZ = this.velocityZ;
 /*     */   }
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
-/*     */   public void func_70016_h(double x, double y, double z) {
-/* 191 */     this.velocityX = this.field_70159_w = x;
-/* 192 */     this.velocityY = this.field_70181_x = y;
-/* 193 */     this.velocityZ = this.field_70179_y = z;
+/*     */   public void setVelocity(double x, double y, double z) {
+/* 191 */     this.velocityX = this.motionX = x;
+/* 192 */     this.velocityY = this.motionY = y;
+/* 193 */     this.velocityZ = this.motionZ = z;
 /*     */   }
 /*     */   
-/*     */   public void func_70071_h_() {
-/* 197 */     super.func_70071_h_();
+/*     */   public void onUpdate() {
+/* 197 */     super.onUpdate();
 /* 198 */     if (getTimeSinceHit() > 0) {
 /* 199 */       setTimeSinceHit(getTimeSinceHit() - 1);
 /*     */     }
@@ -203,22 +203,22 @@
 /* 203 */       setDamageTaken(getDamageTaken() - 1);
 /*     */     }
 /*     */     
-/* 206 */     this.field_70169_q = this.field_70165_t;
-/* 207 */     this.field_70167_r = this.field_70163_u;
-/* 208 */     this.field_70166_s = this.field_70161_v;
-/* 209 */     double d3 = Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70179_y * this.field_70179_y);
+/* 206 */     this.prevPosX = this.posX;
+/* 207 */     this.prevPosY = this.posY;
+/* 208 */     this.prevPosZ = this.posZ;
+/* 209 */     double d3 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 /* 210 */     Entity riddenByEntity = getRiddenByEntity();
 /* 211 */     if (riddenByEntity != null) {
 /* 212 */       this.camera.updateViewer(0, riddenByEntity);
 /*     */     }
 /*     */     
-/* 215 */     if (!this.field_70170_p.field_72995_K || !this.isBoatEmpty) {
-/* 216 */       this.field_70181_x -= 0.04D;
-/* 217 */       double d4 = Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70179_y * this.field_70179_y);
+/* 215 */     if (!this.world.isRemote || !this.isBoatEmpty) {
+/* 216 */       this.motionY -= 0.04D;
+/* 217 */       double d4 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 /* 218 */       if (d4 > 0.35D) {
 /* 219 */         double d = 0.35D / d4;
-/* 220 */         this.field_70159_w *= d;
-/* 221 */         this.field_70179_y *= d;
+/* 220 */         this.motionX *= d;
+/* 221 */         this.motionZ *= d;
 /* 222 */         d4 = 0.35D;
 /*     */       } 
 /*     */       
@@ -234,25 +234,25 @@
 /*     */         }
 /*     */       } 
 /*     */       
-/* 237 */       if (this.field_70122_E) {
-/* 238 */         this.field_70159_w *= 0.5D;
-/* 239 */         this.field_70181_x *= 0.5D;
-/* 240 */         this.field_70179_y *= 0.5D;
+/* 237 */       if (this.onGround) {
+/* 238 */         this.motionX *= 0.5D;
+/* 239 */         this.motionY *= 0.5D;
+/* 240 */         this.motionZ *= 0.5D;
 /*     */       } 
 /*     */       
-/* 243 */       func_70091_d(MoverType.SELF, this.field_70159_w, this.field_70181_x, this.field_70179_y);
-/* 244 */       this.field_70159_w *= 0.99D;
-/* 245 */       this.field_70181_x *= 0.95D;
-/* 246 */       this.field_70179_y *= 0.99D;
-/* 247 */       this.field_70125_A = 0.0F;
-/* 248 */       double d5 = this.field_70177_z;
-/* 249 */       double d11 = this.field_70169_q - this.field_70165_t;
-/* 250 */       double d10 = this.field_70166_s - this.field_70161_v;
+/* 243 */       move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+/* 244 */       this.motionX *= 0.99D;
+/* 245 */       this.motionY *= 0.95D;
+/* 246 */       this.motionZ *= 0.99D;
+/* 247 */       this.rotationPitch = 0.0F;
+/* 248 */       double d5 = this.rotationYaw;
+/* 249 */       double d11 = this.prevPosX - this.posX;
+/* 250 */       double d10 = this.prevPosZ - this.posZ;
 /* 251 */       if (d11 * d11 + d10 * d10 > 0.001D) {
 /* 252 */         d5 = (float)(Math.atan2(d10, d11) * 180.0D / Math.PI);
 /*     */       }
 /*     */       
-/* 255 */       double d12 = MathHelper.func_76138_g(d5 - this.field_70177_z);
+/* 255 */       double d12 = MathHelper.wrapDegrees(d5 - this.rotationYaw);
 /* 256 */       if (d12 > 20.0D) {
 /* 257 */         d12 = 20.0D;
 /*     */       }
@@ -261,52 +261,52 @@
 /* 261 */         d12 = -20.0D;
 /*     */       }
 /*     */       
-/* 264 */       this.field_70177_z = (float)(this.field_70177_z + d12);
-/* 265 */       func_70101_b(this.field_70177_z, this.field_70125_A);
-/* 266 */       if (!this.field_70170_p.field_72995_K) {
+/* 264 */       this.rotationYaw = (float)(this.rotationYaw + d12);
+/* 265 */       setRotation(this.rotationYaw, this.rotationPitch);
+/* 266 */       if (!this.world.isRemote) {
 /* 267 */         if (MCH_Config.Collision_DestroyBlock.prmBool) {
 /* 268 */           for (int l = 0; l < 4; l++) {
-/* 269 */             int i1 = MathHelper.func_76128_c(this.field_70165_t + ((l % 2) - 0.5D) * 0.8D);
-/* 270 */             int j1 = MathHelper.func_76128_c(this.field_70161_v + (l / 2.0D - 0.5D) * 0.8D);
+/* 269 */             int i1 = MathHelper.floor(this.posX + ((l % 2) - 0.5D) * 0.8D);
+/* 270 */             int j1 = MathHelper.floor(this.posZ + (l / 2.0D - 0.5D) * 0.8D);
 /*     */             
 /* 272 */             for (int k1 = 0; k1 < 2; k1++) {
-/* 273 */               int l1 = MathHelper.func_76128_c(this.field_70163_u) + k1;
-/* 274 */               if (W_WorldFunc.isEqualBlock(this.field_70170_p, i1, l1, j1, W_Block.getSnowLayer())) {
-/* 275 */                 this.field_70170_p.func_175698_g(new BlockPos(i1, l1, j1));
+/* 273 */               int l1 = MathHelper.floor(this.posY) + k1;
+/* 274 */               if (W_WorldFunc.isEqualBlock(this.world, i1, l1, j1, W_Block.getSnowLayer())) {
+/* 275 */                 this.world.setBlockToAir(new BlockPos(i1, l1, j1));
 /*     */               }
 /*     */             } 
 /*     */           } 
 /*     */         }
 /*     */         
 /* 281 */         riddenByEntity = getRiddenByEntity();
-/* 282 */         if (riddenByEntity != null && riddenByEntity.field_70128_L) {
-/* 283 */           riddenByEntity.func_184210_p();
+/* 282 */         if (riddenByEntity != null && riddenByEntity.isDead) {
+/* 283 */           riddenByEntity.dismountRidingEntity();
 /*     */         }
 /*     */       } 
 /* 286 */     } else if (this.gltdPosRotInc > 0) {
-/* 287 */       double d4x = this.field_70165_t + (this.gltdX - this.field_70165_t) / this.gltdPosRotInc;
-/* 288 */       double d5x = this.field_70163_u + (this.gltdY - this.field_70163_u) / this.gltdPosRotInc;
-/* 289 */       double d11x = this.field_70161_v + (this.gltdZ - this.field_70161_v) / this.gltdPosRotInc;
-/* 290 */       double d10x = MathHelper.func_76138_g(this.gltdYaw - this.field_70177_z);
-/* 291 */       this.field_70177_z = (float)(this.field_70177_z + d10x / this.gltdPosRotInc);
-/* 292 */       this.field_70125_A = (float)(this.field_70125_A + (this.gltdPitch - this.field_70125_A) / this.gltdPosRotInc);
+/* 287 */       double d4x = this.posX + (this.gltdX - this.posX) / this.gltdPosRotInc;
+/* 288 */       double d5x = this.posY + (this.gltdY - this.posY) / this.gltdPosRotInc;
+/* 289 */       double d11x = this.posZ + (this.gltdZ - this.posZ) / this.gltdPosRotInc;
+/* 290 */       double d10x = MathHelper.wrapDegrees(this.gltdYaw - this.rotationYaw);
+/* 291 */       this.rotationYaw = (float)(this.rotationYaw + d10x / this.gltdPosRotInc);
+/* 292 */       this.rotationPitch = (float)(this.rotationPitch + (this.gltdPitch - this.rotationPitch) / this.gltdPosRotInc);
 /* 293 */       this.gltdPosRotInc--;
-/* 294 */       func_70107_b(d4x, d5x, d11x);
-/* 295 */       func_70101_b(this.field_70177_z, this.field_70125_A);
+/* 294 */       setPosition(d4x, d5x, d11x);
+/* 295 */       setRotation(this.rotationYaw, this.rotationPitch);
 /*     */     } else {
-/* 297 */       double d4x = this.field_70165_t + this.field_70159_w;
-/* 298 */       double d5x = this.field_70163_u + this.field_70181_x;
-/* 299 */       double d11x = this.field_70161_v + this.field_70179_y;
-/* 300 */       func_70107_b(d4x, d5x, d11x);
-/* 301 */       if (this.field_70122_E) {
-/* 302 */         this.field_70159_w *= 0.5D;
-/* 303 */         this.field_70181_x *= 0.5D;
-/* 304 */         this.field_70179_y *= 0.5D;
+/* 297 */       double d4x = this.posX + this.motionX;
+/* 298 */       double d5x = this.posY + this.motionY;
+/* 299 */       double d11x = this.posZ + this.motionZ;
+/* 300 */       setPosition(d4x, d5x, d11x);
+/* 301 */       if (this.onGround) {
+/* 302 */         this.motionX *= 0.5D;
+/* 303 */         this.motionY *= 0.5D;
+/* 304 */         this.motionZ *= 0.5D;
 /*     */       } 
 /*     */       
-/* 307 */       this.field_70159_w *= 0.99D;
-/* 308 */       this.field_70181_x *= 0.95D;
-/* 309 */       this.field_70179_y *= 0.99D;
+/* 307 */       this.motionX *= 0.99D;
+/* 308 */       this.motionY *= 0.95D;
+/* 309 */       this.motionZ *= 0.99D;
 /*     */     } 
 /*     */     
 /* 312 */     updateCameraPosition(false);
@@ -337,26 +337,26 @@
 /*     */   
 /*     */   public void setUnmoundPosition(Entity e) {
 /* 339 */     if (e != null) {
-/* 340 */       float yaw = this.field_70177_z;
+/* 340 */       float yaw = this.rotationYaw;
 /* 341 */       double d0 = Math.sin(yaw * Math.PI / 180.0D) * 1.2D;
 /* 342 */       double d1 = -Math.cos(yaw * Math.PI / 180.0D) * 1.2D;
-/* 343 */       e.func_70107_b(this.field_70165_t + d0, this.field_70163_u + func_70042_X() + e.func_70033_W() + 1.0D, this.field_70161_v + d1);
-/* 344 */       e.field_70142_S = e.field_70169_q = e.field_70165_t;
-/* 345 */       e.field_70137_T = e.field_70167_r = e.field_70163_u;
-/* 346 */       e.field_70136_U = e.field_70166_s = e.field_70161_v;
+/* 343 */       e.setPosition(this.posX + d0, this.posY + getMountedYOffset() + e.getYOffset() + 1.0D, this.posZ + d1);
+/* 344 */       e.lastTickPosX = e.prevPosX = e.posX;
+/* 345 */       e.lastTickPosY = e.prevPosY = e.posY;
+/* 346 */       e.lastTickPosZ = e.prevPosZ = e.posZ;
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   public void unmountEntity() {
 /* 351 */     this.camera.setMode(0, 0);
 /* 352 */     this.camera.setCameraZoom(1.0F);
-/* 353 */     if (!this.field_70170_p.field_72995_K) {
+/* 353 */     if (!this.world.isRemote) {
 /* 354 */       Entity riddenByEntity = getRiddenByEntity();
 /* 355 */       if (riddenByEntity != null) {
-/* 356 */         if (!riddenByEntity.field_70128_L) {
-/* 357 */           riddenByEntity.func_184210_p();
+/* 356 */         if (!riddenByEntity.isDead) {
+/* 357 */           riddenByEntity.dismountRidingEntity();
 /*     */         }
-/* 359 */       } else if (this.lastRiddenByEntity != null && !this.lastRiddenByEntity.field_70128_L) {
+/* 359 */       } else if (this.lastRiddenByEntity != null && !this.lastRiddenByEntity.isDead) {
 /* 360 */         this.camera.updateViewer(0, this.lastRiddenByEntity);
 /* 361 */         setUnmoundPosition(this.lastRiddenByEntity);
 /*     */       } 
@@ -368,9 +368,9 @@
 /*     */   public void updateCameraPosition(boolean foreceUpdate) {
 /* 369 */     Entity riddenByEntity = getRiddenByEntity();
 /* 370 */     if (foreceUpdate || (riddenByEntity != null && this.camera != null)) {
-/* 371 */       double x = -Math.sin(this.field_70177_z * Math.PI / 180.0D) * 0.6D;
-/* 372 */       double z = Math.cos(this.field_70177_z * Math.PI / 180.0D) * 0.6D;
-/* 373 */       this.camera.setPosition(this.field_70165_t + x, this.field_70163_u + 0.7D, this.field_70161_v + z);
+/* 371 */       double x = -Math.sin(this.rotationYaw * Math.PI / 180.0D) * 0.6D;
+/* 372 */       double z = Math.cos(this.rotationYaw * Math.PI / 180.0D) * 0.6D;
+/* 373 */       this.camera.setPosition(this.posX + x, this.posY + 0.7D, this.posZ + z);
 /*     */     } 
 /*     */   }
 /*     */   
@@ -389,11 +389,11 @@
 /* 389 */     this.camera.setCameraZoom(z);
 /*     */   }
 /*     */   
-/*     */   public void func_184232_k(@NotNull Entity passenger) {
-/* 393 */     if (func_184196_w(passenger)) {
-/* 394 */       double x = Math.sin(this.field_70177_z * Math.PI / 180.0D) * 0.5D;
-/* 395 */       double z = -Math.cos(this.field_70177_z * Math.PI / 180.0D) * 0.5D;
-/* 396 */       passenger.func_70107_b(this.field_70165_t + x, this.field_70163_u + func_70042_X() + passenger.func_70033_W(), this.field_70161_v + z);
+/*     */   public void updatePassenger(@NotNull Entity passenger) {
+/* 393 */     if (isPassenger(passenger)) {
+/* 394 */       double x = Math.sin(this.rotationYaw * Math.PI / 180.0D) * 0.5D;
+/* 395 */       double z = -Math.cos(this.rotationYaw * Math.PI / 180.0D) * 0.5D;
+/* 396 */       passenger.setPosition(this.posX + x, this.posY + getMountedYOffset() + passenger.getYOffset(), this.posZ + z);
 /*     */     } 
 /*     */   }
 /*     */ 
@@ -406,10 +406,10 @@
 /*     */       
 /* 407 */       .shot(riddenByEntity, this.camera.posX, this.camera.posY, this.camera.posZ, option1, option2)) {
 /* 408 */       this.countWait = this.weaponCAS.interval;
-/* 409 */       if (this.field_70170_p.field_72995_K) {
+/* 409 */       if (this.world.isRemote) {
 /* 410 */         this.countWait += (this.countWait > 0) ? 10 : -10;
 /*     */       } else {
-/* 412 */         W_WorldFunc.MOD_playSoundEffect(this.field_70170_p, this.field_70165_t, this.field_70163_u, this.field_70161_v, "gltd", 0.5F, 1.0F);
+/* 412 */         W_WorldFunc.MOD_playSoundEffect(this.world, this.posX, this.posY, this.posZ, "gltd", 0.5F, 1.0F);
 /*     */       } 
 /*     */       
 /* 415 */       return true;
@@ -418,10 +418,10 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   protected void func_70014_b(@NotNull NBTTagCompound par1NBTTagCompound) {}
+/*     */   protected void writeEntityToNBT(@NotNull NBTTagCompound par1NBTTagCompound) {}
 /*     */ 
 /*     */   
-/*     */   protected void func_70037_a(@NotNull NBTTagCompound par1NBTTagCompound) {}
+/*     */   protected void readEntityFromNBT(@NotNull NBTTagCompound par1NBTTagCompound) {}
 /*     */ 
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
@@ -429,13 +429,13 @@
 /* 429 */     return 0.0F;
 /*     */   }
 /*     */   
-/*     */   public boolean func_184230_a(@NotNull EntityPlayer player, @NotNull EnumHand hand) {
+/*     */   public boolean processInitialInteract(@NotNull EntityPlayer player, @NotNull EnumHand hand) {
 /* 433 */     Entity riddenByEntity = getRiddenByEntity();
 /* 434 */     if (!(riddenByEntity instanceof EntityPlayer) || riddenByEntity == player) {
-/* 435 */       player.field_70177_z = MathHelper.func_76142_g(this.field_70177_z);
-/* 436 */       player.field_70125_A = MathHelper.func_76142_g(this.field_70125_A);
-/* 437 */       if (!this.field_70170_p.field_72995_K) {
-/* 438 */         player.func_184220_m((Entity)this);
+/* 435 */       player.rotationYaw = MathHelper.wrapDegrees(this.rotationYaw);
+/* 436 */       player.rotationPitch = MathHelper.wrapDegrees(this.rotationPitch);
+/* 437 */       if (!this.world.isRemote) {
+/* 438 */         player.startRiding((Entity)this);
 /*     */       } else {
 /* 440 */         this.zoomDir = true;
 /* 441 */         this.camera.setCameraZoom(1.0F);
@@ -454,19 +454,19 @@
 /*     */   }
 /*     */   
 /*     */   public int getDamageTaken() {
-/* 457 */     return ((Integer)this.field_70180_af.func_187225_a(DAMAGE_TAKEN)).intValue();
+/* 457 */     return ((Integer)this.dataManager.get(DAMAGE_TAKEN)).intValue();
 /*     */   }
 /*     */   
 /*     */   public void setDamageTaken(int par1) {
-/* 461 */     this.field_70180_af.func_187227_b(DAMAGE_TAKEN, Integer.valueOf(par1));
+/* 461 */     this.dataManager.set(DAMAGE_TAKEN, Integer.valueOf(par1));
 /*     */   }
 /*     */   
 /*     */   public int getTimeSinceHit() {
-/* 465 */     return ((Integer)this.field_70180_af.func_187225_a(TIME_SINCE_HIT)).intValue();
+/* 465 */     return ((Integer)this.dataManager.get(TIME_SINCE_HIT)).intValue();
 /*     */   }
 /*     */   
 /*     */   public void setTimeSinceHit(int par1) {
-/* 469 */     this.field_70180_af.func_187227_b(TIME_SINCE_HIT, Integer.valueOf(par1));
+/* 469 */     this.dataManager.set(TIME_SINCE_HIT, Integer.valueOf(par1));
 /*     */   }
 /*     */   
 /*     */   public int getForwardDirection() {
@@ -474,7 +474,7 @@
 /*     */   }
 /*     */   
 /*     */   public void setForwardDirection(int par1) {
-/* 477 */     this.field_70180_af.func_187227_b(FORWARD_DIR, Integer.valueOf(par1));
+/* 477 */     this.dataManager.set(FORWARD_DIR, Integer.valueOf(par1));
 /*     */   }
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
@@ -485,7 +485,7 @@
 /*     */   
 /*     */   @Nullable
 /*     */   public Entity getRiddenByEntity() {
-/* 488 */     List<Entity> passengers = func_184188_bt();
+/* 488 */     List<Entity> passengers = getPassengers();
 /* 489 */     return passengers.isEmpty() ? null : passengers.get(0);
 /*     */   }
 /*     */ }

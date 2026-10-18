@@ -40,7 +40,7 @@
 /*    */   }
 /*    */   @NotNull
 /*    */   public IBakedModel bake(@NotNull IModelState state, @NotNull VertexFormat format, @NotNull Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
-/* 43 */     ItemCameraTransforms transforms = this.raw.func_181682_g();
+/* 43 */     ItemCameraTransforms transforms = this.raw.getAllTransforms();
 /* 44 */     Map<ItemCameraTransforms.TransformType, TRSRTransformation> tMap = Maps.newEnumMap(ItemCameraTransforms.TransformType.class);
 /* 45 */     tMap.putAll((Map<? extends ItemCameraTransforms.TransformType, ? extends TRSRTransformation>)PerspectiveMapWrapper.getTransforms(transforms));
 /* 46 */     tMap.putAll((Map<? extends ItemCameraTransforms.TransformType, ? extends TRSRTransformation>)PerspectiveMapWrapper.getTransforms(state));

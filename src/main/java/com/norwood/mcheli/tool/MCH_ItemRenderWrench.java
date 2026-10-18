@@ -40,7 +40,7 @@
 /*    */         
 /* 41 */         size = 2.2F;
 /* 42 */         if (data.length >= 2) { Object object = data[1]; if (object instanceof EntityPlayer) { EntityPlayer player = (EntityPlayer)object;
-/* 43 */             if (player.func_184605_cv() > 0) {
+/* 43 */             if (player.getItemInUseCount() > 0) {
 /* 44 */               float x = 0.8567F;
 /* 45 */               float y = -0.0298F;
 /* 46 */               float z = 0.0F;

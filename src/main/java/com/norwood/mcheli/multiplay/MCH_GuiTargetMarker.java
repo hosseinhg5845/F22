@@ -42,7 +42,7 @@
 /*     */   }
 /*     */   
 /*     */   public static void onClientTick() {
-/*  45 */     if (!Minecraft.func_71410_x().func_147113_T()) {
+/*  45 */     if (!Minecraft.getMinecraft().isGamePaused()) {
 /*  46 */       spotedEntityCountdown++;
 /*     */     }
 /*     */     
@@ -62,7 +62,7 @@
 /*     */   
 /*     */   public static boolean isSpotedEntity(@Nullable Entity entity) {
 /*  64 */     if (entity != null) {
-/*  65 */       int entityId = entity.func_145782_y();
+/*  65 */       int entityId = entity.getEntityId();
 /*     */       
 /*  67 */       for (Iterator<Integer> iterator = spotedEntity.keySet().iterator(); iterator.hasNext(); ) { int key = ((Integer)iterator.next()).intValue();
 /*  68 */         if (key == entityId) {
@@ -92,7 +92,7 @@
 /*     */   public static void addMarkEntityPos(int reserve, ITargetMarkerObject target, double x, double y, double z, boolean nazo) {
 /*  93 */     if (isEnableEntityMarker()) {
 /*  94 */       MCH_TargetType spotType = MCH_TargetType.NONE;
-/*  95 */       EntityPlayerSP entityPlayerSP = s_minecraft.field_71439_g;
+/*  95 */       EntityPlayerSP entityPlayerSP = s_minecraft.player;
 /*  96 */       Entity entity = target.getEntity();
 /*  97 */       if (entity instanceof MCH_EntityAircraft) { MCH_EntityAircraft ac = (MCH_EntityAircraft)entity;
 /*  98 */         if (ac.isMountedEntity((Entity)entityPlayerSP)) {
@@ -103,19 +103,19 @@
 /* 103 */           spotType = MCH_TargetType.SAME_TEAM_PLAYER;
 /*     */         } }
 /* 105 */       else if (entity instanceof EntityPlayer)
-/* 106 */       { if (entity == entityPlayerSP || entity.func_184187_bx() instanceof com.norwood.mcheli.aircraft.MCH_EntitySeat || entity.func_184187_bx() instanceof MCH_EntityAircraft) {
+/* 106 */       { if (entity == entityPlayerSP || entity.getRidingEntity() instanceof com.norwood.mcheli.aircraft.MCH_EntitySeat || entity.getRidingEntity() instanceof MCH_EntityAircraft) {
 /*     */           return;
 /*     */         }
 /*     */         
-/* 110 */         entityPlayerSP.func_96124_cp();
-/* 111 */         if (entityPlayerSP.func_184191_r(entity)) {
+/* 110 */         entityPlayerSP.getTeam();
+/* 111 */         if (entityPlayerSP.isOnSameTeam(entity)) {
 /* 112 */           spotType = MCH_TargetType.SAME_TEAM_PLAYER;
 /*     */         } }
 /*     */ 
 /*     */       
 /* 116 */       if (spotType == MCH_TargetType.NONE && isSpotedEntity(entity)) {
-/* 117 */         spotType = MCH_Multiplay.canSpotEntity((Entity)entityPlayerSP, ((EntityPlayer)entityPlayerSP).field_70165_t, ((EntityPlayer)entityPlayerSP).field_70163_u + entityPlayerSP
-/* 118 */             .func_70047_e(), ((EntityPlayer)entityPlayerSP).field_70161_v, entity, false);
+/* 117 */         spotType = MCH_Multiplay.canSpotEntity((Entity)entityPlayerSP, ((EntityPlayer)entityPlayerSP).posX, ((EntityPlayer)entityPlayerSP).posY + entityPlayerSP
+/* 118 */             .getEyeHeight(), ((EntityPlayer)entityPlayerSP).posZ, entity, false);
 /*     */       }
 /*     */ 
 /*     */       
@@ -148,7 +148,7 @@
 /*     */   
 /*     */   public static boolean isEnableEntityMarker() {
 /* 150 */     return (MCH_Config.DisplayEntityMarker.prmBool && (
-/* 151 */       Minecraft.func_71410_x().func_71356_B() || MCH_ServerSettings.enableEntityMarker) && MCH_Config.EntityMarkerSize.prmDouble > 0.0D);
+/* 151 */       Minecraft.getMinecraft().isSingleplayer() || MCH_ServerSettings.enableEntityMarker) && MCH_Config.EntityMarkerSize.prmDouble > 0.0D);
 /*     */   }
 /*     */ 
 /*     */   
@@ -160,37 +160,37 @@
 /* 160 */     int alpha = color >> 24 & 0xFF;
 /* 161 */     double M = size / 3.0D;
 /* 162 */     if ((dir & 0x1) != 0) {
-/* 163 */       builder.func_181662_b(x - size, y, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 164 */       builder.func_181662_b(x - size + M, y - M, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 165 */       builder.func_181662_b(x - size, y, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 166 */       builder.func_181662_b(x - size + M, y + M, z).func_181669_b(red, green, blue, alpha).func_181675_d();
+/* 163 */       builder.pos(x - size, y, z).color(red, green, blue, alpha).endVertex();
+/* 164 */       builder.pos(x - size + M, y - M, z).color(red, green, blue, alpha).endVertex();
+/* 165 */       builder.pos(x - size, y, z).color(red, green, blue, alpha).endVertex();
+/* 166 */       builder.pos(x - size + M, y + M, z).color(red, green, blue, alpha).endVertex();
 /*     */     } 
 /*     */     
 /* 169 */     if ((dir & 0x4) != 0) {
-/* 170 */       builder.func_181662_b(x + size, y, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 171 */       builder.func_181662_b(x + size - M, y - M, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 172 */       builder.func_181662_b(x + size, y, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 173 */       builder.func_181662_b(x + size - M, y + M, z).func_181669_b(red, green, blue, alpha).func_181675_d();
+/* 170 */       builder.pos(x + size, y, z).color(red, green, blue, alpha).endVertex();
+/* 171 */       builder.pos(x + size - M, y - M, z).color(red, green, blue, alpha).endVertex();
+/* 172 */       builder.pos(x + size, y, z).color(red, green, blue, alpha).endVertex();
+/* 173 */       builder.pos(x + size - M, y + M, z).color(red, green, blue, alpha).endVertex();
 /*     */     } 
 /*     */     
 /* 176 */     if ((dir & 0x8) != 0) {
-/* 177 */       builder.func_181662_b(x, y - size, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 178 */       builder.func_181662_b(x + M, y - size + M, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 179 */       builder.func_181662_b(x, y - size, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 180 */       builder.func_181662_b(x - M, y - size + M, z).func_181669_b(red, green, blue, alpha).func_181675_d();
+/* 177 */       builder.pos(x, y - size, z).color(red, green, blue, alpha).endVertex();
+/* 178 */       builder.pos(x + M, y - size + M, z).color(red, green, blue, alpha).endVertex();
+/* 179 */       builder.pos(x, y - size, z).color(red, green, blue, alpha).endVertex();
+/* 180 */       builder.pos(x - M, y - size + M, z).color(red, green, blue, alpha).endVertex();
 /*     */     } 
 /*     */     
 /* 183 */     if ((dir & 0x2) != 0) {
-/* 184 */       builder.func_181662_b(x, y + size, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 185 */       builder.func_181662_b(x + M, y + size - M, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 186 */       builder.func_181662_b(x, y + size, z).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 187 */       builder.func_181662_b(x - M, y + size - M, z).func_181669_b(red, green, blue, alpha).func_181675_d();
+/* 184 */       builder.pos(x, y + size, z).color(red, green, blue, alpha).endVertex();
+/* 185 */       builder.pos(x + M, y + size - M, z).color(red, green, blue, alpha).endVertex();
+/* 186 */       builder.pos(x, y + size, z).color(red, green, blue, alpha).endVertex();
+/* 187 */       builder.pos(x - M, y + size - M, z).color(red, green, blue, alpha).endVertex();
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   public static void markPoint(int px, int py, int pz) {
-/* 192 */     EntityPlayerSP entityPlayerSP = (Minecraft.func_71410_x()).field_71439_g;
-/* 193 */     if (entityPlayerSP != null && ((EntityPlayer)entityPlayerSP).field_70170_p != null) {
+/* 192 */     EntityPlayerSP entityPlayerSP = (Minecraft.getMinecraft()).player;
+/* 193 */     if (entityPlayerSP != null && ((EntityPlayer)entityPlayerSP).world != null) {
 /* 194 */       if (py < 1000) {
 /* 195 */         MCH_ParticlesUtil.spawnMarkPoint((EntityPlayer)entityPlayerSP, 0.5D + px, 1.0D + py, 0.5D + pz);
 /*     */       } else {
@@ -200,13 +200,13 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_73866_w_() {
-/* 204 */     super.func_73866_w_();
+/*     */   public void initGui() {
+/* 204 */     super.initGui();
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public boolean isDrawGui(EntityPlayer player) {
-/* 209 */     return (player != null && player.field_70170_p != null);
+/* 209 */     return (player != null && player.world != null);
 /*     */   }
 /*     */ 
 /*     */   
@@ -228,18 +228,18 @@
 /* 228 */     GL11.glBlendFunc(770, 771);
 /* 229 */     GL11.glColor4b((byte)-1, (byte)-1, (byte)-1, (byte)-1);
 /* 230 */     GL11.glDepthMask(false);
-/* 231 */     int DW = this.field_146297_k.field_71443_c;
-/* 232 */     int DSW = this.field_146297_k.field_71443_c / scale;
-/* 233 */     int DSH = this.field_146297_k.field_71440_d / scale;
+/* 231 */     int DW = this.mc.displayWidth;
+/* 232 */     int DSW = this.mc.displayWidth / scale;
+/* 233 */     int DSH = this.mc.displayHeight / scale;
 /*     */ 
 /*     */ 
 /*     */     
-/* 237 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 238 */     BufferBuilder builder = tessellator.func_178180_c();
+/* 237 */     Tessellator tessellator = Tessellator.getInstance();
+/* 238 */     BufferBuilder builder = tessellator.getBuffer();
 /*     */     
 /* 240 */     for (int i = 0; i < 2; i++) {
 /* 241 */       if (i == 0) {
-/* 242 */         builder.func_181668_a(4, DefaultVertexFormats.field_181706_f);
+/* 242 */         builder.begin(4, DefaultVertexFormats.POSITION_COLOR);
 /*     */       }
 /*     */       
 /* 245 */       for (MCH_MarkEntityPos e : entityPos) {
@@ -264,7 +264,7 @@
 /* 264 */           ITargetMarkerObject target = e.getTarget();
 /* 265 */           double MARK_SIZE = MCH_Config.BlockMarkerSize.prmDouble;
 /* 266 */           if (z < 1.0D && x >= 0.0D && x <= (DSW - 20) && y >= 0.0D && y <= (DSH - 40)) {
-/* 267 */             double dist = this.field_146297_k.field_71439_g.func_70011_f(target.getX(), target.getY(), target.getZ());
+/* 267 */             double dist = this.mc.player.getDistance(target.getX(), target.getY(), target.getZ());
 /* 268 */             GL11.glEnable(3553);
 /* 269 */             drawCenteredString(String.format("%.0fm", new Object[] { Double.valueOf(dist) }), (int)x, (int)(y + MARK_SIZE * 1.1D + 16.0D), color);
 /* 270 */             if (x >= DSW / 2.0D - 20.0D && x <= DSW / 2.0D + 20.0D && y >= DSH / 2.0D - 20.0D && y <= DSH / 2.0D + 20.0D) {
@@ -274,30 +274,30 @@
 /*     */             } 
 /*     */             
 /* 276 */             GL11.glDisable(3553);
-/* 277 */             builder.func_181668_a(1, DefaultVertexFormats.field_181706_f);
-/* 278 */             drawRhombus(builder, 15, x, y, this.field_73735_i, MARK_SIZE, color);
+/* 277 */             builder.begin(1, DefaultVertexFormats.POSITION_COLOR);
+/* 278 */             drawRhombus(builder, 15, x, y, this.zLevel, MARK_SIZE, color);
 /*     */           } else {
-/* 280 */             builder.func_181668_a(1, DefaultVertexFormats.field_181706_f);
+/* 280 */             builder.begin(1, DefaultVertexFormats.POSITION_COLOR);
 /* 281 */             double S = 30.0D;
 /* 282 */             if (x < S) {
-/* 283 */               drawRhombus(builder, 1, S, DSH / 2.0D, this.field_73735_i, MARK_SIZE, color);
+/* 283 */               drawRhombus(builder, 1, S, DSH / 2.0D, this.zLevel, MARK_SIZE, color);
 /* 284 */             } else if (x > DSW - S) {
-/* 285 */               drawRhombus(builder, 4, DSW - S, DSH / 2.0D, this.field_73735_i, MARK_SIZE, color);
+/* 285 */               drawRhombus(builder, 4, DSW - S, DSH / 2.0D, this.zLevel, MARK_SIZE, color);
 /*     */             } 
 /*     */             
 /* 288 */             if (y < S) {
-/* 289 */               drawRhombus(builder, 8, DSW / 2.0D, S, this.field_73735_i, MARK_SIZE, color);
+/* 289 */               drawRhombus(builder, 8, DSW / 2.0D, S, this.zLevel, MARK_SIZE, color);
 /* 290 */             } else if (y > DSH - S * 2.0D) {
-/* 291 */               drawRhombus(builder, 2, DSW / 2.0D, DSH - S * 2.0D, this.field_73735_i, MARK_SIZE, color);
+/* 291 */               drawRhombus(builder, 2, DSW / 2.0D, DSH - S * 2.0D, this.zLevel, MARK_SIZE, color);
 /*     */             } 
 /*     */           } 
 /*     */           
-/* 295 */           tessellator.func_78381_a();
+/* 295 */           tessellator.draw();
 /*     */         } 
 /*     */       } 
 /*     */       
 /* 299 */       if (i == 0) {
-/* 300 */         tessellator.func_78381_a();
+/* 300 */         tessellator.draw();
 /*     */       }
 /*     */     } 
 /*     */     
@@ -311,9 +311,9 @@
 /* 311 */     int green = color >> 8 & 0xFF;
 /* 312 */     int blue = color >> 0 & 0xFF;
 /* 313 */     int alpha = color >> 24 & 0xFF;
-/* 314 */     builder.func_181662_b(x + size / 2.0D, y - 10.0D - size, this.field_73735_i).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 315 */     builder.func_181662_b(x - size / 2.0D, y - 10.0D - size, this.field_73735_i).func_181669_b(red, green, blue, alpha).func_181675_d();
-/* 316 */     builder.func_181662_b(x + 0.0D, y - 10.0D, this.field_73735_i).func_181669_b(red, green, blue, alpha).func_181675_d();
+/* 314 */     builder.pos(x + size / 2.0D, y - 10.0D - size, this.zLevel).color(red, green, blue, alpha).endVertex();
+/* 315 */     builder.pos(x - size / 2.0D, y - 10.0D - size, this.zLevel).color(red, green, blue, alpha).endVertex();
+/* 316 */     builder.pos(x + 0.0D, y - 10.0D, this.zLevel).color(red, green, blue, alpha).endVertex();
 /*     */   }
 /*     */ }
 

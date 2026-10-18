@@ -20,7 +20,7 @@
 /*    */ public class MCH_CameraManager
 /*    */ {
 /*    */   private static final float DEF_THIRD_CAMERA_DIST = 4.0F;
-/* 23 */   private static final Minecraft mc = Minecraft.func_71410_x();
+/* 23 */   private static final Minecraft mc = Minecraft.getMinecraft();
 /* 24 */   private static float cameraRoll = 0.0F;
 /* 25 */   private static float cameraDistance = 4.0F;
 /* 26 */   private static float cameraZoom = 1.0F;
@@ -28,43 +28,43 @@
 /*    */   
 /*    */   @SubscribeEvent
 /*    */   static void onCameraSetupEvent(EntityViewRenderEvent.CameraSetup event) {
-/* 31 */     float f = event.getEntity().func_70047_e();
-/* 32 */     if (mc.field_71474_y.field_74320_O > 0) {
-/* 33 */       if (mc.field_71474_y.field_74320_O == 2) {
-/* 34 */         GlStateManager.func_179114_b(180.0F, 0.0F, 1.0F, 0.0F);
+/* 31 */     float f = event.getEntity().getEyeHeight();
+/* 32 */     if (mc.gameSettings.thirdPersonView > 0) {
+/* 33 */       if (mc.gameSettings.thirdPersonView == 2) {
+/* 34 */         GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
 /*    */       }
 /*    */       
-/* 37 */       GlStateManager.func_179109_b(0.0F, 0.0F, -(cameraDistance - 4.0F));
-/* 38 */       if (mc.field_71474_y.field_74320_O == 2) {
-/* 39 */         GlStateManager.func_179114_b(-180.0F, 0.0F, 1.0F, 0.0F);
+/* 37 */       GlStateManager.translate(0.0F, 0.0F, -(cameraDistance - 4.0F));
+/* 38 */       if (mc.gameSettings.thirdPersonView == 2) {
+/* 39 */         GlStateManager.rotate(-180.0F, 0.0F, 1.0F, 0.0F);
 /*    */       }
 /*    */     } 
 /*    */     
 /* 43 */     MCH_EntityAircraft ridingEntity = ridingAircraft;
-/* 44 */     if (ridingEntity != null && ridingEntity.canSwitchFreeLook() && ridingEntity.isPilot((Entity)mc.field_71439_g)) {
-/* 45 */       GlStateManager.func_179109_b(0.0F, -f, 0.0F);
-/* 46 */       GlStateManager.func_179114_b(cameraRoll, 0.0F, 0.0F, 1.0F);
+/* 44 */     if (ridingEntity != null && ridingEntity.canSwitchFreeLook() && ridingEntity.isPilot((Entity)mc.player)) {
+/* 45 */       GlStateManager.translate(0.0F, -f, 0.0F);
+/* 46 */       GlStateManager.rotate(cameraRoll, 0.0F, 0.0F, 1.0F);
 /* 47 */       if (ridingEntity.isOverridePlayerPitch()) {
-/* 48 */         GlStateManager.func_179114_b(ridingEntity.field_70125_A, 1.0F, 0.0F, 0.0F);
-/* 49 */         GlStateManager.func_179114_b(ridingEntity.field_70177_z, 0.0F, 1.0F, 0.0F);
-/* 50 */         event.setPitch(event.getPitch() - ridingEntity.field_70125_A);
-/* 51 */         event.setYaw(event.getYaw() - ridingEntity.field_70177_z);
+/* 48 */         GlStateManager.rotate(ridingEntity.rotationPitch, 1.0F, 0.0F, 0.0F);
+/* 49 */         GlStateManager.rotate(ridingEntity.rotationYaw, 0.0F, 1.0F, 0.0F);
+/* 50 */         event.setPitch(event.getPitch() - ridingEntity.rotationPitch);
+/* 51 */         event.setYaw(event.getYaw() - ridingEntity.rotationYaw);
 /*    */       } 
 /*    */       
-/* 54 */       GlStateManager.func_179109_b(0.0F, f, 0.0F);
+/* 54 */       GlStateManager.translate(0.0F, f, 0.0F);
 /*    */     } 
 /*    */   }
 /*    */   
 /*    */   @SubscribeEvent
 /*    */   static void onFOVModifierEvent(EntityViewRenderEvent.FOVModifier event) {
-/* 60 */     MCH_ViewEntityDummy viewer = MCH_ViewEntityDummy.getInstance((World)mc.field_71441_e);
-/* 61 */     if (viewer == event.getEntity() || MCH_ItemRangeFinder.isUsingScope((EntityPlayer)mc.field_71439_g)) {
+/* 60 */     MCH_ViewEntityDummy viewer = MCH_ViewEntityDummy.getInstance((World)mc.world);
+/* 61 */     if (viewer == event.getEntity() || MCH_ItemRangeFinder.isUsingScope((EntityPlayer)mc.player)) {
 /* 62 */       event.setFOV(event.getFOV() * 1.0F / cameraZoom);
 /*    */     }
 /*    */   }
 /*    */   
 /*    */   public static void setCameraRoll(float roll) {
-/* 67 */     roll = MathHelper.func_76142_g(roll);
+/* 67 */     roll = MathHelper.wrapDegrees(roll);
 /* 68 */     cameraRoll = roll;
 /*    */   }
 /*    */   
@@ -77,7 +77,7 @@
 /*    */   }
 /*    */   
 /*    */   public static void setThirdPeasonCameraDistance(float distance) {
-/* 80 */     distance = MathHelper.func_76131_a(distance, 4.0F, 60.0F);
+/* 80 */     distance = MathHelper.clamp(distance, 4.0F, 60.0F);
 /* 81 */     cameraDistance = distance;
 /*    */   }
 /*    */   

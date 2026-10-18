@@ -14,21 +14,21 @@
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   public void func_145747_a(@NotNull ITextComponent var1) {}
+/*    */   public void sendMessage(@NotNull ITextComponent var1) {}
 /*    */   
-/*    */   public boolean func_70003_b(int var1, @NotNull String var2) {
+/*    */   public boolean canUseCommand(int var1, @NotNull String var2) {
 /* 20 */     return false;
 /*    */   }
 /*    */   @NotNull
-/*    */   public Entity func_174793_f() {
-/* 24 */     return super.func_174793_f();
+/*    */   public Entity getCommandSenderEntity() {
+/* 24 */     return super.getCommandSenderEntity();
 /*    */   }
 /*    */   
-/*    */   public boolean func_175149_v() {
+/*    */   public boolean isSpectator() {
 /* 28 */     return false;
 /*    */   }
 /*    */   
-/*    */   public boolean func_184812_l_() {
+/*    */   public boolean isCreative() {
 /* 32 */     return false;
 /*    */   }
 /*    */   

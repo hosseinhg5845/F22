@@ -63,12 +63,12 @@
 /*  63 */       switch (this.mode[uid]) {
 /*     */         case 0:
 /*     */         case 1:
-/*  66 */           if (this.worldObj.field_72995_K) {
+/*  66 */           if (this.worldObj.isRemote) {
 /*  67 */             W_EntityRenderer.deactivateShader();
 /*     */           }
 /*     */           break;
 /*     */         case 2:
-/*  71 */           if (this.worldObj.field_72995_K)
+/*  71 */           if (this.worldObj.isRemote)
 /*  72 */             W_EntityRenderer.activateShader("pencil"); 
 /*     */           break;
 /*     */       } 
@@ -108,22 +108,22 @@
 /*     */   
 /*     */   public void updateViewer(int uid, @Nullable Entity viewer) {
 /* 110 */     if (isValidUid(uid) && viewer != null) {
-/* 111 */       if (W_Lib.isEntityLivingBase(viewer) && !viewer.field_70128_L) {
+/* 111 */       if (W_Lib.isEntityLivingBase(viewer) && !viewer.isDead) {
 /* 112 */         if (getMode(uid) == 0 && this.lastMode[uid] != 0) {
-/* 113 */           PotionEffect pe = W_Entity.getActivePotionEffect(viewer, MobEffects.field_76439_r);
-/* 114 */           if (pe != null && pe.func_76459_b() > 0 && pe.func_76459_b() < 500) {
-/* 115 */             if (viewer.field_70170_p.field_72995_K) {
-/* 116 */               W_Entity.removePotionEffectClient(viewer, MobEffects.field_76439_r);
+/* 113 */           PotionEffect pe = W_Entity.getActivePotionEffect(viewer, MobEffects.NIGHT_VISION);
+/* 114 */           if (pe != null && pe.getDuration() > 0 && pe.getDuration() < 500) {
+/* 115 */             if (viewer.world.isRemote) {
+/* 116 */               W_Entity.removePotionEffectClient(viewer, MobEffects.NIGHT_VISION);
 /*     */             } else {
-/* 118 */               W_Entity.removePotionEffect(viewer, MobEffects.field_76439_r);
+/* 118 */               W_Entity.removePotionEffect(viewer, MobEffects.NIGHT_VISION);
 /*     */             } 
 /*     */           }
 /*     */         } 
 /*     */         
 /* 123 */         if (getMode(uid) == 1 || getMode(uid) == 2) {
-/* 124 */           PotionEffect pe = W_Entity.getActivePotionEffect(viewer, MobEffects.field_76439_r);
-/* 125 */           if ((pe == null || pe.func_76459_b() < 500) && !viewer.field_70170_p.field_72995_K) {
-/* 126 */             W_Entity.addPotionEffect(viewer, new PotionEffect(MobEffects.field_76439_r, 250, 0, true, false));
+/* 124 */           PotionEffect pe = W_Entity.getActivePotionEffect(viewer, MobEffects.NIGHT_VISION);
+/* 125 */           if ((pe == null || pe.getDuration() < 500) && !viewer.world.isRemote) {
+/* 126 */             W_Entity.addPotionEffect(viewer, new PotionEffect(MobEffects.NIGHT_VISION, 250, 0, true, false));
 /*     */           }
 /*     */         } 
 /*     */       } 

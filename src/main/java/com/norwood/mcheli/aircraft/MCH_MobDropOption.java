@@ -3,7 +3,7 @@
 /*   */ import net.minecraft.util.math.Vec3d;
 /*   */ 
 /*   */ public class MCH_MobDropOption {
-/* 6 */   public Vec3d pos = Vec3d.field_186680_a;
+/* 6 */   public Vec3d pos = Vec3d.ZERO;
 /* 7 */   public int interval = 1;
 /*   */ }
 

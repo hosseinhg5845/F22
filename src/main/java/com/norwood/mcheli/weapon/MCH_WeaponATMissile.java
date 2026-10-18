@@ -13,7 +13,7 @@
 /* 13 */     this.acceleration = 2.0F;
 /* 14 */     this.explosionPower = 4;
 /* 15 */     this.interval = -100;
-/* 16 */     if (w.field_72995_K) {
+/* 16 */     if (w.isRemote) {
 /* 17 */       this.interval -= 10;
 /*    */     }
 /*    */     
@@ -44,7 +44,7 @@
 /*    */ 
 /*    */   
 /*    */   public boolean shot(MCH_WeaponParam prm) {
-/* 47 */     return this.worldObj.field_72995_K ? shotClient(prm.entity, prm.user) : shotServer(prm);
+/* 47 */     return this.worldObj.isRemote ? shotClient(prm.entity, prm.user) : shotServer(prm);
 /*    */   }
 /*    */   
 /*    */   protected boolean shotClient(Entity entity, Entity user) {
@@ -60,19 +60,19 @@
 /*    */ 
 /*    */   
 /*    */   protected boolean shotServer(MCH_WeaponParam prm) {
-/* 63 */     Entity tgtEnt = prm.user.field_70170_p.func_73045_a(prm.option1);
-/* 64 */     if (tgtEnt != null && !tgtEnt.field_70128_L) {
-/* 65 */       float yaw = prm.user.field_70177_z + this.fixRotationYaw;
-/* 66 */       float pitch = prm.entity.field_70125_A + this.fixRotationPitch;
-/* 67 */       double tX = (-MathHelper.func_76126_a(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/* 68 */       double tZ = (MathHelper.func_76134_b(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/* 69 */       double tY = -MathHelper.func_76126_a(pitch / 180.0F * 3.1415927F);
+/* 63 */     Entity tgtEnt = prm.user.world.getEntityByID(prm.option1);
+/* 64 */     if (tgtEnt != null && !tgtEnt.isDead) {
+/* 65 */       float yaw = prm.user.rotationYaw + this.fixRotationYaw;
+/* 66 */       float pitch = prm.entity.rotationPitch + this.fixRotationPitch;
+/* 67 */       double tX = (-MathHelper.sin(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/* 68 */       double tZ = (MathHelper.cos(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/* 69 */       double tY = -MathHelper.sin(pitch / 180.0F * 3.1415927F);
 /* 70 */       MCH_EntityATMissile e = new MCH_EntityATMissile(this.worldObj, prm.posX, prm.posY, prm.posZ, tX, tY, tZ, yaw, pitch, this.acceleration);
 /* 71 */       e.setName(this.name);
 /* 72 */       e.setParameterFromWeapon(this, prm.entity, prm.user);
 /* 73 */       e.setTargetEntity(tgtEnt);
 /* 74 */       e.guidanceType = prm.option2;
-/* 75 */       this.worldObj.func_72838_d((Entity)e);
+/* 75 */       this.worldObj.spawnEntity((Entity)e);
 /* 76 */       playSound(prm.entity);
 /* 77 */       return true;
 /*    */     } 

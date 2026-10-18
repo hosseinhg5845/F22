@@ -5,8 +5,8 @@
 /*   */ public class MCH_ItemLightWeaponBullet extends W_Item {
 /*   */   public MCH_ItemLightWeaponBullet(int par1) {
 /* 7 */     super(par1);
-/* 8 */     func_77625_d(2);
-/* 9 */     func_77656_e(-1);
+/* 8 */     setMaxStackSize(2);
+/* 9 */     setMaxDamage(-1);
 /*   */   }
 /*   */ }
 

@@ -50,15 +50,15 @@
 /*     */   
 /*     */   public static AddonPack create(File addonFile) {
 /*  52 */     JsonObject packMetaJson = loadPackMeta(addonFile);
-/*  53 */     JsonObject packJson = JsonUtils.func_151218_a(packMetaJson, "pack", new JsonObject());
-/*  54 */     JsonObject addonJson = JsonUtils.func_151218_a(packMetaJson, "addon", new JsonObject());
-/*  55 */     String addonDomain = JsonUtils.func_151219_a(addonJson, "domain", null);
-/*  56 */     String packName = JsonUtils.func_151219_a(packJson, "description", addonFile.getName());
-/*  57 */     String version = JsonUtils.func_151219_a(addonJson, "version", "0.0");
+/*  53 */     JsonObject packJson = JsonUtils.getJsonObject(packMetaJson, "pack", new JsonObject());
+/*  54 */     JsonObject addonJson = JsonUtils.getJsonObject(packMetaJson, "addon", new JsonObject());
+/*  55 */     String addonDomain = JsonUtils.getString(addonJson, "domain", null);
+/*  56 */     String packName = JsonUtils.getString(packJson, "description", addonFile.getName());
+/*  57 */     String version = JsonUtils.getString(addonJson, "version", "0.0");
 /*     */     
-/*  59 */     String credits = JsonUtils.func_151219_a(addonJson, "credits", "");
-/*  60 */     String description = JsonUtils.func_151219_a(addonJson, "description", "");
-/*  61 */     String loaderVersion = JsonUtils.func_151219_a(addonJson, "loader_version", "1");
+/*  59 */     String credits = JsonUtils.getString(addonJson, "credits", "");
+/*  60 */     String description = JsonUtils.getString(addonJson, "description", "");
+/*  61 */     String loaderVersion = JsonUtils.getString(addonJson, "loader_version", "1");
 /*  62 */     List<String> authors = getAuthors(addonJson);
 /*  63 */     return new AddonPack(addonDomain, packName, version, addonFile, credits, authors, description, loaderVersion, 
 /*  64 */         ImmutableMap.copyOf(packMetaJson.entrySet()));

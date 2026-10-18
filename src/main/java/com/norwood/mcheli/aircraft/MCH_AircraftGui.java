@@ -37,80 +37,80 @@
 /*  37 */     super(new MCH_AircraftGuiContainer(player, ac));
 /*  38 */     this.aircraft = ac;
 /*  39 */     this.thePlayer = player;
-/*  40 */     this.field_146999_f = 210;
-/*  41 */     this.field_147000_g = 236;
+/*  40 */     this.xSize = 210;
+/*  41 */     this.ySize = 236;
 /*  42 */     this.buttonReload = null;
 /*  43 */     this.currentWeaponId = 0;
 /*     */   }
 /*     */   
-/*     */   public void func_73866_w_() {
-/*  47 */     super.func_73866_w_();
-/*  48 */     this.field_146292_n.clear();
-/*  49 */     this.buttonReload = new GuiButton(1, this.field_147003_i + 85, this.field_147009_r + 40, 50, 20, "Reload");
-/*  50 */     this.buttonNext = new GuiButton(3, this.field_147003_i + 140, this.field_147009_r + 40, 20, 20, "<<");
-/*  51 */     this.buttonPrev = new GuiButton(2, this.field_147003_i + 160, this.field_147009_r + 40, 20, 20, ">>");
-/*  52 */     this.buttonReload.field_146124_l = canReload(this.thePlayer);
-/*  53 */     this.buttonNext.field_146124_l = (this.aircraft.getWeaponNum() >= 2);
-/*  54 */     this.buttonPrev.field_146124_l = (this.aircraft.getWeaponNum() >= 2);
-/*  55 */     this.buttonInventory = new GuiButton(6, this.field_147003_i + 210 - 30 - 60, this.field_147009_r + 90, 80, 20, "Inventory");
-/*  56 */     this.field_146292_n.add(new GuiButton(5, this.field_147003_i + 210 - 30 - 60, this.field_147009_r + 110, 80, 20, "MOD Options"));
-/*  57 */     this.field_146292_n.add(new GuiButton(4, this.field_147003_i + 210 - 30 - 20, this.field_147009_r + 10, 40, 20, "Close"));
-/*  58 */     this.field_146292_n.add(this.buttonReload);
-/*  59 */     this.field_146292_n.add(this.buttonNext);
-/*  60 */     this.field_146292_n.add(this.buttonPrev);
-/*  61 */     if (this.aircraft.func_70302_i_() > 0) {
-/*  62 */       this.field_146292_n.add(this.buttonInventory);
+/*     */   public void initGui() {
+/*  47 */     super.initGui();
+/*  48 */     this.buttonList.clear();
+/*  49 */     this.buttonReload = new GuiButton(1, this.guiLeft + 85, this.guiTop + 40, 50, 20, "Reload");
+/*  50 */     this.buttonNext = new GuiButton(3, this.guiLeft + 140, this.guiTop + 40, 20, 20, "<<");
+/*  51 */     this.buttonPrev = new GuiButton(2, this.guiLeft + 160, this.guiTop + 40, 20, 20, ">>");
+/*  52 */     this.buttonReload.enabled = canReload(this.thePlayer);
+/*  53 */     this.buttonNext.enabled = (this.aircraft.getWeaponNum() >= 2);
+/*  54 */     this.buttonPrev.enabled = (this.aircraft.getWeaponNum() >= 2);
+/*  55 */     this.buttonInventory = new GuiButton(6, this.guiLeft + 210 - 30 - 60, this.guiTop + 90, 80, 20, "Inventory");
+/*  56 */     this.buttonList.add(new GuiButton(5, this.guiLeft + 210 - 30 - 60, this.guiTop + 110, 80, 20, "MOD Options"));
+/*  57 */     this.buttonList.add(new GuiButton(4, this.guiLeft + 210 - 30 - 20, this.guiTop + 10, 40, 20, "Close"));
+/*  58 */     this.buttonList.add(this.buttonReload);
+/*  59 */     this.buttonList.add(this.buttonNext);
+/*  60 */     this.buttonList.add(this.buttonPrev);
+/*  61 */     if (this.aircraft.getSizeInventory() > 0) {
+/*  62 */       this.buttonList.add(this.buttonInventory);
 /*     */     }
 /*     */     
-/*  65 */     this.editCommand = new GuiTextField(0, this.field_146289_q, this.field_147003_i + 25, this.field_147009_r + 215, 160, 15);
-/*  66 */     this.editCommand.func_146180_a(this.aircraft.getCommand());
-/*  67 */     this.editCommand.func_146203_f(512);
+/*  65 */     this.editCommand = new GuiTextField(0, this.fontRenderer, this.guiLeft + 25, this.guiTop + 215, 160, 15);
+/*  66 */     this.editCommand.setText(this.aircraft.getCommand());
+/*  67 */     this.editCommand.setMaxStringLength(512);
 /*  68 */     this.currentWeaponId = 0;
 /*  69 */     this.reloadWait = 10;
 /*     */   }
 /*     */   
 /*     */   public void closeScreen() {
-/*  73 */     MCH_PacketCommandSave.send(this.editCommand.func_146179_b());
-/*  74 */     this.field_146297_k.field_71439_g.func_71053_j();
+/*  73 */     MCH_PacketCommandSave.send(this.editCommand.getText());
+/*  74 */     this.mc.player.closeScreen();
 /*     */   }
 /*     */   
 /*     */   public boolean canReload(EntityPlayer player) {
 /*  78 */     return this.aircraft.canPlayerSupplyAmmo(player, this.currentWeaponId);
 /*     */   }
 /*     */   
-/*     */   public void func_73876_c() {
-/*  82 */     super.func_73876_c();
+/*     */   public void updateScreen() {
+/*  82 */     super.updateScreen();
 /*  83 */     if (this.reloadWait > 0) {
 /*  84 */       this.reloadWait--;
 /*  85 */       if (this.reloadWait == 0) {
-/*  86 */         this.buttonReload.field_146124_l = canReload(this.thePlayer);
+/*  86 */         this.buttonReload.enabled = canReload(this.thePlayer);
 /*  87 */         this.reloadWait = 20;
 /*     */       } 
 /*     */     } 
 /*     */     
-/*  91 */     this.editCommand.func_146178_a();
+/*  91 */     this.editCommand.updateCursorCounter();
 /*     */   }
 /*     */   
-/*     */   protected void func_73864_a(int mouseX, int mouseY, int mouseButton) throws IOException {
-/*  95 */     this.editCommand.func_146192_a(mouseX, mouseY, mouseButton);
-/*  96 */     super.func_73864_a(mouseX, mouseY, mouseButton);
+/*     */   protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+/*  95 */     this.editCommand.mouseClicked(mouseX, mouseY, mouseButton);
+/*  96 */     super.mouseClicked(mouseX, mouseY, mouseButton);
 /*     */   }
 /*     */   
-/*     */   public void func_146281_b() {
-/* 100 */     super.func_146281_b();
+/*     */   public void onGuiClosed() {
+/* 100 */     super.onGuiClosed();
 /*     */   }
 /*     */   
-/*     */   protected void func_146284_a(@NotNull GuiButton button) throws IOException {
-/* 104 */     super.func_146284_a(button);
-/* 105 */     if (button.field_146124_l)
-/* 106 */       switch (button.field_146127_k) {
+/*     */   protected void actionPerformed(@NotNull GuiButton button) throws IOException {
+/* 104 */     super.actionPerformed(button);
+/* 105 */     if (button.enabled)
+/* 106 */       switch (button.id) {
 /*     */         case 1:
-/* 108 */           this.buttonReload.field_146124_l = canReload(this.thePlayer);
-/* 109 */           if (this.buttonReload.field_146124_l) {
+/* 108 */           this.buttonReload.enabled = canReload(this.thePlayer);
+/* 109 */           if (this.buttonReload.enabled) {
 /* 110 */             MCH_PacketIndReload.send(this.aircraft, this.currentWeaponId);
 /* 111 */             this.aircraft.supplyAmmo(this.currentWeaponId);
 /* 112 */             this.reloadWait = 3;
-/* 113 */             this.buttonReload.field_146124_l = false;
+/* 113 */             this.buttonReload.enabled = false;
 /*     */           } 
 /*     */           break;
 /*     */         case 2:
@@ -119,7 +119,7 @@
 /* 119 */             this.currentWeaponId = 0;
 /*     */           }
 /*     */           
-/* 122 */           this.buttonReload.field_146124_l = canReload(this.thePlayer);
+/* 122 */           this.buttonReload.enabled = canReload(this.thePlayer);
 /*     */           break;
 /*     */         case 3:
 /* 125 */           this.currentWeaponId--;
@@ -127,7 +127,7 @@
 /* 127 */             this.currentWeaponId = this.aircraft.getWeaponNum() - 1;
 /*     */           }
 /*     */           
-/* 130 */           this.buttonReload.field_146124_l = canReload(this.thePlayer);
+/* 130 */           this.buttonReload.enabled = canReload(this.thePlayer);
 /*     */           break;
 /*     */         case 4:
 /* 133 */           closeScreen();
@@ -141,8 +141,8 @@
 /*     */       }  
 /*     */   }
 /*     */   
-/*     */   protected void func_146979_b(int par1, int par2) {
-/* 145 */     super.func_146979_b(par1, par2);
+/*     */   protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+/* 145 */     super.drawGuiContainerForegroundLayer(par1, par2);
 /* 146 */     drawString(this.aircraft.getGuiInventory().getInventoryName(), 10, 10, 16777215);
 /* 147 */     if (this.aircraft.getNumEjectionSeat() > 0) {
 /* 148 */       drawString("Parachute", 9, 95, 16777215);
@@ -175,11 +175,11 @@
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   protected void func_73869_a(char c, int code) {
+/*     */   protected void keyTyped(char c, int code) {
 /* 179 */     if (code == 1) {
 /* 180 */       closeScreen();
 /* 181 */     } else if (code == 28) {
-/* 182 */       String s = this.editCommand.func_146179_b().trim();
+/* 182 */       String s = this.editCommand.getText().trim();
 /* 183 */       if (s.startsWith("/")) {
 /* 184 */         s = s.substring(1);
 /*     */       }
@@ -188,19 +188,19 @@
 /* 188 */         MCH_PacketIndMultiplayCommand.send(768, s);
 /*     */       }
 /*     */     } else {
-/* 191 */       this.editCommand.func_146201_a(c, code);
+/* 191 */       this.editCommand.textboxKeyTyped(c, code);
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   protected void func_146976_a(float var1, int var2, int var3) {
+/*     */   protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 /* 196 */     W_McClient.MOD_bindTexture("textures/gui/gui.png");
 /* 197 */     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-/* 198 */     int x = (this.field_146294_l - this.field_146999_f) / 2;
-/* 199 */     int y = (this.field_146295_m - this.field_147000_g) / 2;
-/* 200 */     func_73729_b(x, y, 0, 0, this.field_146999_f, this.field_147000_g);
+/* 198 */     int x = (this.width - this.xSize) / 2;
+/* 199 */     int y = (this.height - this.ySize) / 2;
+/* 200 */     drawTexturedModalRect(x, y, 0, 0, this.xSize, this.ySize);
 /*     */     
 /* 202 */     for (int i = 0; i < this.aircraft.getNumEjectionSeat(); i++) {
-/* 203 */       func_73729_b(x + 10 + 18 * i - 1, y + 105 - 1, 215, 55, 18, 18);
+/* 203 */       drawTexturedModalRect(x + 10 + 18 * i - 1, y + 105 - 1, 215, 55, 18, 18);
 /*     */     }
 /*     */     
 /* 206 */     int ff = (int)(this.aircraft.getFuelP() * 50.0F);
@@ -208,11 +208,11 @@
 /* 208 */       ff = 100;
 /*     */     }
 /*     */     
-/* 211 */     func_73729_b(x + 57, y + 30 + 50 - ff, 215, 0, 12, ff);
+/* 211 */     drawTexturedModalRect(x + 57, y + 30 + 50 - ff, 215, 0, 12, ff);
 /* 212 */     ff = (int)((this.aircraft.getFuelP() * 100.0F) + 0.5D);
 /* 213 */     int color = (ff > 20) ? -14101432 : 16711680;
 /* 214 */     drawString(String.format("%3d", new Object[] { Integer.valueOf(ff) }) + "%", x + 30, y + 65, color);
-/* 215 */     this.editCommand.func_146194_f();
+/* 215 */     this.editCommand.drawTextBox();
 /*     */   }
 /*     */ }
 

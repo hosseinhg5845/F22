@@ -26,7 +26,7 @@
 /*  26 */     setSliderValue(defaultSliderPos);
 /*     */   }
 /*     */   
-/*     */   public int func_146114_a(boolean mouseOver) {
+/*     */   public int getHoverState(boolean mouseOver) {
 /*  30 */     return 0;
 /*     */   }
 /*     */   
@@ -42,10 +42,10 @@
 /*     */     }
 /*     */   }
 /*     */   
-/*     */   protected void func_146119_b(@NotNull Minecraft mc, int x, int y) {
+/*     */   protected void mouseDragged(@NotNull Minecraft mc, int x, int y) {
 /*  46 */     if (isVisible()) {
 /*  47 */       if (this.isMousePress) {
-/*  48 */         this.currentSlider = (y - this.field_146129_i + 4) / (this.field_146121_g - 8);
+/*  48 */         this.currentSlider = (y - this.y + 4) / (this.height - 8);
 /*  49 */         if (this.currentSlider < 0.0F) {
 /*  50 */           this.currentSlider = 0.0F;
 /*     */         }
@@ -58,10 +58,10 @@
 /*     */       } 
 /*     */       
 /*  60 */       GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-/*  61 */       func_73729_b(this.field_146128_h, this.field_146129_i + (int)(this.currentSlider * (this.field_146121_g - 8)), 66, 0, 20, 4);
-/*  62 */       func_73729_b(this.field_146128_h, this.field_146129_i + (int)(this.currentSlider * (this.field_146121_g - 8)) + 4, 66, 196, 20, 4);
+/*  61 */       drawTexturedModalRect(this.x, this.y + (int)(this.currentSlider * (this.height - 8)), 66, 0, 20, 4);
+/*  62 */       drawTexturedModalRect(this.x, this.y + (int)(this.currentSlider * (this.height - 8)) + 4, 66, 196, 20, 4);
 /*  63 */       if (!MCH_Key.isKeyDown(-100)) {
-/*  64 */         func_146118_a(x, y);
+/*  64 */         mouseReleased(x, y);
 /*     */       }
 /*     */     } 
 /*     */   }
@@ -87,16 +87,16 @@
 /*     */   }
 /*     */   
 /*     */   public float normalizeValue(float f) {
-/*  90 */     return MathHelper.func_76131_a((snapToStepClamp(f) - this.valueMin) / (this.valueMax - this.valueMin), 0.0F, 1.0F);
+/*  90 */     return MathHelper.clamp((snapToStepClamp(f) - this.valueMin) / (this.valueMax - this.valueMin), 0.0F, 1.0F);
 /*     */   }
 /*     */   
 /*     */   public float denormalizeValue(float f) {
-/*  94 */     return snapToStepClamp(this.valueMin + (this.valueMax - this.valueMin) * MathHelper.func_76131_a(f, 0.0F, 1.0F));
+/*  94 */     return snapToStepClamp(this.valueMin + (this.valueMax - this.valueMin) * MathHelper.clamp(f, 0.0F, 1.0F));
 /*     */   }
 /*     */   
 /*     */   public float snapToStepClamp(float f) {
 /*  98 */     f = snapToStep(f);
-/*  99 */     return MathHelper.func_76131_a(f, this.valueMin, this.valueMax);
+/*  99 */     return MathHelper.clamp(f, this.valueMin, this.valueMax);
 /*     */   }
 /*     */   
 /*     */   protected float snapToStep(float f) {
@@ -107,9 +107,9 @@
 /* 107 */     return f;
 /*     */   }
 /*     */   
-/*     */   public boolean func_146116_c(@NotNull Minecraft mc, int x, int y) {
-/* 111 */     if (super.func_146116_c(mc, x, y)) {
-/* 112 */       this.currentSlider = (y - this.field_146129_i + 4) / (this.field_146121_g - 8);
+/*     */   public boolean mousePressed(@NotNull Minecraft mc, int x, int y) {
+/* 111 */     if (super.mousePressed(mc, x, y)) {
+/* 112 */       this.currentSlider = (y - this.y + 4) / (this.height - 8);
 /* 113 */       if (this.currentSlider < 0.0F) {
 /* 114 */         this.currentSlider = 0.0F;
 /*     */       }
@@ -125,32 +125,32 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_146118_a(int mouseX, int mouseY) {
+/*     */   public void mouseReleased(int mouseX, int mouseY) {
 /* 129 */     this.isMousePress = false;
 /*     */   }
 /*     */   
-/*     */   public void func_191745_a(@NotNull Minecraft mc, int x, int y, float partialTicks) {
+/*     */   public void drawButton(@NotNull Minecraft mc, int x, int y, float partialTicks) {
 /* 133 */     if (isVisible()) {
-/* 134 */       FontRenderer fontrenderer = mc.field_71466_p;
-/* 135 */       mc.func_110434_K().func_110577_a(new ResourceLocation("mcheli", "textures/gui/widgets.png"));
+/* 134 */       FontRenderer fontrenderer = mc.fontRenderer;
+/* 135 */       mc.getTextureManager().bindTexture(new ResourceLocation("mcheli", "textures/gui/widgets.png"));
 /* 136 */       GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-/* 137 */       setOnMouseOver((x >= this.field_146128_h && y >= this.field_146129_i && x < this.field_146128_h + this.field_146120_f && y < this.field_146129_i + this.field_146121_g));
-/* 138 */       int k = func_146114_a(isOnMouseOver());
+/* 137 */       setOnMouseOver((x >= this.x && y >= this.y && x < this.x + this.width && y < this.y + this.height));
+/* 138 */       int k = getHoverState(isOnMouseOver());
 /* 139 */       enableBlend();
-/* 140 */       func_73729_b(this.field_146128_h, this.field_146129_i, 46 + k * 20, 0, this.field_146120_f, this.field_146121_g / 2);
-/* 141 */       func_73729_b(this.field_146128_h, this.field_146129_i + this.field_146121_g / 2, 46 + k * 20, 200 - this.field_146121_g / 2, this.field_146120_f, this.field_146121_g / 2);
-/* 142 */       func_146119_b(mc, x, y);
+/* 140 */       drawTexturedModalRect(this.x, this.y, 46 + k * 20, 0, this.width, this.height / 2);
+/* 141 */       drawTexturedModalRect(this.x, this.y + this.height / 2, 46 + k * 20, 200 - this.height / 2, this.width, this.height / 2);
+/* 142 */       mouseDragged(mc, x, y);
 /* 143 */       int l = 14737632;
 /* 144 */       if (this.packedFGColour != 0) {
 /* 145 */         l = this.packedFGColour;
-/* 146 */       } else if (!this.field_146124_l) {
+/* 146 */       } else if (!this.enabled) {
 /* 147 */         l = 10526880;
 /* 148 */       } else if (isOnMouseOver()) {
 /* 149 */         l = 16777120;
 /*     */       } 
 /*     */       
-/* 152 */       func_73732_a(fontrenderer, this.field_146126_j, this.field_146128_h + this.field_146120_f / 2, this.field_146129_i + (this.field_146121_g - 8) / 2, l);
-/* 153 */       mc.func_110434_K().func_110577_a(field_146122_a);
+/* 152 */       drawCenteredString(fontrenderer, this.displayString, this.x + this.width / 2, this.y + (this.height - 8) / 2, l);
+/* 153 */       mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
 /*     */     } 
 /*     */   }
 /*     */ }

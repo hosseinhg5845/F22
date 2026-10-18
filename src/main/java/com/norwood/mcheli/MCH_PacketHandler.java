@@ -61,7 +61,7 @@
 /* 61 */       case 537133072: MCH_UavPacketHandler.onPacketUavStatus(entityPlayer, data, handler); return;
 /* 62 */       case 537395216: MCH_DraftingTablePacketHandler.onPacketCreate(entityPlayer, data, handler); return;
 /* 63 */       case 537919504: MCH_TankPacketHandler.onPacket_PlayerControl(entityPlayer, data, handler); return; }
-/* 64 */      MCH_Lib.DbgLog(entityPlayer.field_70170_p, "MCH_PacketHandler.onPacket invalid MSGID=0x%X(%d)", new Object[] { Integer.valueOf(msgid), Integer.valueOf(msgid) });
+/* 64 */      MCH_Lib.DbgLog(entityPlayer.world, "MCH_PacketHandler.onPacket invalid MSGID=0x%X(%d)", new Object[] { Integer.valueOf(msgid), Integer.valueOf(msgid) });
 /*    */   }
 /*    */ 
 /*    */   

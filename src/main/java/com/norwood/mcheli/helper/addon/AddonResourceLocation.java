@@ -43,7 +43,7 @@
 /*     */   }
 /*     */   
 /*     */   protected static String[] parsePath(String pathIn) {
-/*  46 */     String[] spl = func_177516_a(pathIn);
+/*  46 */     String[] spl = splitObjectName(pathIn);
 /*  47 */     String[] ret = { spl[0], null, spl[1] };
 /*  48 */     int i = ret[2].indexOf('|');
 /*  49 */     if (i >= 0) {
@@ -63,12 +63,12 @@
 /*     */   }
 /*     */   
 /*     */   protected static String[] parsePath(String addonDomain, String pathIn) {
-/*  66 */     String[] spl = func_177516_a(pathIn);
+/*  66 */     String[] spl = splitObjectName(pathIn);
 /*  67 */     return new String[] { spl[0], addonDomain, spl[1] };
 /*     */   }
 /*     */   
 /*     */   public static AddonResourceLocation share(ResourceLocation location) {
-/*  71 */     return share(location.func_110624_b(), location.func_110623_a());
+/*  71 */     return share(location.getResourceDomain(), location.getResourcePath());
 /*     */   }
 /*     */   
 /*     */   public static AddonResourceLocation share(String modid, String location) {
@@ -80,15 +80,15 @@
 /*     */   }
 /*     */   
 /*     */   public String getAddonLocation() {
-/*  83 */     return this.addonDomain + '|' + this.field_110625_b;
+/*  83 */     return this.addonDomain + '|' + this.resourcePath;
 /*     */   }
 /*     */   
 /*     */   public ResourceLocation asVanillaLocation() {
-/*  87 */     return new ResourceLocation(this.field_110626_a, getAddonLocation());
+/*  87 */     return new ResourceLocation(this.resourceDomain, getAddonLocation());
 /*     */   }
 /*     */   
 /*     */   public ResourceLocation asVanillaDomainPath() {
-/*  91 */     return new ResourceLocation(this.field_110626_a, this.field_110625_b);
+/*  91 */     return new ResourceLocation(this.resourceDomain, this.resourcePath);
 /*     */   }
 /*     */   
 /*     */   public boolean isShareDomain() {
@@ -130,20 +130,20 @@
 /*     */ 
 /*     */   
 /*     */   public int compareTo(ResourceLocation p_compareTo_1_) {
-/* 133 */     int i = this.field_110626_a.compareTo(p_compareTo_1_.func_110624_b());
+/* 133 */     int i = this.resourceDomain.compareTo(p_compareTo_1_.getResourceDomain());
 /* 134 */     if (i == 0 && p_compareTo_1_ instanceof AddonResourceLocation) {
 /* 135 */       i = this.addonDomain.compareTo(((AddonResourceLocation)p_compareTo_1_).addonDomain);
 /*     */     }
 /*     */     
 /* 138 */     if (i == 0) {
-/* 139 */       i = this.field_110625_b.compareTo(p_compareTo_1_.func_110623_a());
+/* 139 */       i = this.resourcePath.compareTo(p_compareTo_1_.getResourcePath());
 /*     */     }
 /*     */     
 /* 142 */     return i;
 /*     */   }
 /*     */   @NotNull
 /*     */   public String toString() {
-/* 146 */     return this.field_110626_a + ":" + this.addonDomain + '|' + this.field_110625_b;
+/* 146 */     return this.resourceDomain + ":" + this.addonDomain + '|' + this.resourcePath;
 /*     */   }
 /*     */ }
 

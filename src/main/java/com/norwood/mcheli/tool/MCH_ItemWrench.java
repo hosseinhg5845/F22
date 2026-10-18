@@ -42,9 +42,9 @@
 /*     */   public MCH_ItemWrench(int itemId, Item.ToolMaterial material) {
 /*  43 */     super(itemId);
 /*  44 */     this.toolMaterial = material;
-/*  45 */     this.field_77777_bU = 1;
-/*  46 */     func_77656_e(material.func_77997_a());
-/*  47 */     this.damageVsEntity = 4.0F + material.func_78000_c();
+/*  45 */     this.maxStackSize = 1;
+/*  46 */     setMaxDamage(material.getMaxUses());
+/*  47 */     this.damageVsEntity = 4.0F + material.getAttackDamage();
 /*     */   }
 /*     */   
 /*     */   public static float getUseAnimSmooth(ItemStack stack, float partialTicks) {
@@ -67,66 +67,66 @@
 /*     */   }
 /*     */   
 /*     */   public static int getAnimCount(ItemStack stack, String name) {
-/*  70 */     if (!stack.func_77942_o()) {
-/*  71 */       stack.func_77982_d(new NBTTagCompound());
+/*  70 */     if (!stack.hasTagCompound()) {
+/*  71 */       stack.setTagCompound(new NBTTagCompound());
 /*     */     }
 /*     */     
-/*  74 */     if (stack.func_77978_p().func_74764_b(name)) {
-/*  75 */       return stack.func_77978_p().func_74762_e(name);
+/*  74 */     if (stack.getTagCompound().hasKey(name)) {
+/*  75 */       return stack.getTagCompound().getInteger(name);
 /*     */     }
-/*  77 */     stack.func_77978_p().func_74768_a(name, 0);
+/*  77 */     stack.getTagCompound().setInteger(name, 0);
 /*  78 */     return 0;
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public static void setAnimCount(ItemStack stack, String name, int n) {
-/*  83 */     if (!stack.func_77942_o()) {
-/*  84 */       stack.func_77982_d(new NBTTagCompound());
+/*  83 */     if (!stack.hasTagCompound()) {
+/*  84 */       stack.setTagCompound(new NBTTagCompound());
 /*     */     }
 /*     */     
-/*  87 */     stack.func_77978_p().func_74768_a(name, n);
+/*  87 */     stack.getTagCompound().setInteger(name, n);
 /*     */   }
 /*     */   
 /*     */   private static RayTraceResult rayTrace(EntityLivingBase entity, double dist, float tick) {
-/*  91 */     Vec3d vec3 = new Vec3d(entity.field_70165_t, entity.field_70163_u + entity.func_70047_e(), entity.field_70161_v);
-/*  92 */     Vec3d vec31 = entity.func_70676_i(tick);
-/*  93 */     Vec3d vec32 = vec3.func_72441_c(vec31.field_72450_a * dist, vec31.field_72448_b * dist, vec31.field_72449_c * dist);
-/*  94 */     return entity.field_70170_p.func_147447_a(vec3, vec32, false, false, true);
+/*  91 */     Vec3d vec3 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+/*  92 */     Vec3d vec31 = entity.getLook(tick);
+/*  93 */     Vec3d vec32 = vec3.addVector(vec31.x * dist, vec31.y * dist, vec31.z * dist);
+/*  94 */     return entity.world.rayTraceBlocks(vec3, vec32, false, false, true);
 /*     */   }
 /*     */   
-/*     */   public boolean func_150897_b(IBlockState blockIn) {
-/*  98 */     Material material = blockIn.func_185904_a();
-/*  99 */     return (material == Material.field_151573_f || material instanceof net.minecraft.block.material.MaterialLogic);
+/*     */   public boolean canHarvestBlock(IBlockState blockIn) {
+/*  98 */     Material material = blockIn.getMaterial();
+/*  99 */     return (material == Material.IRON || material instanceof net.minecraft.block.material.MaterialLogic);
 /*     */   }
 /*     */   
-/*     */   public float func_150893_a(@NotNull ItemStack stack, IBlockState state) {
-/* 103 */     Material material = state.func_185904_a();
-/* 104 */     if (material == Material.field_151573_f) {
+/*     */   public float getDestroySpeed(@NotNull ItemStack stack, IBlockState state) {
+/* 103 */     Material material = state.getMaterial();
+/* 104 */     if (material == Material.IRON) {
 /* 105 */       return 20.5F;
 /*     */     }
 /* 107 */     return (material instanceof net.minecraft.block.material.MaterialLogic) ? 5.5F : 2.0F;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public boolean func_77644_a(@NotNull ItemStack itemStack, @NotNull EntityLivingBase entity, EntityLivingBase player) {
-/* 112 */     if (!player.field_70170_p.field_72995_K) {
+/*     */   public boolean hitEntity(@NotNull ItemStack itemStack, @NotNull EntityLivingBase entity, EntityLivingBase player) {
+/* 112 */     if (!player.world.isRemote) {
 /* 113 */       if (rand.nextInt(40) == 0) {
-/* 114 */         entity.func_70099_a(new ItemStack(W_Item.getItemByName("iron_ingot"), 1, 0), 0.0F);
+/* 114 */         entity.entityDropItem(new ItemStack(W_Item.getItemByName("iron_ingot"), 1, 0), 0.0F);
 /* 115 */       } else if (rand.nextInt(20) == 0) {
-/* 116 */         entity.func_70099_a(new ItemStack(W_Item.getItemByName("gunpowder"), 1, 0), 0.0F);
+/* 116 */         entity.entityDropItem(new ItemStack(W_Item.getItemByName("gunpowder"), 1, 0), 0.0F);
 /*     */       } 
 /*     */     }
 /*     */     
-/* 120 */     itemStack.func_77972_a(2, player);
+/* 120 */     itemStack.damageItem(2, player);
 /* 121 */     return true;
 /*     */   }
 /*     */   
-/*     */   public void func_77615_a(@NotNull ItemStack stack, @NotNull World worldIn, @NotNull EntityLivingBase entityLiving, int timeLeft) {
+/*     */   public void onPlayerStoppedUsing(@NotNull ItemStack stack, @NotNull World worldIn, @NotNull EntityLivingBase entityLiving, int timeLeft) {
 /* 125 */     setUseAnimCount(stack, 0, 0);
 /*     */   }
 /*     */   
 /*     */   public void onUsingTick(@NotNull ItemStack stack, EntityLivingBase player, int count) {
-/* 129 */     if (player.field_70170_p.field_72995_K) {
+/* 129 */     if (player.world.isRemote) {
 /* 130 */       MCH_EntityAircraft ac = getMouseOverAircraft(player);
 /* 131 */       if (ac != null) {
 /* 132 */         int cnt = getUseAnimCount(stack);
@@ -141,18 +141,18 @@
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 144 */     if (!player.field_70170_p.field_72995_K && count < func_77626_a(stack) && count % 20 == 0) {
+/* 144 */     if (!player.world.isRemote && count < getMaxItemUseDuration(stack) && count % 20 == 0) {
 /* 145 */       MCH_EntityAircraft ac = getMouseOverAircraft(player);
 /* 146 */       if (ac != null && ac.getHP() > 0 && ac.repair(10)) {
-/* 147 */         stack.func_77972_a(1, player);
-/* 148 */         W_WorldFunc.MOD_playSoundEffect(player.field_70170_p, (int)ac.field_70165_t, (int)ac.field_70163_u, (int)ac.field_70161_v, "wrench", 1.0F, 0.9F + rand.nextFloat() * 0.2F);
+/* 147 */         stack.damageItem(1, player);
+/* 148 */         W_WorldFunc.MOD_playSoundEffect(player.world, (int)ac.posX, (int)ac.posY, (int)ac.posZ, "wrench", 1.0F, 0.9F + rand.nextFloat() * 0.2F);
 /*     */       } 
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   public void func_77663_a(@NotNull ItemStack item, @NotNull World world, @NotNull Entity entity, int n, boolean b) {
+/*     */   public void onUpdate(@NotNull ItemStack item, @NotNull World world, @NotNull Entity entity, int n, boolean b) {
 /* 154 */     if (entity instanceof EntityPlayer) { EntityPlayer player = (EntityPlayer)entity;
-/* 155 */       ItemStack itemStack = player.func_184614_ca();
+/* 155 */       ItemStack itemStack = player.getHeldItemMainhand();
 /* 156 */       if (itemStack == item) {
 /* 157 */         MCH_MOD.proxy.setCreativeDigDelay(0);
 /*     */       } }
@@ -163,9 +163,9 @@
 /* 163 */     RayTraceResult m = getMouseOver(entity, 1.0F);
 /* 164 */     MCH_EntityAircraft ac = null;
 /* 165 */     if (m != null) {
-/* 166 */       if (m.field_72308_g instanceof MCH_EntityAircraft)
-/* 167 */       { ac = (MCH_EntityAircraft)m.field_72308_g; }
-/* 168 */       else { Entity entity1 = m.field_72308_g; if (entity1 instanceof MCH_EntitySeat) { MCH_EntitySeat seat = (MCH_EntitySeat)entity1;
+/* 166 */       if (m.entityHit instanceof MCH_EntityAircraft)
+/* 167 */       { ac = (MCH_EntityAircraft)m.entityHit; }
+/* 168 */       else { Entity entity1 = m.entityHit; if (entity1 instanceof MCH_EntitySeat) { MCH_EntitySeat seat = (MCH_EntitySeat)entity1;
 /* 169 */           if (seat.getParent() != null) {
 /* 170 */             ac = seat.getParent();
 /*     */           } }
@@ -180,41 +180,41 @@
 /* 180 */     double d0 = 4.0D;
 /* 181 */     RayTraceResult objectMouseOver = rayTrace(user, d0, tick);
 /* 182 */     double d1 = d0;
-/* 183 */     Vec3d vec3 = new Vec3d(user.field_70165_t, user.field_70163_u + user.func_70047_e(), user.field_70161_v);
+/* 183 */     Vec3d vec3 = new Vec3d(user.posX, user.posY + user.getEyeHeight(), user.posZ);
 /* 184 */     if (objectMouseOver != null) {
-/* 185 */       d1 = objectMouseOver.field_72307_f.func_72438_d(vec3);
+/* 185 */       d1 = objectMouseOver.hitVec.distanceTo(vec3);
 /*     */     }
 /*     */     
-/* 188 */     Vec3d vec31 = user.func_70676_i(tick);
-/* 189 */     Vec3d vec32 = vec3.func_72441_c(vec31.field_72450_a * d0, vec31.field_72448_b * d0, vec31.field_72449_c * d0);
+/* 188 */     Vec3d vec31 = user.getLook(tick);
+/* 189 */     Vec3d vec32 = vec3.addVector(vec31.x * d0, vec31.y * d0, vec31.z * d0);
 /* 190 */     Entity pointedEntity = null;
 /* 191 */     Vec3d vec33 = null;
 /* 192 */     float f1 = 1.0F;
 /*     */     
-/* 194 */     List<Entity> list = user.field_70170_p.func_72839_b((Entity)user, user.func_174813_aQ().func_72321_a(vec31.field_72450_a * d0, vec31.field_72448_b * d0, vec31.field_72449_c * d0).func_72314_b(f1, f1, f1));
+/* 194 */     List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity((Entity)user, user.getEntityBoundingBox().expand(vec31.x * d0, vec31.y * d0, vec31.z * d0).grow(f1, f1, f1));
 /* 195 */     double d2 = d1;
 /*     */     
 /* 197 */     for (Entity entity : list) {
-/* 198 */       if (entity.func_70067_L()) {
-/* 199 */         float f2 = entity.func_70111_Y();
-/* 200 */         AxisAlignedBB axisalignedbb = entity.func_174813_aQ().func_72314_b(f2, f2, f2);
-/* 201 */         RayTraceResult movingobjectposition = axisalignedbb.func_72327_a(vec3, vec32);
-/* 202 */         if (axisalignedbb.func_72318_a(vec3)) {
+/* 198 */       if (entity.canBeCollidedWith()) {
+/* 199 */         float f2 = entity.getCollisionBorderSize();
+/* 200 */         AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().grow(f2, f2, f2);
+/* 201 */         RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
+/* 202 */         if (axisalignedbb.contains(vec3)) {
 /* 203 */           if (0.0D < d2 || d2 == 0.0D) {
 /* 204 */             pointedEntity = entity;
-/* 205 */             vec33 = (movingobjectposition == null) ? vec3 : movingobjectposition.field_72307_f;
+/* 205 */             vec33 = (movingobjectposition == null) ? vec3 : movingobjectposition.hitVec;
 /* 206 */             d2 = 0.0D;
 /*     */           }  continue;
 /* 208 */         }  if (movingobjectposition != null) {
-/* 209 */           double d3 = vec3.func_72438_d(movingobjectposition.field_72307_f);
+/* 209 */           double d3 = vec3.distanceTo(movingobjectposition.hitVec);
 /* 210 */           if (d3 < d2 || d2 == 0.0D) {
-/* 211 */             if (entity != user.func_184187_bx() || entity.canRiderInteract()) {
+/* 211 */             if (entity != user.getRidingEntity() || entity.canRiderInteract()) {
 /* 212 */               pointedEntity = entity;
-/* 213 */               vec33 = movingobjectposition.field_72307_f;
+/* 213 */               vec33 = movingobjectposition.hitVec;
 /* 214 */               d2 = d3; continue;
 /* 215 */             }  if (d2 == 0.0D) {
 /* 216 */               pointedEntity = entity;
-/* 217 */               vec33 = movingobjectposition.field_72307_f;
+/* 217 */               vec33 = movingobjectposition.hitVec;
 /*     */             } 
 /*     */           } 
 /*     */         } 
@@ -228,49 +228,49 @@
 /* 228 */     return objectMouseOver;
 /*     */   }
 /*     */   
-/*     */   public boolean func_179218_a(@NotNull ItemStack itemStack, @NotNull World world, IBlockState state, @NotNull BlockPos pos, @NotNull EntityLivingBase entity) {
-/* 232 */     if (state.func_185887_b(world, pos) != 0.0D) {
-/* 233 */       itemStack.func_77972_a(2, entity);
+/*     */   public boolean onBlockDestroyed(@NotNull ItemStack itemStack, @NotNull World world, IBlockState state, @NotNull BlockPos pos, @NotNull EntityLivingBase entity) {
+/* 232 */     if (state.getBlockHardness(world, pos) != 0.0D) {
+/* 233 */       itemStack.damageItem(2, entity);
 /*     */     }
 /*     */     
 /* 236 */     return true;
 /*     */   }
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
-/*     */   public boolean func_77662_d() {
+/*     */   public boolean isFull3D() {
 /* 241 */     return true;
 /*     */   }
 /*     */   @NotNull
-/*     */   public EnumAction func_77661_b(@NotNull ItemStack itemStack) {
+/*     */   public EnumAction getItemUseAction(@NotNull ItemStack itemStack) {
 /* 245 */     return EnumAction.BLOCK;
 /*     */   }
 /*     */   
-/*     */   public int func_77626_a(@NotNull ItemStack itemStack) {
+/*     */   public int getMaxItemUseDuration(@NotNull ItemStack itemStack) {
 /* 249 */     return 72000;
 /*     */   }
 /*     */   @NotNull
-/*     */   public ActionResult<ItemStack> func_77659_a(@NotNull World world, EntityPlayer player, @NotNull EnumHand handIn) {
-/* 253 */     player.func_184598_c(handIn);
-/* 254 */     return ActionResult.newResult(EnumActionResult.SUCCESS, player.func_184586_b(handIn));
+/*     */   public ActionResult<ItemStack> onItemRightClick(@NotNull World world, EntityPlayer player, @NotNull EnumHand handIn) {
+/* 253 */     player.setActiveHand(handIn);
+/* 254 */     return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(handIn));
 /*     */   }
 /*     */   
-/*     */   public int func_77619_b() {
-/* 258 */     return this.toolMaterial.func_77995_e();
+/*     */   public int getItemEnchantability() {
+/* 258 */     return this.toolMaterial.getEnchantability();
 /*     */   }
 /*     */   
 /*     */   public String getToolMaterialName() {
 /* 262 */     return this.toolMaterial.toString();
 /*     */   }
 /*     */   
-/*     */   public boolean func_82789_a(@NotNull ItemStack item1, @NotNull ItemStack item2) {
+/*     */   public boolean getIsRepairable(@NotNull ItemStack item1, @NotNull ItemStack item2) {
 /* 266 */     ItemStack mat = this.toolMaterial.getRepairItemStack();
-/* 267 */     return ((!mat.func_190926_b() && OreDictionary.itemMatches(mat, item2, false)) || super.func_82789_a(item1, item2));
+/* 267 */     return ((!mat.isEmpty() && OreDictionary.itemMatches(mat, item2, false)) || super.getIsRepairable(item1, item2));
 /*     */   }
 /*     */   @NotNull
-/*     */   public Multimap<String, AttributeModifier> func_111205_h(@NotNull EntityEquipmentSlot equipmentSlot) {
-/* 271 */     Multimap<String, AttributeModifier> multimap = super.func_111205_h(equipmentSlot);
+/*     */   public Multimap<String, AttributeModifier> getItemAttributeModifiers(@NotNull EntityEquipmentSlot equipmentSlot) {
+/* 271 */     Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
 /* 272 */     if (equipmentSlot == EntityEquipmentSlot.MAINHAND) {
-/* 273 */       multimap.put(SharedMonsterAttributes.field_111264_e.func_111108_a(), new AttributeModifier(field_111210_e, "Weapon modifier", this.damageVsEntity, 0));
+/* 273 */       multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", this.damageVsEntity, 0));
 /*     */     }
 /*     */     
 /* 276 */     return multimap;

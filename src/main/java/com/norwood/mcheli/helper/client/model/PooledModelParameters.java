@@ -8,7 +8,7 @@
 /*    */ public class PooledModelParameters
 /*    */ {
 /*    */   private static EntityLivingBase heldItemUser;
-/* 11 */   private static ItemStack rendererTargetItem = ItemStack.field_190927_a;
+/* 11 */   private static ItemStack rendererTargetItem = ItemStack.EMPTY;
 /* 12 */   private static ItemCameraTransforms.TransformType transformType = ItemCameraTransforms.TransformType.NONE;
 /*    */   
 /*    */   static void setItemAndUser(ItemStack itemstack, @Nullable EntityLivingBase user) {

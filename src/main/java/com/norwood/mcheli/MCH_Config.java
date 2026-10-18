@@ -481,8 +481,8 @@
 /* 481 */       list = DamageOtherByExternal.list;
 /*     */     } 
 /*     */     
-/* 484 */     Entity attacker = ds.func_76346_g();
-/* 485 */     Entity attackerSource = ds.func_76364_f();
+/* 484 */     Entity attacker = ds.getTrueSource();
+/* 485 */     Entity attackerSource = ds.getImmediateSource();
 /*     */     
 /* 487 */     for (DamageEntity de : list) {
 /* 488 */       if (de.name.isEmpty() || (attacker != null && attacker

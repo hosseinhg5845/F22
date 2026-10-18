@@ -29,8 +29,8 @@
 /*    */   private static _Vertex calculateFaceNormal(_Vertex[] verts) {
 /* 30 */     Vec3d v1 = new Vec3d(((verts[1]).x - (verts[0]).x), ((verts[1]).y - (verts[0]).y), ((verts[1]).z - (verts[0]).z));
 /* 31 */     Vec3d v2 = new Vec3d(((verts[2]).x - (verts[0]).x), ((verts[2]).y - (verts[0]).y), ((verts[2]).z - (verts[0]).z));
-/* 32 */     Vec3d normalVector = v1.func_72431_c(v2).func_72432_b();
-/* 33 */     return new _Vertex((float)normalVector.field_72450_a, (float)normalVector.field_72448_b, (float)normalVector.field_72449_c);
+/* 32 */     Vec3d normalVector = v1.crossProduct(v2).normalize();
+/* 33 */     return new _Vertex((float)normalVector.x, (float)normalVector.y, (float)normalVector.z);
 /*    */   }
 /*    */   
 /*    */   private static _Vertex getVerticesNormalFromFace(_Vertex fnormal, int verticesID, List<_Face> faces, float facet) {

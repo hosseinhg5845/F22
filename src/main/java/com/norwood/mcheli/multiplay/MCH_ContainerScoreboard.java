@@ -11,7 +11,7 @@
 /* 11 */     this.thePlayer = player;
 /*    */   }
 /*    */   
-/*    */   public boolean func_75145_c(@NotNull EntityPlayer player) {
+/*    */   public boolean canInteractWith(@NotNull EntityPlayer player) {
 /* 15 */     return true;
 /*    */   }
 /*    */ }

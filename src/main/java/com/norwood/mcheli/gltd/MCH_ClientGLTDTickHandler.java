@@ -46,25 +46,25 @@
 /*     */ 
 /*     */   
 /*     */   protected void updateGLTD(EntityPlayer player, MCH_EntityGLTD gltd) {
-/*  49 */     if (player.field_70125_A < -70.0F) {
-/*  50 */       player.field_70125_A = -70.0F;
+/*  49 */     if (player.rotationPitch < -70.0F) {
+/*  50 */       player.rotationPitch = -70.0F;
 /*     */     }
 /*     */     
-/*  53 */     if (player.field_70125_A > 70.0F) {
-/*  54 */       player.field_70125_A = 70.0F;
+/*  53 */     if (player.rotationPitch > 70.0F) {
+/*  54 */       player.rotationPitch = 70.0F;
 /*     */     }
 /*     */     
-/*  57 */     float yaw = gltd.field_70177_z;
-/*  58 */     if (player.field_70177_z < yaw - 70.0F) {
-/*  59 */       player.field_70177_z = yaw - 70.0F;
+/*  57 */     float yaw = gltd.rotationYaw;
+/*  58 */     if (player.rotationYaw < yaw - 70.0F) {
+/*  59 */       player.rotationYaw = yaw - 70.0F;
 /*     */     }
 /*     */     
-/*  62 */     if (player.field_70177_z > yaw + 70.0F) {
-/*  63 */       player.field_70177_z = yaw + 70.0F;
+/*  62 */     if (player.rotationYaw > yaw + 70.0F) {
+/*  63 */       player.rotationYaw = yaw + 70.0F;
 /*     */     }
 /*     */     
-/*  66 */     gltd.camera.rotationYaw = player.field_70177_z;
-/*  67 */     gltd.camera.rotationPitch = player.field_70125_A;
+/*  66 */     gltd.camera.rotationYaw = player.rotationYaw;
+/*  67 */     gltd.camera.rotationPitch = player.rotationPitch;
 /*     */   }
 /*     */ 
 /*     */ 
@@ -110,14 +110,14 @@
 /*     */     //   39: putfield isBeforeRiding : Z
 /*     */     //   42: aload_0
 /*     */     //   43: getfield mc : Lnet/minecraft/client/Minecraft;
-/*     */     //   46: getfield field_71439_g : Lnet/minecraft/client/entity/EntityPlayerSP;
+/*     */     //   46: getfield player : Lnet/minecraft/client/entity/EntityPlayerSP;
 /*     */     //   49: astore_2
 /*     */     //   50: aconst_null
 /*     */     //   51: astore_3
 /*     */     //   52: aload_2
 /*     */     //   53: ifnull -> 134
 /*     */     //   56: aload_2
-/*     */     //   57: invokevirtual func_184187_bx : ()Lnet/minecraft/entity/Entity;
+/*     */     //   57: invokevirtual getRidingEntity : ()Lnet/minecraft/entity/Entity;
 /*     */     //   60: astore #5
 /*     */     //   62: aload #5
 /*     */     //   64: instanceof com/norwood/mcheli/gltd/MCH_EntityGLTD
@@ -130,11 +130,11 @@
 /*     */     //   79: aload #4
 /*     */     //   81: invokevirtual updateGLTD : (Lnet/minecraft/entity/player/EntityPlayer;Lcom/norwood/mcheli/gltd/MCH_EntityGLTD;)V
 /*     */     //   84: aload_2
-/*     */     //   85: invokevirtual func_184614_ca : ()Lnet/minecraft/item/ItemStack;
+/*     */     //   85: invokevirtual getHeldItemMainhand : ()Lnet/minecraft/item/ItemStack;
 /*     */     //   88: invokestatic disableFirstPersonItemRender : (Lnet/minecraft/item/ItemStack;)V
 /*     */     //   91: aload_0
 /*     */     //   92: getfield mc : Lnet/minecraft/client/Minecraft;
-/*     */     //   95: getfield field_71441_e : Lnet/minecraft/client/multiplayer/WorldClient;
+/*     */     //   95: getfield world : Lnet/minecraft/client/multiplayer/WorldClient;
 /*     */     //   98: invokestatic getInstance : (Lnet/minecraft/world/World;)Lcom/norwood/mcheli/MCH_ViewEntityDummy;
 /*     */     //   101: astore_3
 /*     */     //   102: aload_3
@@ -166,16 +166,16 @@
 /*     */     //   154: ifeq -> 184
 /*     */     //   157: aload_3
 /*     */     //   158: aload_3
-/*     */     //   159: getfield field_70165_t : D
-/*     */     //   162: putfield field_70169_q : D
+/*     */     //   159: getfield posX : D
+/*     */     //   162: putfield prevPosX : D
 /*     */     //   165: aload_3
 /*     */     //   166: aload_3
-/*     */     //   167: getfield field_70163_u : D
-/*     */     //   170: putfield field_70167_r : D
+/*     */     //   167: getfield posY : D
+/*     */     //   170: putfield prevPosY : D
 /*     */     //   173: aload_3
 /*     */     //   174: aload_3
-/*     */     //   175: getfield field_70161_v : D
-/*     */     //   178: putfield field_70166_s : D
+/*     */     //   175: getfield posZ : D
+/*     */     //   178: putfield prevPosZ : D
 /*     */     //   181: goto -> 191
 /*     */     //   184: invokestatic enableFirstPersonItemRender : ()V
 /*     */     //   187: aload_2

@@ -25,68 +25,68 @@
 /*  25 */     this.team = team;
 /*     */   }
 /*     */   
-/*     */   public void func_189213_a() {
-/*  29 */     this.field_187123_c = this.field_187126_f;
-/*  30 */     this.field_187124_d = this.field_187127_g;
-/*  31 */     this.field_187125_e = this.field_187128_h;
-/*  32 */     EntityPlayerSP entityPlayerSP = (Minecraft.func_71410_x()).field_71439_g;
+/*     */   public void onUpdate() {
+/*  29 */     this.prevPosX = this.posX;
+/*  30 */     this.prevPosY = this.posY;
+/*  31 */     this.prevPosZ = this.posZ;
+/*  32 */     EntityPlayerSP entityPlayerSP = (Minecraft.getMinecraft()).player;
 /*  33 */     if (entityPlayerSP == null) {
-/*  34 */       func_187112_i();
+/*  34 */       setExpired();
 /*     */     } else {
-/*  36 */       entityPlayerSP.func_96124_cp();
-/*  37 */       entityPlayerSP.func_96124_cp();
-/*  38 */       if (!entityPlayerSP.func_184194_a(this.team)) {
-/*  39 */         func_187112_i();
+/*  36 */       entityPlayerSP.getTeam();
+/*  37 */       entityPlayerSP.getTeam();
+/*  38 */       if (!entityPlayerSP.isOnScoreboardTeam(this.team)) {
+/*  39 */         setExpired();
 /*     */       }
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   public void func_187112_i() {
-/*  45 */     super.func_187112_i();
+/*     */   public void setExpired() {
+/*  45 */     super.setExpired();
 /*  46 */     MCH_Lib.DbgLog(true, "MCH_EntityParticleMarkPoint.setExpired : " + this, new Object[0]);
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public int func_70537_b() {
+/*     */   public int getFXLayer() {
 /*  51 */     return 3;
 /*     */   }
 /*     */   
-/*     */   public void func_180434_a(@NotNull BufferBuilder buffer, @NotNull Entity entityIn, float par2, float par3, float par4, float par5, float par6, float par7) {
+/*     */   public void renderParticle(@NotNull BufferBuilder buffer, @NotNull Entity entityIn, float par2, float par3, float par4, float par5, float par6, float par7) {
 /*  55 */     GL11.glPushMatrix();
-/*  56 */     Minecraft mc = Minecraft.func_71410_x();
-/*  57 */     EntityPlayerSP entityPlayerSP = mc.field_71439_g;
+/*  56 */     Minecraft mc = Minecraft.getMinecraft();
+/*  57 */     EntityPlayerSP entityPlayerSP = mc.player;
 /*  58 */     if (entityPlayerSP != null) {
-/*  59 */       double ix = field_70556_an;
-/*  60 */       double iy = field_70554_ao;
-/*  61 */       double iz = field_70555_ap;
-/*  62 */       if (mc.field_71474_y.field_74320_O > 0) {
+/*  59 */       double ix = interpPosX;
+/*  60 */       double iy = interpPosY;
+/*  61 */       double iz = interpPosZ;
+/*  62 */       if (mc.gameSettings.thirdPersonView > 0) {
 /*  63 */         double dist = W_Reflection.getThirdPersonDistance();
-/*  64 */         float yaw = -entityIn.field_70177_z;
-/*  65 */         float pitch = -entityIn.field_70125_A;
+/*  64 */         float yaw = -entityIn.rotationYaw;
+/*  65 */         float pitch = -entityIn.rotationPitch;
 /*  66 */         Vec3d v = MCH_Lib.RotVec3(0.0D, 0.0D, -dist, yaw, pitch);
-/*  67 */         if (mc.field_71474_y.field_74320_O == 2) {
-/*  68 */           v = new Vec3d(-v.field_72450_a, -v.field_72448_b, -v.field_72449_c);
+/*  67 */         if (mc.gameSettings.thirdPersonView == 2) {
+/*  68 */           v = new Vec3d(-v.x, -v.y, -v.z);
 /*     */         }
 /*     */         
-/*  71 */         Vec3d vs = new Vec3d(entityIn.field_70165_t, entityIn.field_70163_u + entityIn.func_70047_e(), entityIn.field_70161_v);
-/*  72 */         RayTraceResult mop = entityIn.field_70170_p.func_72933_a(vs.func_72441_c(0.0D, 0.0D, 0.0D), vs.func_72441_c(v.field_72450_a, v.field_72448_b, v.field_72449_c));
+/*  71 */         Vec3d vs = new Vec3d(entityIn.posX, entityIn.posY + entityIn.getEyeHeight(), entityIn.posZ);
+/*  72 */         RayTraceResult mop = entityIn.world.rayTraceBlocks(vs.addVector(0.0D, 0.0D, 0.0D), vs.addVector(v.x, v.y, v.z));
 /*  73 */         double block_dist = dist;
-/*  74 */         if (mop != null && mop.field_72313_a == RayTraceResult.Type.BLOCK) {
-/*  75 */           block_dist = vs.func_72438_d(mop.field_72307_f) - 0.4D;
+/*  74 */         if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK) {
+/*  75 */           block_dist = vs.distanceTo(mop.hitVec) - 0.4D;
 /*  76 */           if (block_dist < 0.0D) {
 /*  77 */             block_dist = 0.0D;
 /*     */           }
 /*     */         } 
 /*     */         
-/*  81 */         GL11.glTranslated(v.field_72450_a * block_dist / dist, v.field_72448_b * block_dist / dist, v.field_72449_c * block_dist / dist);
-/*  82 */         ix += v.field_72450_a * block_dist / dist;
-/*  83 */         iy += v.field_72448_b * block_dist / dist;
-/*  84 */         iz += v.field_72449_c * block_dist / dist;
+/*  81 */         GL11.glTranslated(v.x * block_dist / dist, v.y * block_dist / dist, v.z * block_dist / dist);
+/*  82 */         ix += v.x * block_dist / dist;
+/*  83 */         iy += v.y * block_dist / dist;
+/*  84 */         iz += v.z * block_dist / dist;
 /*     */       } 
 /*     */       
-/*  87 */       double px = (float)(this.field_187123_c + (this.field_187126_f - this.field_187123_c) * par2 - ix);
-/*  88 */       double py = (float)(this.field_187124_d + (this.field_187127_g - this.field_187124_d) * par2 - iy);
-/*  89 */       double pz = (float)(this.field_187125_e + (this.field_187128_h - this.field_187125_e) * par2 - iz);
+/*  87 */       double px = (float)(this.prevPosX + (this.posX - this.prevPosX) * par2 - ix);
+/*  88 */       double py = (float)(this.prevPosY + (this.posY - this.prevPosY) * par2 - iy);
+/*  89 */       double pz = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * par2 - iz);
 /*  90 */       double scale = Math.sqrt(px * px + py * py + pz * pz) / 10.0D;
 /*  91 */       if (scale < 1.0D) {
 /*  92 */         scale = 1.0D;
@@ -99,17 +99,17 @@
 /*     */ 
 /*     */   
 /*     */   public double getX() {
-/* 102 */     return this.field_187126_f;
+/* 102 */     return this.posX;
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public double getY() {
-/* 107 */     return this.field_187127_g;
+/* 107 */     return this.posY;
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public double getZ() {
-/* 112 */     return this.field_187128_h;
+/* 112 */     return this.posZ;
 /*     */   }
 /*     */ }
 

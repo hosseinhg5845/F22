@@ -36,7 +36,7 @@
 /*    */       
 /* 37 */       pitch -= 20.0F;
 /* 38 */       pitch = (float)(pitch * 0.16D);
-/* 39 */       float yaw = (float)MCH_Lib.getRotateDiff(ac.field_70177_z, camera.rotationYaw);
+/* 39 */       float yaw = (float)MCH_Lib.getRotateDiff(ac.rotationYaw, camera.rotationYaw);
 /* 40 */       yaw *= 2.0F;
 /* 41 */       if (yaw < -50.0F) {
 /* 42 */         yaw = -50.0F;

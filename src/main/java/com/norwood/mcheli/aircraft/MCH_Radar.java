@@ -33,24 +33,24 @@
 /*    */   }
 /*    */   
 /*    */   public void updateXZ(Entity centerEntity, int range) {
-/* 36 */     if (this.worldObj.field_72995_K) {
+/* 36 */     if (this.worldObj.isRemote) {
 /* 37 */       clear();
 /*    */       
-/* 39 */       List<Entity> list = centerEntity.field_70170_p.func_72839_b(centerEntity, centerEntity.func_174813_aQ().func_72314_b(range, range, range));
+/* 39 */       List<Entity> list = centerEntity.world.getEntitiesWithinAABBExcludingEntity(centerEntity, centerEntity.getEntityBoundingBox().grow(range, range, range));
 /*    */       
 /* 41 */       for (Entity entity : list) {
 /* 42 */         if (entity instanceof net.minecraft.entity.EntityLiving) {
-/* 43 */           double x = entity.field_70165_t - centerEntity.field_70165_t;
-/* 44 */           double z = entity.field_70161_v - centerEntity.field_70161_v;
+/* 43 */           double x = entity.posX - centerEntity.posX;
+/* 44 */           double z = entity.posZ - centerEntity.posZ;
 /* 45 */           if (x * x + z * z < (range * range)) {
-/* 46 */             int y = 1 + (int)entity.field_70163_u;
+/* 46 */             int y = 1 + (int)entity.posY;
 /* 47 */             if (y < 0) {
 /* 48 */               y = 1;
 /*    */             }
 /*    */             
 /*    */             int blockCnt;
 /* 52 */             for (blockCnt = 0; y < 200 && (
-/* 53 */               W_WorldFunc.getBlockId(this.worldObj, (int)entity.field_70165_t, y, (int)entity.field_70161_v) == 0 || 
+/* 53 */               W_WorldFunc.getBlockId(this.worldObj, (int)entity.posX, y, (int)entity.posZ) == 0 || 
 /* 54 */               ++blockCnt < 5); y++);
 /*    */ 
 /*    */ 

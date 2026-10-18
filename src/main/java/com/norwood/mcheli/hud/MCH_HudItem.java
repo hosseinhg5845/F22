@@ -70,7 +70,7 @@
 /*     */   
 /*     */   public MCH_HudItem(int fileLine) {
 /*  72 */     this.fileLine = fileLine;
-/*  73 */     this.field_73735_i = -110.0F;
+/*  73 */     this.zLevel = -110.0F;
 /*     */   }
 /*     */   
 /*     */   public static void update() {
@@ -117,18 +117,18 @@
 /* 117 */     float f = (par4 >> 16 & 0xFF) / 255.0F;
 /* 118 */     float f1 = (par4 >> 8 & 0xFF) / 255.0F;
 /* 119 */     float f2 = (par4 & 0xFF) / 255.0F;
-/* 120 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 121 */     BufferBuilder builder = tessellator.func_178180_c();
+/* 120 */     Tessellator tessellator = Tessellator.getInstance();
+/* 121 */     BufferBuilder builder = tessellator.getBuffer();
 /* 122 */     GL11.glEnable(3042);
 /* 123 */     GL11.glDisable(3553);
 /* 124 */     W_OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 /* 125 */     GL11.glColor4f(f, f1, f2, f3);
-/* 126 */     builder.func_181668_a(7, DefaultVertexFormats.field_181705_e);
-/* 127 */     builder.func_181662_b(par0, par3, 0.0D).func_181675_d();
-/* 128 */     builder.func_181662_b(par2, par3, 0.0D).func_181675_d();
-/* 129 */     builder.func_181662_b(par2, par1, 0.0D).func_181675_d();
-/* 130 */     builder.func_181662_b(par0, par1, 0.0D).func_181675_d();
-/* 131 */     tessellator.func_78381_a();
+/* 126 */     builder.begin(7, DefaultVertexFormats.POSITION);
+/* 127 */     builder.pos(par0, par3, 0.0D).endVertex();
+/* 128 */     builder.pos(par2, par3, 0.0D).endVertex();
+/* 129 */     builder.pos(par2, par1, 0.0D).endVertex();
+/* 130 */     builder.pos(par0, par1, 0.0D).endVertex();
+/* 131 */     tessellator.draw();
 /* 132 */     GL11.glEnable(3553);
 /* 133 */     GL11.glDisable(3042);
 /*     */   }
@@ -143,13 +143,13 @@
 /* 143 */     updateVarMapItem("center_y", centerY);
 /* 144 */     updateVarMapItem("width", width);
 /* 145 */     updateVarMapItem("height", height);
-/* 146 */     updateVarMapItem("time", (player.field_70170_p.func_72820_D() % 24000L));
+/* 146 */     updateVarMapItem("time", (player.world.getWorldTime() % 24000L));
 /* 147 */     updateVarMapItem("test_mode", MCH_Config.TestMode.prmBool ? 1.0D : 0.0D);
-/* 148 */     updateVarMapItem("plyr_yaw", MathHelper.func_76142_g(player.field_70177_z));
-/* 149 */     updateVarMapItem("plyr_pitch", player.field_70125_A);
-/* 150 */     updateVarMapItem("yaw", MathHelper.func_76142_g(ac.getRotYaw()));
+/* 148 */     updateVarMapItem("plyr_yaw", MathHelper.wrapDegrees(player.rotationYaw));
+/* 149 */     updateVarMapItem("plyr_pitch", player.rotationPitch);
+/* 150 */     updateVarMapItem("yaw", MathHelper.wrapDegrees(ac.getRotYaw()));
 /* 151 */     updateVarMapItem("pitch", ac.getRotPitch());
-/* 152 */     updateVarMapItem("roll", MathHelper.func_76142_g(ac.getRotRoll()));
+/* 152 */     updateVarMapItem("roll", MathHelper.wrapDegrees(ac.getRotRoll()));
 /* 153 */     updateVarMapItem("altitude", Altitude);
 /* 154 */     updateVarMapItem("sea_alt", getSeaAltitude(ac));
 /* 155 */     updateVarMapItem("have_radar", ac.isEntityRadarMounted() ? 1.0D : 0.0D);
@@ -158,13 +158,13 @@
 /* 158 */     updateVarMapItem("max_hp", ac.getMaxHP());
 /* 159 */     updateVarMapItem("hp_rto", (ac.getMaxHP() > 0) ? (ac.getHP() / ac.getMaxHP()) : 0.0D);
 /* 160 */     updateVarMapItem("throttle", ac.getCurrentThrottle());
-/* 161 */     updateVarMapItem("pos_x", ac.field_70165_t);
-/* 162 */     updateVarMapItem("pos_y", ac.field_70163_u);
-/* 163 */     updateVarMapItem("pos_z", ac.field_70161_v);
-/* 164 */     updateVarMapItem("motion_x", ac.field_70159_w);
-/* 165 */     updateVarMapItem("motion_y", ac.field_70181_x);
-/* 166 */     updateVarMapItem("motion_z", ac.field_70179_y);
-/* 167 */     updateVarMapItem("speed", Math.sqrt(ac.field_70159_w * ac.field_70159_w + ac.field_70181_x * ac.field_70181_x + ac.field_70179_y * ac.field_70179_y));
+/* 161 */     updateVarMapItem("pos_x", ac.posX);
+/* 162 */     updateVarMapItem("pos_y", ac.posY);
+/* 163 */     updateVarMapItem("pos_z", ac.posZ);
+/* 164 */     updateVarMapItem("motion_x", ac.motionX);
+/* 165 */     updateVarMapItem("motion_y", ac.motionY);
+/* 166 */     updateVarMapItem("motion_z", ac.motionZ);
+/* 167 */     updateVarMapItem("speed", Math.sqrt(ac.motionX * ac.motionX + ac.motionY * ac.motionY + ac.motionZ * ac.motionZ));
 /* 168 */     updateVarMapItem("fuel", ac.getFuelP());
 /* 169 */     updateVarMapItem("low_fuel", isLowFuel(ac));
 /* 170 */     updateVarMapItem("stick_x", StickX);
@@ -178,7 +178,7 @@
 /* 178 */     updateVarMapItem("auto_pilot", getAutoPilot(ac, player));
 /* 179 */     updateVarMapItem("have_flare", ac.haveFlare() ? 1.0D : 0.0D);
 /* 180 */     updateVarMapItem("can_flare", ac.canUseFlare() ? 1.0D : 0.0D);
-/* 181 */     updateVarMapItem("inventory", ac.func_70302_i_());
+/* 181 */     updateVarMapItem("inventory", ac.getSizeInventory());
 /* 182 */     updateVarMapItem("hovering", (ac instanceof com.norwood.mcheli.helicopter.MCH_EntityHeli && ac.isHoveringMode()) ? 1.0D : 0.0D);
 /* 183 */     updateVarMapItem("is_uav", ac.isUAV() ? 1.0D : 0.0D);
 /* 184 */     updateVarMapItem("uav_fs", getUAV_Fs(ac));
@@ -213,8 +213,8 @@
 /*     */   private static double getUAV_Fs(MCH_EntityAircraft ac) {
 /* 214 */     double uav_fs = 0.0D;
 /* 215 */     if (ac.isUAV() && ac.getUavStation() != null) {
-/* 216 */       double dx = ac.field_70165_t - (ac.getUavStation()).field_70165_t;
-/* 217 */       double dz = ac.field_70161_v - (ac.getUavStation()).field_70161_v;
+/* 216 */       double dx = ac.posX - (ac.getUavStation()).posX;
+/* 217 */       double dz = ac.posZ - (ac.getUavStation()).posZ;
 /* 218 */       float dist = (float)Math.sqrt(dx * dx + dz * dz);
 /* 219 */       if (dist > 120.0F) {
 /* 220 */         dist = 120.0F;
@@ -299,7 +299,7 @@
 /*     */   }
 /*     */   
 /*     */   public static double getSeaAltitude(MCH_EntityAircraft ac) {
-/* 302 */     double a = ac.field_70163_u - ac.field_70170_p.func_72919_O();
+/* 302 */     double a = ac.posY - ac.world.getHorizon();
 /* 303 */     return Math.max(a, 0.0D);
 /*     */   }
 /*     */   
@@ -346,17 +346,17 @@
 /*     */   
 /*     */   private static void updateAltitude(MCH_EntityAircraft ac) {
 /* 348 */     if (altitudeUpdateCount <= 0) {
-/* 349 */       int heliY = (int)ac.field_70163_u;
+/* 349 */       int heliY = (int)ac.posY;
 /* 350 */       if (heliY > 256) {
 /* 351 */         heliY = 256;
 /*     */       }
 /*     */       
 /* 354 */       for (int i = 0; i < 256 && heliY - i > 0; i++) {
-/* 355 */         int id = W_WorldFunc.getBlockId(ac.field_70170_p, (int)ac.field_70165_t, heliY - i, (int)ac.field_70161_v);
+/* 355 */         int id = W_WorldFunc.getBlockId(ac.world, (int)ac.posX, heliY - i, (int)ac.posZ);
 /* 356 */         if (id != 0) {
 /* 357 */           Altitude = i;
-/* 358 */           if (ac.field_70163_u > 256.0D) {
-/* 359 */             Altitude = (int)(Altitude + ac.field_70163_u - 256.0D);
+/* 358 */           if (ac.posY > 256.0D) {
+/* 359 */             Altitude = (int)(Altitude + ac.posY - 256.0D);
 /*     */           }
 /*     */           
 /*     */           break;
@@ -411,8 +411,8 @@
 /*     */   
 /*     */   public static void updateUAV(MCH_EntityAircraft ac) {
 /* 413 */     if (ac.isUAV() && ac.getUavStation() != null) {
-/* 414 */       double dx = ac.field_70165_t - (ac.getUavStation()).field_70165_t;
-/* 415 */       double dz = ac.field_70161_v - (ac.getUavStation()).field_70161_v;
+/* 414 */       double dx = ac.posX - (ac.getUavStation()).posX;
+/* 415 */       double dz = ac.posZ - (ac.getUavStation()).posZ;
 /* 416 */       UAV_Dist = (float)Math.sqrt(dx * dx + dz * dz);
 /*     */     } else {
 /* 418 */       UAV_Dist = 0.0D;
@@ -422,12 +422,12 @@
 /*     */   private static void updateTvMissile(MCH_EntityAircraft ac) {
 /* 423 */     MCH_EntityTvMissile mCH_EntityTvMissile = ac.getTVMissile();
 /* 424 */     if (mCH_EntityTvMissile != null) {
-/* 425 */       TVM_PosX = ((Entity)mCH_EntityTvMissile).field_70165_t;
-/* 426 */       TVM_PosY = ((Entity)mCH_EntityTvMissile).field_70163_u;
-/* 427 */       TVM_PosZ = ((Entity)mCH_EntityTvMissile).field_70161_v;
-/* 428 */       double dx = ((Entity)mCH_EntityTvMissile).field_70165_t - ac.field_70165_t;
-/* 429 */       double dy = ((Entity)mCH_EntityTvMissile).field_70163_u - ac.field_70163_u;
-/* 430 */       double dz = ((Entity)mCH_EntityTvMissile).field_70161_v - ac.field_70161_v;
+/* 425 */       TVM_PosX = ((Entity)mCH_EntityTvMissile).posX;
+/* 426 */       TVM_PosY = ((Entity)mCH_EntityTvMissile).posY;
+/* 427 */       TVM_PosZ = ((Entity)mCH_EntityTvMissile).posZ;
+/* 428 */       double dx = ((Entity)mCH_EntityTvMissile).posX - ac.posX;
+/* 429 */       double dy = ((Entity)mCH_EntityTvMissile).posY - ac.posY;
+/* 430 */       double dz = ((Entity)mCH_EntityTvMissile).posZ - ac.posZ;
 /* 431 */       TVM_Diff = Math.sqrt(dx * dx + dy * dy + dz * dz);
 /*     */     } else {
 /* 433 */       TVM_PosX = 0.0D;
@@ -444,11 +444,11 @@
 /*     */   }
 /*     */   
 /*     */   public void drawCenteredString(String s, int x, int y, int color) {
-/* 447 */     func_73732_a(mc.field_71466_p, s, x, y, color);
+/* 447 */     drawCenteredString(mc.fontRenderer, s, x, y, color);
 /*     */   }
 /*     */   
 /*     */   public void drawString(String s, int x, int y, int color) {
-/* 451 */     func_73731_b(mc.field_71466_p, s, x, y, color);
+/* 451 */     drawString(mc.fontRenderer, s, x, y, color);
 /*     */   }
 /*     */ 
 /*     */ 
@@ -471,14 +471,14 @@
 /* 471 */     GL11.glRotatef(rot, 0.0F, 0.0F, 1.0F);
 /* 472 */     float fx = (float)(1.0D / textureWidth);
 /* 473 */     float fy = (float)(1.0D / textureHeight);
-/* 474 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 475 */     BufferBuilder builder = tessellator.func_178180_c();
-/* 476 */     builder.func_181668_a(7, DefaultVertexFormats.field_181707_g);
-/* 477 */     builder.func_181662_b(-width / 2.0D, height / 2.0D, this.field_73735_i).func_187315_a(uLeft * fx, (vTop + vHeight) * fy).func_181675_d();
-/* 478 */     builder.func_181662_b(width / 2.0D, height / 2.0D, this.field_73735_i).func_187315_a((uLeft + uWidth) * fx, (vTop + vHeight) * fy).func_181675_d();
-/* 479 */     builder.func_181662_b(width / 2.0D, -height / 2.0D, this.field_73735_i).func_187315_a((uLeft + uWidth) * fx, vTop * fy).func_181675_d();
-/* 480 */     builder.func_181662_b(-width / 2.0D, -height / 2.0D, this.field_73735_i).func_187315_a(uLeft * fx, vTop * fy).func_181675_d();
-/* 481 */     tessellator.func_78381_a();
+/* 474 */     Tessellator tessellator = Tessellator.getInstance();
+/* 475 */     BufferBuilder builder = tessellator.getBuffer();
+/* 476 */     builder.begin(7, DefaultVertexFormats.POSITION_TEX);
+/* 477 */     builder.pos(-width / 2.0D, height / 2.0D, this.zLevel).tex(uLeft * fx, (vTop + vHeight) * fy).endVertex();
+/* 478 */     builder.pos(width / 2.0D, height / 2.0D, this.zLevel).tex((uLeft + uWidth) * fx, (vTop + vHeight) * fy).endVertex();
+/* 479 */     builder.pos(width / 2.0D, -height / 2.0D, this.zLevel).tex((uLeft + uWidth) * fx, vTop * fy).endVertex();
+/* 480 */     builder.pos(-width / 2.0D, -height / 2.0D, this.zLevel).tex(uLeft * fx, vTop * fy).endVertex();
+/* 481 */     tessellator.draw();
 /* 482 */     GL11.glPopMatrix();
 /*     */   }
 /*     */   
@@ -492,15 +492,15 @@
 /* 492 */     GL11.glDisable(3553);
 /* 493 */     GL11.glBlendFunc(770, 771);
 /* 494 */     GL11.glColor4ub((byte)(color >> 16 & 0xFF), (byte)(color >> 8 & 0xFF), (byte)(color >> 0 & 0xFF), (byte)(color >> 24 & 0xFF));
-/* 495 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 496 */     BufferBuilder builder = tessellator.func_178180_c();
-/* 497 */     builder.func_181668_a(mode, DefaultVertexFormats.field_181705_e);
+/* 495 */     Tessellator tessellator = Tessellator.getInstance();
+/* 496 */     BufferBuilder builder = tessellator.getBuffer();
+/* 497 */     builder.begin(mode, DefaultVertexFormats.POSITION);
 /*     */     
 /* 499 */     for (int i = 0; i < line.length; i += 2) {
-/* 500 */       builder.func_181662_b(line[i], line[i + 1], this.field_73735_i).func_181675_d();
+/* 500 */       builder.pos(line[i], line[i + 1], this.zLevel).endVertex();
 /*     */     }
 /*     */     
-/* 503 */     tessellator.func_78381_a();
+/* 503 */     tessellator.draw();
 /* 504 */     GL11.glEnable(3553);
 /* 505 */     GL11.glDisable(3042);
 /* 506 */     GL11.glColor4b((byte)-1, (byte)-1, (byte)-1, (byte)-1);
@@ -522,15 +522,15 @@
 /* 522 */     GL11.glBlendFunc(770, 771);
 /* 523 */     GL11.glColor4ub((byte)(color >> 16 & 0xFF), (byte)(color >> 8 & 0xFF), (byte)(color >> 0 & 0xFF), (byte)(color >> 24 & 0xFF));
 /* 524 */     GL11.glPointSize(pointWidth);
-/* 525 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 526 */     BufferBuilder builder = tessellator.func_178180_c();
-/* 527 */     builder.func_181668_a(0, DefaultVertexFormats.field_181705_e);
+/* 525 */     Tessellator tessellator = Tessellator.getInstance();
+/* 526 */     BufferBuilder builder = tessellator.getBuffer();
+/* 527 */     builder.begin(0, DefaultVertexFormats.POSITION);
 /*     */     
 /* 529 */     for (int i = 0; i < points.size(); i += 2) {
-/* 530 */       builder.func_181662_b(((Double)points.get(i)).doubleValue(), ((Double)points.get(i + 1)).doubleValue(), 0.0D).func_181675_d();
+/* 530 */       builder.pos(((Double)points.get(i)).doubleValue(), ((Double)points.get(i + 1)).doubleValue(), 0.0D).endVertex();
 /*     */     }
 /*     */     
-/* 533 */     tessellator.func_78381_a();
+/* 533 */     tessellator.draw();
 /* 534 */     GL11.glEnable(3553);
 /* 535 */     GL11.glDisable(3042);
 /* 536 */     GL11.glPopMatrix();

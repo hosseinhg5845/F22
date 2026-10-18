@@ -30,11 +30,11 @@
 /*    */   
 /*    */   public void render() {
 /* 32 */     if (!this.faces.isEmpty()) {
-/* 33 */       Tessellator tessellator = Tessellator.func_178181_a();
-/* 34 */       BufferBuilder builder = tessellator.func_178180_c();
-/* 35 */       builder.func_181668_a(this.glDrawingMode, DefaultVertexFormats.field_181710_j);
+/* 33 */       Tessellator tessellator = Tessellator.getInstance();
+/* 34 */       BufferBuilder builder = tessellator.getBuffer();
+/* 35 */       builder.begin(this.glDrawingMode, DefaultVertexFormats.POSITION_TEX_NORMAL);
 /* 36 */       render(tessellator);
-/* 37 */       tessellator.func_78381_a();
+/* 37 */       tessellator.draw();
 /*    */     } 
 /*    */   }
 /*    */   

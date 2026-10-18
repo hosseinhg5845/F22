@@ -10,15 +10,15 @@
 /*    */ public class MCH_GLTDPacketHandler {
 /*    */   @HandleSide({Side.SERVER})
 /*    */   public static void onPacket_GLTDPlayerControl(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/* 13 */     Entity entity = player.func_184187_bx(); if (entity instanceof MCH_EntityGLTD) { MCH_EntityGLTD gltd = (MCH_EntityGLTD)entity;
-/* 14 */       if (!player.field_70170_p.field_72995_K) {
+/* 13 */     Entity entity = player.getRidingEntity(); if (entity instanceof MCH_EntityGLTD) { MCH_EntityGLTD gltd = (MCH_EntityGLTD)entity;
+/* 14 */       if (!player.world.isRemote) {
 /* 15 */         MCH_PacketGLTDPlayerControl pc = new MCH_PacketGLTDPlayerControl();
 /* 16 */         pc.readData(data);
-/* 17 */         scheduler.func_152344_a(() -> {
+/* 17 */         scheduler.addScheduledTask(() -> {
 /*    */               if (pc.unmount) {
 /*    */                 Entity riddenByEntity = gltd.getRiddenByEntity();
 /*    */                 if (riddenByEntity != null)
-/*    */                   riddenByEntity.func_184210_p(); 
+/*    */                   riddenByEntity.dismountRidingEntity(); 
 /*    */               } else {
 /*    */                 if (pc.switchCameraMode >= 0)
 /*    */                   gltd.camera.setMode(0, pc.switchCameraMode); 

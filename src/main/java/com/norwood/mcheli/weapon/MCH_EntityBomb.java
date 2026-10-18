@@ -22,23 +22,23 @@
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   public void func_70071_h_() {
-/* 26 */     super.func_70071_h_();
-/* 27 */     if (!this.field_70170_p.field_72995_K && getInfo() != null) {
-/* 28 */       this.field_70159_w *= 0.999D;
-/* 29 */       this.field_70179_y *= 0.999D;
-/* 30 */       if (func_70090_H()) {
-/* 31 */         this.field_70159_w *= (getInfo()).velocityInWater;
-/* 32 */         this.field_70181_x *= (getInfo()).velocityInWater;
-/* 33 */         this.field_70179_y *= (getInfo()).velocityInWater;
+/*    */   public void onUpdate() {
+/* 26 */     super.onUpdate();
+/* 27 */     if (!this.world.isRemote && getInfo() != null) {
+/* 28 */       this.motionX *= 0.999D;
+/* 29 */       this.motionZ *= 0.999D;
+/* 30 */       if (isInWater()) {
+/* 31 */         this.motionX *= (getInfo()).velocityInWater;
+/* 32 */         this.motionY *= (getInfo()).velocityInWater;
+/* 33 */         this.motionZ *= (getInfo()).velocityInWater;
 /*    */       } 
 /*    */       
 /* 36 */       float dist = (getInfo()).proximityFuseDist;
 /* 37 */       if (dist > 0.1F && getCountOnUpdate() % 10 == 0) {
-/* 38 */         List<Entity> list = this.field_70170_p.func_72839_b((Entity)this, func_174813_aQ().func_72314_b(dist, dist, dist));
+/* 38 */         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity((Entity)this, getEntityBoundingBox().grow(dist, dist, dist));
 /* 39 */         for (Entity entity : list) {
 /* 40 */           if (W_Lib.isEntityLivingBase(entity) && canBeCollidedEntity(entity)) {
-/* 41 */             RayTraceResult m = new RayTraceResult(new Vec3d(this.field_70165_t, this.field_70163_u, this.field_70161_v), EnumFacing.DOWN, new BlockPos(this.field_70165_t + 0.5D, this.field_70163_u + 0.5D, this.field_70161_v + 0.5D));
+/* 41 */             RayTraceResult m = new RayTraceResult(new Vec3d(this.posX, this.posY, this.posZ), EnumFacing.DOWN, new BlockPos(this.posX + 0.5D, this.posY + 0.5D, this.posZ + 0.5D));
 /*    */ 
 /*    */             
 /* 44 */             onImpact(m, 1.0F);
@@ -53,18 +53,18 @@
 /*    */ 
 /*    */   
 /*    */   public void sprinkleBomblet() {
-/* 56 */     if (!this.field_70170_p.field_72995_K) {
+/* 56 */     if (!this.world.isRemote) {
 /*    */       
-/* 58 */       MCH_EntityBomb e = new MCH_EntityBomb(this.field_70170_p, this.field_70165_t, this.field_70163_u, this.field_70161_v, this.field_70159_w, this.field_70181_x, this.field_70179_y, this.field_70146_Z.nextInt(360), 0.0F, this.acceleration);
+/* 58 */       MCH_EntityBomb e = new MCH_EntityBomb(this.world, this.posX, this.posY, this.posZ, this.motionX, this.motionY, this.motionZ, this.rand.nextInt(360), 0.0F, this.acceleration);
 /*    */       
 /* 60 */       e.setParameterFromWeapon(this, this.shootingAircraft, this.shootingEntity);
-/* 61 */       e.setName(func_70005_c_());
+/* 61 */       e.setName(getName());
 /* 62 */       float RANDOM = (getInfo()).bombletDiff;
-/* 63 */       this.field_70159_w += ((this.field_70146_Z.nextFloat() - 0.5F) * RANDOM);
-/* 64 */       e.field_70181_x = this.field_70181_x / 2.0D + ((this.field_70146_Z.nextFloat() - 0.5F) * RANDOM / 2.0F);
-/* 65 */       this.field_70179_y += ((this.field_70146_Z.nextFloat() - 0.5F) * RANDOM);
+/* 63 */       this.motionX += ((this.rand.nextFloat() - 0.5F) * RANDOM);
+/* 64 */       e.motionY = this.motionY / 2.0D + ((this.rand.nextFloat() - 0.5F) * RANDOM / 2.0F);
+/* 65 */       this.motionZ += ((this.rand.nextFloat() - 0.5F) * RANDOM);
 /* 66 */       e.setBomblet();
-/* 67 */       this.field_70170_p.func_72838_d((Entity)e);
+/* 67 */       this.world.spawnEntity((Entity)e);
 /*    */     } 
 /*    */   }
 /*    */ 

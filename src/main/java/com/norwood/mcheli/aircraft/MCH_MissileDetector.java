@@ -29,12 +29,12 @@
 /* 29 */         this.alertCount--;
 /*    */       }
 /*    */       
-/* 32 */       boolean isLocked = this.ac.getEntityData().func_74767_n("Tracking");
+/* 32 */       boolean isLocked = this.ac.getEntityData().getBoolean("Tracking");
 /* 33 */       if (isLocked) {
-/* 34 */         this.ac.getEntityData().func_74757_a("Tracking", false);
+/* 34 */         this.ac.getEntityData().setBoolean("Tracking", false);
 /*    */       }
 /*    */       
-/* 37 */       if (this.ac.getEntityData().func_74767_n("LockOn")) {
+/* 37 */       if (this.ac.getEntityData().getBoolean("LockOn")) {
 /* 38 */         if (this.alertCount == 0) {
 /* 39 */           this.alertCount = 10;
 /* 40 */           if (this.ac.haveFlare() && !this.ac.isDestroyed()) {
@@ -47,7 +47,7 @@
 /*    */           }
 /*    */         } 
 /*    */         
-/* 50 */         this.ac.getEntityData().func_74757_a("LockOn", false);
+/* 50 */         this.ac.getEntityData().setBoolean("LockOn", false);
 /*    */       } 
 /*    */       
 /* 53 */       if (!this.ac.isDestroyed()) {
@@ -59,12 +59,12 @@
 /* 59 */         if (rider != null) {
 /* 60 */           if (this.ac.isFlareUsing()) {
 /* 61 */             destroyMissile();
-/* 62 */           } else if (!this.ac.isUAV() && !this.world.field_72995_K) {
+/* 62 */           } else if (!this.ac.isUAV() && !this.world.isRemote) {
 /* 63 */             if (this.alertCount == 0 && (isLocked || isLockedByMissile())) {
 /* 64 */               this.alertCount = 20;
 /* 65 */               W_WorldFunc.MOD_playSoundAtEntity((Entity)this.ac, "alert", 1.0F, 1.0F);
 /*    */             } 
-/* 67 */           } else if (this.ac.isUAV() && this.world.field_72995_K && this.alertCount == 0 && (isLocked || isLockedByMissile())) {
+/* 67 */           } else if (this.ac.isUAV() && this.world.isRemote && this.alertCount == 0 && (isLocked || isLockedByMissile())) {
 /* 68 */             this.alertCount = 20;
 /* 69 */             if (W_Lib.isClientPlayer(rider)) {
 /* 70 */               W_McClient.MOD_playSoundFX("alert", 1.0F, 1.0F);
@@ -76,11 +76,11 @@
 /*    */   }
 /*    */   
 /*    */   public boolean destroyMissile() {
-/* 79 */     List<MCH_EntityBaseBullet> list = this.world.func_72872_a(MCH_EntityBaseBullet.class, this.ac.func_174813_aQ().func_72314_b(60.0D, 60.0D, 60.0D));
+/* 79 */     List<MCH_EntityBaseBullet> list = this.world.getEntitiesWithinAABB(MCH_EntityBaseBullet.class, this.ac.getEntityBoundingBox().grow(60.0D, 60.0D, 60.0D));
 /* 80 */     for (MCH_EntityBaseBullet msl : list) {
 /* 81 */       if (msl.targetEntity != null && (this.ac.isMountedEntity(msl.targetEntity) || msl.targetEntity.equals(this.ac))) {
 /* 82 */         msl.targetEntity = null;
-/* 83 */         msl.func_70106_y();
+/* 83 */         msl.setDead();
 /*    */       } 
 /*    */     } 
 /*    */     
@@ -88,7 +88,7 @@
 /*    */   }
 /*    */   
 /*    */   public boolean isLockedByMissile() {
-/* 91 */     List<MCH_EntityBaseBullet> list = this.world.func_72872_a(MCH_EntityBaseBullet.class, this.ac.func_174813_aQ().func_72314_b(60.0D, 60.0D, 60.0D));
+/* 91 */     List<MCH_EntityBaseBullet> list = this.world.getEntitiesWithinAABB(MCH_EntityBaseBullet.class, this.ac.getEntityBoundingBox().grow(60.0D, 60.0D, 60.0D));
 /* 92 */     for (MCH_EntityBaseBullet msl : list) {
 /* 93 */       if (msl.targetEntity != null && (this.ac.isMountedEntity(msl.targetEntity) || msl.targetEntity.equals(this.ac))) {
 /* 94 */         return true;

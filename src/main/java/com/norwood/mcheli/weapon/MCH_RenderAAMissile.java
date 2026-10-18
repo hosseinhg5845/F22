@@ -15,19 +15,19 @@
 /*    */   
 /*    */   public MCH_RenderAAMissile(RenderManager renderManager) {
 /* 17 */     super(renderManager);
-/* 18 */     this.field_76989_e = 0.5F;
+/* 18 */     this.shadowSize = 0.5F;
 /*    */   }
 /*    */   
 /*    */   public void renderBullet(MCH_EntityAAMissile entity, double posX, double posY, double posZ, float par8, float par9) {
 /* 22 */     if (entity instanceof MCH_EntityAAMissile) {
-/* 23 */       double mx = entity.prevMotionX + (entity.field_70159_w - entity.prevMotionX) * par9;
-/* 24 */       double my = entity.prevMotionY + (entity.field_70181_x - entity.prevMotionY) * par9;
-/* 25 */       double mz = entity.prevMotionZ + (entity.field_70179_y - entity.prevMotionZ) * par9;
+/* 23 */       double mx = entity.prevMotionX + (entity.motionX - entity.prevMotionX) * par9;
+/* 24 */       double my = entity.prevMotionY + (entity.motionY - entity.prevMotionY) * par9;
+/* 25 */       double mz = entity.prevMotionZ + (entity.motionZ - entity.prevMotionZ) * par9;
 /* 26 */       GL11.glPushMatrix();
 /* 27 */       GL11.glTranslated(posX, posY, posZ);
 /* 28 */       Vec3d v = MCH_Lib.getYawPitchFromVec(mx, my, mz);
-/* 29 */       GL11.glRotatef((float)v.field_72448_b - 90.0F, 0.0F, -1.0F, 0.0F);
-/* 30 */       GL11.glRotatef((float)v.field_72449_c, -1.0F, 0.0F, 0.0F);
+/* 29 */       GL11.glRotatef((float)v.y - 90.0F, 0.0F, -1.0F, 0.0F);
+/* 30 */       GL11.glRotatef((float)v.z, -1.0F, 0.0F, 0.0F);
 /* 31 */       renderModel(entity);
 /* 32 */       GL11.glPopMatrix();
 /*    */     } 

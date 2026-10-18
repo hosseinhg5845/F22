@@ -21,7 +21,7 @@
 /*    */   
 /*    */   public MCH_RenderContainer(RenderManager renderManager) {
 /* 23 */     super(renderManager);
-/* 24 */     this.field_76989_e = 0.5F;
+/* 24 */     this.shadowSize = 0.5F;
 /*    */   }
 /*    */   
 /*    */   public void doRender(@NotNull MCH_EntityContainer entity, double posX, double posY, double posZ, float par8, float tickTime) {
@@ -29,8 +29,8 @@
 /* 29 */       GL11.glPushMatrix();
 /* 30 */       GL11.glEnable(2884);
 /* 31 */       GL11.glTranslated(posX, posY - 0.2D + 0.5D, posZ);
-/* 32 */       float yaw = MCH_Lib.smoothRot(entity.field_70177_z, entity.field_70126_B, tickTime);
-/* 33 */       float pitch = MCH_Lib.smoothRot(entity.field_70125_A, entity.field_70127_C, tickTime);
+/* 32 */       float yaw = MCH_Lib.smoothRot(entity.rotationYaw, entity.prevRotationYaw, tickTime);
+/* 33 */       float pitch = MCH_Lib.smoothRot(entity.rotationPitch, entity.prevRotationPitch, tickTime);
 /* 34 */       GL11.glRotatef(yaw, 0.0F, -1.0F, 0.0F);
 /* 35 */       GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
 /* 36 */       GL11.glColor4f(0.75F, 0.75F, 0.75F, 1.0F);

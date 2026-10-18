@@ -32,7 +32,7 @@
 /*    */   public abstract MCH_AircraftInfo getAcInfoFromItem(Item paramItem);
 /*    */   
 /*    */   public MCH_AircraftInfo getAcInfoFromItem(IRecipe recipe) {
-/* 35 */     return (recipe != null) ? getAcInfoFromItem(recipe.func_77571_b().func_77973_b()) : null;
+/* 35 */     return (recipe != null) ? getAcInfoFromItem(recipe.getRecipeOutput().getItem()) : null;
 /*    */   }
 /*    */ }
 

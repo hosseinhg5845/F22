@@ -25,16 +25,16 @@
 /*     */   protected float smoothCamPartialTicks;
 /*     */   
 /*     */   public MCH_Gui(Minecraft minecraft) {
-/*  28 */     this.field_146297_k = minecraft;
+/*  28 */     this.mc = minecraft;
 /*  29 */     this.smoothCamPartialTicks = 0.0F;
-/*  30 */     this.field_73735_i = -110.0F;
+/*  30 */     this.zLevel = -110.0F;
 /*     */   }
 /*     */   
-/*     */   public void func_73866_w_() {
-/*  34 */     super.func_73866_w_();
+/*     */   public void initGui() {
+/*  34 */     super.initGui();
 /*     */   }
 /*     */   
-/*     */   public boolean func_73868_f() {
+/*     */   public boolean doesGuiPauseGame() {
 /*  38 */     return false;
 /*     */   }
 /*     */ 
@@ -45,19 +45,19 @@
 /*     */   
 /*     */   public abstract void drawGui(EntityPlayer paramEntityPlayer, boolean paramBoolean);
 /*     */   
-/*     */   public void func_73863_a(int par1, int par2, float partialTicks) {
+/*     */   public void drawScreen(int par1, int par2, float partialTicks) {
 /*  49 */     this.smoothCamPartialTicks = partialTicks;
-/*  50 */     W_ScaledResolution w_ScaledResolution = new W_ScaledResolution(this.field_146297_k, this.field_146297_k.field_71443_c, this.field_146297_k.field_71440_d);
-/*  51 */     scaleFactor = w_ScaledResolution.func_78325_e();
-/*  52 */     if (!this.field_146297_k.field_71474_y.field_74319_N) {
-/*  53 */       this.field_146294_l = this.field_146297_k.field_71443_c / scaleFactor;
-/*  54 */       this.field_146295_m = this.field_146297_k.field_71440_d / scaleFactor;
-/*  55 */       this.centerX = this.field_146294_l / 2;
-/*  56 */       this.centerY = this.field_146295_m / 2;
+/*  50 */     W_ScaledResolution w_ScaledResolution = new W_ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+/*  51 */     scaleFactor = w_ScaledResolution.getScaleFactor();
+/*  52 */     if (!this.mc.gameSettings.hideGUI) {
+/*  53 */       this.width = this.mc.displayWidth / scaleFactor;
+/*  54 */       this.height = this.mc.displayHeight / scaleFactor;
+/*  55 */       this.centerX = this.width / 2;
+/*  56 */       this.centerY = this.height / 2;
 /*  57 */       GL11.glPushMatrix();
 /*  58 */       GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-/*  59 */       if (this.field_146297_k.field_71439_g != null) {
-/*  60 */         drawGui((EntityPlayer)this.field_146297_k.field_71439_g, (this.field_146297_k.field_71474_y.field_74320_O != 0));
+/*  59 */       if (this.mc.player != null) {
+/*  60 */         drawGui((EntityPlayer)this.mc.player, (this.mc.gameSettings.thirdPersonView != 0));
 /*     */       }
 /*     */       
 /*  63 */       GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -72,14 +72,14 @@
 /*  72 */     GL11.glTranslated(left + width / 2.0D, top + height / 2.0D, 0.0D);
 /*  73 */     GL11.glRotatef(rot, 0.0F, 0.0F, 1.0F);
 /*  74 */     float f = 0.00390625F;
-/*  75 */     Tessellator tessellator = Tessellator.func_178181_a();
-/*  76 */     BufferBuilder builder = tessellator.func_178180_c();
-/*  77 */     builder.func_181668_a(7, DefaultVertexFormats.field_181707_g);
-/*  78 */     builder.func_181662_b(-width / 2.0D, height / 2.0D, this.field_73735_i).func_187315_a(uLeft * f, (vTop + vHeight) * f).func_181675_d();
-/*  79 */     builder.func_181662_b(width / 2.0D, height / 2.0D, this.field_73735_i).func_187315_a((uLeft + uWidth) * f, (vTop + vHeight) * f).func_181675_d();
-/*  80 */     builder.func_181662_b(width / 2.0D, -height / 2.0D, this.field_73735_i).func_187315_a((uLeft + uWidth) * f, vTop * f).func_181675_d();
-/*  81 */     builder.func_181662_b(-width / 2.0D, -height / 2.0D, this.field_73735_i).func_187315_a(uLeft * f, vTop * f).func_181675_d();
-/*  82 */     tessellator.func_78381_a();
+/*  75 */     Tessellator tessellator = Tessellator.getInstance();
+/*  76 */     BufferBuilder builder = tessellator.getBuffer();
+/*  77 */     builder.begin(7, DefaultVertexFormats.POSITION_TEX);
+/*  78 */     builder.pos(-width / 2.0D, height / 2.0D, this.zLevel).tex(uLeft * f, (vTop + vHeight) * f).endVertex();
+/*  79 */     builder.pos(width / 2.0D, height / 2.0D, this.zLevel).tex((uLeft + uWidth) * f, (vTop + vHeight) * f).endVertex();
+/*  80 */     builder.pos(width / 2.0D, -height / 2.0D, this.zLevel).tex((uLeft + uWidth) * f, vTop * f).endVertex();
+/*  81 */     builder.pos(-width / 2.0D, -height / 2.0D, this.zLevel).tex(uLeft * f, vTop * f).endVertex();
+/*  82 */     tessellator.draw();
 /*  83 */     GL11.glPopMatrix();
 /*     */   }
 /*     */ 
@@ -88,14 +88,14 @@
 /*     */   public void drawTexturedRect(double left, double top, double width, double height, double uLeft, double vTop, double uWidth, double vHeight, double textureWidth, double textureHeight) {
 /*  89 */     float fx = (float)(1.0D / textureWidth);
 /*  90 */     float fy = (float)(1.0D / textureHeight);
-/*  91 */     Tessellator tessellator = Tessellator.func_178181_a();
-/*  92 */     BufferBuilder builder = tessellator.func_178180_c();
-/*  93 */     builder.func_181668_a(7, DefaultVertexFormats.field_181707_g);
-/*  94 */     builder.func_181662_b(left, top + height, this.field_73735_i).func_187315_a(uLeft * fx, (vTop + vHeight) * fy).func_181675_d();
-/*  95 */     builder.func_181662_b(left + width, top + height, this.field_73735_i).func_187315_a((uLeft + uWidth) * fx, (vTop + vHeight) * fy).func_181675_d();
-/*  96 */     builder.func_181662_b(left + width, top, this.field_73735_i).func_187315_a((uLeft + uWidth) * fx, vTop * fy).func_181675_d();
-/*  97 */     builder.func_181662_b(left, top, this.field_73735_i).func_187315_a(uLeft * fx, vTop * fy).func_181675_d();
-/*  98 */     tessellator.func_78381_a();
+/*  91 */     Tessellator tessellator = Tessellator.getInstance();
+/*  92 */     BufferBuilder builder = tessellator.getBuffer();
+/*  93 */     builder.begin(7, DefaultVertexFormats.POSITION_TEX);
+/*  94 */     builder.pos(left, top + height, this.zLevel).tex(uLeft * fx, (vTop + vHeight) * fy).endVertex();
+/*  95 */     builder.pos(left + width, top + height, this.zLevel).tex((uLeft + uWidth) * fx, (vTop + vHeight) * fy).endVertex();
+/*  96 */     builder.pos(left + width, top, this.zLevel).tex((uLeft + uWidth) * fx, vTop * fy).endVertex();
+/*  97 */     builder.pos(left, top, this.zLevel).tex(uLeft * fx, vTop * fy).endVertex();
+/*  98 */     tessellator.draw();
 /*     */   }
 /*     */   
 /*     */   public void drawLineStipple(double[] line, int color, int factor, int pattern) {
@@ -110,7 +110,7 @@
 /*     */   }
 /*     */   
 /*     */   public void drawString(String s, int x, int y, int color) {
-/* 113 */     func_73731_b(this.field_146297_k.field_71466_p, s, x, y, color);
+/* 113 */     drawString(this.mc.fontRenderer, s, x, y, color);
 /*     */   }
 /*     */   
 /*     */   public void drawDigit(String s, int x, int y, int interval, int color) {
@@ -124,11 +124,11 @@
 /* 124 */     for (int i = 0; i < s.length(); i++) {
 /* 125 */       char c = s.charAt(i);
 /* 126 */       if (c >= '0' && c <= '9') {
-/* 127 */         func_73729_b(x + interval * i, y, 16 * (c - 48), 0, 16, 16);
+/* 127 */         drawTexturedModalRect(x + interval * i, y, 16 * (c - 48), 0, 16, 16);
 /*     */       }
 /*     */       
 /* 130 */       if (c == '-') {
-/* 131 */         func_73729_b(x + interval * i, y, 160, 0, 16, 16);
+/* 131 */         drawTexturedModalRect(x + interval * i, y, 160, 0, 16, 16);
 /*     */       }
 /*     */     } 
 /*     */     
@@ -137,7 +137,7 @@
 /*     */   }
 /*     */   
 /*     */   public void drawCenteredString(String s, int x, int y, int color) {
-/* 140 */     func_73732_a(this.field_146297_k.field_71466_p, s, x, y, color);
+/* 140 */     drawCenteredString(this.mc.fontRenderer, s, x, y, color);
 /*     */   }
 /*     */   
 /*     */   public void drawLine(double[] line, int color, int mode) {
@@ -146,15 +146,15 @@
 /* 146 */     GL11.glDisable(3553);
 /* 147 */     GL11.glBlendFunc(770, 771);
 /* 148 */     GL11.glColor4ub((byte)(color >> 16 & 0xFF), (byte)(color >> 8 & 0xFF), (byte)(color >> 0 & 0xFF), (byte)(color >> 24 & 0xFF));
-/* 149 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 150 */     BufferBuilder builder = tessellator.func_178180_c();
-/* 151 */     builder.func_181668_a(mode, DefaultVertexFormats.field_181705_e);
+/* 149 */     Tessellator tessellator = Tessellator.getInstance();
+/* 150 */     BufferBuilder builder = tessellator.getBuffer();
+/* 151 */     builder.begin(mode, DefaultVertexFormats.POSITION);
 /*     */     
 /* 153 */     for (int i = 0; i < line.length; i += 2) {
-/* 154 */       builder.func_181662_b(line[i], line[i + 1], this.field_73735_i).func_181675_d();
+/* 154 */       builder.pos(line[i], line[i + 1], this.zLevel).endVertex();
 /*     */     }
 /*     */     
-/* 157 */     tessellator.func_78381_a();
+/* 157 */     tessellator.draw();
 /* 158 */     GL11.glEnable(3553);
 /* 159 */     GL11.glDisable(3042);
 /* 160 */     GL11.glColor4b((byte)-1, (byte)-1, (byte)-1, (byte)-1);
@@ -169,15 +169,15 @@
 /* 169 */     GL11.glBlendFunc(770, 771);
 /* 170 */     GL11.glColor4ub((byte)(color >> 16 & 0xFF), (byte)(color >> 8 & 0xFF), (byte)(color >> 0 & 0xFF), (byte)(color >> 24 & 0xFF));
 /* 171 */     GL11.glPointSize(pointWidth);
-/* 172 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 173 */     BufferBuilder builder = tessellator.func_178180_c();
-/* 174 */     builder.func_181668_a(0, DefaultVertexFormats.field_181705_e);
+/* 172 */     Tessellator tessellator = Tessellator.getInstance();
+/* 173 */     BufferBuilder builder = tessellator.getBuffer();
+/* 174 */     builder.begin(0, DefaultVertexFormats.POSITION);
 /*     */     
 /* 176 */     for (int i = 0; i < points.length; i += 2) {
-/* 177 */       builder.func_181662_b(points[i], points[i + 1], 0.0D).func_181675_d();
+/* 177 */       builder.pos(points[i], points[i + 1], 0.0D).endVertex();
 /*     */     }
 /*     */     
-/* 180 */     tessellator.func_78381_a();
+/* 180 */     tessellator.draw();
 /* 181 */     GL11.glEnable(3553);
 /* 182 */     GL11.glDisable(3042);
 /* 183 */     GL11.glPopMatrix();
@@ -193,15 +193,15 @@
 /* 193 */     GL11.glBlendFunc(770, 771);
 /* 194 */     GL11.glColor4ub((byte)(color >> 16 & 0xFF), (byte)(color >> 8 & 0xFF), (byte)(color >> 0 & 0xFF), (byte)(color >> 24 & 0xFF));
 /* 195 */     GL11.glPointSize(pointWidth);
-/* 196 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 197 */     BufferBuilder builder = tessellator.func_178180_c();
-/* 198 */     builder.func_181668_a(0, DefaultVertexFormats.field_181705_e);
+/* 196 */     Tessellator tessellator = Tessellator.getInstance();
+/* 197 */     BufferBuilder builder = tessellator.getBuffer();
+/* 198 */     builder.begin(0, DefaultVertexFormats.POSITION);
 /*     */     
 /* 200 */     for (int i = 0; i < points.size(); i += 2) {
-/* 201 */       builder.func_181662_b(((Double)points.get(i)).doubleValue(), ((Double)points.get(i + 1)).doubleValue(), 0.0D).func_181675_d();
+/* 201 */       builder.pos(((Double)points.get(i)).doubleValue(), ((Double)points.get(i + 1)).doubleValue(), 0.0D).endVertex();
 /*     */     }
 /*     */     
-/* 204 */     tessellator.func_78381_a();
+/* 204 */     tessellator.draw();
 /* 205 */     GL11.glEnable(3553);
 /* 206 */     GL11.glDisable(3042);
 /* 207 */     GL11.glPopMatrix();

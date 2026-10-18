@@ -35,82 +35,82 @@
 /*     */     
 /*  36 */     for (int y = 0; y < 3; y++) {
 /*  37 */       for (int i = 0; i < 9; i++) {
-/*  38 */         func_75146_a(new Slot((IInventory)player.field_71071_by, 9 + i + y * 9, 30 + i * 18, 140 + y * 18));
+/*  38 */         addSlotToContainer(new Slot((IInventory)player.inventory, 9 + i + y * 9, 30 + i * 18, 140 + y * 18));
 /*     */       }
 /*     */     } 
 /*     */     
 /*  42 */     for (int x = 0; x < 9; x++) {
-/*  43 */       func_75146_a(new Slot((IInventory)player.field_71071_by, x, 30 + x * 18, 198));
+/*  43 */       addSlotToContainer(new Slot((IInventory)player.inventory, x, 30 + x * 18, 198));
 /*     */     }
 /*     */     
-/*  46 */     this.outputSlotIndex = this.field_75153_a.size();
+/*  46 */     this.outputSlotIndex = this.inventoryItemStacks.size();
 /*  47 */     Slot a = new Slot(this.outputSlot, this.outputSlotIndex, 178, 90) {
-/*     */         public boolean func_75214_a(@NotNull ItemStack stack) {
+/*     */         public boolean isItemValid(@NotNull ItemStack stack) {
 /*  49 */           return false;
 /*     */         }
 /*     */       };
-/*  52 */     func_75146_a(a);
-/*  53 */     MCH_Lib.DbgLog(player.field_70170_p, "MCH_DraftingTableGuiContainer.MCH_DraftingTableGuiContainer", new Object[0]);
+/*  52 */     addSlotToContainer(a);
+/*  53 */     MCH_Lib.DbgLog(player.world, "MCH_DraftingTableGuiContainer.MCH_DraftingTableGuiContainer", new Object[0]);
 /*     */   }
 /*     */   
-/*     */   public void func_75142_b() {
-/*  57 */     super.func_75142_b();
+/*     */   public void detectAndSendChanges() {
+/*  57 */     super.detectAndSendChanges();
 /*     */   }
 /*     */   
-/*     */   public boolean func_75145_c(EntityPlayer player) {
-/*  61 */     Block block = W_WorldFunc.getBlock(player.field_70170_p, this.posX, this.posY, this.posZ);
-/*  62 */     return ((W_Block.isEqual(block, (Block)MCH_MOD.blockDraftingTable) || W_Block.isEqual(block, (Block)MCH_MOD.blockDraftingTableLit)) && player.func_70092_e(this.posX, this.posY, this.posZ) <= 144.0D);
+/*     */   public boolean canInteractWith(EntityPlayer player) {
+/*  61 */     Block block = W_WorldFunc.getBlock(player.world, this.posX, this.posY, this.posZ);
+/*  62 */     return ((W_Block.isEqual(block, (Block)MCH_MOD.blockDraftingTable) || W_Block.isEqual(block, (Block)MCH_MOD.blockDraftingTableLit)) && player.getDistanceSq(this.posX, this.posY, this.posZ) <= 144.0D);
 /*     */   }
 /*     */   @NotNull
-/*     */   public ItemStack func_82846_b(@NotNull EntityPlayer player, int slotIndex) {
-/*  66 */     ItemStack itemstack = ItemStack.field_190927_a;
-/*  67 */     Slot slot = this.field_75151_b.get(slotIndex);
-/*  68 */     if (slot != null && slot.func_75216_d()) {
-/*  69 */       ItemStack itemstack1 = slot.func_75211_c();
-/*  70 */       itemstack = itemstack1.func_77946_l();
+/*     */   public ItemStack transferStackInSlot(@NotNull EntityPlayer player, int slotIndex) {
+/*  66 */     ItemStack itemstack = ItemStack.EMPTY;
+/*  67 */     Slot slot = this.inventorySlots.get(slotIndex);
+/*  68 */     if (slot != null && slot.getHasStack()) {
+/*  69 */       ItemStack itemstack1 = slot.getStack();
+/*  70 */       itemstack = itemstack1.copy();
 /*  71 */       if (slotIndex != this.outputSlotIndex) {
-/*  72 */         return ItemStack.field_190927_a;
+/*  72 */         return ItemStack.EMPTY;
 /*     */       }
 /*     */       
-/*  75 */       if (!func_75135_a(itemstack1, 0, 36, true)) {
-/*  76 */         return ItemStack.field_190927_a;
+/*  75 */       if (!mergeItemStack(itemstack1, 0, 36, true)) {
+/*  76 */         return ItemStack.EMPTY;
 /*     */       }
 /*     */       
-/*  79 */       slot.func_75220_a(itemstack1, itemstack);
-/*  80 */       if (itemstack1.func_190916_E() == 0) {
-/*  81 */         slot.func_75215_d(ItemStack.field_190927_a);
+/*  79 */       slot.onSlotChange(itemstack1, itemstack);
+/*  80 */       if (itemstack1.getCount() == 0) {
+/*  81 */         slot.putStack(ItemStack.EMPTY);
 /*     */       } else {
-/*  83 */         slot.func_75218_e();
+/*  83 */         slot.onSlotChanged();
 /*     */       } 
 /*     */       
-/*  86 */       if (itemstack1.func_190916_E() == itemstack.func_190916_E()) {
-/*  87 */         return ItemStack.field_190927_a;
+/*  86 */       if (itemstack1.getCount() == itemstack.getCount()) {
+/*  87 */         return ItemStack.EMPTY;
 /*     */       }
 /*     */       
-/*  90 */       slot.func_190901_a(player, itemstack1);
+/*  90 */       slot.onTake(player, itemstack1);
 /*     */     } 
 /*     */     
 /*  93 */     return itemstack;
 /*     */   }
 /*     */   
-/*     */   public void func_75134_a(@NotNull EntityPlayer player) {
-/*  97 */     super.func_75134_a(player);
-/*  98 */     if (!player.field_70170_p.field_72995_K) {
-/*  99 */       ItemStack itemstack = func_75139_a(this.outputSlotIndex).func_75211_c();
-/* 100 */       if (!itemstack.func_190926_b()) {
+/*     */   public void onContainerClosed(@NotNull EntityPlayer player) {
+/*  97 */     super.onContainerClosed(player);
+/*  98 */     if (!player.world.isRemote) {
+/*  99 */       ItemStack itemstack = getSlot(this.outputSlotIndex).getStack();
+/* 100 */       if (!itemstack.isEmpty()) {
 /* 101 */         W_EntityPlayer.dropPlayerItemWithRandomChoice(player, itemstack, false, false);
 /*     */       }
 /*     */     } 
 /*     */     
-/* 105 */     MCH_Lib.DbgLog(player.field_70170_p, "MCH_DraftingTableGuiContainer.onContainerClosed", new Object[0]);
+/* 105 */     MCH_Lib.DbgLog(player.world, "MCH_DraftingTableGuiContainer.onContainerClosed", new Object[0]);
 /*     */   }
 /*     */   
 /*     */   public void createRecipeItem(@Nullable IRecipe recipe) {
-/* 109 */     boolean isCreativeMode = this.player.field_71075_bZ.field_75098_d;
-/* 110 */     if (func_75139_a(this.outputSlotIndex).func_75216_d() && !isCreativeMode) {
-/* 111 */       MCH_Lib.DbgLog(this.player.field_70170_p, "MCH_DraftingTableGuiContainer.createRecipeItem:OutputSlot is not empty", new Object[0]);
+/* 109 */     boolean isCreativeMode = this.player.capabilities.isCreativeMode;
+/* 110 */     if (getSlot(this.outputSlotIndex).getHasStack() && !isCreativeMode) {
+/* 111 */       MCH_Lib.DbgLog(this.player.world, "MCH_DraftingTableGuiContainer.createRecipeItem:OutputSlot is not empty", new Object[0]);
 /* 112 */     } else if (recipe == null) {
-/* 113 */       MCH_Lib.DbgLog(this.player.field_70170_p, "Error:MCH_DraftingTableGuiContainer.createRecipeItem:recipe is null : ", new Object[0]);
+/* 113 */       MCH_Lib.DbgLog(this.player.world, "Error:MCH_DraftingTableGuiContainer.createRecipeItem:recipe is null : ", new Object[0]);
 /*     */     } else {
 /* 115 */       boolean result = false;
 /* 116 */       if (isCreativeMode || MCH_Recipes.canCraft(this.player, recipe)) {
@@ -118,17 +118,17 @@
 /* 118 */           MCH_Recipes.consumeInventory(this.player, recipe);
 /*     */         }
 /*     */         
-/* 121 */         func_75139_a(this.outputSlotIndex).func_75215_d(recipe.func_77571_b().func_77946_l());
+/* 121 */         getSlot(this.outputSlotIndex).putStack(recipe.getRecipeOutput().copy());
 /* 122 */         result = true;
 /*     */       } 
 /*     */       
-/* 125 */       MCH_Lib.DbgLog(this.player.field_70170_p, "MCH_DraftingTableGuiContainer:Result=" + result + ":Recipe=" + recipe.getRegistryName(), new Object[0]);
+/* 125 */       MCH_Lib.DbgLog(this.player.world, "MCH_DraftingTableGuiContainer:Result=" + result + ":Recipe=" + recipe.getRegistryName(), new Object[0]);
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   public int searchRecipeFromList(MCH_IRecipeList list, ItemStack item) {
 /* 130 */     for (int i = 0; i < list.getRecipeListSize(); i++) {
-/* 131 */       if (list.getRecipe(i).func_77571_b().func_77969_a(item)) {
+/* 131 */       if (list.getRecipe(i).getRecipeOutput().isItemEqual(item)) {
 /* 132 */         return i;
 /*     */       }
 /*     */     } 

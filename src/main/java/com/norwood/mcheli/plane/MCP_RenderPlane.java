@@ -16,7 +16,7 @@
 /*     */   
 /*     */   public MCP_RenderPlane(RenderManager renderManager) {
 /*  18 */     super(renderManager);
-/*  19 */     this.field_76989_e = 2.0F;
+/*  19 */     this.shadowSize = 2.0F;
 /*     */   }
 /*     */ 
 /*     */ 
@@ -56,23 +56,23 @@
 /*     */     
 /*  57 */     for (MCP_PlaneInfo.Rotor r : planeInfo.rotorList) {
 /*  58 */       GL11.glPushMatrix();
-/*  59 */       GL11.glTranslated(r.pos.field_72450_a, r.pos.field_72448_b, r.pos.field_72449_c);
-/*  60 */       GL11.glRotatef((prevRot + (rot - prevRot) * tickTime) * r.maxRotFactor, (float)r.rot.field_72450_a, (float)r.rot.field_72448_b, (float)r.rot.field_72449_c);
-/*  61 */       GL11.glTranslated(-r.pos.field_72450_a, -r.pos.field_72448_b, -r.pos.field_72449_c);
+/*  59 */       GL11.glTranslated(r.pos.x, r.pos.y, r.pos.z);
+/*  60 */       GL11.glRotatef((prevRot + (rot - prevRot) * tickTime) * r.maxRotFactor, (float)r.rot.x, (float)r.rot.y, (float)r.rot.z);
+/*  61 */       GL11.glTranslated(-r.pos.x, -r.pos.y, -r.pos.z);
 /*  62 */       renderPart(r.model, planeInfo.model, r.modelName);
 /*     */       
 /*  64 */       for (MCP_PlaneInfo.Blade b : r.blades) {
 /*  65 */         float br = plane.prevRotationRotor;
 /*  66 */         br += (plane.rotationRotor - plane.prevRotationRotor) * tickTime;
 /*  67 */         GL11.glPushMatrix();
-/*  68 */         GL11.glTranslated(b.pos.field_72450_a, b.pos.field_72448_b, b.pos.field_72449_c);
-/*  69 */         GL11.glRotatef(br, (float)b.rot.field_72450_a, (float)b.rot.field_72448_b, (float)b.rot.field_72449_c);
-/*  70 */         GL11.glTranslated(-b.pos.field_72450_a, -b.pos.field_72448_b, -b.pos.field_72449_c);
+/*  68 */         GL11.glTranslated(b.pos.x, b.pos.y, b.pos.z);
+/*  69 */         GL11.glRotatef(br, (float)b.rot.x, (float)b.rot.y, (float)b.rot.z);
+/*  70 */         GL11.glTranslated(-b.pos.x, -b.pos.y, -b.pos.z);
 /*     */         
 /*  72 */         for (int i = 0; i < b.numBlade; i++) {
-/*  73 */           GL11.glTranslated(b.pos.field_72450_a, b.pos.field_72448_b, b.pos.field_72449_c);
-/*  74 */           GL11.glRotatef(b.rotBlade, (float)b.rot.field_72450_a, (float)b.rot.field_72448_b, (float)b.rot.field_72449_c);
-/*  75 */           GL11.glTranslated(-b.pos.field_72450_a, -b.pos.field_72448_b, -b.pos.field_72449_c);
+/*  73 */           GL11.glTranslated(b.pos.x, b.pos.y, b.pos.z);
+/*  74 */           GL11.glRotatef(b.rotBlade, (float)b.rot.x, (float)b.rot.y, (float)b.rot.z);
+/*  75 */           GL11.glTranslated(-b.pos.x, -b.pos.y, -b.pos.z);
 /*  76 */           renderPart(b.model, planeInfo.model, b.modelName);
 /*     */         } 
 /*     */         
@@ -89,16 +89,16 @@
 /*     */     
 /*  90 */     for (MCP_PlaneInfo.Wing w : planeInfo.wingList) {
 /*  91 */       GL11.glPushMatrix();
-/*  92 */       GL11.glTranslated(w.pos.field_72450_a, w.pos.field_72448_b, w.pos.field_72449_c);
-/*  93 */       GL11.glRotatef((prevRot + (rot - prevRot) * tickTime) * w.maxRotFactor, (float)w.rot.field_72450_a, (float)w.rot.field_72448_b, (float)w.rot.field_72449_c);
-/*  94 */       GL11.glTranslated(-w.pos.field_72450_a, -w.pos.field_72448_b, -w.pos.field_72449_c);
+/*  92 */       GL11.glTranslated(w.pos.x, w.pos.y, w.pos.z);
+/*  93 */       GL11.glRotatef((prevRot + (rot - prevRot) * tickTime) * w.maxRotFactor, (float)w.rot.x, (float)w.rot.y, (float)w.rot.z);
+/*  94 */       GL11.glTranslated(-w.pos.x, -w.pos.y, -w.pos.z);
 /*  95 */       renderPart(w.model, planeInfo.model, w.modelName);
 /*  96 */       if (w.pylonList != null) {
 /*  97 */         for (MCP_PlaneInfo.Pylon p : w.pylonList) {
 /*  98 */           GL11.glPushMatrix();
-/*  99 */           GL11.glTranslated(p.pos.field_72450_a, p.pos.field_72448_b, p.pos.field_72449_c);
-/* 100 */           GL11.glRotatef((prevRot + (rot - prevRot) * tickTime) * p.maxRotFactor, (float)p.rot.field_72450_a, (float)p.rot.field_72448_b, (float)p.rot.field_72449_c);
-/* 101 */           GL11.glTranslated(-p.pos.field_72450_a, -p.pos.field_72448_b, -p.pos.field_72449_c);
+/*  99 */           GL11.glTranslated(p.pos.x, p.pos.y, p.pos.z);
+/* 100 */           GL11.glRotatef((prevRot + (rot - prevRot) * tickTime) * p.maxRotFactor, (float)p.rot.x, (float)p.rot.y, (float)p.rot.z);
+/* 101 */           GL11.glTranslated(-p.pos.x, -p.pos.y, -p.pos.z);
 /* 102 */           renderPart(p.model, planeInfo.model, p.modelName);
 /* 103 */           GL11.glPopMatrix();
 /*     */         } 
@@ -114,9 +114,9 @@
 /*     */     
 /* 115 */     for (MCH_AircraftInfo.DrawnPart n : planeInfo.nozzles) {
 /* 116 */       GL11.glPushMatrix();
-/* 117 */       GL11.glTranslated(n.pos.field_72450_a, n.pos.field_72448_b, n.pos.field_72449_c);
-/* 118 */       GL11.glRotatef(prevRot + (rot - prevRot) * tickTime, (float)n.rot.field_72450_a, (float)n.rot.field_72448_b, (float)n.rot.field_72449_c);
-/* 119 */       GL11.glTranslated(-n.pos.field_72450_a, -n.pos.field_72448_b, -n.pos.field_72449_c);
+/* 117 */       GL11.glTranslated(n.pos.x, n.pos.y, n.pos.z);
+/* 118 */       GL11.glRotatef(prevRot + (rot - prevRot) * tickTime, (float)n.rot.x, (float)n.rot.y, (float)n.rot.z);
+/* 119 */       GL11.glTranslated(-n.pos.x, -n.pos.y, -n.pos.z);
 /* 120 */       renderPart(n.model, planeInfo.model, n.modelName);
 /* 121 */       GL11.glPopMatrix();
 /*     */     } 

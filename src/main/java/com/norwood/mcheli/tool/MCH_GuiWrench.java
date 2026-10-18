@@ -15,16 +15,16 @@
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   public void func_73866_w_() {
-/* 19 */     super.func_73866_w_();
+/*    */   public void initGui() {
+/* 19 */     super.initGui();
 /*    */   }
 /*    */ 
 /*    */   
 /*    */   public boolean isDrawGui(EntityPlayer player) {
-/* 24 */     return (player != null && player.field_70170_p != null && 
+/* 24 */     return (player != null && player.world != null && 
 /*    */       
-/* 26 */       !player.func_184614_ca().func_190926_b() && player
-/* 27 */       .func_184614_ca().func_77973_b() instanceof MCH_ItemWrench);
+/* 26 */       !player.getHeldItemMainhand().isEmpty() && player
+/* 27 */       .getHeldItemMainhand().getItem() instanceof MCH_ItemWrench);
 /*    */   }
 /*    */ 
 /*    */   
@@ -33,7 +33,7 @@
 /* 33 */       GL11.glLineWidth(scaleFactor);
 /* 34 */       if (isDrawGui(player)) {
 /* 35 */         GL11.glDisable(3042);
-/* 36 */         MCH_EntityAircraft ac = ((MCH_ItemWrench)player.func_184614_ca().func_77973_b()).getMouseOverAircraft((EntityLivingBase)player);
+/* 36 */         MCH_EntityAircraft ac = ((MCH_ItemWrench)player.getHeldItemMainhand().getItem()).getMouseOverAircraft((EntityLivingBase)player);
 /* 37 */         if (ac != null && ac.getMaxHP() > 0) {
 /* 38 */           int color = ((ac.getHP() / ac.getMaxHP()) > 0.3D) ? -14101432 : -2161656;
 /* 39 */           drawHP(color, -15433180, ac.getHP(), ac.getMaxHP());
@@ -45,13 +45,13 @@
 /*    */   void drawHP(int color, int colorBG, int hp, int hpmax) {
 /* 46 */     int posX = this.centerX;
 /* 47 */     int posY = this.centerY + 20;
-/* 48 */     func_73734_a(posX - 20, posY + 20 + 1, posX - 20 + 40, posY + 20 + 1 + 1 + 3 + 1, colorBG);
+/* 48 */     drawRect(posX - 20, posY + 20 + 1, posX - 20 + 40, posY + 20 + 1 + 1 + 3 + 1, colorBG);
 /* 49 */     if (hp > hpmax) {
 /* 50 */       hp = hpmax;
 /*    */     }
 /*    */     
 /* 53 */     float hpp = hp / hpmax;
-/* 54 */     func_73734_a(posX - 20 + 1, posY + 20 + 1 + 1, posX - 20 + 1 + (int)(38.0D * hpp), posY + 20 + 1 + 1 + 3, color);
+/* 54 */     drawRect(posX - 20 + 1, posY + 20 + 1 + 1, posX - 20 + 1 + (int)(38.0D * hpp), posY + 20 + 1 + 1 + 3, color);
 /* 55 */     int hppn = (int)(hpp * 100.0F);
 /* 56 */     if (hp < hpmax && hppn >= 100) {
 /* 57 */       hppn = 99;

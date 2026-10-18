@@ -28,7 +28,7 @@
 /*  28 */     playerRotMaxPitch = max;
 /*  29 */     playerRotLimitPitch = true;
 /*  30 */     if (player != null) {
-/*  31 */       player.field_70125_A = MCH_Lib.RNG(player.field_70125_A, playerRotMinPitch, playerRotMaxPitch);
+/*  31 */       player.rotationPitch = MCH_Lib.RNG(player.rotationPitch, playerRotMinPitch, playerRotMaxPitch);
 /*     */     }
 /*     */   }
 /*     */   
@@ -37,12 +37,12 @@
 /*  37 */     playerRotMaxYaw = max;
 /*  38 */     playerRotLimitYaw = true;
 /*  39 */     if (e != null) {
-/*  40 */       if (e.field_70125_A < playerRotMinPitch) {
-/*  41 */         e.field_70125_A = playerRotMinPitch;
-/*  42 */         e.field_70127_C = playerRotMinPitch;
-/*  43 */       } else if (e.field_70125_A > playerRotMaxPitch) {
-/*  44 */         e.field_70125_A = playerRotMaxPitch;
-/*  45 */         e.field_70127_C = playerRotMaxPitch;
+/*  40 */       if (e.rotationPitch < playerRotMinPitch) {
+/*  41 */         e.rotationPitch = playerRotMinPitch;
+/*  42 */         e.prevRotationPitch = playerRotMinPitch;
+/*  43 */       } else if (e.rotationPitch > playerRotMaxPitch) {
+/*  44 */         e.rotationPitch = playerRotMaxPitch;
+/*  45 */         e.prevRotationPitch = playerRotMaxPitch;
 /*     */       } 
 /*     */     }
 /*     */   }
@@ -59,12 +59,12 @@
 /*     */   public static void applyRotLimit(Entity e) {
 /*  60 */     if (e != null) {
 /*  61 */       if (playerRotLimitPitch) {
-/*  62 */         if (e.field_70125_A < playerRotMinPitch) {
-/*  63 */           e.field_70125_A = playerRotMinPitch;
-/*  64 */           e.field_70127_C = playerRotMinPitch;
-/*  65 */         } else if (e.field_70125_A > playerRotMaxPitch) {
-/*  66 */           e.field_70125_A = playerRotMaxPitch;
-/*  67 */           e.field_70127_C = playerRotMaxPitch;
+/*  62 */         if (e.rotationPitch < playerRotMinPitch) {
+/*  63 */           e.rotationPitch = playerRotMinPitch;
+/*  64 */           e.prevRotationPitch = playerRotMinPitch;
+/*  65 */         } else if (e.rotationPitch > playerRotMaxPitch) {
+/*  66 */           e.rotationPitch = playerRotMaxPitch;
+/*  67 */           e.prevRotationPitch = playerRotMaxPitch;
 /*     */         } 
 /*     */       }
 /*     */       
@@ -77,7 +77,7 @@
 /*  77 */     boolean cancelEvent = false;
 /*  78 */     if (wheel != 0 && MCH_Config.SwitchWeaponWithMouseWheel.prmBool) {
 /*  79 */       setMouseWheel(0);
-/*  80 */       EntityPlayerSP entityPlayerSP = (Minecraft.func_71410_x()).field_71439_g;
+/*  80 */       EntityPlayerSP entityPlayerSP = (Minecraft.getMinecraft()).player;
 /*  81 */       if (entityPlayerSP != null) {
 /*  82 */         MCH_EntityAircraft ac = MCH_EntityAircraft.getAircraft_RiddenOrControl((Entity)entityPlayerSP);
 /*  83 */         if (ac != null) {

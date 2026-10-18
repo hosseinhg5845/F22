@@ -22,7 +22,7 @@
 /*    */   }
 /*    */   
 /*    */   public static void sendToAllAround(W_PacketBase pkt, Entity sender, double renge) {
-/* 25 */     NetworkRegistry.TargetPoint t = new NetworkRegistry.TargetPoint(sender.field_71093_bK, sender.field_70165_t, sender.field_70163_u, sender.field_70161_v, renge);
+/* 25 */     NetworkRegistry.TargetPoint t = new NetworkRegistry.TargetPoint(sender.dimension, sender.posX, sender.posY, sender.posZ, renge);
 /* 26 */     INSTANCE.sendToAllAround((IMessage)new MCH_WrapPacketData(pkt), t);
 /*    */   }
 /*    */   

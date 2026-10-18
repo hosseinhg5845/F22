@@ -9,9 +9,9 @@
 /*    */ {
 /* 10 */   public static final VertexFormatElement TEX_2S = new VertexFormatElement(0, VertexFormatElement.EnumType.SHORT, VertexFormatElement.EnumUsage.UV, 2);
 /* 11 */   public static final VertexFormat POS_COLOR_LMAP = (new VertexFormat())
-/* 12 */     .func_181721_a(DefaultVertexFormats.field_181713_m)
-/* 13 */     .func_181721_a(DefaultVertexFormats.field_181714_n)
-/* 14 */     .func_181721_a(TEX_2S);
+/* 12 */     .addElement(DefaultVertexFormats.POSITION_3F)
+/* 13 */     .addElement(DefaultVertexFormats.COLOR_4UB)
+/* 14 */     .addElement(TEX_2S);
 /*    */ }
 
 

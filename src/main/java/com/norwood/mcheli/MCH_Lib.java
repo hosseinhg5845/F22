@@ -27,40 +27,40 @@
 /*     */   
 /*     */   public static void init() {
 /*  29 */     mapMaterial.clear();
-/*  30 */     mapMaterial.put("air", Material.field_151579_a);
-/*  31 */     mapMaterial.put("grass", Material.field_151577_b);
-/*  32 */     mapMaterial.put("ground", Material.field_151578_c);
-/*  33 */     mapMaterial.put("wood", Material.field_151575_d);
-/*  34 */     mapMaterial.put("rock", Material.field_151576_e);
-/*  35 */     mapMaterial.put("iron", Material.field_151573_f);
-/*  36 */     mapMaterial.put("anvil", Material.field_151574_g);
-/*  37 */     mapMaterial.put("water", Material.field_151586_h);
-/*  38 */     mapMaterial.put("lava", Material.field_151587_i);
-/*  39 */     mapMaterial.put("leaves", Material.field_151584_j);
-/*  40 */     mapMaterial.put("plants", Material.field_151585_k);
-/*  41 */     mapMaterial.put("vine", Material.field_151582_l);
-/*  42 */     mapMaterial.put("sponge", Material.field_151583_m);
-/*  43 */     mapMaterial.put("cloth", Material.field_151580_n);
-/*  44 */     mapMaterial.put("fire", Material.field_151581_o);
-/*  45 */     mapMaterial.put("sand", Material.field_151595_p);
-/*  46 */     mapMaterial.put("circuits", Material.field_151594_q);
-/*  47 */     mapMaterial.put("carpet", Material.field_151593_r);
-/*  48 */     mapMaterial.put("glass", Material.field_151592_s);
-/*  49 */     mapMaterial.put("redstoneLight", Material.field_151591_t);
-/*  50 */     mapMaterial.put("tnt", Material.field_151590_u);
-/*  51 */     mapMaterial.put("coral", Material.field_151589_v);
-/*  52 */     mapMaterial.put("ice", Material.field_151588_w);
-/*  53 */     mapMaterial.put("packedIce", Material.field_151598_x);
-/*  54 */     mapMaterial.put("snow", Material.field_151597_y);
-/*  55 */     mapMaterial.put("craftedSnow", Material.field_151596_z);
-/*  56 */     mapMaterial.put("cactus", Material.field_151570_A);
-/*  57 */     mapMaterial.put("clay", Material.field_151571_B);
-/*  58 */     mapMaterial.put("gourd", Material.field_151572_C);
-/*  59 */     mapMaterial.put("dragonEgg", Material.field_151566_D);
-/*  60 */     mapMaterial.put("portal", Material.field_151567_E);
-/*  61 */     mapMaterial.put("cake", Material.field_151568_F);
-/*  62 */     mapMaterial.put("web", Material.field_151569_G);
-/*  63 */     mapMaterial.put("piston", Material.field_76233_E);
+/*  30 */     mapMaterial.put("air", Material.AIR);
+/*  31 */     mapMaterial.put("grass", Material.GRASS);
+/*  32 */     mapMaterial.put("ground", Material.GROUND);
+/*  33 */     mapMaterial.put("wood", Material.WOOD);
+/*  34 */     mapMaterial.put("rock", Material.ROCK);
+/*  35 */     mapMaterial.put("iron", Material.IRON);
+/*  36 */     mapMaterial.put("anvil", Material.ANVIL);
+/*  37 */     mapMaterial.put("water", Material.WATER);
+/*  38 */     mapMaterial.put("lava", Material.LAVA);
+/*  39 */     mapMaterial.put("leaves", Material.LEAVES);
+/*  40 */     mapMaterial.put("plants", Material.PLANTS);
+/*  41 */     mapMaterial.put("vine", Material.VINE);
+/*  42 */     mapMaterial.put("sponge", Material.SPONGE);
+/*  43 */     mapMaterial.put("cloth", Material.CLOTH);
+/*  44 */     mapMaterial.put("fire", Material.FIRE);
+/*  45 */     mapMaterial.put("sand", Material.SAND);
+/*  46 */     mapMaterial.put("circuits", Material.CIRCUITS);
+/*  47 */     mapMaterial.put("carpet", Material.CARPET);
+/*  48 */     mapMaterial.put("glass", Material.GLASS);
+/*  49 */     mapMaterial.put("redstoneLight", Material.REDSTONE_LIGHT);
+/*  50 */     mapMaterial.put("tnt", Material.TNT);
+/*  51 */     mapMaterial.put("coral", Material.CORAL);
+/*  52 */     mapMaterial.put("ice", Material.ICE);
+/*  53 */     mapMaterial.put("packedIce", Material.PACKED_ICE);
+/*  54 */     mapMaterial.put("snow", Material.SNOW);
+/*  55 */     mapMaterial.put("craftedSnow", Material.CRAFTED_SNOW);
+/*  56 */     mapMaterial.put("cactus", Material.CACTUS);
+/*  57 */     mapMaterial.put("clay", Material.CLAY);
+/*  58 */     mapMaterial.put("gourd", Material.GOURD);
+/*  59 */     mapMaterial.put("dragonEgg", Material.DRAGON_EGG);
+/*  60 */     mapMaterial.put("portal", Material.PORTAL);
+/*  61 */     mapMaterial.put("cake", Material.CAKE);
+/*  62 */     mapMaterial.put("web", Material.WEB);
+/*  63 */     mapMaterial.put("piston", Material.PISTON);
 /*     */   }
 /*     */   
 /*     */   public static Material getMaterialFromName(String name) {
@@ -68,9 +68,9 @@
 /*     */   }
 /*     */   
 /*     */   public static Vec3d calculateFaceNormal(Vec3d[] vertices) {
-/*  71 */     Vec3d v1 = new Vec3d((vertices[1]).field_72450_a - (vertices[0]).field_72450_a, (vertices[1]).field_72448_b - (vertices[0]).field_72448_b, (vertices[1]).field_72449_c - (vertices[0]).field_72449_c);
-/*  72 */     Vec3d v2 = new Vec3d((vertices[2]).field_72450_a - (vertices[0]).field_72450_a, (vertices[2]).field_72448_b - (vertices[0]).field_72448_b, (vertices[2]).field_72449_c - (vertices[0]).field_72449_c);
-/*  73 */     return v1.func_72431_c(v2).func_72432_b();
+/*  71 */     Vec3d v1 = new Vec3d((vertices[1]).x - (vertices[0]).x, (vertices[1]).y - (vertices[0]).y, (vertices[1]).z - (vertices[0]).z);
+/*  72 */     Vec3d v2 = new Vec3d((vertices[2]).x - (vertices[0]).x, (vertices[2]).y - (vertices[0]).y, (vertices[2]).z - (vertices[0]).z);
+/*  73 */     return v1.crossProduct(v2).normalize();
 /*     */   }
 /*     */   
 /*     */   public static double parseDouble(String s) {
@@ -121,8 +121,8 @@
 /*     */   
 /*     */   public static void applyEntityHurtResistantTimeConfig(Entity entity) {
 /* 123 */     if (entity instanceof EntityLivingBase) { EntityLivingBase elb = (EntityLivingBase)entity;
-/* 124 */       double h_time = MCH_Config.HurtResistantTime.prmDouble * elb.field_70172_ad;
-/* 125 */       elb.field_70172_ad = (int)h_time; }
+/* 124 */       double h_time = MCH_Config.HurtResistantTime.prmDouble * elb.hurtResistantTime;
+/* 125 */       elb.hurtResistantTime = (int)h_time; }
 /*     */   
 /*     */   }
 /*     */   
@@ -132,43 +132,43 @@
 /*     */   
 /*     */   public static Vec3d Rot2Vec3(float yaw, float pitch) {
 /* 134 */     return new Vec3d((
-/* 135 */         -MathHelper.func_76126_a(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F)), 
-/* 136 */         -MathHelper.func_76126_a(pitch / 180.0F * 3.1415927F), (
-/* 137 */         MathHelper.func_76134_b(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F)));
+/* 135 */         -MathHelper.sin(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F)), 
+/* 136 */         -MathHelper.sin(pitch / 180.0F * 3.1415927F), (
+/* 137 */         MathHelper.cos(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F)));
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public static Vec3d RotVec3(double x, double y, double z, float yaw, float pitch) {
 /* 142 */     Vec3d v = new Vec3d(x, y, z);
-/* 143 */     v = v.func_178789_a(pitch / 180.0F * 3.1415927F);
-/* 144 */     return v.func_178785_b(yaw / 180.0F * 3.1415927F);
+/* 143 */     v = v.rotatePitch(pitch / 180.0F * 3.1415927F);
+/* 144 */     return v.rotateYaw(yaw / 180.0F * 3.1415927F);
 /*     */   }
 /*     */   
 /*     */   public static Vec3d RotVec3(double x, double y, double z, float yaw, float pitch, float roll) {
 /* 148 */     Vec3d v = new Vec3d(x, y, z);
 /* 149 */     v = W_Vec3.rotateRoll(roll / 180.0F * 3.1415927F, v);
-/* 150 */     v = v.func_178789_a(pitch / 180.0F * 3.1415927F);
-/* 151 */     return v.func_178785_b(yaw / 180.0F * 3.1415927F);
+/* 150 */     v = v.rotatePitch(pitch / 180.0F * 3.1415927F);
+/* 151 */     return v.rotateYaw(yaw / 180.0F * 3.1415927F);
 /*     */   }
 /*     */   
 /*     */   public static Vec3d RotVec3(Vec3d vin, float yaw, float pitch) {
-/* 155 */     Vec3d v = new Vec3d(vin.field_72450_a, vin.field_72448_b, vin.field_72449_c);
-/* 156 */     v = v.func_178789_a(pitch / 180.0F * 3.1415927F);
-/* 157 */     return v.func_178785_b(yaw / 180.0F * 3.1415927F);
+/* 155 */     Vec3d v = new Vec3d(vin.x, vin.y, vin.z);
+/* 156 */     v = v.rotatePitch(pitch / 180.0F * 3.1415927F);
+/* 157 */     return v.rotateYaw(yaw / 180.0F * 3.1415927F);
 /*     */   }
 /*     */   
 /*     */   public static Vec3d RotVec3(Vec3d vin, float yaw, float pitch, float roll) {
-/* 161 */     Vec3d v = new Vec3d(vin.field_72450_a, vin.field_72448_b, vin.field_72449_c);
+/* 161 */     Vec3d v = new Vec3d(vin.x, vin.y, vin.z);
 /* 162 */     v = W_Vec3.rotateRoll(roll / 180.0F * 3.1415927F, v);
-/* 163 */     v = v.func_178789_a(pitch / 180.0F * 3.1415927F);
-/* 164 */     return v.func_178785_b(yaw / 180.0F * 3.1415927F);
+/* 163 */     v = v.rotatePitch(pitch / 180.0F * 3.1415927F);
+/* 164 */     return v.rotateYaw(yaw / 180.0F * 3.1415927F);
 /*     */   }
 /*     */   
 /*     */   public static Vec3d _Rot2Vec3(float yaw, float pitch, float roll) {
 /* 168 */     return new Vec3d((
-/* 169 */         -MathHelper.func_76126_a(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F)), 
-/* 170 */         -MathHelper.func_76126_a(pitch / 180.0F * 3.1415927F), (
-/* 171 */         MathHelper.func_76134_b(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F)));
+/* 169 */         -MathHelper.sin(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F)), 
+/* 170 */         -MathHelper.sin(pitch / 180.0F * 3.1415927F), (
+/* 171 */         MathHelper.cos(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F)));
 /*     */   }
 /*     */ 
 /*     */   
@@ -184,7 +184,7 @@
 /*     */   
 /*     */   public static void Log(World world, String format, Object... data) {
 /* 186 */     if (world != null) {
-/* 187 */       Log((world.field_72995_K ? "[ClientWorld]" : "[ServerWorld]") + " " + format, data);
+/* 187 */       Log((world.isRemote ? "[ClientWorld]" : "[ServerWorld]") + " " + format, data);
 /*     */     } else {
 /* 189 */       Log("[UnknownWorld]" + format, data);
 /*     */     } 
@@ -192,7 +192,7 @@
 /*     */   
 /*     */   public static void Log(Entity entity, String format, Object... data) {
 /* 194 */     if (entity != null) {
-/* 195 */       Log(entity.field_70170_p, format, data);
+/* 195 */       Log(entity.world, format, data);
 /*     */     } else {
 /* 197 */       Log((World)null, format, data);
 /*     */     } 
@@ -212,7 +212,7 @@
 /*     */   }
 /*     */   
 /*     */   public static void DbgLog(World w, String format, Object... data) {
-/* 215 */     DbgLog(w.field_72995_K, format, data);
+/* 215 */     DbgLog(w.isRemote, format, data);
 /*     */   }
 /*     */   
 /*     */   public static String getTime() {
@@ -236,8 +236,8 @@
 /* 236 */     for (int i = 0; i + 1 < points.length; i += 2) {
 /* 237 */       double x = points[i];
 /* 238 */       double y = points[i + 1];
-/* 239 */       points[i] = x * MathHelper.func_76134_b(r) - y * MathHelper.func_76126_a(r);
-/* 240 */       points[i + 1] = x * MathHelper.func_76126_a(r) + y * MathHelper.func_76134_b(r);
+/* 239 */       points[i] = x * MathHelper.cos(r) - y * MathHelper.sin(r);
+/* 240 */       points[i + 1] = x * MathHelper.sin(r) + y * MathHelper.cos(r);
 /*     */     } 
 /*     */   }
 /*     */   
@@ -247,8 +247,8 @@
 /* 247 */     for (int i = 0; i + 1 < points.size(); i += 2) {
 /* 248 */       double x = ((MCH_Vector2)points.get(i)).x;
 /* 249 */       double y = ((MCH_Vector2)points.get(i)).y;
-/* 250 */       ((MCH_Vector2)points.get(i)).x = x * MathHelper.func_76134_b(r) - y * MathHelper.func_76126_a(r);
-/* 251 */       ((MCH_Vector2)points.get(i)).y = x * MathHelper.func_76126_a(r) + y * MathHelper.func_76134_b(r);
+/* 250 */       ((MCH_Vector2)points.get(i)).x = x * MathHelper.cos(r) - y * MathHelper.sin(r);
+/* 251 */       ((MCH_Vector2)points.get(i)).y = x * MathHelper.sin(r) + y * MathHelper.cos(r);
 /*     */     } 
 /*     */   }
 /*     */   
@@ -272,7 +272,7 @@
 /*     */   
 /*     */   public static int getBlockIdY(World w, double posX, double posY, double posZ, int size, int lenY, boolean canColliableOnly) {
 /* 274 */     Block block = getBlockY(w, posX, posY, posZ, size, lenY, canColliableOnly);
-/* 275 */     return (block == null) ? 0 : W_Block.func_149682_b(block);
+/* 275 */     return (block == null) ? 0 : W_Block.getIdFromBlock(block);
 /*     */   }
 /*     */   
 /*     */   public static int getBlockIdY(Entity entity, int size, int lenY) {
@@ -281,15 +281,15 @@
 /*     */   
 /*     */   public static int getBlockIdY(Entity entity, int size, int lenY, boolean canColliableOnly) {
 /* 283 */     Block block = getBlockY(entity, size, lenY, canColliableOnly);
-/* 284 */     return (block == null) ? 0 : W_Block.func_149682_b(block);
+/* 284 */     return (block == null) ? 0 : W_Block.getIdFromBlock(block);
 /*     */   }
 /*     */   
 /*     */   public static Block getBlockY(Entity entity, int size, int lenY, boolean canColliableOnly) {
-/* 288 */     return getBlockY(entity.field_70170_p, entity.field_70165_t, entity.field_70163_u, entity.field_70161_v, size, lenY, canColliableOnly);
+/* 288 */     return getBlockY(entity.world, entity.posX, entity.posY, entity.posZ, size, lenY, canColliableOnly);
 /*     */   }
 /*     */   
 /*     */   public static Block getBlockY(World world, Vec3d pos, int size, int lenY, boolean canColliableOnly) {
-/* 292 */     return getBlockY(world, pos.field_72450_a, pos.field_72448_b, pos.field_72449_c, size, lenY, canColliableOnly);
+/* 292 */     return getBlockY(world, pos.x, pos.y, pos.z, size, lenY, canColliableOnly);
 /*     */   }
 /*     */   
 /*     */   public static Block getBlockY(World world, double posX, double posY, double posZ, int size, int lenY, boolean canColliableOnly) {
@@ -301,19 +301,19 @@
 /*     */       
 /* 302 */       for (int y = 0; y < cntY; y++) {
 /* 303 */         if (py + y < 0 || py + y > 255) {
-/* 304 */           return W_Blocks.field_150350_a;
+/* 304 */           return W_Blocks.AIR;
 /*     */         }
 /*     */         
 /* 307 */         for (int x = -size / 2; x <= size / 2; x++) {
 /* 308 */           for (int z = -size / 2; z <= size / 2; z++) {
-/* 309 */             IBlockState iblockstate = world.func_180495_p(new BlockPos(px + x, py + ((lenY > 0) ? y : -y), pz + z));
+/* 309 */             IBlockState iblockstate = world.getBlockState(new BlockPos(px + x, py + ((lenY > 0) ? y : -y), pz + z));
 /* 310 */             Block block = W_WorldFunc.getBlock(world, px + x, py + ((lenY > 0) ? y : -y), pz + z);
-/* 311 */             if (block != W_Blocks.field_150350_a) {
+/* 311 */             if (block != W_Blocks.AIR) {
 /* 312 */               if (!canColliableOnly) {
 /* 313 */                 return block;
 /*     */               }
 /*     */               
-/* 316 */               if (block.func_176209_a(iblockstate, true)) {
+/* 316 */               if (block.canCollideCheck(iblockstate, true)) {
 /* 317 */                 return block;
 /*     */               }
 /*     */             } 
@@ -322,15 +322,15 @@
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 325 */     return W_Blocks.field_150350_a;
+/* 325 */     return W_Blocks.AIR;
 /*     */   }
 /*     */   
 /*     */   public static Vec3d getYawPitchFromVec(Vec3d v) {
-/* 329 */     return getYawPitchFromVec(v.field_72450_a, v.field_72448_b, v.field_72449_c);
+/* 329 */     return getYawPitchFromVec(v.x, v.y, v.z);
 /*     */   }
 /*     */   
 /*     */   public static Vec3d getYawPitchFromVec(double x, double y, double z) {
-/* 333 */     double p = MathHelper.func_76133_a(x * x + z * z);
+/* 333 */     double p = MathHelper.sqrt(x * x + z * z);
 /* 334 */     float yaw = (float)(Math.atan2(z, x) * 180.0D / Math.PI);
 /* 335 */     float roll = (float)(Math.atan2(y, p) * 180.0D / Math.PI);
 /* 336 */     return new Vec3d(0.0D, yaw, roll);
@@ -362,7 +362,7 @@
 /*     */ 
 /*     */   
 /*     */   public static void disableFirstPersonItemRender(ItemStack itemStack) {
-/* 365 */     if (!itemStack.func_190926_b() || !(itemStack.func_77973_b() instanceof net.minecraft.item.ItemMapBase) || W_McClient.getRenderEntity() instanceof MCH_ViewEntityDummy) {
+/* 365 */     if (!itemStack.isEmpty() || !(itemStack.getItem() instanceof net.minecraft.item.ItemMapBase) || W_McClient.getRenderEntity() instanceof MCH_ViewEntityDummy) {
 /* 366 */       disableFirstPersonItemRender();
 /*     */     }
 /*     */   }

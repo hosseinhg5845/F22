@@ -30,7 +30,7 @@
 /*    */   
 /*    */   public void readData(ByteArrayDataInput data) {
 /*    */     try {
-/* 33 */       this.chatComponent = ITextComponent.Serializer.func_150699_a(data.readUTF());
+/* 33 */       this.chatComponent = ITextComponent.Serializer.jsonToComponent(data.readUTF());
 /* 34 */       this.showTime = data.readShort();
 /* 35 */       this.position = data.readShort();
 /* 36 */     } catch (Exception var3) {
@@ -41,7 +41,7 @@
 /*    */   
 /*    */   public void writeData(DataOutputStream dos) {
 /*    */     try {
-/* 44 */       dos.writeUTF(ITextComponent.Serializer.func_150696_a(this.chatComponent));
+/* 44 */       dos.writeUTF(ITextComponent.Serializer.componentToJson(this.chatComponent));
 /* 45 */       dos.writeShort(this.showTime);
 /* 46 */       dos.writeShort(this.position);
 /* 47 */     } catch (IOException var3) {

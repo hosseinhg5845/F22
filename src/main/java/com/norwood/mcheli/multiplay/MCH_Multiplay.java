@@ -65,7 +65,7 @@
 /*  65 */     if (user instanceof EntityLivingBase) { spotter = (EntityLivingBase)user; }
 /*  66 */     else { return MCH_TargetType.NONE; }
 /*     */     
-/*  68 */     int col = (spotter.func_96124_cp() == null) ? 0 : 1;
+/*  68 */     int col = (spotter.getTeam() == null) ? 0 : 1;
 /*  69 */     int row = 0;
 /*  70 */     if (target instanceof EntityLivingBase) {
 /*  71 */       if (!isMonster(target)) {
@@ -75,10 +75,10 @@
 /*     */       } 
 /*     */     }
 /*     */     
-/*  78 */     if (spotter.func_96124_cp() != null) {
+/*  78 */     if (spotter.getTeam() != null) {
 /*  79 */       if (target instanceof EntityPlayer) { EntityPlayer player = (EntityPlayer)target;
-/*  80 */         player.func_96124_cp();
-/*  81 */         if (spotter.func_184191_r((Entity)player)) {
+/*  80 */         player.getTeam();
+/*  81 */         if (spotter.isOnSameTeam((Entity)player)) {
 /*  82 */           row = 4;
 /*     */         } else {
 /*  84 */           row = 5;
@@ -88,8 +88,8 @@
 /*  88 */         if (rideEntity == null) {
 /*  89 */           row = 6;
 /*     */         } else {
-/*  91 */           rideEntity.func_96124_cp();
-/*  92 */           if (spotter.func_184191_r((Entity)rideEntity)) {
+/*  91 */           rideEntity.getTeam();
+/*  92 */           if (spotter.isOnSameTeam((Entity)rideEntity)) {
 /*  93 */             row = 8;
 /*     */           } else {
 /*  95 */             row = 9;
@@ -103,9 +103,9 @@
 /* 103 */     MCH_TargetType ret = ENTITY_SPOT_TABLE[row][col];
 /* 104 */     if (checkSee && ret != MCH_TargetType.NONE) {
 /* 105 */       Vec3d vs = new Vec3d(posX, posY, posZ);
-/* 106 */       Vec3d ve = new Vec3d(target.field_70165_t, target.field_70163_u + target.func_70047_e(), target.field_70161_v);
-/* 107 */       RayTraceResult mop = target.field_70170_p.func_72933_a(vs, ve);
-/* 108 */       if (mop != null && mop.field_72313_a == RayTraceResult.Type.BLOCK) {
+/* 106 */       Vec3d ve = new Vec3d(target.posX, target.posY + target.getEyeHeight(), target.posZ);
+/* 107 */       RayTraceResult mop = target.world.rayTraceBlocks(vs, ve);
+/* 108 */       if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK) {
 /* 109 */         ret = MCH_TargetType.NONE;
 /*     */       }
 /*     */     } 
@@ -115,7 +115,7 @@
 /*     */ 
 /*     */   
 /*     */   public static boolean canAttackEntity(DamageSource ds, Entity target) {
-/* 118 */     return canAttackEntity(ds.func_76346_g(), target);
+/* 118 */     return canAttackEntity(ds.getTrueSource(), target);
 /*     */   }
 /*     */   
 /*     */   public static boolean canAttackEntity(Entity attacker, Entity target) {
@@ -138,7 +138,7 @@
 /*     */         } }
 /*     */ 
 /*     */       
-/* 141 */       return (attackPlayer == null || targetPlayer == null || attackPlayer.func_96122_a(targetPlayer));
+/* 141 */       return (attackPlayer == null || targetPlayer == null || attackPlayer.canAttackPlayer(targetPlayer));
 /*     */     } 
 /*     */     
 /* 144 */     return true;
@@ -147,19 +147,19 @@
 /*     */   public static void jumpSpawnPoint(EntityPlayer player) {
 /* 148 */     MCH_Lib.DbgLog(false, "JumpSpawnPoint", new Object[0]);
 /* 149 */     CommandTeleport cmd = new CommandTeleport();
-/* 150 */     if (cmd.func_184882_a(MCH_Utils.getServer(), (ICommandSender)player)) {
+/* 150 */     if (cmd.checkPermission(MCH_Utils.getServer(), (ICommandSender)player)) {
 /* 151 */       MinecraftServer minecraftServer = MCH_Utils.getServer();
 /*     */       
-/* 153 */       for (String playerName : minecraftServer.func_184103_al().func_72369_d()) {
+/* 153 */       for (String playerName : minecraftServer.getPlayerList().getOnlinePlayerNames()) {
 /*     */         try {
-/* 155 */           EntityPlayerMP jumpPlayer = CommandTeleport.func_184888_a(minecraftServer, (ICommandSender)player, playerName);
+/* 155 */           EntityPlayerMP jumpPlayer = CommandTeleport.getPlayer(minecraftServer, (ICommandSender)player, playerName);
 /* 156 */           BlockPos cc = null;
-/* 157 */           if (jumpPlayer.field_71093_bK == player.field_71093_bK) {
-/* 158 */             cc = jumpPlayer.getBedLocation(jumpPlayer.field_71093_bK);
-/* 159 */             cc = EntityPlayer.func_180467_a((World)minecraftServer.func_71218_a(jumpPlayer.field_71093_bK), cc, true);
+/* 157 */           if (jumpPlayer.dimension == player.dimension) {
+/* 158 */             cc = jumpPlayer.getBedLocation(jumpPlayer.dimension);
+/* 159 */             cc = EntityPlayer.getBedSpawnLocation((World)minecraftServer.getWorld(jumpPlayer.dimension), cc, true);
 /*     */             
 /* 161 */             if (cc == null) {
-/* 162 */               cc = jumpPlayer.field_70170_p.field_73011_w.getRandomizedSpawnPoint();
+/* 162 */               cc = jumpPlayer.world.provider.getRandomizedSpawnPoint();
 /*     */             }
 /*     */           } 
 /*     */           
@@ -168,9 +168,9 @@
 /*     */ 
 /*     */ 
 /*     */             
-/* 171 */             String[] cmdStr = { playerName, String.format("%.1f", new Object[] { Double.valueOf(cc.func_177958_n() + 0.5D) }), String.format("%.1f", new Object[] { Double.valueOf(cc.func_177956_o() + 0.1D) }), String.format("%.1f", new Object[] { Double.valueOf(cc.func_177952_p() + 0.5D) }) };
+/* 171 */             String[] cmdStr = { playerName, String.format("%.1f", new Object[] { Double.valueOf(cc.getX() + 0.5D) }), String.format("%.1f", new Object[] { Double.valueOf(cc.getY() + 0.1D) }), String.format("%.1f", new Object[] { Double.valueOf(cc.getZ() + 0.5D) }) };
 /*     */             
-/* 173 */             cmd.func_184881_a(minecraftServer, (ICommandSender)player, cmdStr);
+/* 173 */             cmd.execute(minecraftServer, (ICommandSender)player, cmdStr);
 /*     */           } 
 /* 175 */         } catch (CommandException var10) {
 /* 176 */           var10.printStackTrace();
@@ -180,18 +180,18 @@
 /*     */   }
 /*     */   
 /*     */   public static void shuffleTeam(EntityPlayer player) {
-/* 183 */     Collection<ScorePlayerTeam> teams = player.field_70170_p.func_96441_U().func_96525_g();
+/* 183 */     Collection<ScorePlayerTeam> teams = player.world.getScoreboard().getTeams();
 /* 184 */     int teamNum = teams.size();
 /* 185 */     MCH_Lib.DbgLog(false, "ShuffleTeam:%d teams ----------", new Object[] { Integer.valueOf(teamNum) });
 /* 186 */     if (teamNum > 0) {
 /* 187 */       CommandScoreboard cmd = new CommandScoreboard();
-/* 188 */       if (cmd.func_184882_a(MCH_Utils.getServer(), (ICommandSender)player)) {
-/* 189 */         List<String> list = Arrays.asList(MCH_Utils.getServer().func_184103_al().func_72369_d());
+/* 188 */       if (cmd.checkPermission(MCH_Utils.getServer(), (ICommandSender)player)) {
+/* 189 */         List<String> list = Arrays.asList(MCH_Utils.getServer().getPlayerList().getOnlinePlayerNames());
 /* 190 */         Collections.shuffle(list);
 /* 191 */         ArrayList<String> listTeam = new ArrayList<>();
 /*     */         
 /* 193 */         for (ScorePlayerTeam o : teams) {
-/* 194 */           listTeam.add(o.func_96661_b());
+/* 194 */           listTeam.add(o.getName());
 /*     */         }
 /*     */         
 /* 197 */         Collections.shuffle(listTeam);
@@ -211,7 +211,7 @@
 /* 211 */             MCH_Lib.DbgLog(false, "ShuffleTeam:" + exe_cmd, new Object[0]);
 /*     */             
 /*     */             try {
-/* 214 */               cmd.func_184881_a(MCH_Utils.getServer(), (ICommandSender)player, process_cmd);
+/* 214 */               cmd.execute(MCH_Utils.getServer(), (ICommandSender)player, process_cmd);
 /* 215 */             } catch (CommandException var11) {
 /* 216 */               var11.printStackTrace();
 /*     */             } 
@@ -233,17 +233,17 @@
 /*     */   
 /*     */   public static boolean spotEntity(EntityLivingBase player, @Nullable MCH_EntityAircraft ac, double posX, double posY, double posZ, int targetFilter, float spotLength, int markTime, float angle) {
 /* 235 */     boolean ret = false;
-/* 236 */     if (!player.field_70170_p.field_72995_K) {
+/* 236 */     if (!player.world.isRemote) {
 /* 237 */       float acRoll = 0.0F;
 /* 238 */       if (ac != null) {
 /* 239 */         acRoll = ac.getRotRoll();
 /*     */       }
 /*     */       
-/* 242 */       Vec3d vv = MCH_Lib.RotVec3(0.0D, 0.0D, 1.0D, -player.field_70177_z, -player.field_70125_A, -acRoll);
-/* 243 */       double tx = vv.field_72450_a;
-/* 244 */       double tz = vv.field_72449_c;
+/* 242 */       Vec3d vv = MCH_Lib.RotVec3(0.0D, 0.0D, 1.0D, -player.rotationYaw, -player.rotationPitch, -acRoll);
+/* 243 */       double tx = vv.x;
+/* 244 */       double tz = vv.z;
 /*     */       
-/* 246 */       List<Entity> list = player.field_70170_p.func_72839_b((Entity)player, player.func_174813_aQ().func_72314_b(spotLength, spotLength, spotLength));
+/* 246 */       List<Entity> list = player.world.getEntitiesWithinAABBExcludingEntity((Entity)player, player.getEntityBoundingBox().grow(spotLength, spotLength, spotLength));
 /* 247 */       List<Integer> entityList = new ArrayList<>();
 /* 248 */       Vec3d pos = new Vec3d(posX, posY, posZ);
 /*     */       
@@ -251,16 +251,16 @@
 /* 251 */         if (canSpotEntityWithFilter(targetFilter, entity)) {
 /* 252 */           MCH_TargetType stopType = canSpotEntity((Entity)player, posX, posY, posZ, entity, true);
 /* 253 */           if (stopType != MCH_TargetType.NONE && stopType != MCH_TargetType.SAME_TEAM_PLAYER) {
-/* 254 */             double dist = entity.func_70092_e(pos.field_72450_a, pos.field_72448_b, pos.field_72449_c);
+/* 254 */             double dist = entity.getDistanceSq(pos.x, pos.y, pos.z);
 /* 255 */             if (dist > 1.0D && dist < (spotLength * spotLength)) {
-/* 256 */               double cx = entity.field_70165_t - pos.field_72450_a;
-/* 257 */               double cy = entity.field_70163_u - pos.field_72448_b;
-/* 258 */               double cz = entity.field_70161_v - pos.field_72449_c;
+/* 256 */               double cx = entity.posX - pos.x;
+/* 257 */               double cy = entity.posY - pos.y;
+/* 258 */               double cz = entity.posZ - pos.z;
 /* 259 */               double h = MCH_Lib.getPosAngle(tx, tz, cx, cz);
 /* 260 */               double v = Math.atan2(cy, Math.sqrt(cx * cx + cz * cz)) * 180.0D / Math.PI;
-/* 261 */               v = Math.abs(v + player.field_70125_A);
+/* 261 */               v = Math.abs(v + player.rotationPitch);
 /* 262 */               if (h < (angle * 2.0F) && v < (angle * 2.0F)) {
-/* 263 */                 entityList.add(Integer.valueOf(entity.func_145782_y()));
+/* 263 */                 entityList.add(Integer.valueOf(entity.getEntityId()));
 /*     */               }
 /*     */             } 
 /*     */           } 
@@ -285,10 +285,10 @@
 /*     */   }
 /*     */   
 /*     */   public static void sendSpotedEntityListToSameTeam(EntityLivingBase player, int count, int[] entityId) {
-/* 288 */     PlayerList svCnf = MCH_Utils.getServer().func_184103_al();
+/* 288 */     PlayerList svCnf = MCH_Utils.getServer().getPlayerList();
 /*     */     
-/* 290 */     for (EntityPlayer notifyPlayer : svCnf.func_181057_v()) {
-/* 291 */       if (player == notifyPlayer || player.func_184191_r((Entity)notifyPlayer)) {
+/* 290 */     for (EntityPlayer notifyPlayer : svCnf.getPlayers()) {
+/* 291 */       if (player == notifyPlayer || player.isOnSameTeam((Entity)notifyPlayer)) {
 /* 292 */         MCH_PacketNotifySpotedEntity.send(notifyPlayer, count, entityId);
 /*     */       }
 /*     */     } 
@@ -296,11 +296,11 @@
 /*     */   
 /*     */   public static boolean markPoint(EntityPlayer player, double posX, double posY, double posZ) {
 /* 298 */     Vec3d vs = new Vec3d(posX, posY, posZ);
-/* 299 */     Vec3d ve = MCH_Lib.Rot2Vec3(player.field_70177_z, player.field_70125_A);
-/* 300 */     ve = vs.func_72441_c(ve.field_72450_a * 300.0D, ve.field_72448_b * 300.0D, ve.field_72449_c * 300.0D);
-/* 301 */     RayTraceResult mop = player.field_70170_p.func_72901_a(vs, ve, true);
-/* 302 */     if (mop != null && mop.field_72313_a == RayTraceResult.Type.BLOCK) {
-/* 303 */       sendMarkPointToSameTeam(player, mop.func_178782_a().func_177958_n(), mop.func_178782_a().func_177956_o() + 2, mop.func_178782_a().func_177952_p());
+/* 299 */     Vec3d ve = MCH_Lib.Rot2Vec3(player.rotationYaw, player.rotationPitch);
+/* 300 */     ve = vs.addVector(ve.x * 300.0D, ve.y * 300.0D, ve.z * 300.0D);
+/* 301 */     RayTraceResult mop = player.world.rayTraceBlocks(vs, ve, true);
+/* 302 */     if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK) {
+/* 303 */       sendMarkPointToSameTeam(player, mop.getBlockPos().getX(), mop.getBlockPos().getY() + 2, mop.getBlockPos().getZ());
 /* 304 */       return true;
 /*     */     } 
 /* 306 */     sendMarkPointToSameTeam(player, 0, 1000, 0);
@@ -309,10 +309,10 @@
 /*     */ 
 /*     */   
 /*     */   public static void sendMarkPointToSameTeam(EntityPlayer player, int x, int y, int z) {
-/* 312 */     PlayerList svCnf = MCH_Utils.getServer().func_184103_al();
+/* 312 */     PlayerList svCnf = MCH_Utils.getServer().getPlayerList();
 /*     */     
-/* 314 */     for (EntityPlayer notifyPlayer : svCnf.func_181057_v()) {
-/* 315 */       if (player == notifyPlayer || player.func_184191_r((Entity)notifyPlayer))
+/* 314 */     for (EntityPlayer notifyPlayer : svCnf.getPlayers()) {
+/* 315 */       if (player == notifyPlayer || player.isOnSameTeam((Entity)notifyPlayer))
 /* 316 */         MCH_PacketNotifyMarkPoint.send(notifyPlayer, x, y, z); 
 /*     */     } 
 /*     */   }

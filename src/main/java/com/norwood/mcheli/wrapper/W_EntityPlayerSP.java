@@ -6,7 +6,7 @@
 /*   */ public class W_EntityPlayerSP {
 /*   */   public static void closeScreen(Entity p) {
 /* 8 */     if (p instanceof EntityPlayerSP)
-/* 9 */       ((EntityPlayerSP)p).func_71053_j(); 
+/* 9 */       ((EntityPlayerSP)p).closeScreen(); 
 /*   */   }
 /*   */ }
 

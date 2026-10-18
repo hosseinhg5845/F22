@@ -26,7 +26,7 @@
 /*     */   
 /*     */   public MCH_Hud(AddonResourceLocation location, String filePath) {
 /*  28 */     super(location, filePath);
-/*  29 */     this.name = location.func_110623_a();
+/*  29 */     this.name = location.getResourcePath();
 /*  30 */     this.fileName = filePath;
 /*  31 */     this.list = new ArrayList<>();
 /*  32 */     this.isDrawing = false;
@@ -147,20 +147,20 @@
 /*     */   
 /*     */   public void draw(MCH_EntityAircraft ac, EntityPlayer player, float partialTicks) {
 /* 149 */     if (MCH_HudItem.mc == null) {
-/* 150 */       MCH_HudItem.mc = Minecraft.func_71410_x();
+/* 150 */       MCH_HudItem.mc = Minecraft.getMinecraft();
 /*     */     }
 /*     */     
 /* 153 */     MCH_HudItem.ac = ac;
 /* 154 */     MCH_HudItem.player = player;
 /* 155 */     MCH_HudItem.partialTicks = partialTicks;
-/* 156 */     W_ScaledResolution w_ScaledResolution = new W_ScaledResolution(MCH_HudItem.mc, MCH_HudItem.mc.field_71443_c, MCH_HudItem.mc.field_71440_d);
-/* 157 */     MCH_HudItem.scaleFactor = w_ScaledResolution.func_78325_e();
+/* 156 */     W_ScaledResolution w_ScaledResolution = new W_ScaledResolution(MCH_HudItem.mc, MCH_HudItem.mc.displayWidth, MCH_HudItem.mc.displayHeight);
+/* 157 */     MCH_HudItem.scaleFactor = w_ScaledResolution.getScaleFactor();
 /* 158 */     if (MCH_HudItem.scaleFactor <= 0) {
 /* 159 */       MCH_HudItem.scaleFactor = 1;
 /*     */     }
 /*     */     
-/* 162 */     MCH_HudItem.width = MCH_HudItem.mc.field_71443_c / MCH_HudItem.scaleFactor;
-/* 163 */     MCH_HudItem.height = MCH_HudItem.mc.field_71440_d / MCH_HudItem.scaleFactor;
+/* 162 */     MCH_HudItem.width = MCH_HudItem.mc.displayWidth / MCH_HudItem.scaleFactor;
+/* 163 */     MCH_HudItem.height = MCH_HudItem.mc.displayHeight / MCH_HudItem.scaleFactor;
 /* 164 */     MCH_HudItem.centerX = MCH_HudItem.width / 2.0D;
 /* 165 */     MCH_HudItem.centerY = MCH_HudItem.height / 2.0D;
 /* 166 */     this.isIfFalse = false;

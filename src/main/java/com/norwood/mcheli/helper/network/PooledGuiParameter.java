@@ -10,7 +10,7 @@
 /*    */   private static Entity serverEntity;
 /*    */   
 /*    */   public static void setEntity(EntityPlayer player, @Nullable Entity target) {
-/* 13 */     if (player.field_70170_p.field_72995_K) {
+/* 13 */     if (player.world.isRemote) {
 /* 14 */       clientEntity = target;
 /*    */     } else {
 /* 16 */       serverEntity = target;
@@ -19,7 +19,7 @@
 /*    */   
 /*    */   @Nullable
 /*    */   public static Entity getEntity(EntityPlayer player) {
-/* 22 */     return player.field_70170_p.field_72995_K ? clientEntity : serverEntity;
+/* 22 */     return player.world.isRemote ? clientEntity : serverEntity;
 /*    */   }
 /*    */   
 /*    */   public static void resetEntity(EntityPlayer player) {

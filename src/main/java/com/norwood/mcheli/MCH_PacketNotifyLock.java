@@ -15,7 +15,7 @@
 /*    */   public static void send(Entity target) {
 /* 16 */     if (target != null) {
 /* 17 */       MCH_PacketNotifyLock s = new MCH_PacketNotifyLock();
-/* 18 */       s.entityID = target.func_145782_y();
+/* 18 */       s.entityID = target.getEntityId();
 /* 19 */       W_Network.sendToServer(s);
 /*    */     } 
 /*    */   }

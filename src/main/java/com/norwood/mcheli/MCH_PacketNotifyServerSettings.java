@@ -24,7 +24,7 @@
 /* 24 */     MCH_PacketNotifyServerSettings s = new MCH_PacketNotifyServerSettings();
 /* 25 */     s.enableCamDistChange = !MCH_Config.DisableCameraDistChange.prmBool;
 /* 26 */     s.enableEntityMarker = MCH_Config.DisplayEntityMarker.prmBool;
-/* 27 */     s.enablePVP = MCH_Utils.getServer().func_71219_W();
+/* 27 */     s.enablePVP = MCH_Utils.getServer().isPVPEnabled();
 /* 28 */     s.stingerLockRange = MCH_Config.StingerLockRange.prmDouble;
 /* 29 */     s.enableDebugBoundingBox = MCH_Config.EnableDebugBoundingBox.prmBool;
 /* 30 */     s.enableRotationLimit = MCH_Config.EnableRotationLimit.prmBool;

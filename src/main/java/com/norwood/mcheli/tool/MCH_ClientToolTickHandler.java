@@ -37,8 +37,8 @@
 /*  37 */       k.update();
 /*     */     }
 /*     */     
-/*  40 */     onTick_ItemWrench(inGUI, (EntityPlayer)this.mc.field_71439_g);
-/*  41 */     onTick_ItemRangeFinder(inGUI, (EntityPlayer)this.mc.field_71439_g);
+/*  40 */     onTick_ItemWrench(inGUI, (EntityPlayer)this.mc.player);
+/*  41 */     onTick_ItemRangeFinder(inGUI, (EntityPlayer)this.mc.player);
 /*     */   }
 /*     */   
 /*     */   private void onTick_ItemRangeFinder(boolean inGUI, EntityPlayer player) {
@@ -46,18 +46,18 @@
 /*  46 */       MCH_ItemRangeFinder.rangeFinderUseCooldown--;
 /*     */     }
 /*     */     
-/*  49 */     ItemStack itemStack = ItemStack.field_190927_a;
+/*  49 */     ItemStack itemStack = ItemStack.EMPTY;
 /*  50 */     if (player != null) {
-/*  51 */       itemStack = player.func_184614_ca();
-/*  52 */       if (!itemStack.func_190926_b() && itemStack.func_77973_b() instanceof MCH_ItemRangeFinder) {
-/*  53 */         boolean usingItem = (player.func_184612_cw() > 8 && MCH_ItemRangeFinder.canUse(player));
+/*  51 */       itemStack = player.getHeldItemMainhand();
+/*  52 */       if (!itemStack.isEmpty() && itemStack.getItem() instanceof MCH_ItemRangeFinder) {
+/*  53 */         boolean usingItem = (player.getItemInUseMaxCount() > 8 && MCH_ItemRangeFinder.canUse(player));
 /*  54 */         if (!MCH_ItemRangeFinder.continueUsingItem && usingItem) {
 /*  55 */           MCH_ItemRangeFinder.onStartUseItem();
 /*     */         }
 /*     */         
 /*  58 */         if (usingItem) {
 /*  59 */           if (this.KeyUseItem.isKeyDown()) {
-/*  60 */             ((MCH_ItemRangeFinder)itemStack.func_77973_b()).spotEntity(player, itemStack);
+/*  60 */             ((MCH_ItemRangeFinder)itemStack.getItem()).spotEntity(player, itemStack);
 /*     */           }
 /*     */           
 /*  63 */           if (this.KeyZoomIn.isKeyPress() && MCH_ItemRangeFinder.zoom < 10.0F) {
@@ -83,7 +83,7 @@
 /*  83 */           if (this.KeySwitchMode.isKeyDown()) {
 /*  84 */             W_McClient.MOD_playSoundFX("lockon", 1.0F, 0.9F);
 /*  85 */             MCH_ItemRangeFinder.mode = (MCH_ItemRangeFinder.mode + 1) % 3;
-/*  86 */             if (this.mc.func_71356_B() && MCH_ItemRangeFinder.mode == 0) {
+/*  86 */             if (this.mc.isSingleplayer() && MCH_ItemRangeFinder.mode == 0) {
 /*  87 */               MCH_ItemRangeFinder.mode = 1;
 /*     */             }
 /*     */           } 
@@ -91,21 +91,21 @@
 /*     */       } 
 /*     */     } 
 /*     */     
-/*  94 */     if (MCH_ItemRangeFinder.continueUsingItem && (itemStack.func_190926_b() || !(itemStack.func_77973_b() instanceof MCH_ItemRangeFinder))) {
+/*  94 */     if (MCH_ItemRangeFinder.continueUsingItem && (itemStack.isEmpty() || !(itemStack.getItem() instanceof MCH_ItemRangeFinder))) {
 /*  95 */       MCH_ItemRangeFinder.onStopUseItem();
 /*     */     }
 /*     */   }
 /*     */   
 /*     */   private void onTick_ItemWrench(boolean inGUI, EntityPlayer player) {
 /* 100 */     if (player != null) {
-/* 101 */       ItemStack itemStack = player.func_184614_ca();
-/* 102 */       if (!itemStack.func_190926_b() && itemStack.func_77973_b() instanceof MCH_ItemWrench) {
-/* 103 */         int maxdm = itemStack.func_77958_k();
-/* 104 */         int dm = itemStack.func_77960_j();
+/* 101 */       ItemStack itemStack = player.getHeldItemMainhand();
+/* 102 */       if (!itemStack.isEmpty() && itemStack.getItem() instanceof MCH_ItemWrench) {
+/* 103 */         int maxdm = itemStack.getMaxDamage();
+/* 104 */         int dm = itemStack.getMetadata();
 /* 105 */         if (dm <= maxdm) {
 /* 106 */           ItemStack renderItemstack = W_Reflection.getItemRendererMainHand();
-/* 107 */           if (renderItemstack.func_190926_b() || itemStack.func_77973_b() == renderItemstack.func_77973_b())
-/* 108 */             W_Reflection.setItemRendererMainHand(player.field_71071_by.func_70448_g()); 
+/* 107 */           if (renderItemstack.isEmpty() || itemStack.getItem() == renderItemstack.getItem())
+/* 108 */             W_Reflection.setItemRendererMainHand(player.inventory.getCurrentItem()); 
 /*     */         } 
 /*     */       } 
 /*     */     } 

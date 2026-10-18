@@ -18,7 +18,7 @@
 /*    */   _IModelCustom load(IResourceManager paramIResourceManager, ResourceLocation paramResourceLocation) throws IOException, _ModelFormatException;
 /*    */   
 /*    */   default ResourceLocation withExtension(ResourceLocation location) {
-/* 21 */     return new ResourceLocation(location.func_110624_b(), location.func_110623_a() + "." + getExtension());
+/* 21 */     return new ResourceLocation(location.getResourceDomain(), location.getResourcePath() + "." + getExtension());
 /*    */   }
 /*    */ }
 

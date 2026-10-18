@@ -22,7 +22,7 @@
 /*    */   public void renderItem(ItemStack itemStack, EntityLivingBase entity, ItemCameraTransforms.TransformType transformType, float partialTicks) {
 /* 23 */     GL11.glPushMatrix();
 /* 24 */     W_McClient.MOD_bindTexture("textures/wrench.png");
-/* 25 */     if (IItemModelRenderer.isFirstPerson(transformType) && entity.func_184587_cr() && entity.func_184600_cs() == EnumHand.MAIN_HAND) {
+/* 25 */     if (IItemModelRenderer.isFirstPerson(transformType) && entity.isHandActive() && entity.getActiveHand() == EnumHand.MAIN_HAND) {
 /* 26 */       float f = MCH_ItemWrench.getUseAnimSmooth(itemStack, partialTicks);
 /* 27 */       GL11.glRotatef(65.0F, 0.0F, 0.0F, 1.0F);
 /* 28 */       GL11.glRotatef(f + 20.0F, 1.0F, 0.0F, 0.0F);

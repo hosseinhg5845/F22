@@ -106,7 +106,7 @@
 /*     */         } 
 /*     */         
 /* 108 */         weapon.delayedInterval = interval;
-/* 109 */         if (w.field_72995_K) {
+/* 109 */         if (w.isRemote) {
 /* 110 */           weapon.interval = interval;
 /* 111 */           weapon.heatCount++;
 /* 112 */           weapon.cartridge = info.cartridge;

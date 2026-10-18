@@ -143,7 +143,7 @@
 /* 143 */           msg = msg + "at line:" + ((ContentParseException)var8).getLineNo() + ".";
 /*     */         }
 /*     */         
-/* 146 */         MCH_Logger.get().error("{} file:{}, domain:{}", msg, location.func_110623_a(), this.domain, var8);
+/* 146 */         MCH_Logger.get().error("{} file:{}, domain:{}", msg, location.getResourcePath(), this.domain, var8);
 /* 147 */         var4 = null;
 /*     */       } finally {
 /* 149 */         MCH_MOD.proxy.onParseFinishFile(location);

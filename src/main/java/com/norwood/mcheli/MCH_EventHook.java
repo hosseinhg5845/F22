@@ -42,7 +42,7 @@
 /*     */     } 
 /*     */     
 /*  44 */     if (entity instanceof MCH_EntityAircraft) { MCH_EntityAircraft aircraft = (MCH_EntityAircraft)entity;
-/*  45 */       if (!aircraft.field_70170_p.field_72995_K && !aircraft.isCreatedSeats()) {
+/*  45 */       if (!aircraft.world.isRemote && !aircraft.isCreatedSeats()) {
 /*  46 */         aircraft.createSeats(UUID.randomUUID().toString());
 /*     */       }
 /*     */       
@@ -52,7 +52,7 @@
 /*  52 */     if (W_EntityPlayer.isPlayer(entity)) {
 /*  53 */       correctInvalidRotation(entity);
 /*     */       
-/*  55 */       if (!entity.field_70170_p.field_72995_K && entity instanceof EntityPlayerMP) {
+/*  55 */       if (!entity.world.isRemote && entity instanceof EntityPlayerMP) {
 /*  56 */         MCH_Lib.DbgLog(false, "EntityJoinWorldEvent: " + entity, new Object[0]);
 /*  57 */         MCH_PacketNotifyServerSettings.send((EntityPlayerMP)entity);
 /*     */       } 
@@ -62,22 +62,22 @@
 /*     */ 
 /*     */   
 /*     */   private void correctInvalidRotation(Entity e) {
-/*  65 */     boolean invalidPitch = (Float.isNaN(e.field_70125_A) || Float.isNaN(e.field_70127_C) || Float.isInfinite(e.field_70125_A) || Float.isInfinite(e.field_70127_C));
+/*  65 */     boolean invalidPitch = (Float.isNaN(e.rotationPitch) || Float.isNaN(e.prevRotationPitch) || Float.isInfinite(e.rotationPitch) || Float.isInfinite(e.prevRotationPitch));
 /*     */     
 /*  67 */     if (invalidPitch) {
-/*  68 */       MCH_Lib.Log(e, "### EntityJoinWorldEvent Error: Player invalid rotation pitch (" + e.field_70125_A + ")", new Object[0]);
-/*  69 */       e.field_70125_A = 0.0F;
-/*  70 */       e.field_70127_C = 0.0F;
+/*  68 */       MCH_Lib.Log(e, "### EntityJoinWorldEvent Error: Player invalid rotation pitch (" + e.rotationPitch + ")", new Object[0]);
+/*  69 */       e.rotationPitch = 0.0F;
+/*  70 */       e.prevRotationPitch = 0.0F;
 /*     */     } 
 /*     */ 
 /*     */ 
 /*     */     
-/*  75 */     boolean invalidYaw = (Float.isNaN(e.field_70177_z) || Float.isNaN(e.field_70126_B) || Float.isInfinite(e.field_70177_z) || Float.isInfinite(e.field_70126_B));
+/*  75 */     boolean invalidYaw = (Float.isNaN(e.rotationYaw) || Float.isNaN(e.prevRotationYaw) || Float.isInfinite(e.rotationYaw) || Float.isInfinite(e.prevRotationYaw));
 /*     */     
 /*  77 */     if (invalidYaw) {
-/*  78 */       MCH_Lib.Log(e, "### EntityJoinWorldEvent Error: Player invalid rotation yaw (" + e.field_70177_z + ")", new Object[0]);
-/*  79 */       e.field_70177_z = 0.0F;
-/*  80 */       e.field_70126_B = 0.0F;
+/*  78 */       MCH_Lib.Log(e, "### EntityJoinWorldEvent Error: Player invalid rotation yaw (" + e.rotationYaw + ")", new Object[0]);
+/*  79 */       e.rotationYaw = 0.0F;
+/*  80 */       e.prevRotationYaw = 0.0F;
 /*     */     } 
 /*     */   }
 /*     */ 
@@ -89,7 +89,7 @@
 /*  89 */       ac.getAcInfo() != null && 
 /*  90 */       !ac.isDestroyed() && 
 /*  91 */       (ac.getAcInfo()).damageFactor <= 0.0F) {
-/*  92 */       Entity attackEntity = event.getSource().func_76346_g();
+/*  92 */       Entity attackEntity = event.getSource().getTrueSource();
 /*  93 */       if (attackEntity == null) {
 /*  94 */         event.setCanceled(true);
 /*  95 */       } else if (W_Entity.isEqual(attackEntity, event.getEntity())) {
@@ -117,7 +117,7 @@
 /*     */       return;
 /*     */     }
 /*     */     
-/* 120 */     Entity attacker = event.getSource().func_76346_g();
+/* 120 */     Entity attacker = event.getSource().getTrueSource();
 /* 121 */     float damage = event.getAmount();
 /* 122 */     float factor = (aircraft.getAcInfo()).damageFactor;
 /*     */     
@@ -131,14 +131,14 @@
 /*     */       
 /*     */       return;
 /*     */     } 
-/* 134 */     aircraft.func_70097_a(event.getSource(), damage * 2.0F);
+/* 134 */     aircraft.attackEntityFrom(event.getSource(), damage * 2.0F);
 /* 135 */     event.setAmount(damage * factor);
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public MCH_EntityAircraft getRiddenAircraft(Entity entity) {
 /* 140 */     MCH_EntityAircraft ac = null;
-/* 141 */     Entity ridden = entity.func_184187_bx();
+/* 141 */     Entity ridden = entity.getRidingEntity();
 /* 142 */     if (ridden instanceof MCH_EntityAircraft) {
 /* 143 */       ac = (MCH_EntityAircraft)ridden;
 /* 144 */     } else if (ridden instanceof MCH_EntitySeat) {
@@ -146,7 +146,7 @@
 /*     */     } 
 /*     */     
 /* 148 */     if (ac == null) {
-/* 149 */       List<MCH_EntityAircraft> list = entity.field_70170_p.func_72872_a(MCH_EntityAircraft.class, entity.func_174813_aQ().func_72314_b(50.0D, 50.0D, 50.0D));
+/* 149 */       List<MCH_EntityAircraft> list = entity.world.getEntitiesWithinAABB(MCH_EntityAircraft.class, entity.getEntityBoundingBox().grow(50.0D, 50.0D, 50.0D));
 /* 150 */       for (MCH_EntityAircraft tmp : list) {
 /* 151 */         if (tmp.isMountedEntity(entity)) {
 /* 152 */           return tmp;
@@ -159,13 +159,13 @@
 /*     */ 
 /*     */   
 /*     */   public void entityInteractEvent(PlayerInteractEvent.EntityInteract event) {
-/* 162 */     ItemStack item = event.getEntityPlayer().func_184586_b(EnumHand.MAIN_HAND);
-/* 163 */     if (!item.func_190926_b()) {
-/* 164 */       if (item.func_77973_b() instanceof MCH_ItemChain) {
-/* 165 */         MCH_ItemChain.interactEntity(item, event.getTarget(), event.getEntityPlayer(), (event.getEntityPlayer()).field_70170_p);
+/* 162 */     ItemStack item = event.getEntityPlayer().getHeldItem(EnumHand.MAIN_HAND);
+/* 163 */     if (!item.isEmpty()) {
+/* 164 */       if (item.getItem() instanceof MCH_ItemChain) {
+/* 165 */         MCH_ItemChain.interactEntity(item, event.getTarget(), event.getEntityPlayer(), (event.getEntityPlayer()).world);
 /* 166 */         event.setCanceled(true);
-/* 167 */       } else if (item.func_77973_b() instanceof MCH_ItemAircraft) {
-/* 168 */         ((MCH_ItemAircraft)item.func_77973_b()).rideEntity(item, event.getTarget(), event.getEntityPlayer());
+/* 167 */       } else if (item.getItem() instanceof MCH_ItemAircraft) {
+/* 168 */         ((MCH_ItemAircraft)item.getItem()).rideEntity(item, event.getTarget(), event.getEntityPlayer());
 /*     */       } 
 /*     */     }
 /*     */   }
@@ -173,7 +173,7 @@
 /*     */   
 /*     */   public void entityCanUpdate(EntityEvent.CanUpdate event) {
 /* 175 */     Entity entity = event.getEntity(); if (entity instanceof MCH_EntityBaseBullet) { MCH_EntityBaseBullet bullet = (MCH_EntityBaseBullet)entity;
-/* 176 */       bullet.func_70106_y(); }
+/* 176 */       bullet.setDead(); }
 /*     */   
 /*     */   }
 /*     */ }

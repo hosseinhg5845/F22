@@ -20,8 +20,8 @@
 /* 20 */     return instance;
 /*    */   }
 /*    */   
-/*    */   public void func_192838_a(ItemStack p_192838_1_, float partialTicks) {
-/* 24 */     IItemModelRenderer renderer = MCH_ItemModelRenderers.getRenderer(p_192838_1_.func_77973_b());
+/*    */   public void renderByItem(ItemStack p_192838_1_, float partialTicks) {
+/* 24 */     IItemModelRenderer renderer = MCH_ItemModelRenderers.getRenderer(p_192838_1_.getItem());
 /* 25 */     if (renderer != null)
 /* 26 */       renderer.renderItem(p_192838_1_, PooledModelParameters.getEntity(), PooledModelParameters.getTransformType(), Animation.getPartialTickTime()); 
 /*    */   }

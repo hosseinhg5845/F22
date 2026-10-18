@@ -224,10 +224,10 @@
 /* 224 */       return null;
 /*     */     } 
 /*     */     
-/* 227 */     for (int j = 0; j < r.field_77574_d.size(); j++) {
-/* 228 */       if (r.field_77574_d.get(j) != Ingredient.field_193370_a) {
-/* 229 */         Arrays.<ItemStack>stream(((Ingredient)r.field_77574_d.get(j)).func_193365_a()).anyMatch(stack -> {
-/*     */               stack.func_77973_b();
+/* 227 */     for (int j = 0; j < r.recipeItems.size(); j++) {
+/* 228 */       if (r.recipeItems.get(j) != Ingredient.EMPTY) {
+/* 229 */         Arrays.<ItemStack>stream(((Ingredient)r.recipeItems.get(j)).getMatchingStacks()).anyMatch(stack -> {
+/*     */               stack.getItem();
 /*     */               
 /*     */               return false;
 /*     */             });
@@ -288,10 +288,10 @@
 /*     */     
 /* 289 */     ShapelessRecipes r = getShapelessRecipe(new ItemStack(item, createNum), recipe);
 /*     */     
-/* 291 */     for (int j = 0; j < r.field_77579_b.size(); j++) {
-/* 292 */       Ingredient ingredient = (Ingredient)r.field_77579_b.get(j);
-/* 293 */       Arrays.<ItemStack>stream(ingredient.func_193365_a()).anyMatch(stack -> {
-/*     */             stack.func_77973_b();
+/* 291 */     for (int j = 0; j < r.recipeItems.size(); j++) {
+/* 292 */       Ingredient ingredient = (Ingredient)r.recipeItems.get(j);
+/* 293 */       Arrays.<ItemStack>stream(ingredient.getMatchingStacks()).anyMatch(stack -> {
+/*     */             stack.getItem();
 /*     */             
 /*     */             return false;
 /*     */           });
@@ -302,19 +302,19 @@
 /*     */ 
 /*     */   
 /*     */   public static ShapelessRecipes getShapelessRecipe(ItemStack par1ItemStack, Object... par2ArrayOfObj) {
-/* 305 */     NonNullList<Ingredient> list = NonNullList.func_191196_a();
+/* 305 */     NonNullList<Ingredient> list = NonNullList.create();
 /*     */     
 /* 307 */     for (Object object1 : par2ArrayOfObj) {
 /* 308 */       if (object1 instanceof ItemStack) {
-/* 309 */         list.add(Ingredient.func_193369_a(new ItemStack[] { ((ItemStack)object1).func_77946_l() }));
+/* 309 */         list.add(Ingredient.fromStacks(new ItemStack[] { ((ItemStack)object1).copy() }));
 /* 310 */       } else if (object1 instanceof Item) {
-/* 311 */         list.add(Ingredient.func_193369_a(new ItemStack[] { new ItemStack((Item)object1) }));
+/* 311 */         list.add(Ingredient.fromStacks(new ItemStack[] { new ItemStack((Item)object1) }));
 /*     */       } else {
 /* 313 */         if (!(object1 instanceof Block)) {
 /* 314 */           throw new RuntimeException("Invalid shapeless recipy!");
 /*     */         }
 /*     */         
-/* 317 */         list.add(Ingredient.func_193369_a(new ItemStack[] { new ItemStack((Block)object1) }));
+/* 317 */         list.add(Ingredient.fromStacks(new ItemStack[] { new ItemStack((Block)object1) }));
 /*     */       } 
 /*     */     } 
 /*     */     

@@ -12,7 +12,7 @@
 /* 12 */   public int entityID_AC = -1;
 /*    */   
 /*    */   public static void requestStatus(MCH_EntityAircraft ac) {
-/* 15 */     if (ac.field_70170_p.field_72995_K) {
+/* 15 */     if (ac.world.isRemote) {
 /* 16 */       MCH_PacketStatusRequest s = new MCH_PacketStatusRequest();
 /* 17 */       s.entityID_AC = W_Entity.getEntityId((Entity)ac);
 /* 18 */       W_Network.sendToServer((W_PacketBase)s);

@@ -44,7 +44,7 @@
 /* 44 */         GL11.glRotatef(-130.0F, 0.0F, 1.0F, 0.0F);
 /* 45 */         GL11.glRotatef(70.0F, 1.0F, 0.0F, 0.0F);
 /* 46 */         GL11.glRotatef(5.0F, 0.0F, 0.0F, 1.0F);
-/* 47 */         if ((Minecraft.func_71410_x()).field_71439_g.func_184612_cw() > 0) {
+/* 47 */         if ((Minecraft.getMinecraft()).player.getItemInUseMaxCount() > 0) {
 /* 48 */           GL11.glTranslatef(0.4F, -0.35F, -0.3F);
 /*    */         } else {
 /* 50 */           GL11.glTranslatef(0.2F, -0.35F, -0.3F);
@@ -53,7 +53,7 @@
 /* 53 */         MCH_ModelManager.render("rangefinder");
 /*    */         break;
 /*    */       case EQUIPPED_FIRST_PERSON:
-/* 56 */         if (!MCH_ItemRangeFinder.isUsingScope((EntityPlayer)(Minecraft.func_71410_x()).field_71439_g)) {
+/* 56 */         if (!MCH_ItemRangeFinder.isUsingScope((EntityPlayer)(Minecraft.getMinecraft()).player)) {
 /* 57 */           size = 2.2F;
 /* 58 */           GL11.glScalef(size, size, size);
 /* 59 */           GL11.glRotatef(-210.0F, 0.0F, 1.0F, 0.0F);

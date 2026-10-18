@@ -91,7 +91,7 @@ import java.util.List;
 /*     */ 
 /*     */   
 /*     */   public String getDataDir() {
-/*  92 */     return (Minecraft.func_71410_x()).field_71412_D.getPath();
+/*  92 */     return (Minecraft.getMinecraft()).mcDataDir.getPath();
 /*     */   }
 /*     */ 
 /*     */   
@@ -318,7 +318,7 @@ import java.util.List;
 /*     */ 
 /*     */   
 /*     */   public void registerClientTick() {
-/* 319 */     Minecraft mc = Minecraft.func_71410_x();
+/* 319 */     Minecraft mc = Minecraft.getMinecraft();
 /* 320 */     MCH_ClientCommonTickHandler.instance = new MCH_ClientCommonTickHandler(mc, MCH_MOD.config);
 /* 321 */     W_TickRegistry.registerTickHandler(MCH_ClientCommonTickHandler.instance, Side.CLIENT);
 /*     */   }
@@ -335,7 +335,7 @@ import java.util.List;
 /*     */ 
 /*     */   
 /*     */   public MCH_SoundUpdater CreateSoundUpdater(MCH_EntityAircraft aircraft) {
-/* 336 */     return (aircraft != null && aircraft.field_70170_p.field_72995_K) ? new MCH_SoundUpdater(Minecraft.func_71410_x(), aircraft, (Minecraft.func_71410_x()).field_71439_g) : null;
+/* 336 */     return (aircraft != null && aircraft.world.isRemote) ? new MCH_SoundUpdater(Minecraft.getMinecraft(), aircraft, (Minecraft.getMinecraft()).player) : null;
 /*     */   }
 /*     */ 
 /*     */   
@@ -393,7 +393,7 @@ import java.util.List;
 /*     */   
 /*     */   public void loadConfig(String fileName) {
 /* 393 */     this.lastConfigFileName = fileName;
-/* 394 */     this.config = new MCH_Config((Minecraft.func_71410_x()).field_71412_D.getPath(), "/" + fileName);
+/* 394 */     this.config = new MCH_Config((Minecraft.getMinecraft()).mcDataDir.getPath(), "/" + fileName);
 /* 395 */     this.config.load();
 /* 396 */     this.config.write();
 /*     */   }
@@ -412,7 +412,7 @@ import java.util.List;
 /*     */ 
 /*     */   
 /*     */   public Entity getClientPlayer() {
-/* 413 */     return (Entity)(Minecraft.func_71410_x()).field_71439_g;
+/* 413 */     return (Entity)(Minecraft.getMinecraft()).player;
 /*     */   }
 /*     */ 
 /*     */   
@@ -428,19 +428,19 @@ import java.util.List;
 /*     */ 
 /*     */   
 /*     */   public boolean isFirstPerson() {
-/* 429 */     return ((Minecraft.func_71410_x()).field_71474_y.field_74320_O == 0);
+/* 429 */     return ((Minecraft.getMinecraft()).gameSettings.thirdPersonView == 0);
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public boolean isSinglePlayer() {
-/* 434 */     return Minecraft.func_71410_x().func_71356_B();
+/* 434 */     return Minecraft.getMinecraft().isSingleplayer();
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public void readClientModList() {
 /*     */     try {
-/* 440 */       Minecraft mc = Minecraft.func_71410_x();
-/* 441 */       MCH_MultiplayClient.readModList(mc.func_110432_I().func_148255_b(), mc.func_110432_I().func_111285_a());
+/* 440 */       Minecraft mc = Minecraft.getMinecraft();
+/* 441 */       MCH_MultiplayClient.readModList(mc.getSession().getPlayerID(), mc.getSession().getUsername());
 /* 442 */     } catch (Exception var2) {
 /* 443 */       var2.printStackTrace();
 /*     */     } 
@@ -463,7 +463,7 @@ import java.util.List;
 /*     */ 
 /*     */   
 /*     */   public void setRenderEntityDistanceWeight(double renderDistWeight) {
-/* 464 */     Entity.func_184227_b(renderDistWeight);
+/* 464 */     Entity.setRenderDistanceWeight(renderDistWeight);
 /*     */   }
 /*     */ 
 /*     */   

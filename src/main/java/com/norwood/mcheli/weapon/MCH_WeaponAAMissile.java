@@ -13,7 +13,7 @@
 /* 13 */     this.acceleration = 2.5F;
 /* 14 */     this.explosionPower = 4;
 /* 15 */     this.interval = 5;
-/* 16 */     if (w.field_72995_K) {
+/* 16 */     if (w.isRemote) {
 /* 17 */       this.interval += 5;
 /*    */     }
 /*    */     
@@ -34,20 +34,20 @@
 /*    */   
 /*    */   public boolean shot(MCH_WeaponParam prm) {
 /* 36 */     boolean result = false;
-/* 37 */     if (!this.worldObj.field_72995_K) {
-/* 38 */       Entity tgtEnt = prm.user.field_70170_p.func_73045_a(prm.option1);
-/* 39 */       if (tgtEnt != null && !tgtEnt.field_70128_L) {
+/* 37 */     if (!this.worldObj.isRemote) {
+/* 38 */       Entity tgtEnt = prm.user.world.getEntityByID(prm.option1);
+/* 39 */       if (tgtEnt != null && !tgtEnt.isDead) {
 /* 40 */         playSound(prm.entity);
-/* 41 */         float yaw = prm.entity.field_70177_z + this.fixRotationYaw;
-/* 42 */         float pitch = prm.entity.field_70125_A + this.fixRotationPitch;
-/* 43 */         double tX = (-MathHelper.func_76126_a(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/* 44 */         double tZ = (MathHelper.func_76134_b(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/* 45 */         double tY = -MathHelper.func_76126_a(pitch / 180.0F * 3.1415927F);
+/* 41 */         float yaw = prm.entity.rotationYaw + this.fixRotationYaw;
+/* 42 */         float pitch = prm.entity.rotationPitch + this.fixRotationPitch;
+/* 43 */         double tX = (-MathHelper.sin(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/* 44 */         double tZ = (MathHelper.cos(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/* 45 */         double tY = -MathHelper.sin(pitch / 180.0F * 3.1415927F);
 /* 46 */         MCH_EntityAAMissile e = new MCH_EntityAAMissile(this.worldObj, prm.posX, prm.posY, prm.posZ, tX, tY, tZ, yaw, pitch, this.acceleration);
 /* 47 */         e.setName(this.name);
 /* 48 */         e.setParameterFromWeapon(this, prm.entity, prm.user);
 /* 49 */         e.setTargetEntity(tgtEnt);
-/* 50 */         this.worldObj.func_72838_d((Entity)e);
+/* 50 */         this.worldObj.spawnEntity((Entity)e);
 /* 51 */         result = true;
 /*    */       } 
 /* 53 */     } else if (this.guidanceSystem.lock(prm.user) && this.guidanceSystem.lastLockEntity != null) {

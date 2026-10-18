@@ -146,7 +146,7 @@ import com.norwood.mcheli.MCH_BaseInfo;
 /*      */   
 /*      */   public MCH_AircraftInfo(AddonResourceLocation location, String path) {
 /*  147 */     super(location, path);
-/*  148 */     this.name = location.func_110623_a();
+/*  148 */     this.name = location.getResourcePath();
 /*  149 */     this.displayName = this.name;
 /*  150 */     this.displayNameLang = new HashMap<>();
 /*  151 */     this.itemID = 0;
@@ -599,7 +599,7 @@ import com.norwood.mcheli.MCH_BaseInfo;
 /*  598 */               toDouble(s[1]), 
 /*  599 */               toDouble(s[2]), 
 /*  600 */               toDouble(s[3]), new CameraPosition(this, 
-/*  601 */                 toVec3(s[4], s[5], s[6]).func_72441_c(0.0D, 1.5D, 0.0D)), range, para, yaw, pitch, rs));
+/*  601 */                 toVec3(s[4], s[5], s[6]).addVector(0.0D, 1.5D, 0.0D)), range, para, yaw, pitch, rs));
 /*      */ 
 /*      */ 
 /*      */       
@@ -673,7 +673,7 @@ import com.norwood.mcheli.MCH_BaseInfo;
 /*  672 */           this.wheels.add(new Wheel(this, new Vec3d(x, y, toFloat(sx[i]))));
 /*      */         }
 /*      */         
-/*  675 */         this.wheels.sort((arg0, arg1) -> (arg0.pos.field_72449_c > arg1.pos.field_72449_c) ? -1 : 1);
+/*  675 */         this.wheels.sort((arg0, arg1) -> (arg0.pos.z > arg1.pos.z) ? -1 : 1);
 /*      */       } 
 /*  677 */     } else if (item.equalsIgnoreCase("ExclusionSeat")) {
 /*  678 */       String[] sx = splitParam(data);
@@ -808,7 +808,7 @@ import com.norwood.mcheli.MCH_BaseInfo;
 /*      */         }
 /*      */         
 /*  809 */         float dfy = (sx.length >= 9) ? toFloat(sx[8]) : 0.0F;
-/*  810 */         dfy = MathHelper.func_76142_g(dfy);
+/*  810 */         dfy = MathHelper.wrapDegrees(dfy);
 /*  811 */         float mny = (sx.length >= 10) ? toFloat(sx[9]) : 0.0F;
 /*  812 */         float mxy = (sx.length >= 11) ? toFloat(sx[10]) : 0.0F;
 /*  813 */         float mnp = (sx.length >= 12) ? toFloat(sx[11]) : 0.0F;
@@ -1238,16 +1238,16 @@ import com.norwood.mcheli.MCH_BaseInfo;
 /* 1237 */         MCH_BoundingBox c = new MCH_BoundingBox(toFloat(sxxx[0]), toFloat(sxxx[1]), toFloat(sxxx[2]), toFloat(sxxx[3]), toFloat(sxxx[4]), df);
 /*      */         
 /* 1239 */         this.extraBoundingBox.add(c);
-/* 1240 */         if ((c.getBoundingBox()).field_72337_e > this.markerHeight) {
-/* 1241 */           this.markerHeight = (float)(c.getBoundingBox()).field_72337_e;
+/* 1240 */         if ((c.getBoundingBox()).maxY > this.markerHeight) {
+/* 1241 */           this.markerHeight = (float)(c.getBoundingBox()).maxY;
 /*      */         }
 /*      */         
-/* 1244 */         this.markerWidth = (float)Math.max(this.markerWidth, Math.abs((c.getBoundingBox()).field_72336_d) / 2.0D);
-/* 1245 */         this.markerWidth = (float)Math.max(this.markerWidth, Math.abs((c.getBoundingBox()).field_72340_a) / 2.0D);
-/* 1246 */         this.markerWidth = (float)Math.max(this.markerWidth, Math.abs((c.getBoundingBox()).field_72334_f) / 2.0D);
-/* 1247 */         this.markerWidth = (float)Math.max(this.markerWidth, Math.abs((c.getBoundingBox()).field_72339_c) / 2.0D);
-/* 1248 */         this.bbZmin = (float)Math.min(this.bbZmin, (c.getBoundingBox()).field_72339_c);
-/* 1249 */         this.bbZmax = (float)Math.min(this.bbZmax, (c.getBoundingBox()).field_72334_f);
+/* 1244 */         this.markerWidth = (float)Math.max(this.markerWidth, Math.abs((c.getBoundingBox()).maxX) / 2.0D);
+/* 1245 */         this.markerWidth = (float)Math.max(this.markerWidth, Math.abs((c.getBoundingBox()).minX) / 2.0D);
+/* 1246 */         this.markerWidth = (float)Math.max(this.markerWidth, Math.abs((c.getBoundingBox()).maxZ) / 2.0D);
+/* 1247 */         this.markerWidth = (float)Math.max(this.markerWidth, Math.abs((c.getBoundingBox()).minZ) / 2.0D);
+/* 1248 */         this.bbZmin = (float)Math.min(this.bbZmin, (c.getBoundingBox()).minZ);
+/* 1249 */         this.bbZmax = (float)Math.min(this.bbZmax, (c.getBoundingBox()).maxZ);
 /*      */       } 
 /* 1251 */     } else if (item.equalsIgnoreCase("RotorSpeed")) {
 /* 1252 */       this.rotorSpeed = toFloat(data, -10000.0F, 10000.0F);

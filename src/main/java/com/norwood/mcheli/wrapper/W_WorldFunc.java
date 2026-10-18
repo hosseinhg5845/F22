@@ -22,7 +22,7 @@
 /*    */   }
 /*    */   
 /*    */   private static void playSoundAtEntity(Entity e, String name, float volume, float pitch) {
-/* 25 */     e.func_184185_a(MCH_SoundEvents.getSound(name), volume, pitch);
+/* 25 */     e.playSound(MCH_SoundEvents.getSound(name), volume, pitch);
 /*    */   }
 /*    */   
 /*    */   public static void MOD_playSoundAtEntity(Entity e, String name, float volume, float pitch) {
@@ -30,7 +30,7 @@
 /*    */   }
 /*    */   
 /*    */   public static int getBlockId(World w, int x, int y, int z) {
-/* 33 */     return Block.func_149682_b(getBlock(w, x, y, z));
+/* 33 */     return Block.getIdFromBlock(getBlock(w, x, y, z));
 /*    */   }
 /*    */   
 /*    */   public static Block getBlock(World w, int x, int y, int z) {
@@ -38,11 +38,11 @@
 /*    */   }
 /*    */   
 /*    */   public static Block getBlock(World w, BlockPos blockpos) {
-/* 41 */     return w.func_180495_p(blockpos).func_177230_c();
+/* 41 */     return w.getBlockState(blockpos).getBlock();
 /*    */   }
 /*    */   
 /*    */   public static Material getBlockMaterial(World w, int x, int y, int z) {
-/* 45 */     return w.func_180495_p(new BlockPos(x, y, z)).func_185904_a();
+/* 45 */     return w.getBlockState(new BlockPos(x, y, z)).getMaterial();
 /*    */   }
 /*    */   
 /*    */   public static boolean isBlockWater(World w, int x, int y, int z) {
@@ -50,22 +50,22 @@
 /*    */   }
 /*    */   
 /*    */   public static boolean isEqualBlock(World w, int x, int y, int z, Block block) {
-/* 53 */     return Block.func_149680_a(getBlock(w, x, y, z), block);
+/* 53 */     return Block.isEqualTo(getBlock(w, x, y, z), block);
 /*    */   }
 /*    */   
 /*    */   @Nullable
 /*    */   public static RayTraceResult clip(World w, Vec3d par1Vec3, Vec3d par2Vec3) {
-/* 58 */     return w.func_72933_a(par1Vec3, par2Vec3);
+/* 58 */     return w.rayTraceBlocks(par1Vec3, par2Vec3);
 /*    */   }
 /*    */   
 /*    */   @Nullable
 /*    */   public static RayTraceResult clip(World w, Vec3d par1Vec3, Vec3d par2Vec3, boolean b) {
-/* 63 */     return w.func_72901_a(par1Vec3, par2Vec3, b);
+/* 63 */     return w.rayTraceBlocks(par1Vec3, par2Vec3, b);
 /*    */   }
 /*    */   
 /*    */   @Nullable
 /*    */   public static RayTraceResult clip(World w, Vec3d par1Vec3, Vec3d par2Vec3, boolean b1, boolean b2, boolean b3) {
-/* 68 */     return w.func_147447_a(par1Vec3, par2Vec3, b1, b2, b3);
+/* 68 */     return w.rayTraceBlocks(par1Vec3, par2Vec3, b1, b2, b3);
 /*    */   }
 /*    */   
 /*    */   public static boolean setBlock(World w, int a, int b, int c, Block d) {
@@ -73,11 +73,11 @@
 /*    */   }
 /*    */   
 /*    */   public static boolean setBlock(World w, BlockPos blockpos, Block d) {
-/* 76 */     return w.func_175656_a(blockpos, d.func_176223_P());
+/* 76 */     return w.setBlockState(blockpos, d.getDefaultState());
 /*    */   }
 /*    */   
 /*    */   public static void setBlock(World w, int x, int y, int z, IBlockState blockstate, int j) {
-/* 80 */     w.func_180501_a(new BlockPos(x, y, x), blockstate, j);
+/* 80 */     w.setBlockState(new BlockPos(x, y, x), blockstate, j);
 /*    */   }
 /*    */   
 /*    */   public static boolean destroyBlock(World w, int x, int y, int z, boolean par4) {
@@ -85,7 +85,7 @@
 /*    */   }
 /*    */   
 /*    */   public static boolean destroyBlock(World w, BlockPos blockpos, boolean dropBlock) {
-/* 88 */     return w.func_175655_b(blockpos, dropBlock);
+/* 88 */     return w.destroyBlock(blockpos, dropBlock);
 /*    */   }
 /*    */   
 /*    */   public static Vec3d getWorldVec3(World w, double x, double y, double z) {
@@ -93,7 +93,7 @@
 /*    */   }
 /*    */   
 /*    */   public static Vec3d getWorldVec3EntityPos(Entity e) {
-/* 96 */     return getWorldVec3(e.field_70170_p, e.field_70165_t, e.field_70163_u, e.field_70161_v);
+/* 96 */     return getWorldVec3(e.world, e.posX, e.posY, e.posZ);
 /*    */   }
 /*    */ }
 

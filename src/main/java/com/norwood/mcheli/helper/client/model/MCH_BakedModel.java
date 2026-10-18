@@ -30,32 +30,32 @@
 /* 30 */     this.overrides = new MCH_ItemOverrideList(bakedModel);
 /*    */   }
 /*    */   @NotNull
-/*    */   public List<BakedQuad> func_188616_a(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
-/* 34 */     return this.bakedModel.func_188616_a(state, side, rand);
+/*    */   public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+/* 34 */     return this.bakedModel.getQuads(state, side, rand);
 /*    */   }
 /*    */   
-/*    */   public boolean func_177555_b() {
-/* 38 */     return this.bakedModel.func_177555_b();
+/*    */   public boolean isAmbientOcclusion() {
+/* 38 */     return this.bakedModel.isAmbientOcclusion();
 /*    */   }
 /*    */   
-/*    */   public boolean func_177556_c() {
-/* 42 */     return this.bakedModel.func_177556_c();
+/*    */   public boolean isGui3d() {
+/* 42 */     return this.bakedModel.isGui3d();
 /*    */   }
 /*    */   
-/*    */   public boolean func_188618_c() {
-/* 46 */     return (this.renderer.shouldRenderer(PooledModelParameters.getTargetRendererStack(), PooledModelParameters.getTransformType()) || this.bakedModel.func_188618_c());
+/*    */   public boolean isBuiltInRenderer() {
+/* 46 */     return (this.renderer.shouldRenderer(PooledModelParameters.getTargetRendererStack(), PooledModelParameters.getTransformType()) || this.bakedModel.isBuiltInRenderer());
 /*    */   }
 /*    */   @NotNull
-/*    */   public TextureAtlasSprite func_177554_e() {
-/* 50 */     return this.bakedModel.func_177554_e();
+/*    */   public TextureAtlasSprite getParticleTexture() {
+/* 50 */     return this.bakedModel.getParticleTexture();
 /*    */   }
 /*    */   @Deprecated
 /*    */   @NotNull
-/*    */   public ItemCameraTransforms func_177552_f() {
-/* 55 */     return this.bakedModel.func_177552_f();
+/*    */   public ItemCameraTransforms getItemCameraTransforms() {
+/* 55 */     return this.bakedModel.getItemCameraTransforms();
 /*    */   }
 /*    */   @NotNull
-/*    */   public ItemOverrideList func_188617_f() {
+/*    */   public ItemOverrideList getOverrides() {
 /* 59 */     return this.overrides;
 /*    */   }
 /*    */   

@@ -30,19 +30,19 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_73866_w_() {
-/*  34 */     super.func_73866_w_();
+/*     */   public void initGui() {
+/*  34 */     super.initGui();
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public boolean isDrawGui(EntityPlayer player) {
-/*  39 */     if (this.restShowTick > 0 && !this.chatLines.isEmpty() && player != null && player.field_70170_p != null) {
-/*  40 */       if (this.prevPlayerTick != player.field_70173_aa) {
+/*  39 */     if (this.restShowTick > 0 && !this.chatLines.isEmpty() && player != null && player.world != null) {
+/*  40 */       if (this.prevPlayerTick != player.ticksExisted) {
 /*  41 */         this.showTick++;
 /*  42 */         this.restShowTick--;
 /*     */       } 
 /*     */       
-/*  45 */       this.prevPlayerTick = player.field_70173_aa;
+/*  45 */       this.prevPlayerTick = player.ticksExisted;
 /*     */     } 
 /*     */     
 /*  48 */     return (this.restShowTick > 0);
@@ -69,13 +69,13 @@
 /*     */   }
 /*     */   
 /*     */   private String formatColors(String s) {
-/*  72 */     return (Minecraft.func_71410_x()).field_71474_y.field_74344_o ? s : TextFormatting.func_110646_a(s);
+/*  72 */     return (Minecraft.getMinecraft()).gameSettings.chatColours ? s : TextFormatting.getTextWithoutFormattingCodes(s);
 /*     */   }
 /*     */   
 /*     */   private int calculateChatboxWidth() {
 /*  76 */     short short1 = 320;
 /*  77 */     byte b0 = 40;
-/*  78 */     return MathHelper.func_76141_d(this.field_146297_k.field_71474_y.field_96692_F * (short1 - b0) + b0);
+/*  78 */     return MathHelper.floor(this.mc.gameSettings.chatWidth * (short1 - b0) + b0);
 /*     */   }
 /*     */   
 /*     */   public void setupTitle(ITextComponent chatComponent, int showTime, int pos) {
@@ -85,7 +85,7 @@
 /*  85 */     this.position = pos;
 /*  86 */     this.showTick = 0;
 /*  87 */     this.restShowTick = showTime;
-/*  88 */     int k = MathHelper.func_76141_d(calculateChatboxWidth() / this.field_146297_k.field_71474_y.field_96691_E);
+/*  88 */     int k = MathHelper.floor(calculateChatboxWidth() / this.mc.gameSettings.chatScale);
 /*  89 */     int l = 0;
 /*  90 */     TextComponentString chatcomponenttext = new TextComponentString("");
 /*  91 */     ArrayList<ITextComponent> arraylist = Lists.newArrayList();
@@ -93,39 +93,39 @@
 /*     */     
 /*  94 */     for (int i1 = 0; i1 < arraylist1.size(); i1++) {
 /*  95 */       ITextComponent ichatcomponent1 = arraylist1.get(i1);
-/*  96 */       String[] splitLine = ichatcomponent1.func_150261_e().split("\n");
+/*  96 */       String[] splitLine = ichatcomponent1.getUnformattedComponentText().split("\n");
 /*  97 */       int lineCnt = 0;
 /*     */       
 /*  99 */       for (String sLine : splitLine) {
-/* 100 */         String s = formatColors(ichatcomponent1.func_150256_b().func_150218_j() + sLine);
-/* 101 */         int j1 = this.field_146297_k.field_71466_p.func_78256_a(s);
+/* 100 */         String s = formatColors(ichatcomponent1.getStyle().getFormattingCode() + sLine);
+/* 101 */         int j1 = this.mc.fontRenderer.getStringWidth(s);
 /* 102 */         TextComponentString chatcomponenttext1 = new TextComponentString(s);
-/* 103 */         chatcomponenttext1.func_150255_a(ichatcomponent1.func_150256_b().func_150232_l());
+/* 103 */         chatcomponenttext1.setStyle(ichatcomponent1.getStyle().createShallowCopy());
 /* 104 */         boolean flag1 = false;
 /* 105 */         if (l + j1 > k) {
-/* 106 */           String s1 = this.field_146297_k.field_71466_p.func_78262_a(s, k - l, false);
+/* 106 */           String s1 = this.mc.fontRenderer.trimStringToWidth(s, k - l, false);
 /* 107 */           String s2 = (s1.length() < s.length()) ? s.substring(s1.length()) : null;
 /* 108 */           if (s2 != null) {
 /* 109 */             int k1 = s1.lastIndexOf(" ");
-/* 110 */             if (k1 >= 0 && this.field_146297_k.field_71466_p.func_78256_a(s.substring(0, k1)) > 0) {
+/* 110 */             if (k1 >= 0 && this.mc.fontRenderer.getStringWidth(s.substring(0, k1)) > 0) {
 /* 111 */               s1 = s.substring(0, k1);
 /* 112 */               s2 = s.substring(k1);
 /*     */             } 
 /*     */             
 /* 115 */             TextComponentString chatcomponenttext2 = new TextComponentString(s2);
-/* 116 */             chatcomponenttext2.func_150255_a(ichatcomponent1.func_150256_b().func_150232_l());
+/* 116 */             chatcomponenttext2.setStyle(ichatcomponent1.getStyle().createShallowCopy());
 /* 117 */             arraylist1.add(i1 + 1, chatcomponenttext2);
 /*     */           } 
 /*     */           
-/* 120 */           j1 = this.field_146297_k.field_71466_p.func_78256_a(s1);
+/* 120 */           j1 = this.mc.fontRenderer.getStringWidth(s1);
 /* 121 */           chatcomponenttext1 = new TextComponentString(s1);
-/* 122 */           chatcomponenttext1.func_150255_a(ichatcomponent1.func_150256_b().func_150232_l());
+/* 122 */           chatcomponenttext1.setStyle(ichatcomponent1.getStyle().createShallowCopy());
 /* 123 */           flag1 = true;
 /*     */         } 
 /*     */         
 /* 126 */         if (l + j1 <= k) {
 /* 127 */           l += j1;
-/* 128 */           chatcomponenttext.func_150257_a((ITextComponent)chatcomponenttext1);
+/* 128 */           chatcomponenttext.appendSibling((ITextComponent)chatcomponenttext1);
 /*     */         } else {
 /* 130 */           flag1 = true;
 /*     */         } 
@@ -158,19 +158,19 @@
 /*     */   private int calculateChatboxHeight() {
 /* 159 */     short short1 = 180;
 /* 160 */     byte b0 = 20;
-/* 161 */     return MathHelper.func_76141_d(this.field_146297_k.field_71474_y.field_96694_H * (short1 - b0) + b0);
+/* 161 */     return MathHelper.floor(this.mc.gameSettings.chatHeightFocused * (short1 - b0) + b0);
 /*     */   }
 /*     */   
 /*     */   private void drawChat() {
-/* 165 */     float charAlpha = this.field_146297_k.field_71474_y.field_74357_r * 0.9F + 0.1F;
-/* 166 */     float scale = this.field_146297_k.field_71474_y.field_96691_E * 2.0F;
+/* 165 */     float charAlpha = this.mc.gameSettings.chatOpacity * 0.9F + 0.1F;
+/* 166 */     float scale = this.mc.gameSettings.chatScale * 2.0F;
 /* 167 */     GL11.glPushMatrix();
 /* 168 */     switch (this.position) { case 1: 
 /*     */       case 2: 
 /*     */       case 3: 
 /*     */       case 4: 
 /*     */       default:
-/* 173 */         break; }  float posY = this.field_146297_k.field_71440_d / 2.0F / scaleFactor - this.chatLines.size() / 2.0F * 9.0F * scale;
+/* 173 */         break; }  float posY = this.mc.displayHeight / 2.0F / scaleFactor - this.chatLines.size() / 2.0F * 9.0F * scale;
 /*     */ 
 /*     */     
 /* 176 */     GL11.glTranslatef(0.0F, posY, 0.0F);
@@ -181,12 +181,12 @@
 /* 181 */       if (chatline != null) {
 /* 182 */         int alpha = (int)(255.0F * charAlpha * this.colorAlpha);
 /* 183 */         int y = i * 9;
-/* 184 */         func_73734_a(0, y + 9, this.field_146297_k.field_71443_c, y, alpha / 2 << 24);
+/* 184 */         drawRect(0, y + 9, this.mc.displayWidth, y, alpha / 2 << 24);
 /* 185 */         GL11.glEnable(3042);
-/* 186 */         String s = chatline.func_151461_a().func_150254_d();
-/* 187 */         int sw = this.field_146297_k.field_71443_c / 2 / scaleFactor - this.field_146297_k.field_71466_p.func_78256_a(s);
+/* 186 */         String s = chatline.getChatComponent().getFormattedText();
+/* 187 */         int sw = this.mc.displayWidth / 2 / scaleFactor - this.mc.fontRenderer.getStringWidth(s);
 /* 188 */         sw = (int)(sw / scale);
-/* 189 */         this.field_146297_k.field_71466_p.func_175063_a(s, sw, (y + 1), 16777215 + (alpha << 24));
+/* 189 */         this.mc.fontRenderer.drawStringWithShadow(s, sw, (y + 1), 16777215 + (alpha << 24));
 /* 190 */         GL11.glDisable(3008);
 /*     */       } 
 /*     */     } 

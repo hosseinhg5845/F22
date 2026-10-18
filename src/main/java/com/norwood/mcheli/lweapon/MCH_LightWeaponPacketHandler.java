@@ -19,39 +19,39 @@ import com.norwood.mcheli.helper.network.HandleSide;
 /*    */ public class MCH_LightWeaponPacketHandler {
 /*    */   @HandleSide({Side.SERVER})
 /*    */   public static void onPacket_PlayerControl(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/* 21 */     if (!player.field_70170_p.field_72995_K) {
+/* 21 */     if (!player.world.isRemote) {
 /* 22 */       MCH_PacketLightWeaponPlayerControl pc = new MCH_PacketLightWeaponPlayerControl();
 /* 23 */       pc.readData(data);
-/* 24 */       scheduler.func_152344_a(() -> {
+/* 24 */       scheduler.addScheduledTask(() -> {
 /*    */             if (pc.camMode == 1)
-/*    */               player.func_184589_d(MobEffects.field_76439_r); 
-/*    */             ItemStack is = player.func_184614_ca();
-/*    */             if (!is.func_190926_b()) {
-/*    */               Item patt1370$temp = is.func_77973_b();
+/*    */               player.removePotionEffect(MobEffects.NIGHT_VISION); 
+/*    */             ItemStack is = player.getHeldItemMainhand();
+/*    */             if (!is.isEmpty()) {
+/*    */               Item patt1370$temp = is.getItem();
 /*    */               if (patt1370$temp instanceof MCH_ItemLightWeaponBase) {
 /*    */                 MCH_ItemLightWeaponBase lweapon = (MCH_ItemLightWeaponBase)patt1370$temp;
 /*    */                 if (pc.camMode == 2 && MCH_ItemLightWeaponBase.isHeld(player))
-/*    */                   player.func_70690_d(new PotionEffect(MobEffects.field_76439_r, 255, 0, false, false)); 
+/*    */                   player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 255, 0, false, false)); 
 /*    */                 if (pc.camMode > 0)
 /*    */                   MCH_Lib.DbgLog(false, "MCH_LightWeaponPacketHandler NV=%s", new Object[] { (pc.camMode == 2) ? "ON" : "OFF" }); 
-/*    */                 if (pc.useWeapon && is.func_77960_j() < is.func_77958_k()) {
-/*    */                   String name = MCH_ItemLightWeaponBase.getName(player.func_184614_ca());
-/*    */                   MCH_WeaponBase w = MCH_WeaponCreator.createWeapon(player.field_70170_p, name, Vec3d.field_186680_a, 0.0F, 0.0F, null, false);
+/*    */                 if (pc.useWeapon && is.getMetadata() < is.getMaxDamage()) {
+/*    */                   String name = MCH_ItemLightWeaponBase.getName(player.getHeldItemMainhand());
+/*    */                   MCH_WeaponBase w = MCH_WeaponCreator.createWeapon(player.world, name, Vec3d.ZERO, 0.0F, 0.0F, null, false);
 /*    */                   MCH_WeaponParam prm = new MCH_WeaponParam();
 /*    */                   prm.entity = (Entity)player;
 /*    */                   prm.user = (Entity)player;
-/*    */                   prm.setPosAndRot(pc.useWeaponPosX, pc.useWeaponPosY, pc.useWeaponPosZ, player.field_70177_z, player.field_70125_A);
+/*    */                   prm.setPosAndRot(pc.useWeaponPosX, pc.useWeaponPosY, pc.useWeaponPosZ, player.rotationYaw, player.rotationPitch);
 /*    */                   prm.option1 = pc.useWeaponOption1;
 /*    */                   prm.option2 = pc.useWeaponOption2;
 /*    */                   w.shot(prm);
-/*    */                   if (!player.field_71075_bZ.field_75098_d && is.func_77958_k() == 1)
-/*    */                     is.func_190918_g(1); 
-/*    */                   if (is.func_77958_k() > 1)
-/*    */                     is.func_77964_b(is.func_77958_k()); 
-/*    */                 } else if (pc.cmpReload > 0 && is.func_77960_j() > 1 && W_EntityPlayer.hasItem(player, (Item)lweapon.bullet)) {
-/*    */                   if (!player.field_71075_bZ.field_75098_d)
+/*    */                   if (!player.capabilities.isCreativeMode && is.getMaxDamage() == 1)
+/*    */                     is.shrink(1); 
+/*    */                   if (is.getMaxDamage() > 1)
+/*    */                     is.setItemDamage(is.getMaxDamage()); 
+/*    */                 } else if (pc.cmpReload > 0 && is.getMetadata() > 1 && W_EntityPlayer.hasItem(player, (Item)lweapon.bullet)) {
+/*    */                   if (!player.capabilities.isCreativeMode)
 /*    */                     W_EntityPlayer.consumeInventoryItem(player, (Item)lweapon.bullet); 
-/*    */                   is.func_77964_b(0);
+/*    */                   is.setItemDamage(0);
 /*    */                 } 
 /*    */               } 
 /*    */             } 

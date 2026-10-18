@@ -25,7 +25,7 @@
 /*  25 */     this.explosionPower = 2;
 /*  26 */     this.power = 32;
 /*  27 */     this.interval = 65236;
-/*  28 */     if (w.field_72995_K) {
+/*  28 */     if (w.isRemote) {
 /*  29 */       this.interval -= 10;
 /*     */     }
 /*     */     
@@ -42,7 +42,7 @@
 /*     */   
 /*     */   public void update(int countWait) {
 /*  44 */     super.update(countWait);
-/*  45 */     if (!this.worldObj.field_72995_K && this.cntAtk < 3 && countWait != 0 && this.tick == this.startTick) {
+/*  45 */     if (!this.worldObj.isRemote && this.cntAtk < 3 && countWait != 0 && this.tick == this.startTick) {
 /*  46 */       double x = 0.0D;
 /*  47 */       double z = 0.0D;
 /*  48 */       if (this.cntAtk >= 1) {
@@ -103,29 +103,29 @@
 /*     */     
 /* 104 */     MCH_EntityA10 a10 = new MCH_EntityA10(this.worldObj, x, y, z);
 /* 105 */     a10.setWeaponName(this.name);
-/* 106 */     a10.field_70126_B = a10.field_70177_z = (90 * this.direction);
-/* 107 */     a10.field_70159_w = mX;
-/* 108 */     a10.field_70181_x = mY;
-/* 109 */     a10.field_70179_y = mZ;
+/* 106 */     a10.prevRotationYaw = a10.rotationYaw = (90 * this.direction);
+/* 107 */     a10.motionX = mX;
+/* 108 */     a10.motionY = mY;
+/* 109 */     a10.motionZ = mZ;
 /* 110 */     a10.direction = this.direction;
 /* 111 */     a10.shootingEntity = this.user;
 /* 112 */     a10.shootingAircraft = this.shooter;
 /* 113 */     a10.explosionPower = this.explosionPower;
 /* 114 */     a10.power = this.power;
 /* 115 */     a10.acceleration = this.acceleration;
-/* 116 */     this.worldObj.func_72838_d((Entity)a10);
+/* 116 */     this.worldObj.spawnEntity((Entity)a10);
 /* 117 */     W_WorldFunc.MOD_playSoundEffect(this.worldObj, x, y, z, "a-10_snd", 150.0F, 1.0F);
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public boolean shot(MCH_WeaponParam prm) {
-/* 122 */     float yaw = prm.user.field_70177_z;
-/* 123 */     float pitch = prm.user.field_70125_A;
-/* 124 */     double tX = (-MathHelper.func_76126_a(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/* 125 */     double tZ = (MathHelper.func_76134_b(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/* 126 */     double tY = -MathHelper.func_76126_a(pitch / 180.0F * 3.1415927F);
-/* 127 */     double dist = MathHelper.func_76133_a(tX * tX + tY * tY + tZ * tZ);
-/* 128 */     if (this.worldObj.field_72995_K) {
+/* 122 */     float yaw = prm.user.rotationYaw;
+/* 123 */     float pitch = prm.user.rotationPitch;
+/* 124 */     double tX = (-MathHelper.sin(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/* 125 */     double tZ = (MathHelper.cos(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/* 126 */     double tY = -MathHelper.sin(pitch / 180.0F * 3.1415927F);
+/* 127 */     double dist = MathHelper.sqrt(tX * tX + tY * tY + tZ * tZ);
+/* 128 */     if (this.worldObj.isRemote) {
 /* 129 */       tX = tX * 80.0D / dist;
 /* 130 */       tY = tY * 80.0D / dist;
 /* 131 */       tZ = tZ * 80.0D / dist;
@@ -135,13 +135,13 @@
 /* 135 */       tZ = tZ * 150.0D / dist;
 /*     */     } 
 /*     */     
-/* 138 */     Vec3d src = W_WorldFunc.getWorldVec3(this.worldObj, prm.entity.field_70165_t, prm.entity.field_70163_u + 2.0D, prm.entity.field_70161_v);
-/* 139 */     Vec3d dst = W_WorldFunc.getWorldVec3(this.worldObj, prm.entity.field_70165_t + tX, prm.entity.field_70163_u + tY + 2.0D, prm.entity.field_70161_v + tZ);
+/* 138 */     Vec3d src = W_WorldFunc.getWorldVec3(this.worldObj, prm.entity.posX, prm.entity.posY + 2.0D, prm.entity.posZ);
+/* 139 */     Vec3d dst = W_WorldFunc.getWorldVec3(this.worldObj, prm.entity.posX + tX, prm.entity.posY + tY + 2.0D, prm.entity.posZ + tZ);
 /* 140 */     RayTraceResult m = W_WorldFunc.clip(this.worldObj, src, dst);
 /* 141 */     if (W_MovingObjectPosition.isHitTypeTile(m)) {
-/* 142 */       this.targetPosX = m.field_72307_f.field_72450_a;
-/* 143 */       this.targetPosY = m.field_72307_f.field_72448_b;
-/* 144 */       this.targetPosZ = m.field_72307_f.field_72449_c;
+/* 142 */       this.targetPosX = m.hitVec.x;
+/* 143 */       this.targetPosY = m.hitVec.y;
+/* 144 */       this.targetPosZ = m.hitVec.z;
 /* 145 */       this.direction = (int)MCH_Lib.getRotate360((yaw + 45.0F)) / 90;
 /* 146 */       this.direction += rand.nextBoolean() ? -1 : 1;
 /* 147 */       this.direction %= 4;
@@ -164,13 +164,13 @@
 /*     */ 
 /*     */   
 /*     */   public boolean shot(Entity user, double px, double py, double pz, int option1, int option2) {
-/* 167 */     float yaw = user.field_70177_z;
-/* 168 */     float pitch = user.field_70125_A;
-/* 169 */     double tX = (-MathHelper.func_76126_a(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/* 170 */     double tZ = (MathHelper.func_76134_b(yaw / 180.0F * 3.1415927F) * MathHelper.func_76134_b(pitch / 180.0F * 3.1415927F));
-/* 171 */     double tY = -MathHelper.func_76126_a(pitch / 180.0F * 3.1415927F);
-/* 172 */     double dist = MathHelper.func_76133_a(tX * tX + tY * tY + tZ * tZ);
-/* 173 */     if (this.worldObj.field_72995_K) {
+/* 167 */     float yaw = user.rotationYaw;
+/* 168 */     float pitch = user.rotationPitch;
+/* 169 */     double tX = (-MathHelper.sin(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/* 170 */     double tZ = (MathHelper.cos(yaw / 180.0F * 3.1415927F) * MathHelper.cos(pitch / 180.0F * 3.1415927F));
+/* 171 */     double tY = -MathHelper.sin(pitch / 180.0F * 3.1415927F);
+/* 172 */     double dist = MathHelper.sqrt(tX * tX + tY * tY + tZ * tZ);
+/* 173 */     if (this.worldObj.isRemote) {
 /* 174 */       tX = tX * 80.0D / dist;
 /* 175 */       tY = tY * 80.0D / dist;
 /* 176 */       tZ = tZ * 80.0D / dist;
@@ -184,17 +184,17 @@
 /* 184 */     Vec3d dst = W_WorldFunc.getWorldVec3(this.worldObj, px + tX, py + tY, pz + tZ);
 /* 185 */     RayTraceResult m = W_WorldFunc.clip(this.worldObj, src, dst);
 /* 186 */     if (W_MovingObjectPosition.isHitTypeTile(m)) {
-/* 187 */       if (this.worldObj.field_72995_K) {
-/* 188 */         double dx = m.field_72307_f.field_72450_a - px;
-/* 189 */         double dz = m.field_72307_f.field_72449_c - pz;
+/* 187 */       if (this.worldObj.isRemote) {
+/* 188 */         double dx = m.hitVec.x - px;
+/* 189 */         double dz = m.hitVec.z - pz;
 /* 190 */         if (Math.sqrt(dx * dx + dz * dz) < 20.0D) {
 /* 191 */           return false;
 /*     */         }
 /*     */       } 
 /*     */       
-/* 195 */       this.targetPosX = m.field_72307_f.field_72450_a;
-/* 196 */       this.targetPosY = m.field_72307_f.field_72448_b;
-/* 197 */       this.targetPosZ = m.field_72307_f.field_72449_c;
+/* 195 */       this.targetPosX = m.hitVec.x;
+/* 196 */       this.targetPosY = m.hitVec.y;
+/* 197 */       this.targetPosZ = m.hitVec.z;
 /* 198 */       this.direction = (int)MCH_Lib.getRotate360((yaw + 45.0F)) / 90;
 /* 199 */       this.direction += rand.nextBoolean() ? -1 : 1;
 /* 200 */       this.direction %= 4;

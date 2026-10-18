@@ -13,7 +13,7 @@
 /* 13 */     this.explosionPower = 9;
 /* 14 */     this.power = 35;
 /* 15 */     this.interval = -90;
-/* 16 */     if (w.field_72995_K) {
+/* 16 */     if (w.isRemote) {
 /* 17 */       this.interval -= 10;
 /*    */     }
 /*    */   }
@@ -23,8 +23,8 @@
 /* 23 */     if (getInfo() != null && (getInfo()).destruct) {
 /* 24 */       Entity entity = prm.entity; if (entity instanceof MCH_EntityHeli) { MCH_EntityHeli ac = (MCH_EntityHeli)entity;
 /* 25 */         if (ac.isUAV() && ac.getSeatNum() == 0) {
-/* 26 */           if (!this.worldObj.field_72995_K) {
-/* 27 */             MCH_Explosion.newExplosion(this.worldObj, null, prm.user, ac.field_70165_t, ac.field_70163_u, ac.field_70161_v, 
+/* 26 */           if (!this.worldObj.isRemote) {
+/* 27 */             MCH_Explosion.newExplosion(this.worldObj, null, prm.user, ac.posX, ac.posY, ac.posZ, 
 /*    */ 
 /*    */ 
 /*    */ 
@@ -45,9 +45,9 @@
 /* 45 */           ac.destruct();
 /*    */         }  }
 /*    */     
-/* 48 */     } else if (!this.worldObj.field_72995_K) {
+/* 48 */     } else if (!this.worldObj.isRemote) {
 /* 49 */       playSound(prm.entity);
-/* 50 */       MCH_EntityBomb e = new MCH_EntityBomb(this.worldObj, prm.posX, prm.posY, prm.posZ, prm.entity.field_70159_w, prm.entity.field_70181_x, prm.entity.field_70179_y, prm.entity.field_70177_z, 0.0F, this.acceleration);
+/* 50 */       MCH_EntityBomb e = new MCH_EntityBomb(this.worldObj, prm.posX, prm.posY, prm.posZ, prm.entity.motionX, prm.entity.motionY, prm.entity.motionZ, prm.entity.rotationYaw, 0.0F, this.acceleration);
 /*    */ 
 /*    */ 
 /*    */ 
@@ -61,10 +61,10 @@
 /*    */       
 /* 62 */       e.setName(this.name);
 /* 63 */       e.setParameterFromWeapon(this, prm.entity, prm.user);
-/* 64 */       e.field_70159_w = prm.entity.field_70159_w;
-/* 65 */       e.field_70181_x = prm.entity.field_70181_x;
-/* 66 */       e.field_70179_y = prm.entity.field_70179_y;
-/* 67 */       this.worldObj.func_72838_d((Entity)e);
+/* 64 */       e.motionX = prm.entity.motionX;
+/* 65 */       e.motionY = prm.entity.motionY;
+/* 66 */       e.motionZ = prm.entity.motionZ;
+/* 67 */       this.worldObj.spawnEntity((Entity)e);
 /*    */     } 
 /*    */     
 /* 70 */     return true;

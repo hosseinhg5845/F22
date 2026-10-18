@@ -9,9 +9,9 @@
 /*  9 */   private static final W_TextureUtil instance = new W_TextureUtil();
 /*    */   
 /*    */   public static TextureParam getTextureInfo(String domain, String name) {
-/* 12 */     TextureManager textureManager = Minecraft.func_71410_x().func_110434_K();
+/* 12 */     TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
 /* 13 */     ResourceLocation r = new ResourceLocation(domain, name);
-/* 14 */     textureManager.func_110577_a(r);
+/* 14 */     textureManager.bindTexture(r);
 /* 15 */     TextureParam info = instance.newParam();
 /* 16 */     info.width = GL11.glGetTexLevelParameteri(3553, 0, 4096);
 /* 17 */     info.height = GL11.glGetTexLevelParameteri(3553, 0, 4097);

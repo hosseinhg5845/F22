@@ -23,7 +23,7 @@
 /*    */   }
 /*    */   
 /*    */   public void addFaceForRender(Tessellator tessellator, float textureOffset) {
-/* 26 */     BufferBuilder builder = tessellator.func_178180_c();
+/* 26 */     BufferBuilder builder = tessellator.getBuffer();
 /* 27 */     if (this.faceNormal == null) {
 /* 28 */       this.faceNormal = calculateFaceNormal();
 /*    */     }
@@ -52,16 +52,16 @@
 /* 52 */           offsetV = -textureOffset;
 /*    */         }
 /*    */         
-/* 55 */         builder.func_181662_b((this.vertices[i]).x, (this.vertices[i]).y, (this.vertices[i]).z)
-/* 56 */           .func_187315_a(((this.textureCoordinates[i]).u + offsetU), ((this.textureCoordinates[i]).v + offsetV));
+/* 55 */         builder.pos((this.vertices[i]).x, (this.vertices[i]).y, (this.vertices[i]).z)
+/* 56 */           .tex(((this.textureCoordinates[i]).u + offsetU), ((this.textureCoordinates[i]).v + offsetV));
 /*    */       } else {
-/* 58 */         builder.func_181662_b((this.vertices[i]).x, (this.vertices[i]).y, (this.vertices[i]).z).func_187315_a(0.0D, 0.0D);
+/* 58 */         builder.pos((this.vertices[i]).x, (this.vertices[i]).y, (this.vertices[i]).z).tex(0.0D, 0.0D);
 /*    */       } 
 /*    */       
 /* 61 */       if (this.vertexNormals != null && i < this.vertexNormals.length) {
-/* 62 */         builder.func_181663_c((this.vertexNormals[i]).x, (this.vertexNormals[i]).y, (this.vertexNormals[i]).z).func_181675_d();
+/* 62 */         builder.normal((this.vertexNormals[i]).x, (this.vertexNormals[i]).y, (this.vertexNormals[i]).z).endVertex();
 /*    */       } else {
-/* 64 */         builder.func_181663_c(this.faceNormal.x, this.faceNormal.y, this.faceNormal.z).func_181675_d();
+/* 64 */         builder.normal(this.faceNormal.x, this.faceNormal.y, this.faceNormal.z).endVertex();
 /*    */       } 
 /*    */     } 
 /*    */   }
@@ -69,8 +69,8 @@
 /*    */   public W_Vertex calculateFaceNormal() {
 /* 70 */     Vec3d v1 = new Vec3d(((this.vertices[1]).x - (this.vertices[0]).x), ((this.vertices[1]).y - (this.vertices[0]).y), ((this.vertices[1]).z - (this.vertices[0]).z));
 /* 71 */     Vec3d v2 = new Vec3d(((this.vertices[2]).x - (this.vertices[0]).x), ((this.vertices[2]).y - (this.vertices[0]).y), ((this.vertices[2]).z - (this.vertices[0]).z));
-/* 72 */     Vec3d normalVector = v1.func_72431_c(v2).func_72432_b();
-/* 73 */     return new W_Vertex((float)normalVector.field_72450_a, (float)normalVector.field_72448_b, (float)normalVector.field_72449_c);
+/* 72 */     Vec3d normalVector = v1.crossProduct(v2).normalize();
+/* 73 */     return new W_Vertex((float)normalVector.x, (float)normalVector.y, (float)normalVector.z);
 /*    */   }
 /*    */ 
 /*    */   

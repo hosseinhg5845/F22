@@ -32,7 +32,7 @@
 /*     */   }
 /*     */   
 /*     */   public static int getEntityId(@Nullable Entity entity) {
-/*  35 */     return (entity != null) ? entity.func_145782_y() : -1;
+/*  35 */     return (entity != null) ? entity.getEntityId() : -1;
 /*     */   }
 /*     */   
 /*     */   public static boolean isEqual(@Nullable Entity e1, @Nullable Entity e2) {
@@ -42,13 +42,13 @@
 /*     */   }
 /*     */   
 /*     */   public static boolean attackEntityFrom(Entity entity, DamageSource ds, float par2) {
-/*  45 */     return entity.func_70097_a(ds, par2);
+/*  45 */     return entity.attackEntityFrom(ds, par2);
 /*     */   }
 /*     */   
 /*     */   public static float getBlockExplosionResistance(Entity entity, Explosion par1Explosion, World par2World, int par3, int par4, int par5, Block par6Block) {
 /*  49 */     if (par6Block != null) {
 /*     */       try {
-/*  51 */         return entity.func_180428_a(par1Explosion, par2World, new BlockPos(par3, par4, par5), par6Block.func_176223_P());
+/*  51 */         return entity.getExplosionResistance(par1Explosion, par2World, new BlockPos(par3, par4, par5), par6Block.getDefaultState());
 /*  52 */       } catch (Exception var8) {
 /*  53 */         var8.printStackTrace();
 /*     */       } 
@@ -58,61 +58,61 @@
 /*     */   }
 /*     */   
 /*     */   public static boolean shouldExplodeBlock(Entity entity, Explosion par1Explosion, World par2World, int par3, int par4, int par5, int par6, float par7) {
-/*  61 */     return entity.func_174816_a(par1Explosion, par2World, new BlockPos(par3, par4, par5), W_Block.getBlockById(par6).func_176223_P(), par7);
+/*  61 */     return entity.canExplosionDestroyBlock(par1Explosion, par2World, new BlockPos(par3, par4, par5), W_Block.getBlockById(par6).getDefaultState(), par7);
 /*     */   }
 /*     */   
 /*     */   public static PotionEffect getActivePotionEffect(Entity entity, Potion par1Potion) {
-/*  65 */     return (entity instanceof EntityLivingBase) ? ((EntityLivingBase)entity).func_70660_b(par1Potion) : null;
+/*  65 */     return (entity instanceof EntityLivingBase) ? ((EntityLivingBase)entity).getActivePotionEffect(par1Potion) : null;
 /*     */   }
 /*     */   
 /*     */   public static void removePotionEffectClient(Entity entity, Potion potion) {
 /*  69 */     if (entity instanceof EntityLivingBase) {
-/*  70 */       ((EntityLivingBase)entity).func_184589_d(potion);
+/*  70 */       ((EntityLivingBase)entity).removePotionEffect(potion);
 /*     */     }
 /*     */   }
 /*     */   
 /*     */   public static void removePotionEffect(Entity entity, Potion potion) {
 /*  75 */     if (entity instanceof EntityLivingBase) {
-/*  76 */       ((EntityLivingBase)entity).func_184589_d(potion);
+/*  76 */       ((EntityLivingBase)entity).removePotionEffect(potion);
 /*     */     }
 /*     */   }
 /*     */   
 /*     */   public static void addPotionEffect(Entity entity, PotionEffect pe) {
 /*  81 */     if (entity instanceof EntityLivingBase) {
-/*  82 */       ((EntityLivingBase)entity).func_70690_d(pe);
+/*  82 */       ((EntityLivingBase)entity).addPotionEffect(pe);
 /*     */     }
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   protected void func_70088_a() {}
+/*     */   protected void entityInit() {}
 /*     */   
-/*     */   public EntityItem func_145778_a(@NotNull Item item, int par2, float par3) {
-/*  90 */     return func_70099_a(new ItemStack(item, par2, 0), par3);
+/*     */   public EntityItem dropItemWithOffset(@NotNull Item item, int par2, float par3) {
+/*  90 */     return entityDropItem(new ItemStack(item, par2, 0), par3);
 /*     */   }
 /*     */   
 /*     */   public String getEntityName() {
-/*  94 */     return func_70022_Q();
+/*  94 */     return getEntityString();
 /*     */   }
 /*     */   
 /*     */   public boolean attackEntityFrom(DamageSource par1DamageSource, int par2) {
-/*  98 */     return func_70097_a(par1DamageSource, par2);
+/*  98 */     return attackEntityFrom(par1DamageSource, par2);
 /*     */   }
 /*     */   
-/*     */   public boolean func_70097_a(@NotNull DamageSource par1DamageSource, float par2) {
+/*     */   public boolean attackEntityFrom(@NotNull DamageSource par1DamageSource, float par2) {
 /* 102 */     return false;
 /*     */   }
 /*     */   
-/*     */   public void func_85029_a(@NotNull CrashReportCategory par1CrashReportCategory) {
-/* 106 */     super.func_85029_a(par1CrashReportCategory);
+/*     */   public void addEntityCrashInfo(@NotNull CrashReportCategory par1CrashReportCategory) {
+/* 106 */     super.addEntityCrashInfo(par1CrashReportCategory);
 /*     */   }
 /*     */   
-/*     */   protected void func_145775_I() {
-/* 110 */     super.func_145775_I();
+/*     */   protected void doBlockCollisions() {
+/* 110 */     super.doBlockCollisions();
 /*     */   }
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
-/*     */   public boolean func_70112_a(double distance) {
-/* 115 */     double d0 = func_174813_aQ().func_72320_b();
+/*     */   public boolean isInRangeToRenderDist(double distance) {
+/* 115 */     double d0 = getEntityBoundingBox().getAverageEdgeLength();
 /* 116 */     if (Double.isNaN(d0)) {
 /* 117 */       d0 = 1.0D;
 /*     */     }

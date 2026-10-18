@@ -56,17 +56,17 @@
 /*     */   }
 /*     */   
 /*     */   public static boolean isEntityOnGround(@Nullable Entity entity) {
-/*  59 */     if (entity != null && !entity.field_70128_L) {
-/*  60 */       if (entity.field_70122_E) {
+/*  59 */     if (entity != null && !entity.isDead) {
+/*  60 */       if (entity.onGround) {
 /*  61 */         return true;
 /*     */       }
 /*     */       
 /*  64 */       for (int i = 0; i < 12; i++) {
-/*  65 */         int x = (int)(entity.field_70165_t + 0.5D);
-/*  66 */         int y = (int)(entity.field_70163_u + 0.5D) - i;
-/*  67 */         int z = (int)(entity.field_70161_v + 0.5D);
-/*  68 */         int blockId = W_WorldFunc.getBlockId(entity.field_70170_p, x, y, z);
-/*  69 */         if (blockId != 0 && !W_WorldFunc.isBlockWater(entity.field_70170_p, x, y, z)) {
+/*  65 */         int x = (int)(entity.posX + 0.5D);
+/*  66 */         int y = (int)(entity.posY + 0.5D) - i;
+/*  67 */         int z = (int)(entity.posZ + 0.5D);
+/*  68 */         int blockId = W_WorldFunc.getBlockId(entity.world, x, y, z);
+/*  69 */         if (blockId != 0 && !W_WorldFunc.isBlockWater(entity.world, x, y, z)) {
 /*  70 */           return true;
 /*     */         }
 /*     */       } 
@@ -79,14 +79,14 @@
 /*  79 */     if (entity instanceof MCH_EntityAircraft) {
 /*  80 */       return ((MCH_EntityAircraft)entity).getStealth();
 /*     */     }
-/*  82 */     return (entity != null && entity.func_184187_bx() instanceof MCH_EntityAircraft) ? ((MCH_EntityAircraft)entity.func_184187_bx()).getStealth() : 0.0F;
+/*  82 */     return (entity != null && entity.getRidingEntity() instanceof MCH_EntityAircraft) ? ((MCH_EntityAircraft)entity.getRidingEntity()).getStealth() : 0.0F;
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public static boolean inLockRange(Entity entity, float rotationYaw, float rotationPitch, Entity target, float lockAng) {
-/*  87 */     double dx = target.field_70165_t - entity.field_70165_t;
-/*  88 */     double dy = target.field_70163_u + (target.field_70131_O / 2.0F) - entity.field_70163_u;
-/*  89 */     double dz = target.field_70161_v - entity.field_70161_v;
+/*  87 */     double dx = target.posX - entity.posX;
+/*  88 */     double dy = target.posY + (target.height / 2.0F) - entity.posY;
+/*  89 */     double dz = target.posZ - entity.posZ;
 /*  90 */     float entityYaw = (float)MCH_Lib.getRotate360(rotationYaw);
 /*  91 */     float targetYaw = (float)MCH_Lib.getRotate360(Math.atan2(dz, dx) * 180.0D / Math.PI);
 /*  92 */     float diffYaw = (float)MCH_Lib.getRotate360((targetYaw - entityYaw - 90.0F));
@@ -114,12 +114,12 @@
 /*     */   }
 /*     */   
 /*     */   public boolean isLockingEntity(Entity entity) {
-/* 117 */     return (getLockCount() > 0 && this.targetEntity != null && !this.targetEntity.field_70128_L && W_Entity.isEqual(entity, this.targetEntity));
+/* 117 */     return (getLockCount() > 0 && this.targetEntity != null && !this.targetEntity.isDead && W_Entity.isEqual(entity, this.targetEntity));
 /*     */   }
 /*     */   
 /*     */   @Nullable
 /*     */   public Entity getLockingEntity() {
-/* 122 */     return (getLockCount() > 0 && this.targetEntity != null && !this.targetEntity.field_70128_L) ? this.targetEntity : null;
+/* 122 */     return (getLockCount() > 0 && this.targetEntity != null && !this.targetEntity.isDead) ? this.targetEntity : null;
 /*     */   }
 /*     */   
 /*     */   @Nullable
@@ -132,7 +132,7 @@
 /*     */   }
 /*     */   
 /*     */   public void update() {
-/* 135 */     if (this.worldObj != null && this.worldObj.field_72995_K) {
+/* 135 */     if (this.worldObj != null && this.worldObj.isRemote) {
 /* 136 */       if (this.lockCount != this.prevLockCount) {
 /* 137 */         this.prevLockCount = this.lockCount;
 /*     */       } else {
@@ -146,29 +146,29 @@
 /*     */   }
 /*     */   
 /*     */   public boolean lock(Entity user, boolean isLockContinue) {
-/* 149 */     if (!this.worldObj.field_72995_K) {
+/* 149 */     if (!this.worldObj.isRemote) {
 /* 150 */       return false;
 /*     */     }
 /* 152 */     boolean result = false;
 /* 153 */     if (this.lockCount == 0) {
 /*     */       
-/* 155 */       List<Entity> list = this.worldObj.func_72839_b(user, user.func_174813_aQ().func_72314_b(this.lockRange, this.lockRange, this.lockRange));
+/* 155 */       List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().grow(this.lockRange, this.lockRange, this.lockRange));
 /* 156 */       Entity tgtEnt = null;
 /* 157 */       double dist = this.lockRange * this.lockRange * 2.0D;
 /*     */       
 /* 159 */       for (Entity entity : list) {
 /* 160 */         if (canLockEntity(entity)) {
-/* 161 */           double dx = entity.field_70165_t - user.field_70165_t;
-/* 162 */           double dy = entity.field_70163_u - user.field_70163_u;
-/* 163 */           double dz = entity.field_70161_v - user.field_70161_v;
+/* 161 */           double dx = entity.posX - user.posX;
+/* 162 */           double dy = entity.posY - user.posY;
+/* 163 */           double dz = entity.posZ - user.posZ;
 /* 164 */           double d = dx * dx + dy * dy + dz * dz;
 /* 165 */           Entity entityLocker = getLockEntity(user);
 /* 166 */           float stealth = 1.0F - getEntityStealth(entity);
 /* 167 */           double range = this.lockRange * stealth;
 /* 168 */           float angle = this.lockAngle * (stealth / 2.0F + 0.5F);
-/* 169 */           if (d < range * range && d < dist && inLockRange(entityLocker, user.field_70177_z, user.field_70125_A, entity, angle)) {
-/* 170 */             Vec3d v1 = W_WorldFunc.getWorldVec3(this.worldObj, entityLocker.field_70165_t, entityLocker.field_70163_u, entityLocker.field_70161_v);
-/* 171 */             Vec3d v2 = W_WorldFunc.getWorldVec3(this.worldObj, entity.field_70165_t, entity.field_70163_u + (entity.field_70131_O / 2.0F), entity.field_70161_v);
+/* 169 */           if (d < range * range && d < dist && inLockRange(entityLocker, user.rotationYaw, user.rotationPitch, entity, angle)) {
+/* 170 */             Vec3d v1 = W_WorldFunc.getWorldVec3(this.worldObj, entityLocker.posX, entityLocker.posY, entityLocker.posZ);
+/* 171 */             Vec3d v2 = W_WorldFunc.getWorldVec3(this.worldObj, entity.posX, entity.posY + (entity.height / 2.0F), entity.posZ);
 /* 172 */             RayTraceResult m = W_WorldFunc.clip(this.worldObj, v1, v2, false, true, false);
 /* 173 */             if (m == null || W_MovingObjectPosition.isHitTypeEntity(m)) {
 /* 174 */               tgtEnt = entity;
@@ -181,8 +181,8 @@
 /* 181 */       if (tgtEnt != null) {
 /* 182 */         this.lockCount++;
 /*     */       }
-/* 184 */     } else if (this.targetEntity != null && !this.targetEntity.field_70128_L) {
-/* 185 */       boolean canLock = (this.canLockInWater || !this.targetEntity.func_70090_H());
+/* 184 */     } else if (this.targetEntity != null && !this.targetEntity.isDead) {
+/* 185 */       boolean canLock = (this.canLockInWater || !this.targetEntity.isInWater());
 /*     */       
 /* 187 */       boolean ong = isEntityOnGround(this.targetEntity);
 /* 188 */       if (!this.canLockOnGround && ong) {
@@ -194,19 +194,19 @@
 /*     */       }
 /*     */       
 /* 196 */       if (canLock) {
-/* 197 */         double dx = this.targetEntity.field_70165_t - user.field_70165_t;
-/* 198 */         double dy = this.targetEntity.field_70163_u - user.field_70163_u;
-/* 199 */         double dz = this.targetEntity.field_70161_v - user.field_70161_v;
+/* 197 */         double dx = this.targetEntity.posX - user.posX;
+/* 198 */         double dy = this.targetEntity.posY - user.posY;
+/* 199 */         double dz = this.targetEntity.posZ - user.posZ;
 /* 200 */         float stealth = 1.0F - getEntityStealth(this.targetEntity);
 /* 201 */         double range = this.lockRange * stealth;
 /* 202 */         if (dx * dx + dy * dy + dz * dz < range * range) {
-/* 203 */           if (this.worldObj.field_72995_K && this.lockSoundCount == 1) {
+/* 203 */           if (this.worldObj.isRemote && this.lockSoundCount == 1) {
 /* 204 */             MCH_PacketNotifyLock.send(getTargetEntity());
 /*     */           }
 /*     */           
 /* 207 */           this.lockSoundCount = (this.lockSoundCount + 1) % 15;
 /* 208 */           Entity entityLocker = getLockEntity(user);
-/* 209 */           if (inLockRange(entityLocker, user.field_70177_z, user.field_70125_A, this.targetEntity, this.lockAngle)) {
+/* 209 */           if (inLockRange(entityLocker, user.rotationYaw, user.rotationPitch, this.targetEntity, this.lockAngle)) {
 /* 210 */             if (this.lockCount < getLockCountMax()) {
 /* 211 */               this.lockCount++;
 /*     */             }
@@ -258,7 +258,7 @@
 /*     */   }
 /*     */   
 /*     */   public Entity getLockEntity(Entity entity) {
-/* 261 */     Entity entity1 = entity.func_184187_bx(); if (entity1 instanceof MCH_EntityUavStation) { MCH_EntityUavStation us = (MCH_EntityUavStation)entity1;
+/* 261 */     Entity entity1 = entity.getRidingEntity(); if (entity1 instanceof MCH_EntityUavStation) { MCH_EntityUavStation us = (MCH_EntityUavStation)entity1;
 /* 262 */       if (us.getControlAircract() != null) {
 /* 263 */         return (Entity)us.getControlAircract();
 /*     */       } }
@@ -268,7 +268,7 @@
 /*     */   }
 /*     */   
 /*     */   public boolean canLockEntity(Entity entity) {
-/* 271 */     if (this.ridableOnly && entity instanceof net.minecraft.entity.player.EntityPlayer && entity.func_184187_bx() == null) {
+/* 271 */     if (this.ridableOnly && entity instanceof net.minecraft.entity.player.EntityPlayer && entity.getRidingEntity() == null) {
 /* 272 */       return false;
 /*     */     }
 /* 274 */     String className = entity.getClass().getName();
@@ -276,7 +276,7 @@
 /* 276 */       return false; 
 /* 277 */     if (!W_Lib.isEntityLivingBase(entity) && !(entity instanceof MCH_EntityAircraft))
 /* 278 */       return false; 
-/* 279 */     if (!this.canLockInWater && entity.func_70090_H())
+/* 279 */     if (!this.canLockInWater && entity.isInWater())
 /* 280 */       return false; 
 /* 281 */     if (this.checker != null && !this.checker.canLockEntity(entity)) {
 /* 282 */       return false;

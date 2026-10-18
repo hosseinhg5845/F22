@@ -19,7 +19,7 @@
 /*     */   
 /*     */   public MCH_RenderVehicle(RenderManager renderManager) {
 /*  21 */     super(renderManager);
-/*  22 */     this.field_76989_e = 2.0F;
+/*  22 */     this.shadowSize = 2.0F;
 /*     */   }
 /*     */ 
 /*     */ 
@@ -30,11 +30,11 @@
 /*  30 */       if (vehicleInfo != null) {
 /*  31 */         if (vehicle.getRiddenByEntity() != null && !vehicle.isDestroyed()) {
 /*  32 */           vehicle.isUsedPlayer = true;
-/*  33 */           vehicle.lastRiderYaw = (vehicle.getRiddenByEntity()).field_70177_z;
-/*  34 */           vehicle.lastRiderPitch = (vehicle.getRiddenByEntity()).field_70125_A;
+/*  33 */           vehicle.lastRiderYaw = (vehicle.getRiddenByEntity()).rotationYaw;
+/*  34 */           vehicle.lastRiderPitch = (vehicle.getRiddenByEntity()).rotationPitch;
 /*  35 */         } else if (!vehicle.isUsedPlayer) {
-/*  36 */           vehicle.lastRiderYaw = vehicle.field_70177_z;
-/*  37 */           vehicle.lastRiderPitch = vehicle.field_70125_A;
+/*  36 */           vehicle.lastRiderYaw = vehicle.rotationYaw;
+/*  37 */           vehicle.lastRiderPitch = vehicle.rotationPitch;
 /*     */         } 
 /*     */         
 /*  40 */         posY += 0.3499999940395355D;
@@ -80,7 +80,7 @@
 /*     */     
 /*  81 */     int bkIndex = index;
 /*  82 */     if (vp.rotPitch || vp.rotYaw || vp.type == 1) {
-/*  83 */       GL11.glTranslated(vp.pos.field_72450_a, vp.pos.field_72448_b, vp.pos.field_72449_c);
+/*  83 */       GL11.glTranslated(vp.pos.x, vp.pos.y, vp.pos.z);
 /*  84 */       if (vp.rotYaw) {
 /*  85 */         GL11.glRotatef(-vehicle.lastRiderYaw + yaw, 0.0F, 1.0F, 0.0F);
 /*     */       }
@@ -94,7 +94,7 @@
 /*  94 */         GL11.glRotatef(rotBrl, 0.0F, 0.0F, -1.0F);
 /*     */       }
 /*     */       
-/*  97 */       GL11.glTranslated(-vp.pos.field_72450_a, -vp.pos.field_72448_b, -vp.pos.field_72449_c);
+/*  97 */       GL11.glTranslated(-vp.pos.x, -vp.pos.y, -vp.pos.z);
 /*     */     } 
 /*     */     
 /* 100 */     if (vp.type == 2) {

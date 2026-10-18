@@ -10,14 +10,14 @@
 /*    */ public class MCH_DraftingTablePacketHandler {
 /*    */   @HandleSide({Side.SERVER})
 /*    */   public static void onPacketCreate(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/* 13 */     if (!player.field_70170_p.field_72995_K) {
+/* 13 */     if (!player.world.isRemote) {
 /* 14 */       MCH_DraftingTableCreatePacket packet = new MCH_DraftingTableCreatePacket();
 /* 15 */       packet.readData(data);
-/* 16 */       scheduler.func_152344_a(() -> {
-/*    */             boolean openScreen = player.field_71070_bA instanceof MCH_DraftingTableGuiContainer;
+/* 16 */       scheduler.addScheduledTask(() -> {
+/*    */             boolean openScreen = player.openContainer instanceof MCH_DraftingTableGuiContainer;
 /*    */             MCH_Lib.DbgLog(false, "MCH_DraftingTablePacketHandler.onPacketCreate : " + openScreen, new Object[0]);
 /*    */             if (openScreen)
-/*    */               ((MCH_DraftingTableGuiContainer)player.field_71070_bA).createRecipeItem(packet.recipe); 
+/*    */               ((MCH_DraftingTableGuiContainer)player.openContainer).createRecipeItem(packet.recipe); 
 /*    */           });
 /*    */     } 
 /*    */   }

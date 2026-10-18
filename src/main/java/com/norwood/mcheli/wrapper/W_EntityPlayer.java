@@ -11,34 +11,34 @@
 /*    */ 
 /*    */ public abstract class W_EntityPlayer extends EntityPlayer {
 /*    */   public W_EntityPlayer(World par1World, EntityPlayer player) {
-/* 14 */     super(par1World, player.func_146103_bH());
+/* 14 */     super(par1World, player.getGameProfile());
 /*    */   }
 /*    */   
 /*    */   public static void closeScreen(Entity p) {
 /* 18 */     if (p != null) {
-/* 19 */       if (p.field_70170_p.field_72995_K) {
+/* 19 */       if (p.world.isRemote) {
 /* 20 */         W_EntityPlayerSP.closeScreen(p);
 /* 21 */       } else if (p instanceof EntityPlayerMP) {
-/* 22 */         ((EntityPlayerMP)p).func_71053_j();
+/* 22 */         ((EntityPlayerMP)p).closeScreen();
 /*    */       } 
 /*    */     }
 /*    */   }
 /*    */   
 /*    */   public static boolean hasItem(EntityPlayer player, Item item) {
-/* 28 */     return (item != null && player.field_71071_by.func_70431_c(new ItemStack(item)));
+/* 28 */     return (item != null && player.inventory.hasItemStack(new ItemStack(item)));
 /*    */   }
 /*    */   
 /*    */   public static boolean consumeInventoryItem(EntityPlayer player, Item item) {
-/* 32 */     int index = player.field_71071_by.func_194014_c(new ItemStack(item));
-/* 33 */     return player.field_71071_by.func_70298_a(index, 1).func_190926_b();
+/* 32 */     int index = player.inventory.findSlotMatchingUnusedItem(new ItemStack(item));
+/* 33 */     return player.inventory.decrStackSize(index, 1).isEmpty();
 /*    */   }
 /*    */   
 /*    */   public static void addChatMessage(EntityPlayer player, String s) {
-/* 37 */     player.func_145747_a((ITextComponent)new TextComponentString(s));
+/* 37 */     player.sendMessage((ITextComponent)new TextComponentString(s));
 /*    */   }
 /*    */   
 /*    */   public static EntityItem dropPlayerItemWithRandomChoice(EntityPlayer player, ItemStack item, boolean b1, boolean b2) {
-/* 41 */     return player.func_146097_a(item, b1, b2);
+/* 41 */     return player.dropItem(item, b1, b2);
 /*    */   }
 /*    */   
 /*    */   public static boolean isPlayer(Entity entity) {

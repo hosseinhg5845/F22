@@ -87,9 +87,9 @@
 /*  87 */       dos.writeInt(this.affectedPositions.size());
 /*     */       
 /*  89 */       for (BlockPos blockpos : this.affectedPositions) {
-/*  90 */         dos.writeInt(blockpos.func_177958_n());
-/*  91 */         dos.writeInt(blockpos.func_177956_o());
-/*  92 */         dos.writeInt(blockpos.func_177952_p());
+/*  90 */         dos.writeInt(blockpos.getX());
+/*  91 */         dos.writeInt(blockpos.getY());
+/*  92 */         dos.writeInt(blockpos.getZ());
 /*     */       } 
 /*     */     }
 /*     */     

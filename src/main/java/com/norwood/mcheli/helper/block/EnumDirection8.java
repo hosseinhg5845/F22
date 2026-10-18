@@ -36,18 +36,18 @@
 /*    */   }
 /*    */   
 /*    */   public static EnumDirection8 getFront(int index) {
-/* 39 */     return VALUES[MathHelper.func_76130_a(index % VALUES.length)];
+/* 39 */     return VALUES[MathHelper.abs(index % VALUES.length)];
 /*    */   }
 /*    */   
 /*    */   public static EnumDirection8 fromAngle(double angle) {
-/* 43 */     return getFront(MathHelper.func_76128_c(angle / 45.0D + 0.5D) & 0x7);
+/* 43 */     return getFront(MathHelper.floor(angle / 45.0D + 0.5D) & 0x7);
 /*    */   }
 /*    */   
 /*    */   public int getIndex() {
 /* 47 */     return this.index;
 /*    */   }
 /*    */   @NotNull
-/*    */   public String func_176610_l() {
+/*    */   public String getName() {
 /* 51 */     return this.name;
 /*    */   }
 /*    */   

@@ -12,18 +12,18 @@
 /*     */ public class MCP_PlanePacketHandler {
 /*     */   @HandleSide({Side.SERVER})
 /*     */   public static void onPacket_PlayerControl(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/*  15 */     if (!player.field_70170_p.field_72995_K) {
+/*  15 */     if (!player.world.isRemote) {
 /*  16 */       MCP_PlanePacketPlayerControl pc = new MCP_PlanePacketPlayerControl();
 /*  17 */       pc.readData(data);
-/*  18 */       scheduler.func_152344_a(() -> {
+/*  18 */       scheduler.addScheduledTask(() -> {
 /*     */             MCP_EntityPlane plane = null;
-/*     */             if (player.func_184187_bx() instanceof MCP_EntityPlane) {
-/*     */               plane = (MCP_EntityPlane)player.func_184187_bx();
-/*     */             } else if (player.func_184187_bx() instanceof MCH_EntitySeat) {
-/*     */               if (((MCH_EntitySeat)player.func_184187_bx()).getParent() instanceof MCP_EntityPlane)
-/*     */                 plane = (MCP_EntityPlane)((MCH_EntitySeat)player.func_184187_bx()).getParent(); 
+/*     */             if (player.getRidingEntity() instanceof MCP_EntityPlane) {
+/*     */               plane = (MCP_EntityPlane)player.getRidingEntity();
+/*     */             } else if (player.getRidingEntity() instanceof MCH_EntitySeat) {
+/*     */               if (((MCH_EntitySeat)player.getRidingEntity()).getParent() instanceof MCP_EntityPlane)
+/*     */                 plane = (MCP_EntityPlane)((MCH_EntitySeat)player.getRidingEntity()).getParent(); 
 /*     */             } else {
-/*     */               Entity patt1407$temp = player.func_184187_bx();
+/*     */               Entity patt1407$temp = player.getRidingEntity();
 /*     */               if (patt1407$temp instanceof MCH_EntityUavStation) {
 /*     */                 MCH_EntityUavStation uavStation = (MCH_EntityUavStation)patt1407$temp;
 /*     */                 if (uavStation.getControlAircract() instanceof MCP_EntityPlane)

@@ -11,14 +11,14 @@
 /*    */   public MCH_WeaponTargetingPod(World w, Vec3d v, float yaw, float pitch, String nm, MCH_WeaponInfo wi) {
 /* 12 */     super(w, v, yaw, pitch, nm, wi);
 /* 13 */     this.interval = -90;
-/* 14 */     if (w.field_72995_K) {
+/* 14 */     if (w.isRemote) {
 /* 15 */       this.interval -= 10;
 /*    */     }
 /*    */   }
 /*    */ 
 /*    */   
 /*    */   public boolean shot(MCH_WeaponParam prm) {
-/* 21 */     if (!this.worldObj.field_72995_K) {
+/* 21 */     if (!this.worldObj.isRemote) {
 /* 22 */       MCH_WeaponInfo info = getInfo();
 /* 23 */       if ((info.target & 0x40) != 0) {
 /* 24 */         if (MCH_Multiplay.markPoint((EntityPlayer)prm.user, prm.posX, prm.posY, prm.posZ)) {

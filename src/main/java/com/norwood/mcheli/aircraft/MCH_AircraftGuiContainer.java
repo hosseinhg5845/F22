@@ -17,23 +17,23 @@
 /*  17 */     this.player = player;
 /*  18 */     this.aircraft = ac;
 /*  19 */     MCH_AircraftInventory iv = this.aircraft.getGuiInventory();
-/*  20 */     func_75146_a(new Slot(iv, 0, 10, 30));
-/*  21 */     func_75146_a(new Slot(iv, 1, 10, 48));
-/*  22 */     func_75146_a(new Slot(iv, 2, 10, 66));
+/*  20 */     addSlotToContainer(new Slot(iv, 0, 10, 30));
+/*  21 */     addSlotToContainer(new Slot(iv, 1, 10, 48));
+/*  22 */     addSlotToContainer(new Slot(iv, 2, 10, 66));
 /*  23 */     int num = this.aircraft.getNumEjectionSeat();
 /*     */     
 /*  25 */     for (int i = 0; i < num; i++) {
-/*  26 */       func_75146_a(new Slot(iv, 3 + i, 10 + 18 * i, 105));
+/*  26 */       addSlotToContainer(new Slot(iv, 3 + i, 10 + 18 * i, 105));
 /*     */     }
 /*     */     
 /*  29 */     for (int y = 0; y < 3; y++) {
 /*  30 */       for (int j = 0; j < 9; j++) {
-/*  31 */         func_75146_a(new Slot((IInventory)player.field_71071_by, 9 + j + y * 9, 25 + j * 18, 135 + y * 18));
+/*  31 */         addSlotToContainer(new Slot((IInventory)player.inventory, 9 + j + y * 9, 25 + j * 18, 135 + y * 18));
 /*     */       }
 /*     */     } 
 /*     */     
 /*  35 */     for (int x = 0; x < 9; x++) {
-/*  36 */       func_75146_a(new Slot((IInventory)player.field_71071_by, x, 25 + x * 18, 195));
+/*  36 */       addSlotToContainer(new Slot((IInventory)player.inventory, x, 25 + x * 18, 195));
 /*     */     }
 /*     */   }
 /*     */   
@@ -41,20 +41,20 @@
 /*  41 */     return (this.aircraft == null) ? 3 : (3 + this.aircraft.getNumEjectionSeat());
 /*     */   }
 /*     */   
-/*     */   public void func_75142_b() {
-/*  45 */     super.func_75142_b();
+/*     */   public void detectAndSendChanges() {
+/*  45 */     super.detectAndSendChanges();
 /*     */   }
 /*     */   
-/*     */   public boolean func_75145_c(@NotNull EntityPlayer player) {
-/*  49 */     if (this.aircraft.getGuiInventory().func_70300_a(player)) {
+/*     */   public boolean canInteractWith(@NotNull EntityPlayer player) {
+/*  49 */     if (this.aircraft.getGuiInventory().isUsableByPlayer(player)) {
 /*  50 */       return true;
 /*     */     }
 /*  52 */     if (this.aircraft.isUAV()) {
 /*  53 */       MCH_EntityUavStation us = this.aircraft.getUavStation();
 /*  54 */       if (us != null) {
-/*  55 */         double x = us.field_70165_t + us.posUavX;
-/*  56 */         double z = us.field_70161_v + us.posUavZ;
-/*  57 */         return (this.aircraft.field_70165_t < x + 10.0D && this.aircraft.field_70165_t > x - 10.0D && this.aircraft.field_70161_v < z + 10.0D && this.aircraft.field_70161_v > z - 10.0D);
+/*  55 */         double x = us.posX + us.posUavX;
+/*  56 */         double z = us.posZ + us.posUavZ;
+/*  57 */         return (this.aircraft.posX < x + 10.0D && this.aircraft.posX > x - 10.0D && this.aircraft.posZ < z + 10.0D && this.aircraft.posZ > z - 10.0D);
 /*     */       } 
 /*     */     } 
 /*     */     
@@ -62,66 +62,66 @@
 /*     */   }
 /*     */   
 /*     */   @NotNull
-/*     */   public ItemStack func_82846_b(@NotNull EntityPlayer player, int slotIndex) {
+/*     */   public ItemStack transferStackInSlot(@NotNull EntityPlayer player, int slotIndex) {
 /*  66 */     MCH_AircraftInventory iv = this.aircraft.getGuiInventory();
-/*  67 */     Slot slot = this.field_75151_b.get(slotIndex);
+/*  67 */     Slot slot = this.inventorySlots.get(slotIndex);
 /*  68 */     if (slot == null) {
 /*  69 */       return null;
 /*     */     }
-/*  71 */     ItemStack itemStack = slot.func_75211_c();
-/*  72 */     MCH_Lib.DbgLog(player.field_70170_p, "transferStackInSlot : %d :" + itemStack, new Object[] { Integer.valueOf(slotIndex) });
-/*  73 */     if (itemStack.func_190926_b()) {
-/*  74 */       return ItemStack.field_190927_a;
+/*  71 */     ItemStack itemStack = slot.getStack();
+/*  72 */     MCH_Lib.DbgLog(player.world, "transferStackInSlot : %d :" + itemStack, new Object[] { Integer.valueOf(slotIndex) });
+/*  73 */     if (itemStack.isEmpty()) {
+/*  74 */       return ItemStack.EMPTY;
 /*     */     }
 /*  76 */     if (slotIndex < getInventoryStartIndex()) {
-/*  77 */       for (int i = getInventoryStartIndex(); i < this.field_75151_b.size(); i++) {
-/*  78 */         Slot playerSlot = this.field_75151_b.get(i);
-/*  79 */         if (playerSlot.func_75211_c().func_190926_b()) {
-/*  80 */           playerSlot.func_75215_d(itemStack);
-/*  81 */           slot.func_75215_d(ItemStack.field_190927_a);
+/*  77 */       for (int i = getInventoryStartIndex(); i < this.inventorySlots.size(); i++) {
+/*  78 */         Slot playerSlot = this.inventorySlots.get(i);
+/*  79 */         if (playerSlot.getStack().isEmpty()) {
+/*  80 */           playerSlot.putStack(itemStack);
+/*  81 */           slot.putStack(ItemStack.EMPTY);
 /*  82 */           return itemStack;
 /*     */         } 
 /*     */       } 
-/*  85 */     } else if (itemStack.func_77973_b() instanceof MCH_ItemFuel) {
+/*  85 */     } else if (itemStack.getItem() instanceof MCH_ItemFuel) {
 /*  86 */       for (int ix = 0; ix < 3; ix++) {
-/*  87 */         if (iv.getFuelSlotItemStack(ix).func_190926_b()) {
-/*  88 */           iv.func_70299_a(ix, itemStack);
-/*  89 */           slot.func_75215_d(ItemStack.field_190927_a);
+/*  87 */         if (iv.getFuelSlotItemStack(ix).isEmpty()) {
+/*  88 */           iv.setInventorySlotContents(ix, itemStack);
+/*  89 */           slot.putStack(ItemStack.EMPTY);
 /*  90 */           return itemStack;
 /*     */         } 
 /*     */       } 
-/*  93 */     } else if (itemStack.func_77973_b() instanceof com.norwood.mcheli.parachute.MCH_ItemParachute) {
+/*  93 */     } else if (itemStack.getItem() instanceof com.norwood.mcheli.parachute.MCH_ItemParachute) {
 /*  94 */       int num = this.aircraft.getNumEjectionSeat();
 /*     */       
 /*  96 */       for (int ixx = 0; ixx < num; ixx++) {
-/*  97 */         if (iv.getParachuteSlotItemStack(ixx).func_190926_b()) {
-/*  98 */           iv.func_70299_a(3 + ixx, itemStack);
-/*  99 */           slot.func_75215_d(ItemStack.field_190927_a);
+/*  97 */         if (iv.getParachuteSlotItemStack(ixx).isEmpty()) {
+/*  98 */           iv.setInventorySlotContents(3 + ixx, itemStack);
+/*  99 */           slot.putStack(ItemStack.EMPTY);
 /* 100 */           return itemStack;
 /*     */         } 
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 105 */     return ItemStack.field_190927_a;
+/* 105 */     return ItemStack.EMPTY;
 /*     */   }
 /*     */ 
 /*     */ 
 /*     */   
-/*     */   public void func_75134_a(@NotNull EntityPlayer player) {
-/* 111 */     super.func_75134_a(player);
-/* 112 */     if (!player.field_70170_p.field_72995_K) {
+/*     */   public void onContainerClosed(@NotNull EntityPlayer player) {
+/* 111 */     super.onContainerClosed(player);
+/* 112 */     if (!player.world.isRemote) {
 /* 113 */       MCH_AircraftInventory iv = this.aircraft.getGuiInventory();
 /*     */       
 /* 115 */       for (int i = 0; i < 3; i++) {
 /* 116 */         ItemStack is = iv.getFuelSlotItemStack(i);
-/* 117 */         if (!is.func_190926_b() && !(is.func_77973_b() instanceof MCH_ItemFuel)) {
+/* 117 */         if (!is.isEmpty() && !(is.getItem() instanceof MCH_ItemFuel)) {
 /* 118 */           dropPlayerItem(player, i);
 /*     */         }
 /*     */       } 
 /*     */       
 /* 122 */       for (int ix = 0; ix < 2; ix++) {
 /* 123 */         ItemStack is = iv.getParachuteSlotItemStack(ix);
-/* 124 */         if (!is.func_190926_b() && !(is.func_77973_b() instanceof com.norwood.mcheli.parachute.MCH_ItemParachute)) {
+/* 124 */         if (!is.isEmpty() && !(is.getItem() instanceof com.norwood.mcheli.parachute.MCH_ItemParachute)) {
 /* 125 */           dropPlayerItem(player, 3 + ix);
 /*     */         }
 /*     */       } 
@@ -129,10 +129,10 @@
 /*     */   }
 /*     */   
 /*     */   public void dropPlayerItem(EntityPlayer player, int slotID) {
-/* 132 */     if (!player.field_70170_p.field_72995_K) {
-/* 133 */       ItemStack itemstack = this.aircraft.getGuiInventory().func_70304_b(slotID);
-/* 134 */       if (!itemstack.func_190926_b())
-/* 135 */         player.func_71019_a(itemstack, false); 
+/* 132 */     if (!player.world.isRemote) {
+/* 133 */       ItemStack itemstack = this.aircraft.getGuiInventory().removeStackFromSlot(slotID);
+/* 134 */       if (!itemstack.isEmpty())
+/* 135 */         player.dropItem(itemstack, false); 
 /*     */     } 
 /*     */   }
 /*     */ }

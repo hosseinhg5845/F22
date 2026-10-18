@@ -16,7 +16,7 @@
 /*    */   
 /*    */   public static _IModelCustom loadModel(String name) throws IllegalArgumentException, _ModelFormatException {
 /* 18 */     ResourceLocation resource = new ResourceLocation("mcheli", name);
-/* 19 */     String path = resource.func_110623_a();
+/* 19 */     String path = resource.getResourcePath();
 /* 20 */     int i = path.lastIndexOf('.');
 /* 21 */     if (i == -1)
 /* 22 */       throw new IllegalArgumentException("The resource name is not valid"); 

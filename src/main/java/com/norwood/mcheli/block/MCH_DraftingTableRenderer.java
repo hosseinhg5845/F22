@@ -32,7 +32,7 @@
 /* 32 */     GL11.glTranslated(posX + 0.5D, posY, posZ + 0.5D);
 /* 33 */     float yaw = getYawAngle(tile);
 /* 34 */     GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
-/* 35 */     RenderHelper.func_74519_b();
+/* 35 */     RenderHelper.enableStandardItemLighting();
 /* 36 */     GL11.glColor4f(0.75F, 0.75F, 0.75F, 1.0F);
 /* 37 */     GL11.glEnable(3042);
 /* 38 */     int srcBlend = GL11.glGetInteger(3041);
@@ -51,7 +51,7 @@
 /*    */   }
 /*    */   
 /*    */   private float getYawAngle(MCH_DraftingTableTileEntity tile) {
-/* 54 */     return tile.func_145830_o() ? (-tile.func_145832_p() * 45.0F + 180.0F) : 0.0F;
+/* 54 */     return tile.hasWorld() ? (-tile.getBlockMetadata() * 45.0F + 180.0F) : 0.0F;
 /*    */   }
 /*    */   
 /*    */   @SideOnly(Side.CLIENT)
@@ -61,8 +61,8 @@
 /*    */ 
 /*    */ 
 /*    */     
-/*    */     public void func_192838_a(@NotNull ItemStack p_192838_1_, float partialTicks) {
-/* 65 */       TileEntityRendererDispatcher.field_147556_a.func_192855_a(this.draftingTable, 0.0D, 0.0D, 0.0D, partialTicks, 0.0F);
+/*    */     public void renderByItem(@NotNull ItemStack p_192838_1_, float partialTicks) {
+/* 65 */       TileEntityRendererDispatcher.instance.render(this.draftingTable, 0.0D, 0.0D, 0.0D, partialTicks, 0.0F);
 /*    */     }
 /*    */     
 /*    */     private DraftingTableStackRenderer() {}

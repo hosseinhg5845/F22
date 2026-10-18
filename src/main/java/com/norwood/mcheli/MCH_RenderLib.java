@@ -18,15 +18,15 @@
 /* 18 */     GL11.glBlendFunc(770, 771);
 /* 19 */     GL11.glColor4ub((byte)(color >> 16 & 0xFF), (byte)(color >> 8 & 0xFF), (byte)(color >> 0 & 0xFF), (byte)(color >> 24 & 0xFF));
 /* 20 */     GL11.glLineWidth(width);
-/* 21 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 22 */     BufferBuilder builder = tessellator.func_178180_c();
-/* 23 */     builder.func_181668_a(mode, DefaultVertexFormats.field_181705_e);
+/* 21 */     Tessellator tessellator = Tessellator.getInstance();
+/* 22 */     BufferBuilder builder = tessellator.getBuffer();
+/* 23 */     builder.begin(mode, DefaultVertexFormats.POSITION);
 /*    */     
 /* 25 */     for (Vec3d v : points) {
-/* 26 */       builder.func_181662_b(v.field_72450_a, v.field_72448_b, v.field_72449_c).func_181675_d();
+/* 26 */       builder.pos(v.x, v.y, v.z).endVertex();
 /*    */     }
 /*    */     
-/* 29 */     tessellator.func_78381_a();
+/* 29 */     tessellator.draw();
 /* 30 */     GL11.glEnable(3553);
 /* 31 */     GL11.glDisable(3042);
 /* 32 */     GL11.glColor4b((byte)-1, (byte)-1, (byte)-1, (byte)-1);

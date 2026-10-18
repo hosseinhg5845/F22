@@ -159,9 +159,9 @@
 /*     */   
 /*     */   public boolean use(MCH_WeaponParam prm) {
 /* 161 */     Vec3d v = getShotPos(prm.entity);
-/* 162 */     prm.posX += v.field_72450_a;
-/* 163 */     prm.posY += v.field_72448_b;
-/* 164 */     prm.posZ += v.field_72449_c;
+/* 162 */     prm.posX += v.x;
+/* 163 */     prm.posY += v.y;
+/* 164 */     prm.posZ += v.z;
 /* 165 */     if (shot(prm)) {
 /* 166 */       this.tick = 0;
 /* 167 */       return true;
@@ -174,9 +174,9 @@
 /* 174 */     if (entity instanceof MCH_EntityAircraft && this.onTurret) {
 /* 175 */       return ((MCH_EntityAircraft)entity).calcOnTurretPos(this.position);
 /*     */     }
-/* 177 */     Vec3d v = new Vec3d(this.position.field_72450_a, this.position.field_72448_b, this.position.field_72449_c);
+/* 177 */     Vec3d v = new Vec3d(this.position.x, this.position.y, this.position.z);
 /* 178 */     float roll = (entity instanceof MCH_EntityAircraft) ? ((MCH_EntityAircraft)entity).getRotRoll() : 0.0F;
-/* 179 */     return MCH_Lib.RotVec3(v, -entity.field_70177_z, -entity.field_70125_A, -roll);
+/* 179 */     return MCH_Lib.RotVec3(v, -entity.rotationYaw, -entity.rotationPitch, -roll);
 /*     */   }
 /*     */ 
 /*     */   
@@ -185,16 +185,16 @@
 /*     */   }
 /*     */   
 /*     */   public void playSound(Entity e, String snd) {
-/* 188 */     if (!e.field_70170_p.field_72995_K && this.canPlaySound && getInfo() != null) {
+/* 188 */     if (!e.world.isRemote && this.canPlaySound && getInfo() != null) {
 /* 189 */       float prnd = (getInfo()).soundPitchRandom;
-/* 190 */       W_WorldFunc.MOD_playSoundEffect(this.worldObj, e.field_70165_t, e.field_70163_u, e.field_70161_v, snd, 
+/* 190 */       W_WorldFunc.MOD_playSoundEffect(this.worldObj, e.posX, e.posY, e.posZ, snd, 
 /* 191 */           (getInfo()).soundVolume, (getInfo()).soundPitch * (1.0F - prnd) + rand.nextFloat() * prnd);
 /*     */     } 
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public void playSoundClient(Entity e, float volume, float pitch) {
-/* 197 */     if (e.field_70170_p.field_72995_K && getInfo() != null) {
+/* 197 */     if (e.world.isRemote && getInfo() != null) {
 /* 198 */       W_McClient.MOD_playSoundFX((getInfo()).soundFileName, volume, pitch);
 /*     */     }
 /*     */   }
@@ -206,13 +206,13 @@
 /* 206 */       return -1.0D;
 /*     */     }
 /* 208 */     Objects.requireNonNull(prm); Vec3d v = MCH_Lib.RotVec3(0.0D, 0.0D, 1.0D, -prm.rotYaw, -prm.rotPitch, -0.0F);
-/* 209 */     double s = Math.sqrt(v.field_72450_a * v.field_72450_a + v.field_72448_b * v.field_72448_b + v.field_72449_c * v.field_72449_c);
+/* 209 */     double s = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 /* 210 */     double acc = (this.acceleration < 4.0F) ? this.acceleration : 4.0D;
 /* 211 */     double accFac = this.acceleration / acc;
-/* 212 */     double my = v.field_72448_b * this.acceleration / s;
+/* 212 */     double my = v.y * this.acceleration / s;
 /* 213 */     if (my > 0.0D) {
-/* 214 */       double mx = v.field_72450_a * this.acceleration / s;
-/* 215 */       double mz = v.field_72449_c * this.acceleration / s;
+/* 214 */       double mx = v.x * this.acceleration / s;
+/* 215 */       double mz = v.z * this.acceleration / s;
 /* 216 */       double ls = my / this.weaponInfo.gravity;
 /* 217 */       double gravity = this.weaponInfo.gravity * accFac;
 /* 218 */       if (ls < -12.0D) {
@@ -230,10 +230,10 @@
 /* 230 */       for (int i = 0; i < 50; i++) {
 /* 231 */         Vec3d vs = new Vec3d(spx, spy, spz);
 /* 232 */         Vec3d ve = new Vec3d(spx + mx, spy + my, spz + mz);
-/* 233 */         RayTraceResult mop = this.worldObj.func_72933_a(vs, ve);
-/* 234 */         if (mop != null && mop.field_72313_a == RayTraceResult.Type.BLOCK) {
-/* 235 */           double dx = mop.func_178782_a().func_177958_n() - prm.posX;
-/* 236 */           double dz = mop.func_178782_a().func_177952_p() - prm.posZ;
+/* 233 */         RayTraceResult mop = this.worldObj.rayTraceBlocks(vs, ve);
+/* 234 */         if (mop != null && mop.typeOfHit == RayTraceResult.Type.BLOCK) {
+/* 235 */           double dx = mop.getBlockPos().getX() - prm.posX;
+/* 236 */           double dz = mop.getBlockPos().getZ() - prm.posZ;
 /* 237 */           return Math.sqrt(dx * dx + dz * dz);
 /*     */         } 
 /*     */         

@@ -25,30 +25,30 @@
 /*    */   
 /*    */   public MCH_RenderGLTD(RenderManager renderManager) {
 /* 27 */     super(renderManager);
-/* 28 */     this.field_76989_e = 0.5F;
+/* 28 */     this.shadowSize = 0.5F;
 /*    */   }
 /*    */   
 /*    */   public void doRender(MCH_EntityGLTD entity, double posX, double posY, double posZ, float par8, float tickTime) {
 /* 32 */     GL11.glPushMatrix();
 /* 33 */     GL11.glTranslated(posX, posY + 0.25D, posZ);
-/* 34 */     setCommonRenderParam(true, entity.func_70070_b());
+/* 34 */     setCommonRenderParam(true, entity.getBrightnessForRender());
 /* 35 */     bindTexture("textures/gltd.png");
-/* 36 */     Minecraft mc = Minecraft.func_71410_x();
+/* 36 */     Minecraft mc = Minecraft.getMinecraft();
 /* 37 */     boolean isNotRenderHead = false;
 /* 38 */     if (entity.getRiddenByEntity() != null) {
 /* 39 */       entity.isUsedPlayer = true;
-/* 40 */       entity.renderRotaionYaw = (entity.getRiddenByEntity()).field_70177_z;
-/* 41 */       entity.renderRotaionPitch = (entity.getRiddenByEntity()).field_70125_A;
-/* 42 */       isNotRenderHead = (mc.field_71474_y.field_74320_O == 0 && W_Lib.isClientPlayer(entity.getRiddenByEntity()));
+/* 40 */       entity.renderRotaionYaw = (entity.getRiddenByEntity()).rotationYaw;
+/* 41 */       entity.renderRotaionPitch = (entity.getRiddenByEntity()).rotationPitch;
+/* 42 */       isNotRenderHead = (mc.gameSettings.thirdPersonView == 0 && W_Lib.isClientPlayer(entity.getRiddenByEntity()));
 /*    */     } 
 /*    */     
 /* 45 */     if (entity.isUsedPlayer) {
 /* 46 */       GL11.glPushMatrix();
-/* 47 */       GL11.glRotatef(-entity.field_70177_z, 0.0F, 1.0F, 0.0F);
+/* 47 */       GL11.glRotatef(-entity.rotationYaw, 0.0F, 1.0F, 0.0F);
 /* 48 */       model.renderPart("$body");
 /* 49 */       GL11.glPopMatrix();
 /*    */     } else {
-/* 51 */       GL11.glRotatef(-entity.field_70177_z, 0.0F, 1.0F, 0.0F);
+/* 51 */       GL11.glRotatef(-entity.rotationYaw, 0.0F, 1.0F, 0.0F);
 /* 52 */       model.renderPart("$body");
 /*    */     } 
 /*    */     

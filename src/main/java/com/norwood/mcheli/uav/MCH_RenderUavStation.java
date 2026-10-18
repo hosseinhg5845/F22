@@ -20,7 +20,7 @@
 /*    */   
 /*    */   public MCH_RenderUavStation(RenderManager renderManager) {
 /* 22 */     super(renderManager);
-/* 23 */     this.field_76989_e = 1.0F;
+/* 23 */     this.shadowSize = 1.0F;
 /*    */   }
 /*    */   
 /*    */   public void doRender(@NotNull MCH_EntityUavStation entity, double posX, double posY, double posZ, float par8, float tickTime) {
@@ -29,8 +29,8 @@
 /* 29 */       GL11.glPushMatrix();
 /* 30 */       GL11.glTranslated(posX, posY + 0.3499999940395355D, posZ);
 /* 31 */       GL11.glEnable(2884);
-/* 32 */       GL11.glRotatef(entity.field_70177_z, 0.0F, -1.0F, 0.0F);
-/* 33 */       GL11.glRotatef(entity.field_70125_A, 1.0F, 0.0F, 0.0F);
+/* 32 */       GL11.glRotatef(entity.rotationYaw, 0.0F, -1.0F, 0.0F);
+/* 33 */       GL11.glRotatef(entity.rotationPitch, 1.0F, 0.0F, 0.0F);
 /* 34 */       GL11.glColor4f(0.75F, 0.75F, 0.75F, 1.0F);
 /* 35 */       GL11.glEnable(3042);
 /* 36 */       int srcBlend = GL11.glGetInteger(3041);

@@ -51,7 +51,7 @@
 /*  51 */     int dstBlend = GL11.glGetInteger(3040);
 /*  52 */     GL11.glBlendFunc(1, 1);
 /*  53 */     W_McClient.MOD_bindTexture("textures/gui/alpha.png");
-/*  54 */     drawTexturedModalRectRotate(0.0D, 0.0D, this.field_146294_l, this.field_146295_m, this.rand.nextInt(256), this.rand.nextInt(256), 256.0D, 256.0D, 0.0F);
+/*  54 */     drawTexturedModalRectRotate(0.0D, 0.0D, this.width, this.height, this.rand.nextInt(256), this.rand.nextInt(256), 256.0D, 256.0D, 0.0F);
 /*  55 */     GL11.glBlendFunc(srcBlend, dstBlend);
 /*  56 */     GL11.glDisable(3042);
 /*     */   }
@@ -97,7 +97,7 @@
 /*  97 */     int dstBlend = GL11.glGetInteger(3040);
 /*  98 */     GL11.glBlendFunc(1, 1);
 /*  99 */     W_McClient.MOD_bindTexture("textures/gui/noise.png");
-/* 100 */     drawTexturedModalRectRotate(0.0D, 0.0D, this.field_146294_l, this.field_146295_m, this.rand.nextInt(256), this.rand.nextInt(256), 256.0D, 256.0D, 0.0F);
+/* 100 */     drawTexturedModalRectRotate(0.0D, 0.0D, this.width, this.height, this.rand.nextInt(256), this.rand.nextInt(256), 256.0D, 256.0D, 0.0F);
 /* 101 */     GL11.glBlendFunc(srcBlend, dstBlend);
 /* 102 */     GL11.glDisable(3042);
 /*     */   }
@@ -116,7 +116,7 @@
 /* 116 */       drawConditionalKeyBind(aircraft.canPutToRack(), "PutRack", MCH_Config.KeyPutToRack.prmInt, leftX, -10, colorActive);
 /* 117 */       drawConditionalKeyBind(aircraft.canDownFromRack(), "DownRack", MCH_Config.KeyDownFromRack.prmInt, leftX, 0, colorActive);
 /* 118 */       drawConditionalKeyBind(aircraft.canRideRack(), "RideRack", MCH_Config.KeyPutToRack.prmInt, leftX, 10, colorActive);
-/* 119 */       drawConditionalKeyBind((aircraft.func_184187_bx() != null), "DismountRack", MCH_Config.KeyDownFromRack.prmInt, leftX, 10, colorActive);
+/* 119 */       drawConditionalKeyBind((aircraft.getRidingEntity() != null), "DismountRack", MCH_Config.KeyDownFromRack.prmInt, leftX, 10, colorActive);
 /*     */     } 
 /*     */     
 /* 122 */     boolean multipleSeats = (aircraft.getSeatNum() > 1);

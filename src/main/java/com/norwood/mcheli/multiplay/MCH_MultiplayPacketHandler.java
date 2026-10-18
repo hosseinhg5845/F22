@@ -37,10 +37,10 @@
 /*     */   
 /*     */   @HandleSide({Side.SERVER})
 /*     */   public static void onPacket_Command(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/*  40 */     if (!player.field_70170_p.field_72995_K) {
+/*  40 */     if (!player.world.isRemote) {
 /*  41 */       MCH_PacketIndMultiplayCommand pc = new MCH_PacketIndMultiplayCommand();
 /*  42 */       pc.readData(data);
-/*  43 */       scheduler.func_152344_a(() -> {
+/*  43 */       scheduler.addScheduledTask(() -> {
 /*     */             ICommandManager icommandmanager;
 /*     */             MinecraftServer minecraftServer = MCH_Utils.getServer();
 /*     */             MCH_Lib.DbgLog(false, "MCH_MultiplayPacketHandler.onPacket_Command cmd:%d:%s", new Object[] { Integer.valueOf(pc.CmdID), pc.CmdStr });
@@ -52,12 +52,12 @@
 /*     */                 MCH_Multiplay.jumpSpawnPoint(player);
 /*     */                 return;
 /*     */               case 768:
-/*     */                 icommandmanager = minecraftServer.func_71187_D();
-/*     */                 icommandmanager.func_71556_a((ICommandSender)player, pc.CmdStr);
+/*     */                 icommandmanager = minecraftServer.getCommandManager();
+/*     */                 icommandmanager.executeCommand((ICommandSender)player, pc.CmdStr);
 /*     */                 return;
 /*     */               case 1024:
-/*     */                 if ((new CommandScoreboard()).func_184882_a(minecraftServer, (ICommandSender)player)) {
-/*     */                   minecraftServer.func_71188_g(!minecraftServer.func_71219_W());
+/*     */                 if ((new CommandScoreboard()).checkPermission(minecraftServer, (ICommandSender)player)) {
+/*     */                   minecraftServer.setAllowPvp(!minecraftServer.isPVPEnabled());
 /*     */                   MCH_PacketNotifyServerSettings.send(null);
 /*     */                 } 
 /*     */                 return;
@@ -72,10 +72,10 @@
 /*     */   
 /*     */   private static void destoryAllAircraft(EntityPlayer player) {
 /*  74 */     CommandSummon cmd = new CommandSummon();
-/*  75 */     if (cmd.func_184882_a(MCH_Utils.getServer(), (ICommandSender)player)) {
-/*  76 */       for (Entity e : player.field_70170_p.field_72996_f) {
+/*  75 */     if (cmd.checkPermission(MCH_Utils.getServer(), (ICommandSender)player)) {
+/*  76 */       for (Entity e : player.world.loadedEntityList) {
 /*  77 */         if (e instanceof com.norwood.mcheli.aircraft.MCH_EntityAircraft) {
-/*  78 */           e.func_70106_y();
+/*  78 */           e.setDead();
 /*     */         }
 /*     */       } 
 /*     */     }
@@ -83,10 +83,10 @@
 /*     */   
 /*     */   @HandleSide({Side.CLIENT})
 /*     */   public static void onPacket_NotifySpotedEntity(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/*  86 */     if (player.field_70170_p.field_72995_K) {
+/*  86 */     if (player.world.isRemote) {
 /*  87 */       MCH_PacketNotifySpotedEntity pc = new MCH_PacketNotifySpotedEntity();
 /*  88 */       pc.readData(data);
-/*  89 */       scheduler.func_152344_a(() -> {
+/*  89 */       scheduler.addScheduledTask(() -> {
 /*     */             if (pc.count > 0) {
 /*     */               for (int i = 0; i < pc.num; i++) {
 /*     */                 MCH_GuiTargetMarker.addSpotedEntity(pc.entityId[i], pc.count);
@@ -98,19 +98,19 @@
 /*     */   
 /*     */   @HandleSide({Side.CLIENT})
 /*     */   public static void onPacket_NotifyMarkPoint(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/* 101 */     if (player.field_70170_p.field_72995_K) {
+/* 101 */     if (player.world.isRemote) {
 /* 102 */       MCH_PacketNotifyMarkPoint pc = new MCH_PacketNotifyMarkPoint();
 /* 103 */       pc.readData(data);
-/* 104 */       scheduler.func_152344_a(() -> MCH_GuiTargetMarker.markPoint(pc.px, pc.py, pc.pz));
+/* 104 */       scheduler.addScheduledTask(() -> MCH_GuiTargetMarker.markPoint(pc.px, pc.py, pc.pz));
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   @HandleSide({Side.SERVER})
 /*     */   public static void onPacket_LargeData(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/* 110 */     if (!player.field_70170_p.field_72995_K) {
+/* 110 */     if (!player.world.isRemote) {
 /* 111 */       MCH_PacketLargeData pc = new MCH_PacketLargeData();
 /* 112 */       pc.readData(data);
-/* 113 */       scheduler.func_152344_a(() -> {
+/* 113 */       scheduler.addScheduledTask(() -> {
 /*     */             try {
 /*     */               if (pc.imageDataIndex < 0 || pc.imageDataTotalSize <= 0) {
 /*     */                 return;
@@ -123,7 +123,7 @@
 /*     */                 
 /*     */                 imageData = new byte[pc.imageDataTotalSize];
 /*     */                 
-/*     */                 lastPlayerName = player.func_145748_c_().func_150254_d();
+/*     */                 lastPlayerName = player.getDisplayName().getFormattedText();
 /*     */                 
 /*     */                 lastDataPercent = 0.0D;
 /*     */               } 
@@ -131,7 +131,7 @@
 /*     */               double dataPercent = (pc.imageDataIndex + pc.imageDataSize) / pc.imageDataTotalSize * 100.0D;
 /*     */               
 /*     */               if (dataPercent - lastDataPercent >= 10.0D || lastDataPercent == 0.0D) {
-/*     */                 LogInfo("[mcheli]Saving the %s screen shot to server. %.0f%% : %dbyte / %dbyte", new Object[] { player.func_145748_c_(), Double.valueOf(dataPercent), Integer.valueOf(pc.imageDataIndex), Integer.valueOf(pc.imageDataTotalSize) });
+/*     */                 LogInfo("[mcheli]Saving the %s screen shot to server. %.0f%% : %dbyte / %dbyte", new Object[] { player.getDisplayName(), Double.valueOf(dataPercent), Integer.valueOf(pc.imageDataIndex), Integer.valueOf(pc.imageDataTotalSize) });
 /*     */                 
 /*     */                 lastDataPercent = dataPercent;
 /*     */               } 
@@ -155,7 +155,7 @@
 /*     */                 
 /*     */                 File file = new File("screenshots_op");
 /*     */                 file.mkdir();
-/*     */                 file = new File(file, player.func_145748_c_() + "_" + dt + ".png");
+/*     */                 file = new File(file, player.getDisplayName() + "_" + dt + ".png");
 /*     */                 String s = file.getAbsolutePath();
 /*     */                 LogInfo("[mcheli]Save Screenshot has been completed: %s", new Object[] { s });
 /*     */                 FileOutputStream fos = new FileOutputStream(s);
@@ -185,14 +185,14 @@
 /*     */   
 /*     */   @HandleSide({Side.CLIENT})
 /*     */   public static void onPacket_IndClient(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/* 188 */     if (player.field_70170_p.field_72995_K) {
+/* 188 */     if (player.world.isRemote) {
 /* 189 */       MCH_PacketIndClient pc = new MCH_PacketIndClient();
 /* 190 */       pc.readData(data);
-/* 191 */       scheduler.func_152344_a(() -> {
+/* 191 */       scheduler.addScheduledTask(() -> {
 /*     */             if (pc.CmdID == 1) {
 /*     */               MCH_MultiplayClient.startSendImageData();
 /*     */             } else if (pc.CmdID == 2) {
-/*     */               MCH_MultiplayClient.sendModsInfo(player.func_145748_c_().func_150254_d(), player.func_145748_c_().func_150260_c(), Integer.parseInt(pc.CmdStr));
+/*     */               MCH_MultiplayClient.sendModsInfo(player.getDisplayName().getFormattedText(), player.getDisplayName().getUnformattedText(), Integer.parseInt(pc.CmdStr));
 /*     */             } 
 /*     */           });
 /*     */     } 
@@ -216,25 +216,25 @@
 /*     */   public static void onPacket_ModList(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
 /* 217 */     MCH_PacketModList pc = new MCH_PacketModList();
 /* 218 */     pc.readData(data);
-/* 219 */     if (player.field_70170_p.field_72995_K) {
-/* 220 */       scheduler.func_152344_a(() -> {
-/*     */             MCH_Lib.DbgLog(player.field_70170_p, "MCH_MultiplayPacketHandler.onPacket_ModList : ID=%d, Num=%d", new Object[] { Integer.valueOf(pc.id), Integer.valueOf(pc.num) });
+/* 219 */     if (player.world.isRemote) {
+/* 220 */       scheduler.addScheduledTask(() -> {
+/*     */             MCH_Lib.DbgLog(player.world, "MCH_MultiplayPacketHandler.onPacket_ModList : ID=%d, Num=%d", new Object[] { Integer.valueOf(pc.id), Integer.valueOf(pc.num) });
 /*     */             
 /*     */             if (pc.firstData) {
-/*     */               MCH_Lib.Log(TextFormatting.RED + "###### " + player.func_145748_c_() + " ######", new Object[0]);
+/*     */               MCH_Lib.Log(TextFormatting.RED + "###### " + player.getDisplayName() + " ######", new Object[0]);
 /*     */             }
 /*     */             for (String s : pc.list) {
 /*     */               MCH_Lib.Log(s, new Object[0]);
-/*     */               player.func_145747_a((ITextComponent)new TextComponentString(s));
+/*     */               player.sendMessage((ITextComponent)new TextComponentString(s));
 /*     */             } 
 /*     */           });
 /* 231 */     } else if (pc.id == playerInfoId) {
-/* 232 */       scheduler.func_152344_a(() -> {
+/* 232 */       scheduler.addScheduledTask(() -> {
 /*     */             if (modListRequestPlayer != null) {
 /*     */               MCH_PacketModList.send(modListRequestPlayer, pc);
 /*     */             } else {
 /*     */               if (pc.firstData)
-/*     */                 LogInfo("###### " + player.func_145748_c_() + " ######", new Object[0]); 
+/*     */                 LogInfo("###### " + player.getDisplayName() + " ######", new Object[0]); 
 /*     */               for (String s : pc.list)
 /*     */                 LogInfo(s, new Object[0]); 
 /*     */             } 

@@ -91,11 +91,11 @@
 /*     */         } 
 /*     */         
 /*  93 */         if (seatID == 0) {
-/*  94 */           if (heli.getTowChainEntity() != null && !(heli.getTowChainEntity()).field_70128_L) {
+/*  94 */           if (heli.getTowChainEntity() != null && !(heli.getTowChainEntity()).isDead) {
 /*  95 */             String msg = "Drop  : " + MCH_KeyName.getDescOrName(MCH_Config.KeyExtra.prmInt);
 /*  96 */             drawString(msg, RX, this.centerY - 30, colorActive);
 /*  97 */           } else if (info.isEnableFoldBlade && 
-/*  98 */             MCH_Lib.getBlockIdY(heli.field_70170_p, heli.field_70165_t, heli.field_70163_u, heli.field_70161_v, 1, -2, true) > 0 && heli
+/*  98 */             MCH_Lib.getBlockIdY(heli.world, heli.posX, heli.posY, heli.posZ, 1, -2, true) > 0 && heli
 /*  99 */             .getCurrentThrottle() <= 0.01D) {
 /* 100 */             String msg = "FoldBlade  : " + MCH_KeyName.getDescOrName(MCH_Config.KeyExtra.prmInt);
 /* 101 */             drawString(msg, RX, this.centerY - 30, colorActive);

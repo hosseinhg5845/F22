@@ -34,15 +34,15 @@
 /*  34 */         uavStation = PooledGuiParameter.getEntity(player);
 /*  35 */         PooledGuiParameter.resetEntity(player);
 /*  36 */         if (uavStation instanceof MCH_EntityUavStation) {
-/*  37 */           return new MCH_ContainerUavStation(player.field_71071_by, (MCH_EntityUavStation)uavStation);
+/*  37 */           return new MCH_ContainerUavStation(player.inventory, (MCH_EntityUavStation)uavStation);
 /*     */         }
 /*     */         break;
 /*     */       case 1:
 /*  41 */         ac = null;
-/*  42 */         if (player.func_184187_bx() instanceof MCH_EntityAircraft) {
-/*  43 */           ac = (MCH_EntityAircraft)player.func_184187_bx();
-/*  44 */         } else if (player.func_184187_bx() instanceof MCH_EntityUavStation) {
-/*  45 */           ac = ((MCH_EntityUavStation)player.func_184187_bx()).getControlAircract();
+/*  42 */         if (player.getRidingEntity() instanceof MCH_EntityAircraft) {
+/*  43 */           ac = (MCH_EntityAircraft)player.getRidingEntity();
+/*  44 */         } else if (player.getRidingEntity() instanceof MCH_EntityUavStation) {
+/*  45 */           ac = ((MCH_EntityUavStation)player.getRidingEntity()).getControlAircract();
 /*     */         } 
 /*     */         
 /*  48 */         if (ac != null) {
@@ -56,7 +56,7 @@
 /*  56 */         return new MCH_DraftingTableGuiContainer(player, x, y, z);
 /*     */       
 /*     */       case 5:
-/*  59 */         if (!MCH_Utils.getServer().func_71264_H() || MCH_Config.DebugLog) {
+/*  59 */         if (!MCH_Utils.getServer().isSinglePlayer() || MCH_Config.DebugLog) {
 /*  60 */           return new MCH_ContainerScoreboard(player);
 /*     */         }
 /*     */         break;
@@ -74,15 +74,15 @@
 /*  74 */         uavStation = PooledGuiParameter.getEntity(player);
 /*  75 */         PooledGuiParameter.resetEntity(player);
 /*  76 */         if (uavStation instanceof MCH_EntityUavStation) {
-/*  77 */           return new MCH_GuiUavStation(player.field_71071_by, (MCH_EntityUavStation)uavStation);
+/*  77 */           return new MCH_GuiUavStation(player.inventory, (MCH_EntityUavStation)uavStation);
 /*     */         }
 /*     */         break;
 /*     */       case 1:
 /*  81 */         ac = null;
-/*  82 */         if (player.func_184187_bx() instanceof MCH_EntityAircraft) {
-/*  83 */           ac = (MCH_EntityAircraft)player.func_184187_bx();
-/*  84 */         } else if (player.func_184187_bx() instanceof MCH_EntityUavStation) {
-/*  85 */           ac = ((MCH_EntityUavStation)player.func_184187_bx()).getControlAircract();
+/*  82 */         if (player.getRidingEntity() instanceof MCH_EntityAircraft) {
+/*  83 */           ac = (MCH_EntityAircraft)player.getRidingEntity();
+/*  84 */         } else if (player.getRidingEntity() instanceof MCH_EntityUavStation) {
+/*  85 */           ac = ((MCH_EntityUavStation)player.getRidingEntity()).getControlAircract();
 /*     */         } 
 /*     */         
 /*  88 */         if (ac != null) {

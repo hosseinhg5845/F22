@@ -20,7 +20,7 @@
 /*    */   
 /*    */   public MCH_RenderParachute(RenderManager renderManager) {
 /* 22 */     super(renderManager);
-/* 23 */     this.field_76989_e = 0.5F;
+/* 23 */     this.shadowSize = 0.5F;
 /*    */   }
 /*    */   
 /*    */   public void doRender(@NotNull MCH_EntityParachute entity, double posX, double posY, double posZ, float par8, float tickTime) {
@@ -29,14 +29,14 @@
 /* 29 */       GL11.glPushMatrix();
 /* 30 */       GL11.glEnable(2884);
 /* 31 */       GL11.glTranslated(posX, posY, posZ);
-/* 32 */       float prevYaw = entity.field_70126_B;
-/* 33 */       if (entity.field_70177_z - prevYaw < -180.0F) {
+/* 32 */       float prevYaw = entity.prevRotationYaw;
+/* 33 */       if (entity.rotationYaw - prevYaw < -180.0F) {
 /* 34 */         prevYaw -= 360.0F;
-/* 35 */       } else if (prevYaw - entity.field_70177_z < -180.0F) {
+/* 35 */       } else if (prevYaw - entity.rotationYaw < -180.0F) {
 /* 36 */         prevYaw += 360.0F;
 /*    */       } 
 /*    */       
-/* 39 */       float yaw = prevYaw + (entity.field_70177_z - prevYaw) * tickTime;
+/* 39 */       float yaw = prevYaw + (entity.rotationYaw - prevYaw) * tickTime;
 /* 40 */       GL11.glRotatef(yaw, 0.0F, -1.0F, 0.0F);
 /* 41 */       GL11.glColor4f(0.75F, 0.75F, 0.75F, 1.0F);
 /* 42 */       GL11.glEnable(3042);

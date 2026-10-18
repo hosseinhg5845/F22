@@ -14,7 +14,7 @@
 /*    */ public abstract class W_Render<T extends Entity>
 /*    */   extends Render<T> {
 /* 16 */   protected static final ResourceLocation TEX_DEFAULT = new ResourceLocation(W_MOD.DOMAIN, "textures/default.png");
-/* 17 */   private static final FloatBuffer colorBuffer = GLAllocation.func_74529_h(16);
+/* 17 */   private static final FloatBuffer colorBuffer = GLAllocation.createDirectFloatBuffer(16);
 /*    */   public int srcBlend;
 /*    */   public int dstBlend;
 /*    */   
@@ -30,10 +30,10 @@
 /*    */   }
 /*    */   
 /*    */   protected void bindTexture(String path) {
-/* 33 */     func_110776_a(new ResourceLocation(W_MOD.DOMAIN, path));
+/* 33 */     bindTexture(new ResourceLocation(W_MOD.DOMAIN, path));
 /*    */   }
 /*    */   
-/*    */   protected ResourceLocation func_110775_a(@NotNull T entity) {
+/*    */   protected ResourceLocation getEntityTexture(@NotNull T entity) {
 /* 37 */     return TEX_DEFAULT;
 /*    */   }
 /*    */   
@@ -46,7 +46,7 @@
 /* 46 */     GL11.glEnable(2884);
 /* 47 */     int j = lighting % 65536;
 /* 48 */     int k = lighting / 65536;
-/* 49 */     OpenGlHelper.func_77475_a(OpenGlHelper.field_77476_b, j, k);
+/* 49 */     OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j, k);
 /* 50 */     GL11.glColor4f(0.75F, 0.75F, 0.75F, 1.0F);
 /* 51 */     GL11.glEnable(3042);
 /* 52 */     this.srcBlend = GL11.glGetInteger(3041);

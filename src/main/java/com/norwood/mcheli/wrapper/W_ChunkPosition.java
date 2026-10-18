@@ -4,15 +4,15 @@
 /*    */ 
 /*    */ public class W_ChunkPosition {
 /*    */   public static int getChunkPosX(BlockPos c) {
-/*  7 */     return c.func_177958_n();
+/*  7 */     return c.getX();
 /*    */   }
 /*    */   
 /*    */   public static int getChunkPosY(BlockPos c) {
-/* 11 */     return c.func_177956_o();
+/* 11 */     return c.getY();
 /*    */   }
 /*    */   
 /*    */   public static int getChunkPosZ(BlockPos c) {
-/* 15 */     return c.func_177952_p();
+/* 15 */     return c.getZ();
 /*    */   }
 /*    */ }
 

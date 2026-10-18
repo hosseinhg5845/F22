@@ -52,8 +52,8 @@
 /*     */   
 /*     */   public MCH_ThrowableInfo(AddonResourceLocation location, String path) {
 /*  54 */     super(location, path);
-/*  55 */     this.name = location.func_110623_a();
-/*  56 */     this.displayName = location.func_110623_a();
+/*  55 */     this.name = location.getResourcePath();
+/*  56 */     this.displayName = location.getResourcePath();
 /*  57 */     this.displayNameLang = new HashMap<>();
 /*  58 */     this.itemID = 0;
 /*  59 */     this.item = null;

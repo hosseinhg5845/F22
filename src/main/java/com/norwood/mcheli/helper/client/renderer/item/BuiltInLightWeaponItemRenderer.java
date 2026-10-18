@@ -49,7 +49,7 @@
 /*    */     
 /* 50 */     GL11.glEnable(2884);
 /* 51 */     W_McClient.MOD_bindTexture("textures/lweapon/" + name + ".png");
-/* 52 */     if (isFirstPerson && entity.func_184587_cr() && entity.func_184600_cs() == EnumHand.MAIN_HAND) {
+/* 52 */     if (isFirstPerson && entity.isHandActive() && entity.getActiveHand() == EnumHand.MAIN_HAND) {
 /* 53 */       GL11.glTranslated(0.12999999523162842D, 0.27000001072883606D, 0.009999999776482582D);
 /*    */     }
 /*    */     

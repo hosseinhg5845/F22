@@ -18,40 +18,40 @@
 /* 18 */     this.tm = t;
 /*    */   }
 /*    */   
-/*    */   public void func_110577_a(@NotNull ResourceLocation resouce) {
+/*    */   public void bindTexture(@NotNull ResourceLocation resouce) {
 /* 22 */     if (MCH_ClientCommonTickHandler.cameraMode == 2) {
-/* 23 */       this.tm.func_110577_a(R);
+/* 23 */       this.tm.bindTexture(R);
 /*    */     } else {
-/* 25 */       this.tm.func_110577_a(resouce);
+/* 25 */       this.tm.bindTexture(resouce);
 /*    */     } 
 /*    */   }
 /*    */   
-/*    */   public boolean func_110580_a(@NotNull ResourceLocation textureLocation, @NotNull ITickableTextureObject textureObj) {
-/* 30 */     return this.tm.func_110580_a(textureLocation, textureObj);
+/*    */   public boolean loadTickableTexture(@NotNull ResourceLocation textureLocation, @NotNull ITickableTextureObject textureObj) {
+/* 30 */     return this.tm.loadTickableTexture(textureLocation, textureObj);
 /*    */   }
 /*    */   
-/*    */   public boolean func_110579_a(@NotNull ResourceLocation textureLocation, @NotNull ITextureObject textureObj) {
-/* 34 */     return this.tm.func_110579_a(textureLocation, textureObj);
+/*    */   public boolean loadTexture(@NotNull ResourceLocation textureLocation, @NotNull ITextureObject textureObj) {
+/* 34 */     return this.tm.loadTexture(textureLocation, textureObj);
 /*    */   }
 /*    */   @NotNull
-/*    */   public ITextureObject func_110581_b(@NotNull ResourceLocation textureLocation) {
-/* 38 */     return this.tm.func_110581_b(textureLocation);
+/*    */   public ITextureObject getTexture(@NotNull ResourceLocation textureLocation) {
+/* 38 */     return this.tm.getTexture(textureLocation);
 /*    */   }
 /*    */   @NotNull
-/*    */   public ResourceLocation func_110578_a(@NotNull String name, @NotNull DynamicTexture texture) {
-/* 42 */     return this.tm.func_110578_a(name, texture);
+/*    */   public ResourceLocation getDynamicTextureLocation(@NotNull String name, @NotNull DynamicTexture texture) {
+/* 42 */     return this.tm.getDynamicTextureLocation(name, texture);
 /*    */   }
 /*    */   
-/*    */   public void func_110550_d() {
-/* 46 */     this.tm.func_110550_d();
+/*    */   public void tick() {
+/* 46 */     this.tm.tick();
 /*    */   }
 /*    */   
-/*    */   public void func_147645_c(@NotNull ResourceLocation textureLocation) {
-/* 50 */     this.tm.func_147645_c(textureLocation);
+/*    */   public void deleteTexture(@NotNull ResourceLocation textureLocation) {
+/* 50 */     this.tm.deleteTexture(textureLocation);
 /*    */   }
 /*    */   
-/*    */   public void func_110549_a(@NotNull IResourceManager resourceManager) {
-/* 54 */     this.tm.func_110549_a(resourceManager);
+/*    */   public void onResourceManagerReload(@NotNull IResourceManager resourceManager) {
+/* 54 */     this.tm.onResourceManagerReload(resourceManager);
 /*    */   }
 /*    */ }
 

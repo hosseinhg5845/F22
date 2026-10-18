@@ -102,7 +102,7 @@
 /*     */   
 /*     */   public static void QuatNormalize(FQuat q) {
 /* 104 */     float r = NORM(q.w, q.x, q.y, q.z);
-/* 105 */     if (MathHelper.func_76135_e(r) > 1.0E-4D) {
+/* 105 */     if (MathHelper.abs(r) > 1.0E-4D) {
 /* 106 */       q.w /= r;
 /* 107 */       q.x /= r;
 /* 108 */       q.y /= r;

@@ -15,8 +15,8 @@
 /*    */ 
 /*    */   
 /*    */   public boolean handleRenderType(ItemStack item, IItemRenderer.ItemRenderType type) {
-/* 18 */     if (item != null && item.func_77973_b() instanceof MCH_ItemAircraft) {
-/* 19 */       MCH_AircraftInfo info = ((MCH_ItemAircraft)item.func_77973_b()).getAircraftInfo();
+/* 18 */     if (item != null && item.getItem() instanceof MCH_ItemAircraft) {
+/* 19 */       MCH_AircraftInfo info = ((MCH_ItemAircraft)item.getItem()).getAircraftInfo();
 /* 20 */       if (info == null) {
 /* 21 */         return false;
 /*    */       }

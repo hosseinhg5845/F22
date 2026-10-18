@@ -9,14 +9,14 @@
 /*    */ public class MCH_UavPacketHandler {
 /*    */   @HandleSide({Side.SERVER})
 /*    */   public static void onPacketUavStatus(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/* 12 */     if (!player.field_70170_p.field_72995_K) {
+/* 12 */     if (!player.world.isRemote) {
 /* 13 */       MCH_UavPacketStatus status = new MCH_UavPacketStatus();
 /* 14 */       status.readData(data);
-/* 15 */       scheduler.func_152344_a(() -> {
-/*    */             if (player.func_184187_bx() instanceof MCH_EntityUavStation) {
-/*    */               ((MCH_EntityUavStation)player.func_184187_bx()).setUavPosition(status.posUavX, status.posUavY, status.posUavZ);
+/* 15 */       scheduler.addScheduledTask(() -> {
+/*    */             if (player.getRidingEntity() instanceof MCH_EntityUavStation) {
+/*    */               ((MCH_EntityUavStation)player.getRidingEntity()).setUavPosition(status.posUavX, status.posUavY, status.posUavZ);
 /*    */               if (status.continueControl)
-/*    */                 ((MCH_EntityUavStation)player.func_184187_bx()).controlLastAircraft((Entity)player); 
+/*    */                 ((MCH_EntityUavStation)player.getRidingEntity()).controlLastAircraft((Entity)player); 
 /*    */             } 
 /*    */           });
 /*    */     } 

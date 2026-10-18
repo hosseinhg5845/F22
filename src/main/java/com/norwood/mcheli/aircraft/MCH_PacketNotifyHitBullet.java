@@ -13,9 +13,9 @@
 /* 13 */   public int entityID_Ac = -1;
 /*    */   
 /*    */   public static void send(MCH_EntityAircraft ac, EntityPlayer rider) {
-/* 16 */     if (rider != null && !rider.field_70128_L) {
+/* 16 */     if (rider != null && !rider.isDead) {
 /* 17 */       MCH_PacketNotifyHitBullet s = new MCH_PacketNotifyHitBullet();
-/* 18 */       s.entityID_Ac = (ac != null && !ac.field_70128_L) ? W_Entity.getEntityId((Entity)ac) : -1;
+/* 18 */       s.entityID_Ac = (ac != null && !ac.isDead) ? W_Entity.getEntityId((Entity)ac) : -1;
 /* 19 */       W_Network.sendToPlayer((W_PacketBase)s, rider);
 /*    */     } 
 /*    */   }

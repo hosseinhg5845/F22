@@ -26,15 +26,15 @@
 /* 26 */       GL11.glPushMatrix();
 /* 27 */       GL11.glEnable(2884);
 /* 28 */       GL11.glColor4f(0.5F, 0.5F, 0.5F, 1.0F);
-/* 29 */       GL11.glTranslated(e.towedEntity.field_70142_S - TileEntityRendererDispatcher.field_147554_b, e.towedEntity.field_70137_T - TileEntityRendererDispatcher.field_147555_c, e.towedEntity.field_70136_U - TileEntityRendererDispatcher.field_147552_d);
+/* 29 */       GL11.glTranslated(e.towedEntity.lastTickPosX - TileEntityRendererDispatcher.staticPlayerX, e.towedEntity.lastTickPosY - TileEntityRendererDispatcher.staticPlayerY, e.towedEntity.lastTickPosZ - TileEntityRendererDispatcher.staticPlayerZ);
 /*    */ 
 /*    */ 
 /*    */ 
 /*    */       
 /* 34 */       bindTexture("textures/chain.png");
-/* 35 */       double dx = e.towEntity.field_70142_S - e.towedEntity.field_70142_S;
-/* 36 */       double dy = e.towEntity.field_70137_T - e.towedEntity.field_70137_T;
-/* 37 */       double dz = e.towEntity.field_70136_U - e.towedEntity.field_70136_U;
+/* 35 */       double dx = e.towEntity.lastTickPosX - e.towedEntity.lastTickPosX;
+/* 36 */       double dy = e.towEntity.lastTickPosY - e.towedEntity.lastTickPosY;
+/* 37 */       double dz = e.towEntity.lastTickPosZ - e.towedEntity.lastTickPosZ;
 /* 38 */       double diff = Math.sqrt(dx * dx + dy * dy + dz * dz);
 /* 39 */       double x = dx * 0.949999988079071D / diff;
 /* 40 */       double y = dy * 0.949999988079071D / diff;
@@ -43,8 +43,8 @@
 /* 43 */         GL11.glTranslated(x, y, z);
 /* 44 */         GL11.glPushMatrix();
 /* 45 */         Vec3d v = MCH_Lib.getYawPitchFromVec(x, y, z);
-/* 46 */         GL11.glRotatef((float)v.field_72448_b, 0.0F, -1.0F, 0.0F);
-/* 47 */         GL11.glRotatef((float)v.field_72449_c, 0.0F, 0.0F, 1.0F);
+/* 46 */         GL11.glRotatef((float)v.y, 0.0F, -1.0F, 0.0F);
+/* 47 */         GL11.glRotatef((float)v.z, 0.0F, 0.0F, 1.0F);
 /* 48 */         MCH_ModelManager.render("chain");
 /* 49 */         GL11.glPopMatrix();
 /*    */       } 

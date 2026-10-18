@@ -265,7 +265,7 @@
 /*     */   
 /*     */   public MCH_WeaponInfo(AddonResourceLocation location, String path) {
 /* 267 */     super(location, path);
-/* 268 */     this.name = location.func_110623_a();
+/* 268 */     this.name = location.getResourcePath();
 /* 269 */     this.displayName = this.name;
 /* 270 */     this.type = "";
 /* 271 */     this.power = 0;
@@ -819,7 +819,7 @@
 /*     */     public final int num;
 /*     */     public final String itemName;
 /*     */     public final int damage;
-/* 822 */     public ItemStack itemStack = ItemStack.field_190927_a;
+/* 822 */     public ItemStack itemStack = ItemStack.EMPTY;
 /*     */     
 /*     */     public RoundItem(int n, String name, int damage) {
 /* 825 */       this.num = n;

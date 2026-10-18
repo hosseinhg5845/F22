@@ -14,11 +14,11 @@
 /*    */   public W_Item() {}
 /*    */   
 /*    */   public static int getIdFromItem(@NotNull Item i) {
-/* 17 */     return field_150901_e.func_148757_b(i);
+/* 17 */     return REGISTRY.getIDForObject(i);
 /*    */   }
 /*    */   @NotNull
 /*    */   public static Item getItemById(int i) {
-/* 21 */     return Item.func_150899_d(i);
+/* 21 */     return Item.getItemById(i);
 /*    */   }
 /*    */   
 /*    */   public static Item getItemByName(String nm) {
@@ -30,7 +30,7 @@
 /*    */   }
 /*    */   @NotNull
 /*    */   public static Item getItemFromBlock(@NotNull Block block) {
-/* 33 */     return Item.func_150898_a(block);
+/* 33 */     return Item.getItemFromBlock(block);
 /*    */   }
 /*    */ }
 

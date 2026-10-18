@@ -22,8 +22,8 @@
 /* 22 */     GL11.glPushMatrix();
 /* 23 */     GL11.glEnable(2884);
 /* 24 */     GL11.glTranslated(posX, posY, posZ);
-/* 25 */     GL11.glRotatef(-entity.field_70177_z, 0.0F, 1.0F, 0.0F);
-/* 26 */     GL11.glRotatef(entity.field_70125_A, 1.0F, 0.0F, 0.0F);
+/* 25 */     GL11.glRotatef(-entity.rotationYaw, 0.0F, 1.0F, 0.0F);
+/* 26 */     GL11.glRotatef(entity.rotationPitch, 1.0F, 0.0F, 0.0F);
 /* 27 */     GL11.glRotatef(45.0F, 0.0F, 0.0F, 1.0F);
 /* 28 */     GL11.glColor4f(1.0F, 1.0F, 0.5F, 1.0F);
 /* 29 */     bindTexture("textures/flare.png");

@@ -12,11 +12,11 @@
 /*    */ {
 /*    */   @HandleSide({Side.SERVER})
 /*    */   public static void onPacket_PlayerControl(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/* 15 */     Entity entity = player.func_184187_bx(); if (entity instanceof MCH_EntityVehicle) { MCH_EntityVehicle vehicle = (MCH_EntityVehicle)entity;
-/* 16 */       if (!player.field_70170_p.field_72995_K) {
+/* 15 */     Entity entity = player.getRidingEntity(); if (entity instanceof MCH_EntityVehicle) { MCH_EntityVehicle vehicle = (MCH_EntityVehicle)entity;
+/* 16 */       if (!player.world.isRemote) {
 /* 17 */         MCH_PacketVehiclePlayerControl pc = new MCH_PacketVehiclePlayerControl();
 /* 18 */         pc.readData(data);
-/* 19 */         scheduler.func_152344_a(() -> {
+/* 19 */         scheduler.addScheduledTask(() -> {
 /*    */               if (pc.isUnmount == 1) {
 /*    */                 vehicle.unmountEntity();
 /*    */               } else if (pc.isUnmount == 2) {
@@ -46,9 +46,9 @@
 /*    */                 if (pc.useFlareType > 0)
 /*    */                   vehicle.useFlare(pc.useFlareType); 
 /*    */                 if (pc.unhitchChainId >= 0) {
-/*    */                   Entity e = player.field_70170_p.func_73045_a(pc.unhitchChainId);
+/*    */                   Entity e = player.world.getEntityByID(pc.unhitchChainId);
 /*    */                   if (e instanceof com.norwood.mcheli.chain.MCH_EntityChain)
-/*    */                     e.func_70106_y(); 
+/*    */                     e.setDead(); 
 /*    */                 } 
 /*    */                 if (pc.openGui)
 /*    */                   vehicle.openGui(player); 

@@ -111,9 +111,9 @@ import net.minecraftforge.fml.common.SidedProxy;
 /*     */   private static File addonDir;
 /*     */   
 /*     */   public static void registerItem(W_Item item, String name, MCH_CreativeTabs ct) {
-/* 112 */     item.func_77655_b("mcheli:" + name);
+/* 112 */     item.setUnlocalizedName("mcheli:" + name);
 /* 113 */     if (ct != null) {
-/* 114 */       item.func_77637_a(ct);
+/* 114 */       item.setCreativeTab(ct);
 /* 115 */       ct.addIconItem((Item)item);
 /*     */     } 
 /*     */     
@@ -124,7 +124,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 /* 122 */     for (Map.Entry<String, MCH_ThrowableInfo> entry : (Iterable<Map.Entry<String, MCH_ThrowableInfo>>)ContentRegistries.throwable().entries()) {
 /* 123 */       MCH_ThrowableInfo info = entry.getValue();
 /* 124 */       info.item = (W_Item)new MCH_ItemThrowable(info.itemID);
-/* 125 */       info.item.func_77625_d(info.stackSize);
+/* 125 */       info.item.setMaxStackSize(info.stackSize);
 /* 126 */       registerItem(info.item, entry.getKey(), creativeTabs);
 /* 127 */       MCH_ItemThrowable.registerDispenseBehavior((Item)info.item);
 /* 128 */       info.itemID = W_Item.getIdFromItem((Item)info.item) - 256;
@@ -140,7 +140,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 /* 138 */     for (Map.Entry<String, MCH_HeliInfo> entry : (Iterable<Map.Entry<String, MCH_HeliInfo>>)ContentRegistries.heli().entries()) {
 /* 139 */       MCH_HeliInfo info = entry.getValue();
 /* 140 */       info.item = new MCH_ItemHeli(info.itemID);
-/* 141 */       info.item.func_77656_e(info.maxHp);
+/* 141 */       info.item.setMaxDamage(info.maxHp);
 /* 142 */       if (info.canRide || (info.ammoSupplyRange <= 0.0F && info.fuelSupplyRange <= 0.0F)) {
 /* 143 */         registerItem((W_Item)info.item, entry.getKey(), creativeTabsHeli);
 /*     */       } else {
@@ -159,7 +159,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 /* 157 */     for (Map.Entry<String, MCP_PlaneInfo> entry : (Iterable<Map.Entry<String, MCP_PlaneInfo>>)ContentRegistries.plane().entries()) {
 /* 158 */       MCP_PlaneInfo info = entry.getValue();
 /* 159 */       info.item = new MCP_ItemPlane(info.itemID);
-/* 160 */       info.item.func_77656_e(info.maxHp);
+/* 160 */       info.item.setMaxDamage(info.maxHp);
 /* 161 */       if (info.canRide || (info.ammoSupplyRange <= 0.0F && info.fuelSupplyRange <= 0.0F)) {
 /* 162 */         registerItem((W_Item)info.item, entry.getKey(), creativeTabsPlane);
 /*     */       } else {
@@ -178,7 +178,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 /* 176 */     for (Map.Entry<String, MCH_TankInfo> entry : (Iterable<Map.Entry<String, MCH_TankInfo>>)ContentRegistries.tank().entries()) {
 /* 177 */       MCH_TankInfo info = entry.getValue();
 /* 178 */       info.item = new MCH_ItemTank(info.itemID);
-/* 179 */       info.item.func_77656_e(info.maxHp);
+/* 179 */       info.item.setMaxDamage(info.maxHp);
 /* 180 */       if (info.canRide || (info.ammoSupplyRange <= 0.0F && info.fuelSupplyRange <= 0.0F)) {
 /* 181 */         registerItem((W_Item)info.item, entry.getKey(), creativeTabsTank);
 /*     */       } else {
@@ -197,7 +197,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 /* 195 */     for (Map.Entry<String, MCH_VehicleInfo> entry : (Iterable<Map.Entry<String, MCH_VehicleInfo>>)ContentRegistries.vehicle().entries()) {
 /* 196 */       MCH_VehicleInfo info = entry.getValue();
 /* 197 */       info.item = new MCH_ItemVehicle(info.itemID);
-/* 198 */       info.item.func_77656_e(info.maxHp);
+/* 198 */       info.item.setMaxDamage(info.maxHp);
 /* 199 */       if (info.canRide || (info.ammoSupplyRange <= 0.0F && info.fuelSupplyRange <= 0.0F)) {
 /* 200 */         registerItem((W_Item)info.item, entry.getKey(), creativeTabsVehicle);
 /*     */       } else {
@@ -264,10 +264,10 @@ import net.minecraftforge.fml.common.SidedProxy;
 /* 262 */     registerItemLightWeapon();
 /* 263 */     registerItemAircraft();
 /* 264 */     blockDraftingTable = new MCH_DraftingTableBlock(MCH_Config.BlockID_DraftingTableOFF.prmInt, false);
-/* 265 */     blockDraftingTable.func_149663_c("drafting_table");
-/* 266 */     blockDraftingTable.func_149647_a(creativeTabs);
+/* 265 */     blockDraftingTable.setUnlocalizedName("drafting_table");
+/* 266 */     blockDraftingTable.setCreativeTab(creativeTabs);
 /* 267 */     blockDraftingTableLit = new MCH_DraftingTableBlock(MCH_Config.BlockID_DraftingTableON.prmInt, true);
-/* 268 */     blockDraftingTableLit.func_149663_c("lit_drafting_table");
+/* 268 */     blockDraftingTableLit.setUnlocalizedName("lit_drafting_table");
 /* 269 */     MCH_Blocks.register((Block)blockDraftingTable, "drafting_table");
 /* 270 */     MCH_Blocks.register((Block)blockDraftingTableLit, "lit_drafting_table");
 /* 271 */     MCH_Items.registerBlock((Block)blockDraftingTable);
@@ -345,8 +345,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 /*     */   
 /*     */   @EventHandler
 /*     */   public void registerCommand(FMLServerStartedEvent e) {
-/* 346 */     CommandHandler handler = (CommandHandler)FMLCommonHandler.instance().getSidedDelegate().getServer().func_71187_D();
-/* 347 */     handler.func_71560_a((ICommand)new MCH_Command());
+/* 346 */     CommandHandler handler = (CommandHandler)FMLCommonHandler.instance().getSidedDelegate().getServer().getCommandManager();
+/* 347 */     handler.registerCommand((ICommand)new MCH_Command());
 /*     */   }
 /*     */   
 /*     */   private void registerItemSpawnGunner() {

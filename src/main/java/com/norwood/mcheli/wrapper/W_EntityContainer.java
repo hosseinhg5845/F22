@@ -24,14 +24,14 @@
 /*     */   public W_EntityContainer(World par1World) {
 /*  25 */     super(par1World);
 /*  26 */     this.containerItems = new ItemStack[54];
-/*  27 */     Arrays.fill((Object[])this.containerItems, ItemStack.field_190927_a);
+/*  27 */     Arrays.fill((Object[])this.containerItems, ItemStack.EMPTY);
 /*     */   }
 /*     */   @NotNull
-/*     */   public ItemStack func_70301_a(int par1) {
+/*     */   public ItemStack getStackInSlot(int par1) {
 /*  31 */     return this.containerItems[par1];
 /*     */   }
 /*     */   
-/*     */   public int func_70297_j_() {
+/*     */   public int getInventoryStackLimit() {
 /*  35 */     return 64;
 /*     */   }
 /*     */   
@@ -40,11 +40,11 @@
 /*  40 */     if (this.containerItems == null) {
 /*  41 */       numUsingSlot = 0;
 /*     */     } else {
-/*  43 */       int n = func_70302_i_();
+/*  43 */       int n = getSizeInventory();
 /*  44 */       numUsingSlot = 0;
 /*     */       
 /*  46 */       for (int i = 0; i < n && i < this.containerItems.length; i++) {
-/*  47 */         if (!func_70301_a(i).func_190926_b()) {
+/*  47 */         if (!getStackInSlot(i).isEmpty()) {
 /*  48 */           numUsingSlot++;
 /*     */         }
 /*     */       } 
@@ -53,9 +53,9 @@
 /*  53 */     return numUsingSlot;
 /*     */   }
 /*     */   
-/*     */   public boolean func_191420_l() {
+/*     */   public boolean isEmpty() {
 /*  57 */     for (ItemStack itemstack : this.containerItems) {
-/*  58 */       if (!itemstack.func_190926_b()) {
+/*  58 */       if (!itemstack.isEmpty()) {
 /*  59 */         return false;
 /*     */       }
 /*     */     } 
@@ -63,52 +63,52 @@
 /*  63 */     return true;
 /*     */   }
 /*     */   @NotNull
-/*     */   public ItemStack func_70298_a(int par1, int par2) {
-/*  67 */     if (!this.containerItems[par1].func_190926_b()) {
+/*     */   public ItemStack decrStackSize(int par1, int par2) {
+/*  67 */     if (!this.containerItems[par1].isEmpty()) {
 /*     */       ItemStack itemstack;
-/*  69 */       if (this.containerItems[par1].func_190916_E() <= par2) {
+/*  69 */       if (this.containerItems[par1].getCount() <= par2) {
 /*  70 */         itemstack = this.containerItems[par1];
-/*  71 */         this.containerItems[par1] = ItemStack.field_190927_a;
+/*  71 */         this.containerItems[par1] = ItemStack.EMPTY;
 /*     */       } else {
-/*  73 */         itemstack = this.containerItems[par1].func_77979_a(par2);
-/*  74 */         if (this.containerItems[par1].func_190916_E() == 0) {
-/*  75 */           this.containerItems[par1] = ItemStack.field_190927_a;
+/*  73 */         itemstack = this.containerItems[par1].splitStack(par2);
+/*  74 */         if (this.containerItems[par1].getCount() == 0) {
+/*  75 */           this.containerItems[par1] = ItemStack.EMPTY;
 /*     */         }
 /*     */       } 
 /*     */       
 /*  79 */       return itemstack;
 /*     */     } 
-/*  81 */     return ItemStack.field_190927_a;
+/*  81 */     return ItemStack.EMPTY;
 /*     */   }
 /*     */   
 /*     */   @NotNull
-/*     */   public ItemStack func_70304_b(int par1) {
-/*  86 */     if (!this.containerItems[par1].func_190926_b()) {
+/*     */   public ItemStack removeStackFromSlot(int par1) {
+/*  86 */     if (!this.containerItems[par1].isEmpty()) {
 /*  87 */       ItemStack itemstack = this.containerItems[par1];
-/*  88 */       this.containerItems[par1] = ItemStack.field_190927_a;
+/*  88 */       this.containerItems[par1] = ItemStack.EMPTY;
 /*  89 */       return itemstack;
 /*     */     } 
 /*  91 */     return null;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_70299_a(int par1, ItemStack par2ItemStack) {
+/*     */   public void setInventorySlotContents(int par1, ItemStack par2ItemStack) {
 /*  96 */     this.containerItems[par1] = par2ItemStack;
-/*  97 */     if (!par2ItemStack.func_190926_b() && par2ItemStack.func_190916_E() > func_70297_j_()) {
-/*  98 */       par2ItemStack.func_190920_e(func_70297_j_());
+/*  97 */     if (!par2ItemStack.isEmpty() && par2ItemStack.getCount() > getInventoryStackLimit()) {
+/*  98 */       par2ItemStack.setCount(getInventoryStackLimit());
 /*     */     }
 /*     */     
-/* 101 */     func_70296_d();
+/* 101 */     markDirty();
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public void onInventoryChanged() {}
 /*     */   
-/*     */   public boolean func_70300_a(@NotNull EntityPlayer par1EntityPlayer) {
-/* 108 */     return !this.field_70128_L;
+/*     */   public boolean isUsableByPlayer(@NotNull EntityPlayer par1EntityPlayer) {
+/* 108 */     return !this.isDead;
 /*     */   }
 /*     */   
-/*     */   public boolean func_94041_b(int par1, @NotNull ItemStack par2ItemStack) {
+/*     */   public boolean isItemValidForSlot(int par1, @NotNull ItemStack par2ItemStack) {
 /* 112 */     return true;
 /*     */   }
 /*     */   
@@ -120,7 +120,7 @@
 /* 120 */     return "Inventory";
 /*     */   }
 /*     */   @NotNull
-/*     */   public String func_70005_c_() {
+/*     */   public String getName() {
 /* 124 */     return getInvName();
 /*     */   }
 /*     */   
@@ -128,7 +128,7 @@
 /* 128 */     return getInvName();
 /*     */   }
 /*     */   @NotNull
-/*     */   public ITextComponent func_145748_c_() {
+/*     */   public ITextComponent getDisplayName() {
 /* 132 */     return (ITextComponent)new TextComponentString(getInventoryName());
 /*     */   }
 /*     */   
@@ -136,70 +136,70 @@
 /* 136 */     return false;
 /*     */   }
 /*     */   
-/*     */   public boolean func_145818_k_() {
+/*     */   public boolean hasCustomName() {
 /* 140 */     return isInvNameLocalized();
 /*     */   }
 /*     */   
-/*     */   public void func_70106_y() {
-/* 144 */     if (this.dropContentsWhenDead && !this.field_70170_p.field_72995_K) {
-/* 145 */       for (int i = 0; i < func_70302_i_(); i++) {
-/* 146 */         ItemStack itemstack = func_70301_a(i);
-/* 147 */         if (!itemstack.func_190926_b()) {
-/* 148 */           float x = this.field_70146_Z.nextFloat() * 0.8F + 0.1F;
-/* 149 */           float y = this.field_70146_Z.nextFloat() * 0.8F + 0.1F;
-/* 150 */           float z = this.field_70146_Z.nextFloat() * 0.8F + 0.1F;
+/*     */   public void setDead() {
+/* 144 */     if (this.dropContentsWhenDead && !this.world.isRemote) {
+/* 145 */       for (int i = 0; i < getSizeInventory(); i++) {
+/* 146 */         ItemStack itemstack = getStackInSlot(i);
+/* 147 */         if (!itemstack.isEmpty()) {
+/* 148 */           float x = this.rand.nextFloat() * 0.8F + 0.1F;
+/* 149 */           float y = this.rand.nextFloat() * 0.8F + 0.1F;
+/* 150 */           float z = this.rand.nextFloat() * 0.8F + 0.1F;
 /*     */           
-/* 152 */           while (itemstack.func_190916_E() > 0) {
-/* 153 */             int j = this.field_70146_Z.nextInt(21) + 10;
-/* 154 */             if (j > itemstack.func_190916_E()) {
-/* 155 */               j = itemstack.func_190916_E();
+/* 152 */           while (itemstack.getCount() > 0) {
+/* 153 */             int j = this.rand.nextInt(21) + 10;
+/* 154 */             if (j > itemstack.getCount()) {
+/* 155 */               j = itemstack.getCount();
 /*     */             }
 /*     */             
-/* 158 */             itemstack.func_190918_g(j);
+/* 158 */             itemstack.shrink(j);
 /*     */             
-/* 160 */             EntityItem entityitem = new EntityItem(this.field_70170_p, this.field_70165_t + x, this.field_70163_u + y, this.field_70161_v + z, new ItemStack(itemstack.func_77973_b(), j, itemstack.func_77960_j()));
+/* 160 */             EntityItem entityitem = new EntityItem(this.world, this.posX + x, this.posY + y, this.posZ + z, new ItemStack(itemstack.getItem(), j, itemstack.getMetadata()));
 /*     */             
-/* 162 */             if (itemstack.func_77942_o()) {
-/* 163 */               entityitem.func_92059_d().func_77982_d(itemstack.func_77978_p().func_74737_b());
+/* 162 */             if (itemstack.hasTagCompound()) {
+/* 163 */               entityitem.getItem().setTagCompound(itemstack.getTagCompound().copy());
 /*     */             }
 /*     */             
 /* 166 */             float f3 = 0.05F;
-/* 167 */             entityitem.field_70159_w = ((float)this.field_70146_Z.nextGaussian() * f3);
-/* 168 */             entityitem.field_70181_x = ((float)this.field_70146_Z.nextGaussian() * f3 + 0.2F);
-/* 169 */             entityitem.field_70179_y = ((float)this.field_70146_Z.nextGaussian() * f3);
-/* 170 */             this.field_70170_p.func_72838_d((Entity)entityitem);
+/* 167 */             entityitem.motionX = ((float)this.rand.nextGaussian() * f3);
+/* 168 */             entityitem.motionY = ((float)this.rand.nextGaussian() * f3 + 0.2F);
+/* 169 */             entityitem.motionZ = ((float)this.rand.nextGaussian() * f3);
+/* 170 */             this.world.spawnEntity((Entity)entityitem);
 /*     */           } 
 /*     */         } 
 /*     */       } 
 /*     */     }
 /*     */     
-/* 176 */     super.func_70106_y();
+/* 176 */     super.setDead();
 /*     */   }
 /*     */   
-/*     */   protected void func_70014_b(@NotNull NBTTagCompound par1NBTTagCompound) {
+/*     */   protected void writeEntityToNBT(@NotNull NBTTagCompound par1NBTTagCompound) {
 /* 180 */     NBTTagList nbttaglist = new NBTTagList();
 /*     */     
 /* 182 */     for (int i = 0; i < this.containerItems.length; i++) {
-/* 183 */       if (!this.containerItems[i].func_190926_b()) {
+/* 183 */       if (!this.containerItems[i].isEmpty()) {
 /* 184 */         NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-/* 185 */         nbttagcompound1.func_74774_a("Slot", (byte)i);
-/* 186 */         this.containerItems[i].func_77955_b(nbttagcompound1);
-/* 187 */         nbttaglist.func_74742_a((NBTBase)nbttagcompound1);
+/* 185 */         nbttagcompound1.setByte("Slot", (byte)i);
+/* 186 */         this.containerItems[i].writeToNBT(nbttagcompound1);
+/* 187 */         nbttaglist.appendTag((NBTBase)nbttagcompound1);
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 191 */     par1NBTTagCompound.func_74782_a("Items", (NBTBase)nbttaglist);
+/* 191 */     par1NBTTagCompound.setTag("Items", (NBTBase)nbttaglist);
 /*     */   }
 /*     */   
-/*     */   protected void func_70037_a(@NotNull NBTTagCompound par1NBTTagCompound) {
+/*     */   protected void readEntityFromNBT(@NotNull NBTTagCompound par1NBTTagCompound) {
 /* 195 */     NBTTagList nbttaglist = W_NBTTag.getTagList(par1NBTTagCompound, "Items", 10);
-/* 196 */     this.containerItems = new ItemStack[func_70302_i_()];
-/* 197 */     Arrays.fill((Object[])this.containerItems, ItemStack.field_190927_a);
-/* 198 */     MCH_Lib.DbgLog(this.field_70170_p, "W_EntityContainer.readEntityFromNBT.InventorySize = %d", new Object[] { Integer.valueOf(func_70302_i_()) });
+/* 196 */     this.containerItems = new ItemStack[getSizeInventory()];
+/* 197 */     Arrays.fill((Object[])this.containerItems, ItemStack.EMPTY);
+/* 198 */     MCH_Lib.DbgLog(this.world, "W_EntityContainer.readEntityFromNBT.InventorySize = %d", new Object[] { Integer.valueOf(getSizeInventory()) });
 /*     */     
-/* 200 */     for (int i = 0; i < nbttaglist.func_74745_c(); i++) {
+/* 200 */     for (int i = 0; i < nbttaglist.tagCount(); i++) {
 /* 201 */       NBTTagCompound nbttagcompound1 = W_NBTTag.tagAt(nbttaglist, i);
-/* 202 */       int j = nbttagcompound1.func_74771_c("Slot") & 0xFF;
+/* 202 */       int j = nbttagcompound1.getByte("Slot") & 0xFF;
 /* 203 */       if (j < this.containerItems.length) {
 /* 204 */         this.containerItems[j] = new ItemStack(nbttagcompound1);
 /*     */       }
@@ -212,38 +212,38 @@
 /*     */   }
 /*     */   
 /*     */   public boolean displayInventory(EntityPlayer player) {
-/* 215 */     if (!this.field_70170_p.field_72995_K && func_70302_i_() > 0) {
-/* 216 */       player.func_71007_a(this);
+/* 215 */     if (!this.world.isRemote && getSizeInventory() > 0) {
+/* 216 */       player.displayGUIChest(this);
 /* 217 */       return true;
 /*     */     } 
 /* 219 */     return false;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_174889_b(@NotNull EntityPlayer player) {}
+/*     */   public void openInventory(@NotNull EntityPlayer player) {}
 /*     */ 
 /*     */   
-/*     */   public void func_174886_c(@NotNull EntityPlayer player) {}
+/*     */   public void closeInventory(@NotNull EntityPlayer player) {}
 /*     */ 
 /*     */   
-/*     */   public void func_70296_d() {}
+/*     */   public void markDirty() {}
 /*     */ 
 /*     */   
-/*     */   public int func_70302_i_() {
+/*     */   public int getSizeInventory() {
 /* 233 */     return 0;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_174888_l() {}
+/*     */   public void clear() {}
 /*     */   
-/*     */   public int func_174887_a_(int id) {
+/*     */   public int getField(int id) {
 /* 240 */     return 0;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_174885_b(int id, int value) {}
+/*     */   public void setField(int id, int value) {}
 /*     */   
-/*     */   public int func_174890_g() {
+/*     */   public int getFieldCount() {
 /* 247 */     return 0;
 /*     */   }
 /*     */ }

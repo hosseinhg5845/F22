@@ -13,15 +13,15 @@
 /*    */   
 /*    */   public MCH_RenderASMissile(RenderManager renderManager) {
 /* 15 */     super(renderManager);
-/* 16 */     this.field_76989_e = 0.5F;
+/* 16 */     this.shadowSize = 0.5F;
 /*    */   }
 /*    */   
 /*    */   public void renderBullet(MCH_EntityBaseBullet entity, double posX, double posY, double posZ, float yaw, float partialTickTime) {
 /* 20 */     if (entity instanceof MCH_EntityBaseBullet) {
 /* 21 */       GL11.glPushMatrix();
 /* 22 */       GL11.glTranslated(posX, posY, posZ);
-/* 23 */       GL11.glRotatef(-entity.field_70177_z, 0.0F, 1.0F, 0.0F);
-/* 24 */       GL11.glRotatef(-entity.field_70125_A, -1.0F, 0.0F, 0.0F);
+/* 23 */       GL11.glRotatef(-entity.rotationYaw, 0.0F, 1.0F, 0.0F);
+/* 24 */       GL11.glRotatef(-entity.rotationPitch, -1.0F, 0.0F, 0.0F);
 /* 25 */       renderModel(entity);
 /* 26 */       GL11.glPopMatrix();
 /*    */     } 

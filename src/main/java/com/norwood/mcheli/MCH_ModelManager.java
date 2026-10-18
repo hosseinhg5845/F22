@@ -22,7 +22,7 @@
 /*     */   
 /*     */   static {
 /*  24 */     defaultModel = new ModelRenderer((ModelBase)instance, 0, 0);
-/*  25 */     defaultModel.func_78790_a(-5.0F, -5.0F, -5.0F, 10, 10, 10, 0.0F);
+/*  25 */     defaultModel.addBox(-5.0F, -5.0F, -5.0F, 10, 10, 10, 0.0F);
 /*     */   }
 /*     */ 
 /*     */ 

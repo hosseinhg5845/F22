@@ -78,12 +78,12 @@
 /*     */   public MCH_DraftingTableGui(EntityPlayer player, int posX, int posY, int posZ) {
 /*  79 */     super(new MCH_DraftingTableGuiContainer(player, posX, posY, posZ));
 /*  80 */     this.thePlayer = player;
-/*  81 */     this.field_146999_f = 400;
-/*  82 */     this.field_147000_g = 240;
+/*  81 */     this.xSize = 400;
+/*  82 */     this.ySize = 240;
 /*  83 */     this.screenButtonList = new ArrayList<>();
 /*  84 */     this.drawFace = 0;
 /*  85 */     this.buttonClickWait = 0;
-/*  86 */     MCH_Lib.DbgLog(player.field_70170_p, "MCH_DraftingTableGui.MCH_DraftingTableGui", new Object[0]);
+/*  86 */     MCH_Lib.DbgLog(player.world, "MCH_DraftingTableGui.MCH_DraftingTableGui", new Object[0]);
 /*     */   }
 /*     */   
 /*     */   public static void initModelTransform() {
@@ -94,36 +94,36 @@
 /*  94 */     modelZoom = 1.0F;
 /*     */   }
 /*     */   
-/*     */   public void func_73866_w_() {
-/*  98 */     super.func_73866_w_();
-/*  99 */     this.field_146292_n.clear();
+/*     */   public void initGui() {
+/*  98 */     super.initGui();
+/*  99 */     this.buttonList.clear();
 /* 100 */     this.screenButtonList.clear();
 /* 101 */     this.screenButtonList.add(new ArrayList<>());
 /* 102 */     this.screenButtonList.add(new ArrayList<>());
 /* 103 */     List<GuiButton> list = this.screenButtonList.get(0);
-/* 104 */     GuiButton btnHeli = new GuiButton(10, this.field_147003_i + 20, this.field_147009_r + 20, 90, 20, "Helicopter List");
-/* 105 */     GuiButton btnPlane = new GuiButton(11, this.field_147003_i + 20, this.field_147009_r + 40, 90, 20, "Plane List");
-/* 106 */     GuiButton btnVehicle = new GuiButton(12, this.field_147003_i + 20, this.field_147009_r + 60, 90, 20, "Vehicle List");
-/* 107 */     GuiButton btnTank = new GuiButton(13, this.field_147003_i + 20, this.field_147009_r + 80, 90, 20, "Tank List");
-/* 108 */     GuiButton btnItem = new GuiButton(14, this.field_147003_i + 20, this.field_147009_r + 100, 90, 20, "Item List");
-/* 109 */     btnHeli.field_146124_l = (MCH_HeliInfoManager.getInstance().getRecipeListSize() > 0);
-/* 110 */     btnPlane.field_146124_l = (MCP_PlaneInfoManager.getInstance().getRecipeListSize() > 0);
-/* 111 */     btnVehicle.field_146124_l = (MCH_VehicleInfoManager.getInstance().getRecipeListSize() > 0);
-/* 112 */     btnTank.field_146124_l = (MCH_TankInfoManager.getInstance().getRecipeListSize() > 0);
-/* 113 */     btnItem.field_146124_l = (MCH_ItemRecipe.getInstance().getRecipeListSize() > 0);
+/* 104 */     GuiButton btnHeli = new GuiButton(10, this.guiLeft + 20, this.guiTop + 20, 90, 20, "Helicopter List");
+/* 105 */     GuiButton btnPlane = new GuiButton(11, this.guiLeft + 20, this.guiTop + 40, 90, 20, "Plane List");
+/* 106 */     GuiButton btnVehicle = new GuiButton(12, this.guiLeft + 20, this.guiTop + 60, 90, 20, "Vehicle List");
+/* 107 */     GuiButton btnTank = new GuiButton(13, this.guiLeft + 20, this.guiTop + 80, 90, 20, "Tank List");
+/* 108 */     GuiButton btnItem = new GuiButton(14, this.guiLeft + 20, this.guiTop + 100, 90, 20, "Item List");
+/* 109 */     btnHeli.enabled = (MCH_HeliInfoManager.getInstance().getRecipeListSize() > 0);
+/* 110 */     btnPlane.enabled = (MCP_PlaneInfoManager.getInstance().getRecipeListSize() > 0);
+/* 111 */     btnVehicle.enabled = (MCH_VehicleInfoManager.getInstance().getRecipeListSize() > 0);
+/* 112 */     btnTank.enabled = (MCH_TankInfoManager.getInstance().getRecipeListSize() > 0);
+/* 113 */     btnItem.enabled = (MCH_ItemRecipe.getInstance().getRecipeListSize() > 0);
 /* 114 */     list.add(btnHeli);
 /* 115 */     list.add(btnPlane);
 /* 116 */     list.add(btnVehicle);
 /* 117 */     list.add(btnTank);
 /* 118 */     list.add(btnItem);
-/* 119 */     this.buttonCreate = new GuiButton(30, this.field_147003_i + 120, this.field_147009_r + 89, 50, 20, "Create");
-/* 120 */     this.buttonPrev = new GuiButton(21, this.field_147003_i + 120, this.field_147009_r + 111, 36, 20, "<<");
-/* 121 */     this.buttonNext = new GuiButton(20, this.field_147003_i + 155, this.field_147009_r + 111, 35, 20, ">>");
+/* 119 */     this.buttonCreate = new GuiButton(30, this.guiLeft + 120, this.guiTop + 89, 50, 20, "Create");
+/* 120 */     this.buttonPrev = new GuiButton(21, this.guiLeft + 120, this.guiTop + 111, 36, 20, "<<");
+/* 121 */     this.buttonNext = new GuiButton(20, this.guiLeft + 155, this.guiTop + 111, 35, 20, ">>");
 /* 122 */     list.add(this.buttonCreate);
 /* 123 */     list.add(this.buttonPrev);
 /* 124 */     list.add(this.buttonNext);
-/* 125 */     this.buttonPrevPage = new GuiButton(51, this.field_147003_i + 210, this.field_147009_r + 210, 60, 20, "Prev Page");
-/* 126 */     this.buttonNextPage = new GuiButton(50, this.field_147003_i + 270, this.field_147009_r + 210, 60, 20, "Next Page");
+/* 125 */     this.buttonPrevPage = new GuiButton(51, this.guiLeft + 210, this.guiTop + 210, 60, 20, "Prev Page");
+/* 126 */     this.buttonNextPage = new GuiButton(50, this.guiLeft + 270, this.guiTop + 210, 60, 20, "Next Page");
 /* 127 */     list.add(this.buttonPrevPage);
 /* 128 */     list.add(this.buttonNextPage);
 /* 129 */     list = this.screenButtonList.get(1);
@@ -131,20 +131,20 @@
 /*     */     
 /* 132 */     for (int i = 0; y < 3; y++) {
 /* 133 */       for (int x = 0; x < 2; i++) {
-/* 134 */         int px = this.field_147003_i + 30 + x * 140;
-/* 135 */         int py = this.field_147009_r + 40 + y * 70;
+/* 134 */         int px = this.guiLeft + 30 + x * 140;
+/* 135 */         int py = this.guiTop + 40 + y * 70;
 /* 136 */         list.add(new GuiButton(40 + i, px, py, 45, 20, "Select"));
 /* 137 */         x++;
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 141 */     this.listSlider = new MCH_GuiSliderVertical(0, this.field_147003_i + 360, this.field_147009_r + 20, 20, 200, "", 0.0F, 0.0F, 0.0F, 1.0F);
+/* 141 */     this.listSlider = new MCH_GuiSliderVertical(0, this.guiLeft + 360, this.guiTop + 20, 20, 200, "", 0.0F, 0.0F, 0.0F, 1.0F);
 /* 142 */     list.add(this.listSlider);
 /*     */     
 /* 144 */     for (List<GuiButton> guiButtons : this.screenButtonList) {
 /* 145 */       list = guiButtons;
 /*     */       
-/* 147 */       this.field_146292_n.addAll(list);
+/* 147 */       this.buttonList.addAll(list);
 /*     */     } 
 /*     */     
 /* 150 */     switchScreen(0);
@@ -184,7 +184,7 @@
 /*     */   public void switchScreen(int id) {
 /* 185 */     this.screenId = id;
 /*     */     
-/* 187 */     for (GuiButton guiButton : this.field_146292_n) {
+/* 187 */     for (GuiButton guiButton : this.buttonList) {
 /* 188 */       W_GuiButton.setVisible(guiButton, false);
 /*     */     }
 /*     */     
@@ -206,7 +206,7 @@
 /*     */   public void setCurrentRecipe(MCH_CurrentRecipe currentRecipe) {
 /* 207 */     modelPosX = 0.0F;
 /* 208 */     modelPosY = 0.0F;
-/* 209 */     if (this.current == null || currentRecipe == null || !this.current.recipe.func_77571_b().func_77969_a(currentRecipe.recipe.func_77571_b())) {
+/* 209 */     if (this.current == null || currentRecipe == null || !this.current.recipe.getRecipeOutput().isItemEqual(currentRecipe.recipe.getRecipeOutput())) {
 /* 210 */       this.drawFace = 0;
 /*     */     }
 /*     */     
@@ -236,24 +236,24 @@
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   public void func_73876_c() {
-/* 240 */     super.func_73876_c();
+/*     */   public void updateScreen() {
+/* 240 */     super.updateScreen();
 /* 241 */     if (this.buttonClickWait > 0) {
 /* 242 */       this.buttonClickWait--;
 /*     */     }
 /*     */   }
 /*     */   
-/*     */   public void func_146281_b() {
-/* 247 */     super.func_146281_b();
-/* 248 */     MCH_Lib.DbgLog(this.thePlayer.field_70170_p, "MCH_DraftingTableGui.onGuiClosed", new Object[0]);
+/*     */   public void onGuiClosed() {
+/* 247 */     super.onGuiClosed();
+/* 248 */     MCH_Lib.DbgLog(this.thePlayer.world, "MCH_DraftingTableGui.onGuiClosed", new Object[0]);
 /*     */   }
 /*     */   
-/*     */   protected void func_146284_a(@NotNull GuiButton button) throws IOException {
-/* 252 */     super.func_146284_a(button);
+/*     */   protected void actionPerformed(@NotNull GuiButton button) throws IOException {
+/* 252 */     super.actionPerformed(button);
 /* 253 */     if (this.buttonClickWait <= 0 && 
-/* 254 */       button.field_146124_l) {
+/* 254 */       button.enabled) {
 /* 255 */       int page, index, i; this.buttonClickWait = 3;
-/* 256 */       switch (button.field_146127_k) {
+/* 256 */       switch (button.id) {
 /*     */         case 10:
 /* 258 */           initModelTransform();
 /* 259 */           modelRotX = 180.0F;
@@ -309,7 +309,7 @@
 /*     */         case 30:
 /* 310 */           MCH_DraftingTableCreatePacket.send(this.current.recipe); break;
 /*     */         case 40: case 41: case 42: case 43: case 44: case 45:
-/* 312 */           index = (int)this.listSlider.getSliderValue() * 2 + button.field_146127_k - 40;
+/* 312 */           index = (int)this.listSlider.getSliderValue() * 2 + button.id - 40;
 /* 313 */           if (index < getCurrentList().getRecipeListSize()) {
 /* 314 */             setCurrentRecipe(new MCH_CurrentRecipe(getCurrentList(), index));
 /* 315 */             switchScreen(0);
@@ -333,21 +333,21 @@
 /*     */ 
 /*     */   
 /*     */   private void updateEnableCreateButton() {
-/* 336 */     MCH_DraftingTableGuiContainer container = (MCH_DraftingTableGuiContainer)this.field_147002_h;
-/* 337 */     this.buttonCreate.field_146124_l = false;
-/* 338 */     if (!container.func_75139_a(container.outputSlotIndex).func_75216_d()) {
-/* 339 */       this.buttonCreate.field_146124_l = MCH_Recipes.canCraft(this.thePlayer, this.current.recipe);
+/* 336 */     MCH_DraftingTableGuiContainer container = (MCH_DraftingTableGuiContainer)this.inventorySlots;
+/* 337 */     this.buttonCreate.enabled = false;
+/* 338 */     if (!container.getSlot(container.outputSlotIndex).getHasStack()) {
+/* 339 */       this.buttonCreate.enabled = MCH_Recipes.canCraft(this.thePlayer, this.current.recipe);
 /*     */     }
 /*     */     
-/* 342 */     if (this.thePlayer.field_71075_bZ.field_75098_d) {
-/* 343 */       this.buttonCreate.field_146124_l = true;
+/* 342 */     if (this.thePlayer.capabilities.isCreativeMode) {
+/* 343 */       this.buttonCreate.enabled = true;
 /*     */     }
 /*     */   }
 /*     */   
-/*     */   protected void func_73869_a(char par1, int keycode) throws IOException {
-/* 348 */     if (keycode == 1 || keycode == W_KeyBinding.getKeyCode((Minecraft.func_71410_x()).field_71474_y.field_151445_Q)) {
+/*     */   protected void keyTyped(char par1, int keycode) throws IOException {
+/* 348 */     if (keycode == 1 || keycode == W_KeyBinding.getKeyCode((Minecraft.getMinecraft()).gameSettings.keyBindInventory)) {
 /* 349 */       if (getScreenId() == 0) {
-/* 350 */         this.field_146297_k.field_71439_g.func_71053_j();
+/* 350 */         this.mc.player.closeScreen();
 /*     */       } else {
 /* 352 */         switchScreen(0);
 /*     */       } 
@@ -355,11 +355,11 @@
 /*     */     
 /* 356 */     if (getScreenId() == 0) {
 /* 357 */       if (keycode == 205) {
-/* 358 */         func_146284_a(this.buttonNext);
+/* 358 */         actionPerformed(this.buttonNext);
 /*     */       }
 /*     */       
 /* 361 */       if (keycode == 203) {
-/* 362 */         func_146284_a(this.buttonPrev);
+/* 362 */         actionPerformed(this.buttonPrev);
 /*     */       }
 /* 364 */     } else if (getScreenId() == 1) {
 /* 365 */       if (keycode == 200) {
@@ -372,23 +372,23 @@
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   protected void func_146979_b(int mx, int my) {
-/* 376 */     super.func_146979_b(mx, my);
-/* 377 */     this.field_73735_i = 0.0F;
+/*     */   protected void drawGuiContainerForegroundLayer(int mx, int my) {
+/* 376 */     super.drawGuiContainerForegroundLayer(mx, my);
+/* 377 */     this.zLevel = 0.0F;
 /* 378 */     GL11.glEnable(3042);
 /* 379 */     if (getScreenId() == 0) {
 /* 380 */       ArrayList<String> list = new ArrayList<>();
 /* 381 */       if (this.current != null) {
 /* 382 */         if (this.current.isCurrentPageTexture()) {
 /* 383 */           GL11.glColor4d(1.0D, 1.0D, 1.0D, 1.0D);
-/* 384 */           this.field_146297_k.func_110434_K().func_110577_a(this.current.getCurrentPageTexture());
+/* 384 */           this.mc.getTextureManager().bindTexture(this.current.getCurrentPageTexture());
 /* 385 */           drawTexturedModalRect(210, 20, 170, 190, 0, 0, 340, 380);
 /* 386 */         } else if (this.current.isCurrentPageAcInfo()) {
 /* 387 */           for (int i = 0; i < this.current.infoItem.size(); i++) {
-/* 388 */             this.field_146289_q.func_78276_b(this.current.infoItem.get(i), 210, 40 + 10 * i, -9491968);
+/* 388 */             this.fontRenderer.drawString(this.current.infoItem.get(i), 210, 40 + 10 * i, -9491968);
 /* 389 */             String data = this.current.infoData.get(i);
 /* 390 */             if (!data.isEmpty()) {
-/* 391 */               this.field_146289_q.func_78276_b(data, 280, 40 + 10 * i, -9491968);
+/* 391 */               this.fontRenderer.drawString(data, 280, 40 + 10 * i, -9491968);
 /*     */             }
 /*     */           } 
 /*     */         } else {
@@ -408,7 +408,7 @@
 /* 408 */       drawString(this.current.displayName, 120, 20, -1);
 /* 409 */       drawItemRecipe(this.current.recipe, 121, 34);
 /* 410 */       if (!list.isEmpty()) {
-/* 411 */         drawHoveringText(list, mx - 30, my, this.field_146289_q);
+/* 411 */         drawHoveringText(list, mx - 30, my, this.fontRenderer);
 /*     */       }
 /*     */     } 
 /*     */     
@@ -421,7 +421,7 @@
 /* 421 */           if (index + ix < getCurrentList().getRecipeListSize()) {
 /* 422 */             int rx = 110 + 140 * c;
 /* 423 */             int ry = 20 + 70 * r;
-/* 424 */             String s = getCurrentList().getRecipe(index + ix).func_77571_b().func_82833_r();
+/* 424 */             String s = getCurrentList().getRecipe(index + ix).getRecipeOutput().getDisplayName();
 /* 425 */             drawCenteredString(s, rx, ry, -1);
 /*     */           } 
 /*     */           
@@ -437,7 +437,7 @@
 /* 437 */           if (index + ix < getCurrentList().getRecipeListSize()) {
 /* 438 */             int rx = 80 + 140 * c - 1;
 /* 439 */             int ry = 30 + 70 * r - 1;
-/* 440 */             func_73729_b(rx, ry, 400, 0, 75, 54);
+/* 440 */             drawTexturedModalRect(rx, ry, 400, 0, 75, 54);
 /*     */           } 
 /*     */           
 /* 443 */           ix++;
@@ -460,9 +460,9 @@
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   protected void func_184098_a(@NotNull Slot slotIn, int slotId, int clickedButton, @NotNull ClickType clickType) {
+/*     */   protected void handleMouseClick(@NotNull Slot slotIn, int slotId, int clickedButton, @NotNull ClickType clickType) {
 /* 464 */     if (getScreenId() != 1) {
-/* 465 */       super.func_184098_a(slotIn, slotId, clickedButton, clickType);
+/* 465 */       super.handleMouseClick(slotIn, slotId, clickedButton, clickType);
 /*     */     }
 /*     */   }
 /*     */   
@@ -472,25 +472,25 @@
 /*     */   
 /*     */   public void drawItemRecipe(IRecipe recipe, int x, int y) {
 /* 474 */     if (recipe != null) {
-/* 475 */       recipe.func_77571_b();
-/* 476 */       recipe.func_77571_b().func_77973_b();
-/* 477 */       RenderHelper.func_74520_c();
-/* 478 */       NonNullList<Ingredient> ingredients = recipe.func_192400_c();
+/* 475 */       recipe.getRecipeOutput();
+/* 476 */       recipe.getRecipeOutput().getItem();
+/* 477 */       RenderHelper.enableGUIStandardItemLighting();
+/* 478 */       NonNullList<Ingredient> ingredients = recipe.getIngredients();
 /*     */       
 /* 480 */       for (int i = 0; i < ingredients.size(); i++) {
 /* 481 */         drawIngredient((Ingredient)ingredients.get(i), x + i % 3 * 18, y + i / 3 * 18);
 /*     */       }
 /*     */       
-/* 484 */       drawItemStack(recipe.func_77571_b(), x + 54 + 3, y + 18);
-/* 485 */       RenderHelper.func_74518_a();
+/* 484 */       drawItemStack(recipe.getRecipeOutput(), x + 54 + 3, y + 18);
+/* 485 */       RenderHelper.disableStandardItemLighting();
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   public void func_146274_d() throws IOException {
-/* 490 */     super.func_146274_d();
+/*     */   public void handleMouseInput() throws IOException {
+/* 490 */     super.handleMouseInput();
 /* 491 */     int dx = Mouse.getEventDX();
 /* 492 */     int dy = Mouse.getEventDY();
-/* 493 */     if (getScreenId() == 0 && Mouse.getX() > this.field_146297_k.field_71443_c / 2) {
+/* 493 */     if (getScreenId() == 0 && Mouse.getX() > this.mc.displayWidth / 2) {
 /* 494 */       if (Mouse.isButtonDown(0) && (dx != 0 || dy != 0)) {
 /* 495 */         modelRotX = (float)(modelRotX - dy / 2.0D);
 /* 496 */         modelRotY = (float)(modelRotY - dx / 2.0D);
@@ -553,38 +553,38 @@
 /*     */         } 
 /* 554 */       } else if (getScreenId() == 0) {
 /* 555 */         if (wheel > 0) {
-/* 556 */           func_146284_a(this.buttonPrev);
+/* 556 */           actionPerformed(this.buttonPrev);
 /*     */         } else {
-/* 558 */           func_146284_a(this.buttonNext);
+/* 558 */           actionPerformed(this.buttonNext);
 /*     */         } 
 /*     */       } 
 /*     */     }
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public void func_73863_a(int mouseX, int mouseY, float partialTicks) {
+/*     */   public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 /* 566 */     GL11.glEnable(3042);
 /* 567 */     GL11.glBlendFunc(770, 771);
 /* 568 */     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 /* 569 */     if (getScreenId() == 0) {
-/* 570 */       super.func_73863_a(mouseX, mouseY, partialTicks);
+/* 570 */       super.drawScreen(mouseX, mouseY, partialTicks);
 /*     */     } else {
-/* 572 */       List<Slot> inventory = this.field_147002_h.field_75151_b;
-/* 573 */       this.field_147002_h.field_75151_b = new ArrayList();
-/* 574 */       super.func_73863_a(mouseX, mouseY, partialTicks);
-/* 575 */       this.field_147002_h.field_75151_b = inventory;
+/* 572 */       List<Slot> inventory = this.inventorySlots.inventorySlots;
+/* 573 */       this.inventorySlots.inventorySlots = new ArrayList();
+/* 574 */       super.drawScreen(mouseX, mouseY, partialTicks);
+/* 575 */       this.inventorySlots.inventorySlots = inventory;
 /*     */     } 
 /*     */     
 /* 578 */     if (getScreenId() == 0 && this.current.isCurrentPageModel()) {
-/* 579 */       RenderHelper.func_74520_c();
+/* 579 */       RenderHelper.enableGUIStandardItemLighting();
 /* 580 */       drawModel(partialTicks);
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   public void drawModel(float partialTicks) {
 /* 585 */     W_ModelCustom model = this.current.getModel();
-/* 586 */     double scl = 162.0D / ((MathHelper.func_76135_e(model.size) < 0.01D) ? 0.01D : model.size);
-/* 587 */     this.field_146297_k.func_110434_K().func_110577_a(this.current.getModelTexture());
+/* 586 */     double scl = 162.0D / ((MathHelper.abs(model.size) < 0.01D) ? 0.01D : model.size);
+/* 587 */     this.mc.getTextureManager().bindTexture(this.current.getModelTexture());
 /* 588 */     GL11.glPushMatrix();
 /* 589 */     double cx = (model.maxX - model.minX) * 0.5D + model.minX;
 /* 590 */     double cy = (model.maxY - model.minY) * 0.5D + model.minY;
@@ -595,7 +595,7 @@
 /* 595 */       GL11.glTranslated(cz * scl, cy * scl, 0.0D);
 /*     */     } 
 /*     */     
-/* 598 */     GL11.glTranslated(((this.field_147003_i + 300) + modelPosX), ((this.field_147009_r + 110) + modelPosY), 550.0D);
+/* 598 */     GL11.glTranslated(((this.guiLeft + 300) + modelPosX), ((this.guiTop + 110) + modelPosY), 550.0D);
 /* 599 */     GL11.glRotated(modelRotX, 1.0D, 0.0D, 0.0D);
 /* 600 */     GL11.glRotated(modelRotY, 0.0D, 1.0D, 0.0D);
 /* 601 */     GL11.glScaled(scl * modelZoom, scl * modelZoom, -scl * modelZoom);
@@ -631,17 +631,17 @@
 /*     */     }
 /*     */   }
 /*     */   
-/*     */   protected void func_146976_a(float var1, int var2, int var3) {
+/*     */   protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 /* 635 */     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-/* 636 */     float z = this.field_73735_i;
-/* 637 */     this.field_73735_i = 0.0F;
+/* 636 */     float z = this.zLevel;
+/* 637 */     this.zLevel = 0.0F;
 /* 638 */     W_McClient.MOD_bindTexture("textures/gui/drafting_table.png");
 /* 639 */     if (getScreenId() == 0) {
-/* 640 */       func_73729_b(this.field_147003_i, this.field_147009_r, 0, 0, this.field_146999_f, this.field_147000_g);
+/* 640 */       drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
 /*     */     }
 /*     */     
 /* 643 */     if (getScreenId() == 1) {
-/* 644 */       func_73729_b(this.field_147003_i, this.field_147009_r, 0, this.field_147000_g, this.field_146999_f, this.field_147000_g);
+/* 644 */       drawTexturedModalRect(this.guiLeft, this.guiTop, 0, this.ySize, this.xSize, this.ySize);
 /* 645 */       List<GuiButton> list = this.screenButtonList.get(1);
 /* 646 */       int index = (int)this.listSlider.getSliderValue() * 2;
 /*     */       
@@ -650,33 +650,33 @@
 /*     */       }
 /*     */     } 
 /*     */     
-/* 653 */     this.field_73735_i = z;
+/* 653 */     this.zLevel = z;
 /*     */   }
 /*     */   
-/*     */   public void func_73729_b(int par1, int par2, int par3, int par4, int par5, int par6) {
+/*     */   public void drawTexturedModalRect(int par1, int par2, int par3, int par4, int par5, int par6) {
 /* 657 */     float w = 0.001953125F;
 /* 658 */     float h = 0.001953125F;
-/* 659 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 660 */     BufferBuilder buffer = tessellator.func_178180_c();
-/* 661 */     buffer.func_181668_a(7, DefaultVertexFormats.field_181707_g);
-/* 662 */     buffer.func_181662_b(par1, (par2 + par6), this.field_73735_i).func_187315_a((par3 * w), ((par4 + par6) * h)).func_181675_d();
-/* 663 */     buffer.func_181662_b((par1 + par5), (par2 + par6), this.field_73735_i).func_187315_a(((par3 + par5) * w), ((par4 + par6) * h)).func_181675_d();
-/* 664 */     buffer.func_181662_b((par1 + par5), par2, this.field_73735_i).func_187315_a(((par3 + par5) * w), (par4 * h)).func_181675_d();
-/* 665 */     buffer.func_181662_b(par1, par2, this.field_73735_i).func_187315_a((par3 * w), (par4 * h)).func_181675_d();
-/* 666 */     tessellator.func_78381_a();
+/* 659 */     Tessellator tessellator = Tessellator.getInstance();
+/* 660 */     BufferBuilder buffer = tessellator.getBuffer();
+/* 661 */     buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+/* 662 */     buffer.pos(par1, (par2 + par6), this.zLevel).tex((par3 * w), ((par4 + par6) * h)).endVertex();
+/* 663 */     buffer.pos((par1 + par5), (par2 + par6), this.zLevel).tex(((par3 + par5) * w), ((par4 + par6) * h)).endVertex();
+/* 664 */     buffer.pos((par1 + par5), par2, this.zLevel).tex(((par3 + par5) * w), (par4 * h)).endVertex();
+/* 665 */     buffer.pos(par1, par2, this.zLevel).tex((par3 * w), (par4 * h)).endVertex();
+/* 666 */     tessellator.draw();
 /*     */   }
 /*     */   
 /*     */   public void drawTexturedModalRect(int dx, int dy, int dw, int dh, int u, int v, int tw, int th) {
 /* 670 */     float w = 0.001953125F;
 /* 671 */     float h = 0.001953125F;
-/* 672 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 673 */     BufferBuilder buffer = tessellator.func_178180_c();
-/* 674 */     buffer.func_181668_a(7, DefaultVertexFormats.field_181707_g);
-/* 675 */     buffer.func_181662_b(dx, (dy + dh), this.field_73735_i).func_187315_a((u * w), ((v + th) * h)).func_181675_d();
-/* 676 */     buffer.func_181662_b((dx + dw), (dy + dh), this.field_73735_i).func_187315_a(((u + tw) * w), ((v + th) * h)).func_181675_d();
-/* 677 */     buffer.func_181662_b((dx + dw), dy, this.field_73735_i).func_187315_a(((u + tw) * w), (v * h)).func_181675_d();
-/* 678 */     buffer.func_181662_b(dx, dy, this.field_73735_i).func_187315_a((u * w), (v * h)).func_181675_d();
-/* 679 */     tessellator.func_78381_a();
+/* 672 */     Tessellator tessellator = Tessellator.getInstance();
+/* 673 */     BufferBuilder buffer = tessellator.getBuffer();
+/* 674 */     buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+/* 675 */     buffer.pos(dx, (dy + dh), this.zLevel).tex((u * w), ((v + th) * h)).endVertex();
+/* 676 */     buffer.pos((dx + dw), (dy + dh), this.zLevel).tex(((u + tw) * w), ((v + th) * h)).endVertex();
+/* 677 */     buffer.pos((dx + dw), dy, this.zLevel).tex(((u + tw) * w), (v * h)).endVertex();
+/* 678 */     buffer.pos(dx, dy, this.zLevel).tex((u * w), (v * h)).endVertex();
+/* 679 */     tessellator.draw();
 /*     */   }
 /*     */ }
 

@@ -87,16 +87,16 @@
 /*     */   public MCH_ConfigGui(EntityPlayer player) {
 /*  88 */     super(new MCH_ConfigGuiContainer(player));
 /*  89 */     this.thePlayer = player;
-/*  90 */     this.field_146999_f = 330;
-/*  91 */     this.field_147000_g = 200;
+/*  90 */     this.xSize = 330;
+/*  91 */     this.ySize = 200;
 /*     */   }
 /*     */   
-/*     */   public void func_73866_w_() {
-/*  95 */     super.func_73866_w_();
-/*  96 */     this.field_146292_n.clear();
-/*  97 */     int x1 = this.field_147003_i + 10;
-/*  98 */     int x2 = this.field_147003_i + 10 + 150 + 10;
-/*  99 */     int y = this.field_147009_r;
+/*     */   public void initGui() {
+/*  95 */     super.initGui();
+/*  96 */     this.buttonList.clear();
+/*  97 */     int x1 = this.guiLeft + 10;
+/*  98 */     int x2 = this.guiLeft + 10 + 150 + 10;
+/*  99 */     int y = this.guiTop;
 /* 100 */     this.listControlButtons = new ArrayList<>();
 /* 101 */     this.buttonMouseInv = new MCH_GuiOnOffButton(0, x1, y + 25, 150, 20, "Invert Mouse : ");
 /* 102 */     this.sliderSensitivity = new MCH_GuiSlider(0, x1, y + 50, 150, 20, "Sensitivity : %.1f", 0.0F, 0.0F, 30.0F, 0.1F);
@@ -122,7 +122,7 @@
 /* 122 */     this.listControlButtons.add(this.buttonFlightSimMode);
 /* 123 */     this.listControlButtons.add(this.buttonSwitchWeaponWheel);
 /*     */     
-/* 125 */     this.field_146292_n.addAll(this.listControlButtons);
+/* 125 */     this.buttonList.addAll(this.listControlButtons);
 /*     */     
 /* 127 */     this.listRenderButtons = new ArrayList<>();
 /* 128 */     this.buttonShowHUDTP = new MCH_GuiOnOffButton(0, x1, y + 25, 150, 20, "Show HUD Third Person : ");
@@ -153,7 +153,7 @@
 /* 153 */     this.listRenderButtons.add(this.sliderEntityMarkerSize);
 /* 154 */     this.listRenderButtons.add(this.sliderBlockMarkerSize);
 /*     */     
-/* 156 */     this.field_146292_n.addAll(this.listRenderButtons);
+/* 156 */     this.buttonList.addAll(this.listRenderButtons);
 /*     */     
 /* 158 */     this.listKeyBindingButtons = new ArrayList<>();
 /* 159 */     this.waitKeyButtonId = 0;
@@ -192,10 +192,10 @@
 /* 192 */       this.keyBindingList.addItem(item);
 /*     */     }
 /*     */     
-/* 195 */     this.field_146292_n.addAll(this.listKeyBindingButtons);
+/* 195 */     this.buttonList.addAll(this.listKeyBindingButtons);
 /*     */     
 /* 197 */     this.listDevelopButtons = new ArrayList<>();
-/* 198 */     if (Minecraft.func_71410_x().func_71356_B()) {
+/* 198 */     if (Minecraft.getMinecraft().isSingleplayer()) {
 /* 199 */       this.buttonReloadAircraftInfo = new W_GuiButton(400, x1, y + 50, 150, 20, "Reload aircraft setting");
 /* 200 */       this.buttonReloadWeaponInfo = new W_GuiButton(401, x1, y + 75, 150, 20, "Reload All Weapons");
 /* 201 */       this.buttonReloadAllHUD = new W_GuiButton(402, x1, y + 100, 150, 20, "Reload All HUD");
@@ -208,10 +208,10 @@
 /*     */     
 /* 209 */     this.listDevelopButtons.add(new W_GuiButton(52, x1, y + 175, 90, 20, "Controls <<"));
 /*     */     
-/* 211 */     this.field_146292_n.addAll(this.listDevelopButtons);
+/* 211 */     this.buttonList.addAll(this.listDevelopButtons);
 /*     */     
-/* 213 */     this.field_146292_n.add(new GuiButton(100, x2, y + 175, 80, 20, "Save & Close"));
-/* 214 */     this.field_146292_n.add(new GuiButton(101, x2 + 90, y + 175, 60, 20, "Cancel"));
+/* 213 */     this.buttonList.add(new GuiButton(100, x2, y + 175, 80, 20, "Save & Close"));
+/* 214 */     this.buttonList.add(new GuiButton(101, x2 + 90, y + 175, 60, 20, "Cancel"));
 /* 215 */     switchScreen(0);
 /* 216 */     applySwitchScreen();
 /* 217 */     getAllStatusFromConfig();
@@ -344,10 +344,10 @@
 /*     */ 
 /*     */   
 /*     */   public void sendClientSettings() {
-/* 347 */     if (this.field_146297_k.field_71439_g != null) {
-/* 348 */       MCH_EntityAircraft ac = MCH_EntityAircraft.getAircraft_RiddenOrControl((Entity)this.field_146297_k.field_71439_g);
+/* 347 */     if (this.mc.player != null) {
+/* 348 */       MCH_EntityAircraft ac = MCH_EntityAircraft.getAircraft_RiddenOrControl((Entity)this.mc.player);
 /* 349 */       if (ac != null) {
-/* 350 */         int seatId = ac.getSeatIdByEntity((Entity)this.field_146297_k.field_71439_g);
+/* 350 */         int seatId = ac.getSeatIdByEntity((Entity)this.mc.player);
 /* 351 */         if (seatId == 0) {
 /* 352 */           ac.updateClientSettings(seatId);
 /*     */         }
@@ -355,21 +355,21 @@
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   public void func_73869_a(char a, int code) throws IOException {
+/*     */   public void keyTyped(char a, int code) throws IOException {
 /* 359 */     if (this.waitKeyButtonId != 0) {
 /* 360 */       if (code != 1) {
-/* 361 */         super.func_73869_a(a, code);
+/* 361 */         super.keyTyped(a, code);
 /*     */       }
 /*     */       
 /* 364 */       acceptKeycode(code);
 /* 365 */       this.waitKeyButtonId = 0;
 /*     */     } else {
-/* 367 */       super.func_73869_a(a, code);
+/* 367 */       super.keyTyped(a, code);
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   protected void func_73864_a(int par1, int par2, int par3) throws IOException {
-/* 372 */     super.func_73864_a(par1, par2, par3);
+/*     */   protected void mouseClicked(int par1, int par2, int par3) throws IOException {
+/* 372 */     super.mouseClicked(par1, par2, par3);
 /* 373 */     if (this.waitKeyButtonId != 0 && this.waitKeyAcceptCount == 0) {
 /* 374 */       acceptKeycode(par3 - 100);
 /* 375 */       this.waitKeyButtonId = 0;
@@ -377,7 +377,7 @@
 /*     */   }
 /*     */   
 /*     */   public void acceptKeycode(int code) {
-/* 380 */     if (code != 1 && this.field_146297_k.field_71462_r instanceof MCH_ConfigGui) {
+/* 380 */     if (code != 1 && this.mc.currentScreen instanceof MCH_ConfigGui) {
 /* 381 */       MCH_GuiListItemKeyBind kb = (MCH_GuiListItemKeyBind)this.keyBindingList.getItem(this.waitKeyButtonId - 200);
 /* 382 */       if (kb != null) {
 /* 383 */         kb.setKeycode(code);
@@ -385,8 +385,8 @@
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   public void func_146274_d() throws IOException {
-/* 389 */     super.func_146274_d();
+/*     */   public void handleMouseInput() throws IOException {
+/* 389 */     super.handleMouseInput();
 /* 390 */     if (this.waitKeyButtonId == 0) {
 /* 391 */       int var16 = Mouse.getEventDWheel();
 /* 392 */       if (var16 != 0) {
@@ -399,8 +399,8 @@
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   public void func_73876_c() {
-/* 403 */     super.func_73876_c();
+/*     */   public void updateScreen() {
+/* 403 */     super.updateScreen();
 /* 404 */     if (this.waitKeyAcceptCount > 0) {
 /* 405 */       this.waitKeyAcceptCount--;
 /*     */     }
@@ -413,14 +413,14 @@
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   public void func_146281_b() {
-/* 417 */     super.func_146281_b(); } protected void func_146284_a(@NotNull GuiButton button) { try {
+/*     */   public void onGuiClosed() {
+/* 417 */     super.onGuiClosed(); } protected void actionPerformed(@NotNull GuiButton button) { try {
 /*     */       MCH_GuiListItem item; int ixx;
 /*     */       List<Entity> list;
 /*     */       Set<String> reloaded;
 /*     */       MCH_EntityAircraft ac;
-/* 422 */       super.func_146284_a(button);
-/* 423 */       if (!button.field_146124_l) {
+/* 422 */       super.actionPerformed(button);
+/* 423 */       if (!button.enabled) {
 /*     */         return;
 /*     */       }
 /*     */       
@@ -432,7 +432,7 @@
 /*     */         return;
 /*     */       }
 /*     */       
-/* 435 */       switch (button.field_146127_k) {
+/* 435 */       switch (button.id) {
 /*     */         case 50:
 /* 437 */           switchScreen(1);
 /*     */           break;
@@ -448,10 +448,10 @@
 /* 448 */             MCH_GuiListItemKeyBind kb = (MCH_GuiListItemKeyBind)item;
 /* 449 */             if (kb.lastPushButton != null) {
 /* 450 */               int kb_num = this.keyBindingList.getItemNum();
-/* 451 */               if (kb.lastPushButton.field_146127_k >= 200 && kb.lastPushButton.field_146127_k < 200 + kb_num) {
-/* 452 */                 this.waitKeyButtonId = kb.lastPushButton.field_146127_k;
+/* 451 */               if (kb.lastPushButton.id >= 200 && kb.lastPushButton.id < 200 + kb_num) {
+/* 452 */                 this.waitKeyButtonId = kb.lastPushButton.id;
 /* 453 */                 this.waitKeyAcceptCount = 5;
-/* 454 */               } else if (kb.lastPushButton.field_146127_k >= 300 && kb.lastPushButton.field_146127_k < 300 + kb_num) {
+/* 454 */               } else if (kb.lastPushButton.id >= 300 && kb.lastPushButton.id < 300 + kb_num) {
 /* 455 */                 kb.resetKeycode();
 /*     */               } 
 /*     */               
@@ -469,16 +469,16 @@
 /*     */           break;
 /*     */         case 100:
 /* 471 */           saveAndApplyConfig();
-/* 472 */           this.field_146297_k.field_71439_g.func_71053_j();
+/* 472 */           this.mc.player.closeScreen();
 /*     */           break;
 /*     */         case 101:
-/* 475 */           this.field_146297_k.field_71439_g.func_71053_j();
+/* 475 */           this.mc.player.closeScreen();
 /*     */           break;
 /*     */         case 401:
 /* 478 */           MCH_Lib.DbgLog(true, "MCH_BaseInfo.reload all weapon info.", new Object[0]);
 /* 479 */           ContentRegistries.get(MCH_WeaponInfo.class).reloadAll();
 /* 480 */           MCH_PacketNotifyInfoReloaded.sendRealodAllWeapon();
-/* 481 */           list = this.field_146297_k.field_71441_e.field_72996_f;
+/* 481 */           list = this.mc.world.loadedEntityList;
 /* 482 */           reloaded = Sets.newHashSet();
 /*     */           
 /* 484 */           for (Entity value : list) {
@@ -492,7 +492,7 @@
 /*     */           
 /*     */           } 
 /*     */           
-/* 495 */           this.field_146297_k.field_71439_g.func_71053_j();
+/* 495 */           this.mc.player.closeScreen();
 /*     */           break;
 /*     */         case 402:
 /* 498 */           MCH_MOD.proxy.reloadHUD();
@@ -502,7 +502,7 @@
 /* 502 */             String name = (ac.getAcInfo()).name;
 /* 503 */             MCH_Lib.DbgLog(true, "MCH_BaseInfo.reload : " + name, new Object[0]);
 /* 504 */             ContentRegistries.get(ac.getAcInfo().getClass()).reload(name);
-/* 505 */             List<Entity> entityList = this.field_146297_k.field_71441_e.field_72996_f;
+/* 505 */             List<Entity> entityList = this.mc.world.loadedEntityList;
 /*     */             
 /* 507 */             for (Entity entity : entityList) {
 /* 508 */               if (entity instanceof MCH_EntityAircraft) {
@@ -517,19 +517,19 @@
 /* 517 */             MCH_PacketNotifyInfoReloaded.sendRealodAc();
 /*     */           } 
 /*     */           
-/* 520 */           this.field_146297_k.field_71439_g.func_71053_j(); break;
+/* 520 */           this.mc.player.closeScreen(); break;
 /*     */       } 
 /* 522 */     } catch (Exception var7) {
 /* 523 */       var7.printStackTrace();
 /*     */     }  }
 /*     */ 
 /*     */   
-/*     */   public boolean func_73868_f() {
+/*     */   public boolean doesGuiPauseGame() {
 /* 528 */     return true;
 /*     */   }
 /*     */   
-/*     */   protected void func_146979_b(int par1, int par2) {
-/* 532 */     super.func_146979_b(par1, par2);
+/*     */   protected void drawGuiContainerForegroundLayer(int par1, int par2) {
+/* 532 */     super.drawGuiContainerForegroundLayer(par1, par2);
 /* 533 */     drawString("MC Helicopter MOD Options", 10, 10, 16777215);
 /* 534 */     if (this.currentScreenId == 0) {
 /* 535 */       drawString("< Controls >", 170, 10, 16777215);
@@ -544,23 +544,23 @@
 /* 544 */       drawSampleHitMark(40, 105, color);
 /* 545 */       double size = this.sliderEntityMarkerSize.getSliderValue();
 /* 546 */       double x = 170.0D + (30.0D - size) / 2.0D;
-/* 547 */       double y = (this.sliderEntityMarkerSize.field_146129_i - this.sliderEntityMarkerSize.getHeight());
+/* 547 */       double y = (this.sliderEntityMarkerSize.y - this.sliderEntityMarkerSize.getHeight());
 /* 548 */       double[] ls = { x + size, y, x, y, x + size / 2.0D, y + size };
 /* 549 */       drawLine(ls, -65536, 4);
 /* 550 */       size = this.sliderBlockMarkerSize.getSliderValue();
 /* 551 */       x = 185.0D;
-/* 552 */       y = this.sliderBlockMarkerSize.field_146129_i;
+/* 552 */       y = this.sliderBlockMarkerSize.y;
 /* 553 */       color = -65536;
 /* 554 */       GL11.glPushMatrix();
 /* 555 */       GL11.glEnable(3042);
 /* 556 */       GL11.glDisable(3553);
 /* 557 */       GL11.glBlendFunc(770, 771);
 /* 558 */       GL11.glColor4ub((byte)(color >> 16 & 0xFF), (byte)(color >> 8 & 0xFF), (byte)(color >> 0 & 0xFF), (byte)(color >> 24 & 0xFF));
-/* 559 */       Tessellator tessellator = Tessellator.func_178181_a();
-/* 560 */       BufferBuilder builder = tessellator.func_178180_c();
-/* 561 */       builder.func_181668_a(1, DefaultVertexFormats.field_181706_f);
-/* 562 */       MCH_GuiTargetMarker.drawRhombus(builder, 15, x, y, this.field_73735_i, size, color);
-/* 563 */       tessellator.func_78381_a();
+/* 559 */       Tessellator tessellator = Tessellator.getInstance();
+/* 560 */       BufferBuilder builder = tessellator.getBuffer();
+/* 561 */       builder.begin(1, DefaultVertexFormats.POSITION_COLOR);
+/* 562 */       MCH_GuiTargetMarker.drawRhombus(builder, 15, x, y, this.zLevel, size, color);
+/* 563 */       tessellator.draw();
 /* 564 */       GL11.glEnable(3553);
 /* 565 */       GL11.glDisable(3042);
 /* 566 */       GL11.glColor4b((byte)-1, (byte)-1, (byte)-1, (byte)-1);
@@ -568,10 +568,10 @@
 /* 568 */     } else if (this.currentScreenId == 2) {
 /* 569 */       drawString("< Key Binding >", 170, 10, 16777215);
 /* 570 */       if (this.waitKeyButtonId != 0) {
-/* 571 */         func_73734_a(30, 30, this.field_146999_f - 30, this.field_147000_g - 30, -533712848);
+/* 571 */         drawRect(30, 30, this.xSize - 30, this.ySize - 30, -533712848);
 /* 572 */         String msg = "Please ant key or mouse button.";
 /* 573 */         int w = getStringWidth(msg);
-/* 574 */         drawString(msg, (this.field_146999_f - w) / 2, this.field_147000_g / 2 - 4, 16777215);
+/* 574 */         drawString(msg, (this.xSize - w) / 2, this.ySize / 2 - 4, 16777215);
 /*     */       } 
 /* 576 */     } else if (this.currentScreenId == 3) {
 /* 577 */       drawString("< Development >", 170, 10, 16777215);
@@ -589,12 +589,12 @@
 /*     */     } 
 /*     */   }
 /*     */   
-/*     */   protected void func_146976_a(float var1, int var2, int var3) {
+/*     */   protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
 /* 593 */     W_McClient.MOD_bindTexture("textures/gui/config.png");
 /* 594 */     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-/* 595 */     int x = (this.field_146294_l - this.field_146999_f) / 2;
-/* 596 */     int y = (this.field_146295_m - this.field_147000_g) / 2;
-/* 597 */     drawTexturedModalRectRotate(x, y, this.field_146999_f, this.field_147000_g, 0.0D, 0.0D, this.field_146999_f, this.field_147000_g, 0.0F, 512.0D, 256.0D);
+/* 595 */     int x = (this.width - this.xSize) / 2;
+/* 596 */     int y = (this.height - this.ySize) / 2;
+/* 597 */     drawTexturedModalRectRotate(x, y, this.xSize, this.ySize, 0.0D, 0.0D, this.xSize, this.ySize, 0.0F, 512.0D, 256.0D);
 /*     */   }
 /*     */   
 /*     */   public void drawSampleHitMark(int x, int y, int color) {
@@ -614,15 +614,15 @@
 /* 614 */     GL11.glDisable(3553);
 /* 615 */     GL11.glBlendFunc(770, 771);
 /* 616 */     GL11.glColor4ub((byte)(color >> 16 & 0xFF), (byte)(color >> 8 & 0xFF), (byte)(color >> 0 & 0xFF), (byte)(color >> 24 & 0xFF));
-/* 617 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 618 */     BufferBuilder buffer = tessellator.func_178180_c();
-/* 619 */     buffer.func_181668_a(mode, DefaultVertexFormats.field_181705_e);
+/* 617 */     Tessellator tessellator = Tessellator.getInstance();
+/* 618 */     BufferBuilder buffer = tessellator.getBuffer();
+/* 619 */     buffer.begin(mode, DefaultVertexFormats.POSITION);
 /*     */     
 /* 621 */     for (int i = 0; i < line.length; i += 2) {
-/* 622 */       buffer.func_181662_b(line[i], line[i + 1], this.field_73735_i).func_181675_d();
+/* 622 */       buffer.pos(line[i], line[i + 1], this.zLevel).endVertex();
 /*     */     }
 /*     */     
-/* 625 */     tessellator.func_78381_a();
+/* 625 */     tessellator.draw();
 /* 626 */     GL11.glEnable(3553);
 /* 627 */     GL11.glDisable(3042);
 /* 628 */     GL11.glColor4b((byte)-1, (byte)-1, (byte)-1, (byte)-1);
@@ -647,14 +647,14 @@
 /* 647 */     GL11.glRotatef(rot, 0.0F, 0.0F, 1.0F);
 /* 648 */     float fw = (float)(1.0D / texWidth);
 /* 649 */     float fh = (float)(1.0D / texHeight);
-/* 650 */     Tessellator tessellator = Tessellator.func_178181_a();
-/* 651 */     BufferBuilder buffer = tessellator.func_178180_c();
-/* 652 */     buffer.func_181668_a(7, DefaultVertexFormats.field_181707_g);
-/* 653 */     buffer.func_181662_b(-width / 2.0D, height / 2.0D, this.field_73735_i).func_187315_a(uLeft * fw, (vTop + vHeight) * fh).func_181675_d();
-/* 654 */     buffer.func_181662_b(width / 2.0D, height / 2.0D, this.field_73735_i).func_187315_a((uLeft + uWidth) * fw, (vTop + vHeight) * fh).func_181675_d();
-/* 655 */     buffer.func_181662_b(width / 2.0D, -height / 2.0D, this.field_73735_i).func_187315_a((uLeft + uWidth) * fw, vTop * fh).func_181675_d();
-/* 656 */     buffer.func_181662_b(-width / 2.0D, -height / 2.0D, this.field_73735_i).func_187315_a(uLeft * fw, vTop * fh).func_181675_d();
-/* 657 */     tessellator.func_78381_a();
+/* 650 */     Tessellator tessellator = Tessellator.getInstance();
+/* 651 */     BufferBuilder buffer = tessellator.getBuffer();
+/* 652 */     buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+/* 653 */     buffer.pos(-width / 2.0D, height / 2.0D, this.zLevel).tex(uLeft * fw, (vTop + vHeight) * fh).endVertex();
+/* 654 */     buffer.pos(width / 2.0D, height / 2.0D, this.zLevel).tex((uLeft + uWidth) * fw, (vTop + vHeight) * fh).endVertex();
+/* 655 */     buffer.pos(width / 2.0D, -height / 2.0D, this.zLevel).tex((uLeft + uWidth) * fw, vTop * fh).endVertex();
+/* 656 */     buffer.pos(-width / 2.0D, -height / 2.0D, this.zLevel).tex(uLeft * fw, vTop * fh).endVertex();
+/* 657 */     tessellator.draw();
 /* 658 */     GL11.glPopMatrix();
 /*     */   }
 /*     */ }

@@ -26,7 +26,7 @@
 /*     */ public class MCH_EntityHeli
 /*     */   extends MCH_EntityAircraft
 /*     */ {
-/*  29 */   private static final DataParameter<Byte> FOLD_STAT = EntityDataManager.func_187226_a(MCH_EntityHeli.class, DataSerializers.field_187191_a);
+/*  29 */   private static final DataParameter<Byte> FOLD_STAT = EntityDataManager.createKey(MCH_EntityHeli.class, DataSerializers.BYTE);
 /*  30 */   public double prevRotationRotor = 0.0D;
 /*  31 */   public double rotationRotor = 0.0D;
 /*     */   public MCH_Rotor[] rotors;
@@ -39,15 +39,15 @@
 /*  39 */     super(world);
 /*  40 */     this.heliInfo = null;
 /*  41 */     this.currentSpeed = 0.07D;
-/*  42 */     this.field_70156_m = true;
-/*  43 */     func_70105_a(2.0F, 0.7F);
-/*  44 */     this.field_70159_w = 0.0D;
-/*  45 */     this.field_70181_x = 0.0D;
-/*  46 */     this.field_70179_y = 0.0D;
+/*  42 */     this.preventEntitySpawning = true;
+/*  43 */     setSize(2.0F, 0.7F);
+/*  44 */     this.motionX = 0.0D;
+/*  45 */     this.motionY = 0.0D;
+/*  46 */     this.motionZ = 0.0D;
 /*  47 */     this.weapons = createWeapon(0);
 /*  48 */     this.rotors = new MCH_Rotor[0];
 /*  49 */     this.lastFoldBladeStat = -1;
-/*  50 */     if (this.field_70170_p.field_72995_K) {
+/*  50 */     if (this.world.isRemote) {
 /*  51 */       this.foldBladesCooldown = 40;
 /*     */     }
 /*     */   }
@@ -68,7 +68,7 @@
 /*     */ 
 /*     */   
 /*     */   public void changeType(String type) {
-/*  71 */     MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityHeli.changeType " + type + " : " + this, new Object[0]);
+/*  71 */     MCH_Lib.DbgLog(this.world, "MCH_EntityHeli.changeType " + type + " : " + this, new Object[0]);
 /*  72 */     if (!type.isEmpty()) {
 /*  73 */       this.heliInfo = MCH_HeliInfoManager.get(type);
 /*     */     }
@@ -97,25 +97,25 @@
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   protected void func_70088_a() {
-/* 101 */     super.func_70088_a();
-/* 102 */     this.field_70180_af.func_187214_a(FOLD_STAT, Byte.valueOf((byte)2));
+/*     */   protected void entityInit() {
+/* 101 */     super.entityInit();
+/* 102 */     this.dataManager.register(FOLD_STAT, Byte.valueOf((byte)2));
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   protected void func_70014_b(NBTTagCompound par1NBTTagCompound) {
-/* 107 */     super.func_70014_b(par1NBTTagCompound);
-/* 108 */     par1NBTTagCompound.func_74780_a("RotorSpeed", getCurrentThrottle());
-/* 109 */     par1NBTTagCompound.func_74780_a("rotetionRotor", this.rotationRotor);
-/* 110 */     par1NBTTagCompound.func_74757_a("FoldBlade", (getFoldBladeStat() == 0));
+/*     */   protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
+/* 107 */     super.writeEntityToNBT(par1NBTTagCompound);
+/* 108 */     par1NBTTagCompound.setDouble("RotorSpeed", getCurrentThrottle());
+/* 109 */     par1NBTTagCompound.setDouble("rotetionRotor", this.rotationRotor);
+/* 110 */     par1NBTTagCompound.setBoolean("FoldBlade", (getFoldBladeStat() == 0));
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   protected void func_70037_a(NBTTagCompound par1NBTTagCompound) {
-/* 115 */     super.func_70037_a(par1NBTTagCompound);
+/*     */   protected void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
+/* 115 */     super.readEntityFromNBT(par1NBTTagCompound);
 /* 116 */     boolean beforeFoldBlade = (getFoldBladeStat() == 0);
 /* 117 */     if (getCommonUniqueId().isEmpty()) {
-/* 118 */       setCommonUniqueId(par1NBTTagCompound.func_74779_i("HeliUniqueId"));
+/* 118 */       setCommonUniqueId(par1NBTTagCompound.getString("HeliUniqueId"));
 /* 119 */       MCH_Lib.Log((Entity)this, "# MCH_EntityHeli readEntityFromNBT() " + 
 /*     */ 
 /*     */           
@@ -128,7 +128,7 @@
 /*     */ 
 /*     */     
 /* 130 */     if (getTypeName().isEmpty()) {
-/* 131 */       setTypeName(par1NBTTagCompound.func_74779_i("HeliType"));
+/* 131 */       setTypeName(par1NBTTagCompound.getString("HeliType"));
 /* 132 */       MCH_Lib.Log((Entity)this, "# MCH_EntityHeli readEntityFromNBT() " + 
 /*     */ 
 /*     */           
@@ -140,9 +140,9 @@
 /*     */     } 
 /*     */ 
 /*     */     
-/* 143 */     setCurrentThrottle(par1NBTTagCompound.func_74769_h("RotorSpeed"));
-/* 144 */     this.rotationRotor = par1NBTTagCompound.func_74769_h("rotetionRotor");
-/* 145 */     setFoldBladeStat((byte)(par1NBTTagCompound.func_74767_n("FoldBlade") ? 0 : 2));
+/* 143 */     setCurrentThrottle(par1NBTTagCompound.getDouble("RotorSpeed"));
+/* 144 */     this.rotationRotor = par1NBTTagCompound.getDouble("rotetionRotor");
+/* 145 */     setFoldBladeStat((byte)(par1NBTTagCompound.getBoolean("FoldBlade") ? 0 : 2));
 /* 146 */     if (this.heliInfo == null) {
 /* 147 */       this.heliInfo = MCH_HeliInfoManager.get(getTypeName());
 /* 148 */       if (this.heliInfo == null) {
@@ -177,9 +177,9 @@
 /*     */ 
 /*     */   
 /*     */   public float getUnfoldLandingGearThrottle() {
-/* 180 */     double x = this.field_70165_t - this.field_70169_q;
-/* 181 */     double y = this.field_70163_u - this.field_70167_r;
-/* 182 */     double z = this.field_70161_v - this.field_70166_s;
+/* 180 */     double x = this.posX - this.prevPosX;
+/* 181 */     double y = this.posY - this.prevPosY;
+/* 182 */     double z = this.posZ - this.prevPosZ;
 /* 183 */     float s = (getAcInfo()).speed / 3.5F;
 /* 184 */     return (x * x + y * y + z * z <= s) ? 0.8F : 0.3F;
 /*     */   }
@@ -190,7 +190,7 @@
 /* 190 */       int i = 0;
 /*     */       
 /* 192 */       for (MCH_HeliInfo.Rotor r : this.heliInfo.rotorList) {
-/* 193 */         this.rotors[i] = new MCH_Rotor(r.bladeNum, r.bladeRot, 2, (float)r.pos.field_72450_a, (float)r.pos.field_72448_b, (float)r.pos.field_72449_c, (float)r.rot.field_72450_a, (float)r.rot.field_72448_b, (float)r.rot.field_72449_c, r.haveFoldFunc);
+/* 193 */         this.rotors[i] = new MCH_Rotor(r.bladeNum, r.bladeRot, 2, (float)r.pos.x, (float)r.pos.y, (float)r.pos.z, (float)r.rot.x, (float)r.rot.y, (float)r.rot.z, r.haveFoldFunc);
 /*     */ 
 /*     */ 
 /*     */ 
@@ -279,20 +279,20 @@
 /*     */   }
 /*     */   
 /*     */   protected byte getFoldBladeStat() {
-/* 282 */     return ((Byte)this.field_70180_af.func_187225_a(FOLD_STAT)).byteValue();
+/* 282 */     return ((Byte)this.dataManager.get(FOLD_STAT)).byteValue();
 /*     */   }
 /*     */   
 /*     */   public void setFoldBladeStat(byte b) {
-/* 286 */     if (!this.field_70170_p.field_72995_K && b >= 0 && b <= 3) {
-/* 287 */       this.field_70180_af.func_187227_b(FOLD_STAT, Byte.valueOf(b));
+/* 286 */     if (!this.world.isRemote && b >= 0 && b <= 3) {
+/* 287 */       this.dataManager.set(FOLD_STAT, Byte.valueOf(b));
 /*     */     }
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public boolean canSwitchGunnerMode() {
 /* 293 */     if (super.canSwitchGunnerMode() && canUseBlades()) {
-/* 294 */       float roll = MathHelper.func_76135_e(MathHelper.func_76142_g(getRotRoll()));
-/* 295 */       float pitch = MathHelper.func_76135_e(MathHelper.func_76142_g(getRotPitch()));
+/* 294 */       float roll = MathHelper.abs(MathHelper.wrapDegrees(getRotRoll()));
+/* 295 */       float pitch = MathHelper.abs(MathHelper.wrapDegrees(getRotPitch()));
 /* 296 */       return (roll < 40.0F && pitch < 40.0F);
 /*     */     } 
 /*     */     
@@ -302,8 +302,8 @@
 /*     */   
 /*     */   public boolean canSwitchHoveringMode() {
 /* 304 */     if (super.canSwitchHoveringMode() && canUseBlades()) {
-/* 305 */       float roll = MathHelper.func_76135_e(MathHelper.func_76142_g(getRotRoll()));
-/* 306 */       float pitch = MathHelper.func_76135_e(MathHelper.func_76142_g(getRotPitch()));
+/* 305 */       float roll = MathHelper.abs(MathHelper.wrapDegrees(getRotRoll()));
+/* 306 */       float pitch = MathHelper.abs(MathHelper.wrapDegrees(getRotPitch()));
 /* 307 */       return (roll < 40.0F && pitch < 40.0F);
 /*     */     } 
 /*     */     
@@ -314,13 +314,13 @@
 /*     */   public void onUpdateAircraft() {
 /* 315 */     if (this.heliInfo == null) {
 /* 316 */       changeType(getTypeName());
-/* 317 */       this.field_70169_q = this.field_70165_t;
-/* 318 */       this.field_70167_r = this.field_70163_u;
-/* 319 */       this.field_70166_s = this.field_70161_v;
+/* 317 */       this.prevPosX = this.posX;
+/* 318 */       this.prevPosY = this.posY;
+/* 319 */       this.prevPosZ = this.posZ;
 /*     */     } else {
 /* 321 */       if (!this.isRequestedSyncStatus) {
 /* 322 */         this.isRequestedSyncStatus = true;
-/* 323 */         if (this.field_70170_p.field_72995_K) {
+/* 323 */         if (this.world.isRemote) {
 /* 324 */           int stat = getFoldBladeStat();
 /* 325 */           if (stat == 1 || stat == 0) {
 /* 326 */             forceFoldBlade();
@@ -338,10 +338,10 @@
 /* 338 */       onUpdate_Seats();
 /* 339 */       onUpdate_Control();
 /* 340 */       onUpdate_Rotor();
-/* 341 */       this.field_70169_q = this.field_70165_t;
-/* 342 */       this.field_70167_r = this.field_70163_u;
-/* 343 */       this.field_70166_s = this.field_70161_v;
-/* 344 */       if (!isDestroyed() && isHovering() && MathHelper.func_76135_e(getRotPitch()) < 70.0F) {
+/* 341 */       this.prevPosX = this.posX;
+/* 342 */       this.prevPosY = this.posY;
+/* 343 */       this.prevPosZ = this.posZ;
+/* 344 */       if (!isDestroyed() && isHovering() && MathHelper.abs(getRotPitch()) < 70.0F) {
 /* 345 */         setRotPitch(getRotPitch() * 0.95F);
 /*     */       }
 /*     */       
@@ -356,7 +356,7 @@
 /*     */       } 
 /*     */       
 /* 358 */       updateCameraViewers();
-/* 359 */       if (this.field_70170_p.field_72995_K) {
+/* 359 */       if (this.world.isRemote) {
 /* 360 */         onUpdate_Client();
 /*     */       } else {
 /* 362 */         onUpdate_Server();
@@ -387,7 +387,7 @@
 /*     */   
 /*     */   public float getRollFactor() {
 /* 389 */     float roll = super.getRollFactor();
-/* 390 */     double d = func_70092_e(this.field_70169_q, this.field_70163_u, this.field_70166_s);
+/* 390 */     double d = getDistanceSq(this.prevPosX, this.posY, this.prevPosZ);
 /* 391 */     double s = (getAcInfo()).speed;
 /* 392 */     if (s > 0.1D) {
 /* 393 */       double d1 = d / s;
@@ -455,7 +455,7 @@
 /* 455 */           setRotRoll(getRotRoll() + 1.2F * partialTicks);
 /*     */         }
 /*     */       } else {
-/* 458 */         if (MathHelper.func_76135_e(getRotPitch()) < 40.0F) {
+/* 458 */         if (MathHelper.abs(getRotPitch()) < 40.0F) {
 /* 459 */           applyOnGroundPitch(0.97F);
 /*     */         }
 /*     */         
@@ -482,7 +482,7 @@
 /* 482 */         unfoldBlades();
 /*     */       } 
 /*     */       
-/* 485 */       if (this.field_70170_p.field_72995_K) {
+/* 485 */       if (this.world.isRemote) {
 /* 486 */         this.foldBladesCooldown = 40;
 /*     */       }
 /*     */       
@@ -533,12 +533,12 @@
 /* 533 */         setCurrentThrottle(0.0D);
 /*     */       } 
 /*     */       
-/* 536 */       if (this.heliInfo.isEnableFoldBlade && this.rotors.length > 0 && getFoldBladeStat() == 0 && this.field_70122_E && !isDestroyed()) {
+/* 536 */       if (this.heliInfo.isEnableFoldBlade && this.rotors.length > 0 && getFoldBladeStat() == 0 && this.onGround && !isDestroyed()) {
 /* 537 */         onUpdate_ControlFoldBladeAndOnGround();
 /*     */       }
 /*     */     } 
 /*     */     
-/* 541 */     if (this.field_70170_p.field_72995_K) {
+/* 541 */     if (this.world.isRemote) {
 /* 542 */       if (!W_Lib.isClientPlayer(getRiddenByEntity())) {
 /* 543 */         double ct = getThrottle();
 /* 544 */         if (getCurrentThrottle() >= ct - 0.02D) {
@@ -574,7 +574,7 @@
 /*     */       } else {
 /* 575 */         setCurrentThrottle(0.0D);
 /*     */       } 
-/* 577 */     } else if ((!this.field_70170_p.field_72995_K || W_Lib.isClientPlayer(getRiddenByEntity())) && this.cs_heliAutoThrottleDown) {
+/* 577 */     } else if ((!this.world.isRemote || W_Lib.isClientPlayer(getRiddenByEntity())) && this.cs_heliAutoThrottleDown) {
 /* 578 */       if (getCurrentThrottle() > 0.52D) {
 /* 579 */         addCurrentThrottle(-0.01D * throttleUpDown);
 /* 580 */       } else if (getCurrentThrottle() < 0.48D) {
@@ -582,7 +582,7 @@
 /*     */       } 
 /*     */     } 
 /*     */     
-/* 585 */     if (!this.field_70170_p.field_72995_K) {
+/* 585 */     if (!this.world.isRemote) {
 /* 586 */       boolean move = false;
 /*     */       
 /* 588 */       double x = 0.0D;
@@ -604,8 +604,8 @@
 /* 604 */       if (move) {
 /* 605 */         double f = 1.0D;
 /* 606 */         double d = Math.sqrt(x * x + z * z);
-/* 607 */         this.field_70159_w -= x / d * 0.019999999552965164D * f * (getAcInfo()).speed;
-/* 608 */         this.field_70179_y += z / d * 0.019999999552965164D * f * (getAcInfo()).speed;
+/* 607 */         this.motionX -= x / d * 0.019999999552965164D * f * (getAcInfo()).speed;
+/* 608 */         this.motionZ += z / d * 0.019999999552965164D * f * (getAcInfo()).speed;
 /*     */       } 
 /*     */     } 
 /*     */   }
@@ -617,7 +617,7 @@
 /* 617 */       setCurrentThrottle(1.0D);
 /*     */     } 
 /*     */     
-/* 620 */     if (!this.field_70170_p.field_72995_K) {
+/* 620 */     if (!this.world.isRemote) {
 /* 621 */       boolean move = false;
 /*     */       
 /* 623 */       double x = 0.0D;
@@ -652,14 +652,14 @@
 /*     */       
 /* 653 */       if (move) {
 /* 654 */         double d = Math.sqrt(x * x + z * z);
-/* 655 */         this.field_70159_w -= x / d * 0.009999999776482582D * (getAcInfo()).speed;
-/* 656 */         this.field_70179_y += z / d * 0.009999999776482582D * (getAcInfo()).speed;
+/* 655 */         this.motionX -= x / d * 0.009999999776482582D * (getAcInfo()).speed;
+/* 656 */         this.motionZ += z / d * 0.009999999776482582D * (getAcInfo()).speed;
 /*     */       } 
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   protected void onUpdate_ControlFoldBladeAndOnGround() {
-/* 662 */     if (!this.field_70170_p.field_72995_K) {
+/* 662 */     if (!this.world.isRemote) {
 /* 663 */       boolean move = false;
 /*     */       
 /* 665 */       double x = 0.0D;
@@ -680,14 +680,14 @@
 /*     */       
 /* 681 */       if (move) {
 /* 682 */         double d = Math.sqrt(x * x + z * z);
-/* 683 */         this.field_70159_w -= x / d * 0.029999999329447746D;
-/* 684 */         this.field_70179_y += z / d * 0.029999999329447746D;
+/* 683 */         this.motionX -= x / d * 0.029999999329447746D;
+/* 684 */         this.motionZ += z / d * 0.029999999329447746D;
 /*     */       } 
 /*     */     } 
 /*     */   }
 /*     */   
 /*     */   protected void onUpdate_Particle2() {
-/* 690 */     if (this.field_70170_p.field_72995_K && 
+/* 690 */     if (this.world.isRemote && 
 /* 691 */       getHP() <= getMaxHP() * 0.5D && 
 /* 692 */       getHeliInfo() != null) {
 /* 693 */       int rotorNum = (getHeliInfo()).rotorList.size();
@@ -701,38 +701,38 @@
 /* 701 */           float yaw = getRotYaw();
 /* 702 */           float pitch = getRotPitch();
 /* 703 */           Vec3d pos = MCH_Lib.RotVec3(rotor_pos, -yaw, -pitch, -getRotRoll());
-/* 704 */           double x = this.field_70165_t + pos.field_72450_a;
-/* 705 */           double y = this.field_70163_u + pos.field_72448_b;
-/* 706 */           double z = this.field_70161_v + pos.field_72449_c;
+/* 704 */           double x = this.posX + pos.x;
+/* 705 */           double y = this.posY + pos.y;
+/* 706 */           double z = this.posZ + pos.z;
 /* 707 */           if (this.isFirstDamageSmoke) {
 /* 708 */             this.prevDamageSmokePos[ri] = new Vec3d(x, y, z);
 /*     */           }
 /*     */           
 /* 711 */           Vec3d prev = this.prevDamageSmokePos[ri];
-/* 712 */           double dx = x - prev.field_72450_a;
-/* 713 */           double dy = y - prev.field_72448_b;
-/* 714 */           double dz = z - prev.field_72449_c;
-/* 715 */           int num = (int)(MathHelper.func_76133_a(dx * dx + dy * dy + dz * dz) * 2.0F) + 1;
+/* 712 */           double dx = x - prev.x;
+/* 713 */           double dy = y - prev.y;
+/* 714 */           double dz = z - prev.z;
+/* 715 */           int num = (int)(MathHelper.sqrt(dx * dx + dy * dy + dz * dz) * 2.0F) + 1;
 /*     */           double i;
 /* 717 */           for (i = 0.0D; i < num; i++) {
 /* 718 */             double p = getHP() / getMaxHP();
-/* 719 */             if (p < (this.field_70146_Z.nextFloat() / 2.0F)) {
-/* 720 */               float c = 0.2F + this.field_70146_Z.nextFloat() * 0.3F;
-/* 721 */               MCH_ParticleParam prm = new MCH_ParticleParam(this.field_70170_p, "smoke", prev.field_72450_a + (x - prev.field_72450_a) * i / num, prev.field_72448_b + (y - prev.field_72448_b) * i / num, prev.field_72449_c + (z - prev.field_72449_c) * i / num);
+/* 719 */             if (p < (this.rand.nextFloat() / 2.0F)) {
+/* 720 */               float c = 0.2F + this.rand.nextFloat() * 0.3F;
+/* 721 */               MCH_ParticleParam prm = new MCH_ParticleParam(this.world, "smoke", prev.x + (x - prev.x) * i / num, prev.y + (y - prev.y) * i / num, prev.z + (z - prev.z) * i / num);
 /*     */ 
 /*     */               
-/* 724 */               prm.motionX = (this.field_70146_Z.nextDouble() - 0.5D) * 0.3D;
-/* 725 */               prm.motionY = this.field_70146_Z.nextDouble() * 0.1D;
-/* 726 */               prm.motionZ = (this.field_70146_Z.nextDouble() - 0.5D) * 0.3D;
-/* 727 */               prm.size = this.field_70146_Z.nextInt(5) + 5.0F;
-/* 728 */               prm.setColor(0.7F + this.field_70146_Z.nextFloat() * 0.1F, c, c, c);
+/* 724 */               prm.motionX = (this.rand.nextDouble() - 0.5D) * 0.3D;
+/* 725 */               prm.motionY = this.rand.nextDouble() * 0.1D;
+/* 726 */               prm.motionZ = (this.rand.nextDouble() - 0.5D) * 0.3D;
+/* 727 */               prm.size = this.rand.nextInt(5) + 5.0F;
+/* 728 */               prm.setColor(0.7F + this.rand.nextFloat() * 0.1F, c, c, c);
 /* 729 */               MCH_ParticlesUtil.spawnParticle(prm);
-/* 730 */               int ebi = this.field_70146_Z.nextInt(1 + this.extraBoundingBox.length);
+/* 730 */               int ebi = this.rand.nextInt(1 + this.extraBoundingBox.length);
 /* 731 */               if (p < 0.3D && ebi > 0) {
 /* 732 */                 AxisAlignedBB bb = this.extraBoundingBox[ebi - 1].getBoundingBox();
-/* 733 */                 double bx = (bb.field_72336_d + bb.field_72340_a) / 2.0D;
-/* 734 */                 double by = (bb.field_72337_e + bb.field_72338_b) / 2.0D;
-/* 735 */                 double bz = (bb.field_72334_f + bb.field_72339_c) / 2.0D;
+/* 733 */                 double bx = (bb.maxX + bb.minX) / 2.0D;
+/* 734 */                 double by = (bb.maxY + bb.minY) / 2.0D;
+/* 735 */                 double bz = (bb.maxZ + bb.minZ) / 2.0D;
 /* 736 */                 prm.posX = bx;
 /* 737 */                 prm.posY = by;
 /* 738 */                 prm.posZ = bz;
@@ -753,22 +753,22 @@
 /*     */   
 /*     */   protected void onUpdate_Client() {
 /* 755 */     if (getRiddenByEntity() != null && W_Lib.isClientPlayer(getRiddenByEntity())) {
-/* 756 */       (getRiddenByEntity()).field_70125_A = (getRiddenByEntity()).field_70127_C;
+/* 756 */       (getRiddenByEntity()).rotationPitch = (getRiddenByEntity()).prevRotationPitch;
 /*     */     }
 /*     */     
 /* 759 */     if (this.aircraftPosRotInc > 0) {
 /* 760 */       applyServerPositionAndRotation();
 /*     */     } else {
-/* 762 */       func_70107_b(this.field_70165_t + this.field_70159_w, this.field_70163_u + this.field_70181_x, this.field_70161_v + this.field_70179_y);
-/* 763 */       if (!isDestroyed() && (this.field_70122_E || MCH_Lib.getBlockIdY((Entity)this, 1, -2) > 0)) {
-/* 764 */         this.field_70159_w *= 0.95D;
-/* 765 */         this.field_70179_y *= 0.95D;
+/* 762 */       setPosition(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+/* 763 */       if (!isDestroyed() && (this.onGround || MCH_Lib.getBlockIdY((Entity)this, 1, -2) > 0)) {
+/* 764 */         this.motionX *= 0.95D;
+/* 765 */         this.motionZ *= 0.95D;
 /* 766 */         applyOnGroundPitch(0.95F);
 /*     */       } 
 /*     */       
-/* 769 */       if (func_70090_H()) {
-/* 770 */         this.field_70159_w *= 0.99D;
-/* 771 */         this.field_70179_y *= 0.99D;
+/* 769 */       if (isInWater()) {
+/* 770 */         this.motionX *= 0.99D;
+/* 771 */         this.motionZ *= 0.99D;
 /*     */       } 
 /*     */     } 
 /*     */     
@@ -779,7 +779,7 @@
 /*     */       
 /* 780 */       setRotYaw(getRotYaw() + this.rotDestroyedYaw * (float)getCurrentThrottle());
 /* 781 */       if (MCH_Lib.getBlockIdY((Entity)this, 3, -3) == 0) {
-/* 782 */         if (MathHelper.func_76135_e(getRotPitch()) < 10.0F) {
+/* 782 */         if (MathHelper.abs(getRotPitch()) < 10.0F) {
 /* 783 */           setRotPitch(getRotPitch() + this.rotDestroyedPitch);
 /*     */         }
 /*     */         
@@ -792,11 +792,11 @@
 /*     */     
 /* 793 */     onUpdate_ParticleSandCloud(false);
 /* 794 */     onUpdate_Particle2();
-/* 795 */     updateCamera(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/* 795 */     updateCamera(this.posX, this.posY, this.posZ);
 /*     */   }
 /*     */   
 /*     */   private void onUpdate_Server() {
-/* 799 */     double prevMotion = Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70179_y * this.field_70179_y);
+/* 799 */     double prevMotion = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 /* 800 */     float ogp = (getAcInfo()).onGroundPitch;
 /* 801 */     if (!isHovering()) {
 /* 802 */       double dp = 0.0D;
@@ -805,17 +805,17 @@
 /*     */       }
 /*     */       
 /* 807 */       if (dp == 0.0D) {
-/* 808 */         this.field_70181_x += (!func_70090_H() ? (getAcInfo()).gravity : (getAcInfo()).gravityInWater);
+/* 808 */         this.motionY += (!isInWater() ? (getAcInfo()).gravity : (getAcInfo()).gravityInWater);
 /* 809 */         float yaw = getRotYaw() / 180.0F * 3.1415927F;
 /* 810 */         float pitch = getRotPitch();
 /* 811 */         if (MCH_Lib.getBlockIdY((Entity)this, 3, -3) > 0) {
 /* 812 */           pitch -= ogp;
 /*     */         }
 /*     */         
-/* 815 */         this.field_70159_w += 0.1D * MathHelper.func_76126_a(yaw) * this.currentSpeed * -(pitch * pitch * pitch / 20000.0F) * getCurrentThrottle();
-/* 816 */         this.field_70179_y += 0.1D * MathHelper.func_76134_b(yaw) * this.currentSpeed * (pitch * pitch * pitch / 20000.0F) * getCurrentThrottle();
+/* 815 */         this.motionX += 0.1D * MathHelper.sin(yaw) * this.currentSpeed * -(pitch * pitch * pitch / 20000.0F) * getCurrentThrottle();
+/* 816 */         this.motionZ += 0.1D * MathHelper.cos(yaw) * this.currentSpeed * (pitch * pitch * pitch / 20000.0F) * getCurrentThrottle();
 /* 817 */         double y = 0.0D;
-/* 818 */         if (MathHelper.func_76135_e(getRotPitch()) + MathHelper.func_76135_e(getRotRoll() * 0.9F) <= 40.0F) {
+/* 818 */         if (MathHelper.abs(getRotPitch()) + MathHelper.abs(getRotRoll() * 0.9F) <= 40.0F) {
 /* 819 */           y = 1.0D - y / 40.0D;
 /*     */         }
 /*     */         
@@ -824,9 +824,9 @@
 /* 824 */           throttle *= -0.65D;
 /*     */         }
 /*     */         
-/* 827 */         this.field_70181_x += (y * 0.025D + 0.03D) * throttle;
+/* 827 */         this.motionY += (y * 0.025D + 0.03D) * throttle;
 /*     */       } else {
-/* 829 */         if (MathHelper.func_76135_e(getRotPitch()) < 40.0F) {
+/* 829 */         if (MathHelper.abs(getRotPitch()) < 40.0F) {
 /* 830 */           float pitchx = getRotPitch();
 /* 831 */           pitchx -= ogp;
 /* 832 */           pitchx *= 0.9F;
@@ -834,46 +834,46 @@
 /* 834 */           setRotPitch(pitchx);
 /*     */         } 
 /*     */         
-/* 837 */         if (MathHelper.func_76135_e(getRotRoll()) < 40.0F) {
+/* 837 */         if (MathHelper.abs(getRotRoll()) < 40.0F) {
 /* 838 */           setRotRoll(getRotRoll() * 0.9F);
 /*     */         }
 /*     */         
 /* 841 */         if (dp < 1.0D) {
-/* 842 */           this.field_70181_x -= 1.0E-4D;
-/* 843 */           this.field_70181_x += 0.007D * getCurrentThrottle();
+/* 842 */           this.motionY -= 1.0E-4D;
+/* 843 */           this.motionY += 0.007D * getCurrentThrottle();
 /*     */         } else {
-/* 845 */           if (this.field_70181_x < 0.0D) {
-/* 846 */             this.field_70181_x *= 0.7D;
+/* 845 */           if (this.motionY < 0.0D) {
+/* 846 */             this.motionY *= 0.7D;
 /*     */           }
 /*     */           
-/* 849 */           this.field_70181_x += 0.007D;
+/* 849 */           this.motionY += 0.007D;
 /*     */         } 
 /*     */       } 
 /*     */     } else {
-/* 853 */       if (this.field_70146_Z.nextInt(50) == 0) {
-/* 854 */         this.field_70159_w += (this.field_70146_Z.nextDouble() - 0.5D) / 30.0D;
+/* 853 */       if (this.rand.nextInt(50) == 0) {
+/* 854 */         this.motionX += (this.rand.nextDouble() - 0.5D) / 30.0D;
 /*     */       }
 /*     */       
-/* 857 */       if (this.field_70146_Z.nextInt(50) == 0) {
-/* 858 */         this.field_70181_x += (this.field_70146_Z.nextDouble() - 0.5D) / 50.0D;
+/* 857 */       if (this.rand.nextInt(50) == 0) {
+/* 858 */         this.motionY += (this.rand.nextDouble() - 0.5D) / 50.0D;
 /*     */       }
 /*     */       
-/* 861 */       if (this.field_70146_Z.nextInt(50) == 0) {
-/* 862 */         this.field_70179_y += (this.field_70146_Z.nextDouble() - 0.5D) / 30.0D;
+/* 861 */       if (this.rand.nextInt(50) == 0) {
+/* 862 */         this.motionZ += (this.rand.nextDouble() - 0.5D) / 30.0D;
 /*     */       }
 /*     */     } 
 /*     */     
-/* 866 */     double motion = Math.sqrt(this.field_70159_w * this.field_70159_w + this.field_70179_y * this.field_70179_y);
+/* 866 */     double motion = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
 /* 867 */     float speedLimit = (getAcInfo()).speed;
 /* 868 */     if (motion > speedLimit) {
-/* 869 */       this.field_70159_w *= speedLimit / motion;
-/* 870 */       this.field_70179_y *= speedLimit / motion;
+/* 869 */       this.motionX *= speedLimit / motion;
+/* 870 */       this.motionZ *= speedLimit / motion;
 /* 871 */       motion = speedLimit;
 /*     */     } 
 /*     */     
 /* 874 */     if (isDestroyed()) {
-/* 875 */       this.field_70159_w *= 0.0D;
-/* 876 */       this.field_70179_y *= 0.0D;
+/* 875 */       this.motionX *= 0.0D;
+/* 876 */       this.motionZ *= 0.0D;
 /* 877 */       this.currentSpeed = 0.0D;
 /*     */     } 
 /*     */     
@@ -889,10 +889,10 @@
 /*     */       }
 /*     */     } 
 /*     */     
-/* 892 */     if (this.field_70122_E) {
-/* 893 */       this.field_70159_w *= 0.5D;
-/* 894 */       this.field_70179_y *= 0.5D;
-/* 895 */       if (MathHelper.func_76135_e(getRotPitch()) < 40.0F) {
+/* 892 */     if (this.onGround) {
+/* 893 */       this.motionX *= 0.5D;
+/* 894 */       this.motionZ *= 0.5D;
+/* 895 */       if (MathHelper.abs(getRotPitch()) < 40.0F) {
 /* 896 */         float pitchx = getRotPitch();
 /* 897 */         pitchx -= ogp;
 /* 898 */         pitchx *= 0.9F;
@@ -900,18 +900,18 @@
 /* 900 */         setRotPitch(pitchx);
 /*     */       } 
 /*     */       
-/* 903 */       if (MathHelper.func_76135_e(getRotRoll()) < 40.0F) {
+/* 903 */       if (MathHelper.abs(getRotRoll()) < 40.0F) {
 /* 904 */         setRotRoll(getRotRoll() * 0.9F);
 /*     */       }
 /*     */     } 
 /*     */     
-/* 908 */     func_70091_d(MoverType.SELF, this.field_70159_w, this.field_70181_x, this.field_70179_y);
-/* 909 */     this.field_70181_x *= 0.95D;
-/* 910 */     this.field_70159_w *= 0.99D;
-/* 911 */     this.field_70179_y *= 0.99D;
-/* 912 */     func_70101_b(getRotYaw(), getRotPitch());
+/* 908 */     move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+/* 909 */     this.motionY *= 0.95D;
+/* 910 */     this.motionX *= 0.99D;
+/* 911 */     this.motionZ *= 0.99D;
+/* 912 */     setRotation(getRotYaw(), getRotPitch());
 /* 913 */     onUpdate_updateBlock();
-/* 914 */     if (getRiddenByEntity() != null && (getRiddenByEntity()).field_70128_L)
+/* 914 */     if (getRiddenByEntity() != null && (getRiddenByEntity()).isDead)
 /* 915 */       unmountEntity(); 
 /*     */   }
 /*     */ }

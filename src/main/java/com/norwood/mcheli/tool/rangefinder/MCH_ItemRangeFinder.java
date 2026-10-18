@@ -26,24 +26,24 @@
 /*     */   
 /*     */   public MCH_ItemRangeFinder(int itemId) {
 /*  28 */     super(itemId);
-/*  29 */     this.field_77777_bU = 1;
-/*  30 */     func_77656_e(10);
+/*  29 */     this.maxStackSize = 1;
+/*  30 */     setMaxDamage(10);
 /*     */   }
 /*     */   
 /*     */   public static boolean canUse(EntityPlayer player) {
 /*  34 */     if (player == null)
 /*  35 */       return false; 
-/*  36 */     if (player.field_70170_p == null)
+/*  36 */     if (player.world == null)
 /*  37 */       return false; 
-/*  38 */     if (player.func_184614_ca().func_190926_b())
+/*  38 */     if (player.getHeldItemMainhand().isEmpty())
 /*  39 */       return false; 
-/*  40 */     if (!(player.func_184614_ca().func_77973_b() instanceof MCH_ItemRangeFinder))
+/*  40 */     if (!(player.getHeldItemMainhand().getItem() instanceof MCH_ItemRangeFinder))
 /*  41 */       return false; 
-/*  42 */     if (player.func_184187_bx() instanceof MCH_EntityAircraft) {
+/*  42 */     if (player.getRidingEntity() instanceof MCH_EntityAircraft) {
 /*  43 */       return false;
 /*     */     }
-/*  45 */     if (player.func_184187_bx() instanceof MCH_EntitySeat) {
-/*  46 */       MCH_EntityAircraft ac = ((MCH_EntitySeat)player.func_184187_bx()).getParent();
+/*  45 */     if (player.getRidingEntity() instanceof MCH_EntitySeat) {
+/*  46 */       MCH_EntityAircraft ac = ((MCH_EntitySeat)player.getRidingEntity()).getParent();
 /*  47 */       return (ac == null || (!ac.getIsGunnerMode((Entity)player) && ac.getWeaponIDBySeatID(ac.getSeatIdByEntity((Entity)player)) < 0));
 /*     */     } 
 /*     */     
@@ -52,7 +52,7 @@
 /*     */ 
 /*     */   
 /*     */   public static boolean isUsingScope(EntityPlayer player) {
-/*  55 */     return (player.func_184612_cw() > 8 || continueUsingItem);
+/*  55 */     return (player.getItemInUseMaxCount() > 8 || continueUsingItem);
 /*     */   }
 /*     */   
 /*     */   public static void onStartUseItem() {
@@ -68,11 +68,11 @@
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
 /*     */   public void spotEntity(EntityPlayer player, ItemStack itemStack) {
-/*  71 */     if (player != null && player.field_70170_p.field_72995_K && rangeFinderUseCooldown == 0 && player.func_184612_cw() > 8) {
+/*  71 */     if (player != null && player.world.isRemote && rangeFinderUseCooldown == 0 && player.getItemInUseMaxCount() > 8) {
 /*  72 */       if (mode == 2) {
 /*  73 */         rangeFinderUseCooldown = 60;
 /*  74 */         MCH_PacketIndSpotEntity.send((EntityLivingBase)player, 0);
-/*  75 */       } else if (itemStack.func_77960_j() < itemStack.func_77958_k()) {
+/*  75 */       } else if (itemStack.getMetadata() < itemStack.getMaxDamage()) {
 /*  76 */         rangeFinderUseCooldown = 60;
 /*  77 */         MCH_PacketIndSpotEntity.send((EntityLivingBase)player, (mode == 0) ? 60 : 3);
 /*     */       } else {
@@ -81,33 +81,33 @@
 /*     */     }
 /*     */   }
 /*     */   
-/*     */   public void func_77615_a(@NotNull ItemStack stack, World worldIn, @NotNull EntityLivingBase entityLiving, int timeLeft) {
-/*  85 */     if (worldIn.field_72995_K)
+/*     */   public void onPlayerStoppedUsing(@NotNull ItemStack stack, World worldIn, @NotNull EntityLivingBase entityLiving, int timeLeft) {
+/*  85 */     if (worldIn.isRemote)
 /*  86 */       onStopUseItem(); 
 /*     */   }
 /*     */   
 /*     */   @NotNull
-/*     */   public ItemStack func_77654_b(@NotNull ItemStack stack, @NotNull World worldIn, @NotNull EntityLivingBase entityLiving) {
+/*     */   public ItemStack onItemUseFinish(@NotNull ItemStack stack, @NotNull World worldIn, @NotNull EntityLivingBase entityLiving) {
 /*  91 */     return stack;
 /*     */   }
 /*     */   
 /*     */   @SideOnly(Side.CLIENT)
-/*     */   public boolean func_77662_d() {
+/*     */   public boolean isFull3D() {
 /*  96 */     return true;
 /*     */   }
 /*     */   @NotNull
-/*     */   public EnumAction func_77661_b(@NotNull ItemStack itemStack) {
+/*     */   public EnumAction getItemUseAction(@NotNull ItemStack itemStack) {
 /* 100 */     return EnumAction.BOW;
 /*     */   }
 /*     */   
-/*     */   public int func_77626_a(@NotNull ItemStack itemStack) {
+/*     */   public int getMaxItemUseDuration(@NotNull ItemStack itemStack) {
 /* 104 */     return 72000;
 /*     */   }
 /*     */   @NotNull
-/*     */   public ActionResult<ItemStack> func_77659_a(@NotNull World world, EntityPlayer player, @NotNull EnumHand handIn) {
-/* 108 */     ItemStack itemstack = player.func_184586_b(handIn);
+/*     */   public ActionResult<ItemStack> onItemRightClick(@NotNull World world, EntityPlayer player, @NotNull EnumHand handIn) {
+/* 108 */     ItemStack itemstack = player.getHeldItem(handIn);
 /* 109 */     if (canUse(player)) {
-/* 110 */       player.func_184598_c(handIn);
+/* 110 */       player.setActiveHand(handIn);
 /*     */     }
 /*     */     
 /* 113 */     return ActionResult.newResult(EnumActionResult.SUCCESS, itemstack);

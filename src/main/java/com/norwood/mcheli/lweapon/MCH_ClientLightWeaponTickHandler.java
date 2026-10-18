@@ -32,7 +32,7 @@
 /*     */   public static int weaponMode;
 /*     */   public static int selectedZoom;
 /*  34 */   public static Entity markEntity = null;
-/*  35 */   public static Vec3d markPos = Vec3d.field_186680_a;
+/*  35 */   public static Vec3d markPos = Vec3d.ZERO;
 /*  36 */   public static MCH_WeaponGuidanceSystem gs = new MCH_WeaponGuidanceSystem();
 /*  37 */   public static double lockRange = 120.0D;
 /*     */   protected static MCH_WeaponBase weapon;
@@ -50,7 +50,7 @@
 /*     */   protected boolean isHeldItem = false;
 /*     */   protected boolean isBeforeHeldItem = false;
 /*  52 */   protected EntityPlayer prevThePlayer = null;
-/*  53 */   protected ItemStack prevItemStack = ItemStack.field_190927_a;
+/*  53 */   protected ItemStack prevItemStack = ItemStack.EMPTY;
 /*     */   
 /*     */   public MCH_ClientLightWeaponTickHandler(Minecraft minecraft, MCH_Config config) {
 /*  56 */     super(minecraft);
@@ -71,8 +71,8 @@
 /*  71 */       GL11.glGetInteger(2978, matViewport);
 /*  72 */       GLU.gluProject((float)x, (float)y, (float)z, matModel, matProjection, matViewport, screenPos);
 /*  73 */       MCH_AircraftInfo i = (entity instanceof MCH_EntityAircraft) ? ((MCH_EntityAircraft)entity).getAcInfo() : null;
-/*  74 */       float w = (entity.field_70130_N > entity.field_70131_O) ? entity.field_70130_N : ((i != null) ? i.markerWidth : entity.field_70131_O);
-/*  75 */       float h = (i != null) ? i.markerHeight : entity.field_70131_O;
+/*  74 */       float w = (entity.width > entity.height) ? entity.width : ((i != null) ? i.markerWidth : entity.height);
+/*  75 */       float h = (i != null) ? i.markerHeight : entity.height;
 /*  76 */       GLU.gluProject((float)x + w, (float)y + h, (float)z + w, matModel, matProjection, matViewport, screenPosBB);
 /*  77 */       markEntity = entity;
 /*     */     } 
@@ -89,8 +89,8 @@
 /*     */   }
 /*     */   
 /*     */   public static int getPotionNightVisionDuration(EntityPlayer player) {
-/*  92 */     PotionEffect cpe = player.func_70660_b(MobEffects.field_76439_r);
-/*  93 */     return (cpe != null) ? cpe.func_76459_b() : 0;
+/*  92 */     PotionEffect cpe = player.getActivePotionEffect(MobEffects.NIGHT_VISION);
+/*  93 */     return (cpe != null) ? cpe.getDuration() : 0;
 /*     */   }
 /*     */   
 /*     */   public void initWeaponParam(EntityPlayer player) {
@@ -192,7 +192,7 @@
 /*     */     //   39: putfield isBeforeHeldItem : Z
 /*     */     //   42: aload_0
 /*     */     //   43: getfield mc : Lnet/minecraft/client/Minecraft;
-/*     */     //   46: getfield field_71439_g : Lnet/minecraft/client/entity/EntityPlayerSP;
+/*     */     //   46: getfield player : Lnet/minecraft/client/entity/EntityPlayerSP;
 /*     */     //   49: astore_2
 /*     */     //   50: aload_0
 /*     */     //   51: getfield prevThePlayer : Lnet/minecraft/entity/player/EntityPlayer;
@@ -210,21 +210,21 @@
 /*     */     //   75: aload_2
 /*     */     //   76: ifnull -> 86
 /*     */     //   79: aload_2
-/*     */     //   80: invokevirtual func_184614_ca : ()Lnet/minecraft/item/ItemStack;
+/*     */     //   80: invokevirtual getHeldItemMainhand : ()Lnet/minecraft/item/ItemStack;
 /*     */     //   83: goto -> 89
-/*     */     //   86: getstatic net/minecraft/item/ItemStack.field_190927_a : Lnet/minecraft/item/ItemStack;
+/*     */     //   86: getstatic net/minecraft/item/ItemStack.EMPTY : Lnet/minecraft/item/ItemStack;
 /*     */     //   89: astore_3
 /*     */     //   90: aload_2
 /*     */     //   91: ifnull -> 114
 /*     */     //   94: aload_2
-/*     */     //   95: invokevirtual func_184187_bx : ()Lnet/minecraft/entity/Entity;
+/*     */     //   95: invokevirtual getRidingEntity : ()Lnet/minecraft/entity/Entity;
 /*     */     //   98: instanceof com/norwood/mcheli/gltd/MCH_EntityGLTD
 /*     */     //   101: ifne -> 114
 /*     */     //   104: aload_2
-/*     */     //   105: invokevirtual func_184187_bx : ()Lnet/minecraft/entity/Entity;
+/*     */     //   105: invokevirtual getRidingEntity : ()Lnet/minecraft/entity/Entity;
 /*     */     //   108: instanceof com/norwood/mcheli/aircraft/MCH_EntityAircraft
 /*     */     //   111: ifeq -> 118
-/*     */     //   114: getstatic net/minecraft/item/ItemStack.field_190927_a : Lnet/minecraft/item/ItemStack;
+/*     */     //   114: getstatic net/minecraft/item/ItemStack.EMPTY : Lnet/minecraft/item/ItemStack;
 /*     */     //   117: astore_3
 /*     */     //   118: getstatic com/norwood/mcheli/lweapon/MCH_ClientLightWeaponTickHandler.gs : Lcom/norwood/mcheli/weapon/MCH_WeaponGuidanceSystem;
 /*     */     //   121: invokevirtual getLockingEntity : ()Lnet/minecraft/entity/Entity;
@@ -232,10 +232,10 @@
 /*     */     //   127: aconst_null
 /*     */     //   128: putstatic com/norwood/mcheli/lweapon/MCH_ClientLightWeaponTickHandler.markEntity : Lnet/minecraft/entity/Entity;
 /*     */     //   131: aload_3
-/*     */     //   132: invokevirtual func_190926_b : ()Z
+/*     */     //   132: invokevirtual isEmpty : ()Z
 /*     */     //   135: ifne -> 568
 /*     */     //   138: aload_3
-/*     */     //   139: invokevirtual func_77973_b : ()Lnet/minecraft/item/Item;
+/*     */     //   139: invokevirtual getItem : ()Lnet/minecraft/item/Item;
 /*     */     //   142: astore #5
 /*     */     //   144: aload #5
 /*     */     //   146: instanceof com/norwood/mcheli/lweapon/MCH_ItemLightWeaponBase
@@ -245,28 +245,28 @@
 /*     */     //   157: astore #4
 /*     */     //   159: aload_0
 /*     */     //   160: getfield prevItemStack : Lnet/minecraft/item/ItemStack;
-/*     */     //   163: invokevirtual func_190926_b : ()Z
+/*     */     //   163: invokevirtual isEmpty : ()Z
 /*     */     //   166: ifne -> 197
 /*     */     //   169: aload_0
 /*     */     //   170: getfield prevItemStack : Lnet/minecraft/item/ItemStack;
 /*     */     //   173: aload_3
-/*     */     //   174: invokevirtual func_77969_a : (Lnet/minecraft/item/ItemStack;)Z
+/*     */     //   174: invokevirtual isItemEqual : (Lnet/minecraft/item/ItemStack;)Z
 /*     */     //   177: ifne -> 256
 /*     */     //   180: aload_0
 /*     */     //   181: getfield prevItemStack : Lnet/minecraft/item/ItemStack;
-/*     */     //   184: invokevirtual func_77977_a : ()Ljava/lang/String;
+/*     */     //   184: invokevirtual getUnlocalizedName : ()Ljava/lang/String;
 /*     */     //   187: aload_3
-/*     */     //   188: invokevirtual func_77977_a : ()Ljava/lang/String;
+/*     */     //   188: invokevirtual getUnlocalizedName : ()Ljava/lang/String;
 /*     */     //   191: invokevirtual equals : (Ljava/lang/Object;)Z
 /*     */     //   194: ifne -> 256
 /*     */     //   197: aload_0
 /*     */     //   198: aload_2
 /*     */     //   199: invokevirtual initWeaponParam : (Lnet/minecraft/entity/player/EntityPlayer;)V
 /*     */     //   202: aload_2
-/*     */     //   203: getfield field_70170_p : Lnet/minecraft/world/World;
+/*     */     //   203: getfield world : Lnet/minecraft/world/World;
 /*     */     //   206: aload_3
 /*     */     //   207: invokestatic getName : (Lnet/minecraft/item/ItemStack;)Ljava/lang/String;
-/*     */     //   210: getstatic net/minecraft/util/math/Vec3d.field_186680_a : Lnet/minecraft/util/math/Vec3d;
+/*     */     //   210: getstatic net/minecraft/util/math/Vec3d.ZERO : Lnet/minecraft/util/math/Vec3d;
 /*     */     //   213: fconst_0
 /*     */     //   214: fconst_0
 /*     */     //   215: aconst_null
@@ -291,13 +291,13 @@
 /*     */     //   268: return
 /*     */     //   269: getstatic com/norwood/mcheli/lweapon/MCH_ClientLightWeaponTickHandler.gs : Lcom/norwood/mcheli/weapon/MCH_WeaponGuidanceSystem;
 /*     */     //   272: aload_2
-/*     */     //   273: getfield field_70170_p : Lnet/minecraft/world/World;
+/*     */     //   273: getfield world : Lnet/minecraft/world/World;
 /*     */     //   276: invokevirtual setWorld : (Lnet/minecraft/world/World;)V
 /*     */     //   279: getstatic com/norwood/mcheli/lweapon/MCH_ClientLightWeaponTickHandler.gs : Lcom/norwood/mcheli/weapon/MCH_WeaponGuidanceSystem;
 /*     */     //   282: getstatic com/norwood/mcheli/lweapon/MCH_ClientLightWeaponTickHandler.lockRange : D
 /*     */     //   285: putfield lockRange : D
 /*     */     //   288: aload_2
-/*     */     //   289: invokevirtual func_184612_cw : ()I
+/*     */     //   289: invokevirtual getItemInUseMaxCount : ()I
 /*     */     //   292: bipush #10
 /*     */     //   294: if_icmple -> 333
 /*     */     //   297: getstatic com/norwood/mcheli/lweapon/MCH_ClientLightWeaponTickHandler.selectedZoom : I
@@ -316,12 +316,12 @@
 /*     */     //   330: goto -> 336
 /*     */     //   333: invokestatic restoreCameraZoom : ()V
 /*     */     //   336: aload_3
-/*     */     //   337: invokevirtual func_77960_j : ()I
+/*     */     //   337: invokevirtual getMetadata : ()I
 /*     */     //   340: aload_3
-/*     */     //   341: invokevirtual func_77958_k : ()I
+/*     */     //   341: invokevirtual getMaxDamage : ()I
 /*     */     //   344: if_icmpge -> 460
 /*     */     //   347: aload_2
-/*     */     //   348: invokevirtual func_184612_cw : ()I
+/*     */     //   348: invokevirtual getItemInUseMaxCount : ()I
 /*     */     //   351: bipush #10
 /*     */     //   353: if_icmple -> 444
 /*     */     //   356: getstatic com/norwood/mcheli/lweapon/MCH_ClientLightWeaponTickHandler.gs : Lcom/norwood/mcheli/weapon/MCH_WeaponGuidanceSystem;
@@ -379,7 +379,7 @@
 /*     */     //   470: invokestatic hasItem : (Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/item/Item;)Z
 /*     */     //   473: ifeq -> 530
 /*     */     //   476: aload_2
-/*     */     //   477: invokevirtual func_184605_cv : ()I
+/*     */     //   477: invokevirtual getItemInUseCount : ()I
 /*     */     //   480: ifgt -> 530
 /*     */     //   483: getstatic com/norwood/mcheli/lweapon/MCH_ClientLightWeaponTickHandler.reloadCount : I
 /*     */     //   486: bipush #10
@@ -411,7 +411,7 @@
 /*     */     //   545: aload_2
 /*     */     //   546: aload_3
 /*     */     //   547: aload_3
-/*     */     //   548: invokevirtual func_77973_b : ()Lnet/minecraft/item/Item;
+/*     */     //   548: invokevirtual getItem : ()Lnet/minecraft/item/Item;
 /*     */     //   551: checkcast com/norwood/mcheli/lweapon/MCH_ItemLightWeaponBase
 /*     */     //   554: invokevirtual playerControl : (Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/item/ItemStack;Lcom/norwood/mcheli/lweapon/MCH_ItemLightWeaponBase;)V
 /*     */     //   557: aload_0
@@ -453,8 +453,8 @@
 /*     */     //   635: aload #4
 /*     */     //   637: invokestatic sendToServer : (Lcom/norwood/mcheli/wrapper/W_PacketBase;)V
 /*     */     //   640: aload_2
-/*     */     //   641: getstatic net/minecraft/init/MobEffects.field_76439_r : Lnet/minecraft/potion/Potion;
-/*     */     //   644: invokevirtual func_184589_d : (Lnet/minecraft/potion/Potion;)V
+/*     */     //   641: getstatic net/minecraft/init/MobEffects.NIGHT_VISION : Lnet/minecraft/potion/Potion;
+/*     */     //   644: invokevirtual removePotionEffect : (Lnet/minecraft/potion/Potion;)V
 /*     */     //   647: invokestatic restoreCameraZoom : ()V
 /*     */     //   650: aload_0
 /*     */     //   651: aload_3
@@ -608,7 +608,7 @@
 /*     */   protected void playerControl(EntityPlayer player, ItemStack is, MCH_ItemLightWeaponBase item) {
 /* 234 */     MCH_PacketLightWeaponPlayerControl pc = new MCH_PacketLightWeaponPlayerControl();
 /* 235 */     boolean send = false;
-/* 236 */     boolean autoShot = (MCH_Config.LWeaponAutoFire.prmBool && is.func_77960_j() < is.func_77958_k() && gs.isLockComplete());
+/* 236 */     boolean autoShot = (MCH_Config.LWeaponAutoFire.prmBool && is.getMetadata() < is.getMaxDamage() && gs.isLockComplete());
 /*     */     
 /* 238 */     if (this.KeySwWeaponMode.isKeyDown() && weapon.numMode > 1) {
 /* 239 */       weaponMode = (weaponMode + 1) % weapon.numMode;
@@ -617,11 +617,11 @@
 /*     */     
 /* 243 */     if (this.KeyAttack.isKeyPress() || autoShot) {
 /* 244 */       boolean result = false;
-/* 245 */       if (is.func_77960_j() < is.func_77958_k() && gs.isLockComplete()) {
+/* 245 */       if (is.getMetadata() < is.getMaxDamage() && gs.isLockComplete()) {
 /* 246 */         boolean canFire = true;
 /* 247 */         if (weaponMode > 0 && gs.getTargetEntity() != null) {
-/* 248 */           double dx = (gs.getTargetEntity()).field_70165_t - player.field_70165_t;
-/* 249 */           double dz = (gs.getTargetEntity()).field_70161_v - player.field_70161_v;
+/* 248 */           double dx = (gs.getTargetEntity()).posX - player.posX;
+/* 249 */           double dz = (gs.getTargetEntity()).posZ - player.posZ;
 /* 250 */           canFire = (Math.sqrt(dx * dx + dz * dz) >= 40.0D);
 /*     */         } 
 /*     */         
@@ -629,16 +629,16 @@
 /* 254 */           pc.useWeapon = true;
 /* 255 */           pc.useWeaponOption1 = W_Entity.getEntityId(gs.lastLockEntity);
 /* 256 */           pc.useWeaponOption2 = weaponMode;
-/* 257 */           pc.useWeaponPosX = player.field_70165_t;
-/* 258 */           pc.useWeaponPosY = player.field_70163_u + player.func_70047_e();
-/* 259 */           pc.useWeaponPosZ = player.field_70161_v;
+/* 257 */           pc.useWeaponPosX = player.posX;
+/* 258 */           pc.useWeaponPosY = player.posY + player.getEyeHeight();
+/* 259 */           pc.useWeaponPosZ = player.posZ;
 /* 260 */           gs.clearLock();
 /* 261 */           send = true;
 /* 262 */           result = true;
 /*     */         } 
 /*     */       } 
 /*     */       
-/* 266 */       if (this.KeyAttack.isKeyDown() && !result && player.func_184612_cw() > 5) {
+/* 266 */       if (this.KeyAttack.isKeyDown() && !result && player.getItemInUseMaxCount() > 5) {
 /* 267 */         playSoundNG();
 /*     */       }
 /*     */     } 
@@ -652,14 +652,14 @@
 /*     */     } 
 /*     */     
 /* 279 */     if (this.KeyCameraMode.isKeyDown()) {
-/* 280 */       PotionEffect pe = player.func_70660_b(MobEffects.field_76439_r);
+/* 280 */       PotionEffect pe = player.getActivePotionEffect(MobEffects.NIGHT_VISION);
 /* 281 */       MCH_Lib.DbgLog(true, "LWeapon NV %s", new Object[] { (pe != null) ? "ON->OFF" : "OFF->ON" });
 /* 282 */       if (pe != null) {
-/* 283 */         player.func_184589_d(MobEffects.field_76439_r);
+/* 283 */         player.removePotionEffect(MobEffects.NIGHT_VISION);
 /* 284 */         pc.camMode = 1;
 /* 285 */         send = true;
 /* 286 */         W_McClient.MOD_playSoundFX("pi", 0.5F, 0.9F);
-/* 287 */       } else if (player.func_184612_cw() > 60) {
+/* 287 */       } else if (player.getItemInUseMaxCount() > 60) {
 /* 288 */         pc.camMode = 2;
 /* 289 */         send = true;
 /* 290 */         W_McClient.MOD_playSoundFX("pi", 0.5F, 0.9F);

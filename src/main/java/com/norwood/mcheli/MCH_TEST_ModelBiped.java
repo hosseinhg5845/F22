@@ -4,7 +4,7 @@
 /*   */ 
 /*   */ public class MCH_TEST_ModelBiped extends ModelBiped {
 /*   */   public MCH_TEST_ModelBiped() {
-/* 7 */     this.field_178720_f.func_78792_a(new MCH_TEST_ModelRenderer((ModelBase)this));
+/* 7 */     this.bipedHeadwear.addChild(new MCH_TEST_ModelRenderer((ModelBase)this));
 /*   */   }
 /*   */ }
 

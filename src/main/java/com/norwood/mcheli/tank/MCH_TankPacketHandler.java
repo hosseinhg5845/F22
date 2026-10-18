@@ -12,18 +12,18 @@
 /*     */ public class MCH_TankPacketHandler {
 /*     */   @HandleSide({Side.SERVER})
 /*     */   public static void onPacket_PlayerControl(EntityPlayer player, ByteArrayDataInput data, IThreadListener scheduler) {
-/*  15 */     if (!player.field_70170_p.field_72995_K) {
+/*  15 */     if (!player.world.isRemote) {
 /*  16 */       MCH_TankPacketPlayerControl pc = new MCH_TankPacketPlayerControl();
 /*  17 */       pc.readData(data);
-/*  18 */       scheduler.func_152344_a(() -> {
+/*  18 */       scheduler.addScheduledTask(() -> {
 /*     */             MCH_EntityTank tank = null;
-/*     */             if (player.func_184187_bx() instanceof MCH_EntityTank) {
-/*     */               tank = (MCH_EntityTank)player.func_184187_bx();
-/*     */             } else if (player.func_184187_bx() instanceof MCH_EntitySeat) {
-/*     */               if (((MCH_EntitySeat)player.func_184187_bx()).getParent() instanceof MCH_EntityTank)
-/*     */                 tank = (MCH_EntityTank)((MCH_EntitySeat)player.func_184187_bx()).getParent(); 
+/*     */             if (player.getRidingEntity() instanceof MCH_EntityTank) {
+/*     */               tank = (MCH_EntityTank)player.getRidingEntity();
+/*     */             } else if (player.getRidingEntity() instanceof MCH_EntitySeat) {
+/*     */               if (((MCH_EntitySeat)player.getRidingEntity()).getParent() instanceof MCH_EntityTank)
+/*     */                 tank = (MCH_EntityTank)((MCH_EntitySeat)player.getRidingEntity()).getParent(); 
 /*     */             } else {
-/*     */               Entity patt1395$temp = player.func_184187_bx();
+/*     */               Entity patt1395$temp = player.getRidingEntity();
 /*     */               if (patt1395$temp instanceof MCH_EntityUavStation) {
 /*     */                 MCH_EntityUavStation uavStation = (MCH_EntityUavStation)patt1395$temp;
 /*     */                 if (uavStation.getControlAircract() instanceof MCH_EntityTank)
@@ -64,8 +64,8 @@
 /*     */                 if (tank.isPilot((Entity)player)) {
 /*     */                   tank.throttleUp = pc.throttleUp;
 /*     */                   tank.throttleDown = pc.throttleDown;
-/*     */                   double dx = tank.field_70165_t - tank.field_70169_q;
-/*     */                   double dz = tank.field_70161_v - tank.field_70166_s;
+/*     */                   double dx = tank.posX - tank.prevPosX;
+/*     */                   double dz = tank.posZ - tank.prevPosZ;
 /*     */                   double dist = dx * dx + dz * dz;
 /*     */                   if (pc.useBrake && tank.getCurrentThrottle() <= 0.03D && dist < 0.01D) {
 /*     */                     tank.moveLeft = false;

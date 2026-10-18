@@ -21,12 +21,12 @@
 /*     */   static final int COLOR2 = -2161656;
 /*     */   
 /*     */   public boolean isDrawGui(EntityPlayer player) {
-/*  24 */     return (player.func_184187_bx() != null && player.func_184187_bx() instanceof MCH_EntityVehicle);
+/*  24 */     return (player.getRidingEntity() != null && player.getRidingEntity() instanceof MCH_EntityVehicle);
 /*     */   }
 /*     */ 
 /*     */   
 /*     */   public void drawGui(EntityPlayer player, boolean isThirdPersonView) {
-/*  29 */     if (player.func_184187_bx() != null) { Entity entity = player.func_184187_bx(); if (entity instanceof MCH_EntityVehicle) { MCH_EntityVehicle vehicle = (MCH_EntityVehicle)entity;
+/*  29 */     if (player.getRidingEntity() != null) { Entity entity = player.getRidingEntity(); if (entity instanceof MCH_EntityVehicle) { MCH_EntityVehicle vehicle = (MCH_EntityVehicle)entity;
 /*  30 */         if (!vehicle.isDestroyed()) {
 /*  31 */           int seatID = vehicle.getSeatIdByEntity((Entity)player);
 /*  32 */           GL11.glLineWidth(scaleFactor);
@@ -70,7 +70,7 @@
 /*     */         
 /*  71 */         String msg = "Gunner " + (vehicle.getGunnerStatus() ? "ON" : "OFF") + " : " + MCH_KeyName.getDescOrName(MCH_Config.KeyFreeLook.prmInt) + " + " + MCH_KeyName.getDescOrName(MCH_Config.KeyCameraMode.prmInt);
 /*  72 */         drawString(msg, LX, this.centerY - 40, colorActive);
-/*  73 */         if (vehicle.func_70302_i_() <= 0 || (vehicle.getTowChainEntity() != null && !(vehicle.getTowChainEntity()).field_70128_L)) {
+/*  73 */         if (vehicle.getSizeInventory() <= 0 || (vehicle.getTowChainEntity() != null && !(vehicle.getTowChainEntity()).isDead)) {
 /*  74 */           msg = "Drop  : " + MCH_KeyName.getDescOrName(MCH_Config.KeyExtra.prmInt);
 /*  75 */           drawString(msg, RX, this.centerY - 30, colorActive);
 /*     */         } 

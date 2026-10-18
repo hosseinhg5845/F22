@@ -8,11 +8,11 @@
 /*    */   public static final int TAG_COMPOUND = 10;
 /*    */   
 /*    */   public static NBTTagCompound tagAt(NBTTagList list, int i) {
-/* 11 */     return (list != null) ? list.func_150305_b(i) : null;
+/* 11 */     return (list != null) ? list.getCompoundTagAt(i) : null;
 /*    */   }
 /*    */   
 /*    */   public static NBTTagList getTagList(NBTTagCompound nbt, String s, int i) {
-/* 15 */     return nbt.func_150295_c(s, i);
+/* 15 */     return nbt.getTagList(s, i);
 /*    */   }
 /*    */   
 /*    */   public static NBTTagIntArray newTagIntArray(String s, int[] n) {

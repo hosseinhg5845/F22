@@ -26,7 +26,7 @@
 /* 26 */     boolean flag = true;
 /* 27 */     if (IItemModelRenderer.isFirstPerson(transformType)) {
 /* 28 */       flag = (entity instanceof EntityPlayer && !MCH_ItemRangeFinder.isUsingScope((EntityPlayer)entity));
-/* 29 */       if (entity.func_184587_cr() && entity.func_184600_cs() == EnumHand.MAIN_HAND) {
+/* 29 */       if (entity.isHandActive() && entity.getActiveHand() == EnumHand.MAIN_HAND) {
 /* 30 */         GL11.glTranslated(0.6563000082969666D, 0.34380000829696655D, 0.009999999776482582D);
 /*    */       }
 /*    */     } 

@@ -4,7 +4,7 @@
 /*   */ 
 /*   */ public class W_BlockDispenser {
 /*   */   public static EnumFacing getFacing(int par0) {
-/* 7 */     return EnumFacing.func_82600_a(par0);
+/* 7 */     return EnumFacing.getFront(par0);
 /*   */   }
 /*   */ }
 

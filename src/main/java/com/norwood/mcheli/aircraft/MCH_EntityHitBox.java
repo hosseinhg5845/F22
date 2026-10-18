@@ -18,71 +18,71 @@
 /*    */   
 /*    */   public MCH_EntityHitBox(World world) {
 /* 20 */     super(world);
-/* 21 */     func_70105_a(1.0F, 1.0F);
-/* 22 */     this.field_70159_w = 0.0D;
-/* 23 */     this.field_70181_x = 0.0D;
-/* 24 */     this.field_70179_y = 0.0D;
+/* 21 */     setSize(1.0F, 1.0F);
+/* 22 */     this.motionX = 0.0D;
+/* 23 */     this.motionY = 0.0D;
+/* 24 */     this.motionZ = 0.0D;
 /* 25 */     this.parent = null;
-/* 26 */     this.field_70158_ak = true;
-/* 27 */     this.field_70178_ae = true;
+/* 26 */     this.ignoreFrustumCheck = true;
+/* 27 */     this.isImmuneToFire = true;
 /*    */   }
 /*    */   
 /*    */   public MCH_EntityHitBox(World world, MCH_EntityAircraft ac, float w, float h) {
 /* 31 */     this(world);
-/* 32 */     func_70107_b(ac.field_70165_t, ac.field_70163_u + 1.0D, ac.field_70161_v);
-/* 33 */     this.field_70169_q = ac.field_70165_t;
-/* 34 */     this.field_70167_r = ac.field_70163_u + 1.0D;
-/* 35 */     this.field_70166_s = ac.field_70161_v;
+/* 32 */     setPosition(ac.posX, ac.posY + 1.0D, ac.posZ);
+/* 33 */     this.prevPosX = ac.posX;
+/* 34 */     this.prevPosY = ac.posY + 1.0D;
+/* 35 */     this.prevPosZ = ac.posZ;
 /* 36 */     this.parent = ac;
-/* 37 */     func_70105_a(w, h);
+/* 37 */     setSize(w, h);
 /*    */   }
 /*    */   
-/*    */   protected boolean func_70041_e_() {
+/*    */   protected boolean canTriggerWalking() {
 /* 41 */     return false;
 /*    */   }
 /*    */   
-/*    */   public AxisAlignedBB func_70114_g(Entity par1Entity) {
-/* 45 */     return par1Entity.func_174813_aQ();
+/*    */   public AxisAlignedBB getCollisionBox(Entity par1Entity) {
+/* 45 */     return par1Entity.getEntityBoundingBox();
 /*    */   }
 /*    */   
-/*    */   public AxisAlignedBB func_70046_E() {
-/* 49 */     return func_174813_aQ();
+/*    */   public AxisAlignedBB getCollisionBoundingBox() {
+/* 49 */     return getEntityBoundingBox();
 /*    */   }
 /*    */   
-/*    */   public double func_70042_X() {
+/*    */   public double getMountedYOffset() {
 /* 53 */     return -0.3D;
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   public boolean func_70097_a(DamageSource par1DamageSource, float par2) {
-/* 58 */     return (this.parent != null && this.parent.func_70097_a(par1DamageSource, par2));
+/*    */   public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+/* 58 */     return (this.parent != null && this.parent.attackEntityFrom(par1DamageSource, par2));
 /*    */   }
 /*    */   
-/*    */   public boolean func_70067_L() {
-/* 62 */     return !this.field_70128_L;
+/*    */   public boolean canBeCollidedWith() {
+/* 62 */     return !this.isDead;
 /*    */   }
 /*    */   
-/*    */   public void func_70106_y() {
-/* 66 */     super.func_70106_y();
+/*    */   public void setDead() {
+/* 66 */     super.setDead();
 /*    */   }
 /*    */   
-/*    */   public void func_70071_h_() {
-/* 70 */     super.func_70071_h_();
+/*    */   public void onUpdate() {
+/* 70 */     super.onUpdate();
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   protected void func_70014_b(@NotNull NBTTagCompound par1NBTTagCompound) {}
+/*    */   protected void writeEntityToNBT(@NotNull NBTTagCompound par1NBTTagCompound) {}
 /*    */ 
 /*    */   
-/*    */   protected void func_70037_a(@NotNull NBTTagCompound par1NBTTagCompound) {}
+/*    */   protected void readEntityFromNBT(@NotNull NBTTagCompound par1NBTTagCompound) {}
 /*    */   
 /*    */   @SideOnly(Side.CLIENT)
 /*    */   public float getShadowSize() {
 /* 81 */     return 0.0F;
 /*    */   }
 /*    */   
-/*    */   public boolean func_184230_a(@NotNull EntityPlayer player, @NotNull EnumHand hand) {
-/* 85 */     return (this.parent != null && this.parent.func_184230_a(player, hand));
+/*    */   public boolean processInitialInteract(@NotNull EntityPlayer player, @NotNull EnumHand hand) {
+/* 85 */     return (this.parent != null && this.parent.processInitialInteract(player, hand));
 /*    */   }
 /*    */ }
 

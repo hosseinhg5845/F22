@@ -16,38 +16,38 @@
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   public void func_70071_h_() {
-/* 20 */     super.func_70071_h_();
+/*    */   public void onUpdate() {
+/* 20 */     super.onUpdate();
 /* 21 */     if (getCountOnUpdate() > 4 && getInfo() != null && !(getInfo()).disableSmoke) {
 /* 22 */       spawnParticle((getInfo()).trajectoryParticleName, 3, 7.0F * (getInfo()).smokeSize * 0.5F);
 /*    */     }
 /*    */     
-/* 25 */     if (!this.field_70170_p.field_72995_K && getInfo() != null) {
-/* 26 */       if (this.shootingEntity != null && this.targetEntity != null && !this.targetEntity.field_70128_L) {
-/* 27 */         double x = this.field_70165_t - this.targetEntity.field_70165_t;
-/* 28 */         double y = this.field_70163_u - this.targetEntity.field_70163_u;
-/* 29 */         double z = this.field_70161_v - this.targetEntity.field_70161_v;
+/* 25 */     if (!this.world.isRemote && getInfo() != null) {
+/* 26 */       if (this.shootingEntity != null && this.targetEntity != null && !this.targetEntity.isDead) {
+/* 27 */         double x = this.posX - this.targetEntity.posX;
+/* 28 */         double y = this.posY - this.targetEntity.posY;
+/* 29 */         double z = this.posZ - this.targetEntity.posZ;
 /* 30 */         double d = x * x + y * y + z * z;
 /* 31 */         if (d > 3422500.0D) {
-/* 32 */           func_70106_y();
+/* 32 */           setDead();
 /* 33 */         } else if (getCountOnUpdate() > (getInfo()).rigidityTime) {
 /* 34 */           if (usingFlareOfTarget(this.targetEntity)) {
-/* 35 */             func_70106_y();
+/* 35 */             setDead();
 /*    */             
 /*    */             return;
 /*    */           } 
 /* 39 */           if ((getInfo()).proximityFuseDist >= 0.1F && d < (getInfo()).proximityFuseDist) {
 /* 40 */             RayTraceResult mop = new RayTraceResult(this.targetEntity);
-/* 41 */             this.field_70165_t = (this.targetEntity.field_70165_t + this.field_70165_t) / 2.0D;
-/* 42 */             this.field_70163_u = (this.targetEntity.field_70163_u + this.field_70163_u) / 2.0D;
-/* 43 */             this.field_70161_v = (this.targetEntity.field_70161_v + this.field_70161_v) / 2.0D;
+/* 41 */             this.posX = (this.targetEntity.posX + this.posX) / 2.0D;
+/* 42 */             this.posY = (this.targetEntity.posY + this.posY) / 2.0D;
+/* 43 */             this.posZ = (this.targetEntity.posZ + this.posZ) / 2.0D;
 /* 44 */             onImpact(mop, 1.0F);
 /*    */           } else {
-/* 46 */             guidanceToTarget(this.targetEntity.field_70165_t, this.targetEntity.field_70163_u, this.targetEntity.field_70161_v);
+/* 46 */             guidanceToTarget(this.targetEntity.posX, this.targetEntity.posY, this.targetEntity.posZ);
 /*    */           } 
 /*    */         } 
 /*    */       } else {
-/* 50 */         func_70106_y();
+/* 50 */         setDead();
 /*    */       } 
 /*    */     }
 /*    */   }

@@ -25,7 +25,7 @@
 /*     */   }
 /*     */   
 /*     */   private static <TYPE extends IContentData> void putTable(Map<String, TYPE> table, TYPE content) {
-/*  28 */     table.put(content.getLoation().func_110623_a(), content);
+/*  28 */     table.put(content.getLoation().getResourcePath(), content);
 /*     */   }
 /*     */   
 /*     */   public static <TYPE extends MCH_BaseInfo> Builder<TYPE> builder(Class<TYPE> type, String dir) {
@@ -60,7 +60,7 @@
 /*     */   
 /*     */   public void reloadAll() {
 /*  62 */     for (MCH_BaseInfo mCH_BaseInfo : ContentRegistries.<T>reloadAllAddonContents(this)) {
-/*  63 */       this.registry.replace(mCH_BaseInfo.getLoation().func_110623_a(), (T)mCH_BaseInfo);
+/*  63 */       this.registry.replace(mCH_BaseInfo.getLoation().getResourcePath(), (T)mCH_BaseInfo);
 /*     */     }
 /*     */   }
 /*     */   

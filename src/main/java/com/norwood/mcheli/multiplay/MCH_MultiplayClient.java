@@ -33,15 +33,15 @@
 /*  33 */   private static List<String> modList = new ArrayList<>(); private static int[] pixelValues; private static MCH_OStream dataOutputStream;
 /*     */   
 /*     */   public static void startSendImageData() {
-/*  36 */     Minecraft mc = Minecraft.func_71410_x();
-/*  37 */     sendScreenShot(mc.field_71443_c, mc.field_71440_d, mc.func_147110_a());
+/*  36 */     Minecraft mc = Minecraft.getMinecraft();
+/*  37 */     sendScreenShot(mc.displayWidth, mc.displayHeight, mc.getFramebuffer());
 /*     */   }
 /*     */   public static void sendScreenShot(int displayWidth, int displayHeight, Framebuffer framebufferMc) {
 /*     */     try {
 /*     */       BufferedImage bufferedimage;
-/*  42 */       if (OpenGlHelper.func_148822_b()) {
-/*  43 */         displayWidth = framebufferMc.field_147622_a;
-/*  44 */         displayHeight = framebufferMc.field_147620_b;
+/*  42 */       if (OpenGlHelper.isFramebufferEnabled()) {
+/*  43 */         displayWidth = framebufferMc.framebufferTextureWidth;
+/*  44 */         displayHeight = framebufferMc.framebufferTextureHeight;
 /*     */       } 
 /*     */       
 /*  47 */       int k = displayWidth * displayHeight;
@@ -53,26 +53,26 @@
 /*  53 */       GL11.glPixelStorei(3333, 1);
 /*  54 */       GL11.glPixelStorei(3317, 1);
 /*  55 */       pixelBuffer.clear();
-/*  56 */       if (OpenGlHelper.func_148822_b()) {
-/*  57 */         GL11.glBindTexture(3553, framebufferMc.field_147617_g);
+/*  56 */       if (OpenGlHelper.isFramebufferEnabled()) {
+/*  57 */         GL11.glBindTexture(3553, framebufferMc.framebufferTexture);
 /*  58 */         GL11.glGetTexImage(3553, 0, 32993, 33639, pixelBuffer);
 /*     */       } else {
 /*  60 */         GL11.glReadPixels(0, 0, displayWidth, displayHeight, 32993, 33639, pixelBuffer);
 /*     */       } 
 /*     */       
 /*  63 */       pixelBuffer.get(pixelValues);
-/*  64 */       TextureUtil.func_147953_a(pixelValues, displayWidth, displayHeight);
+/*  64 */       TextureUtil.processPixelValues(pixelValues, displayWidth, displayHeight);
 /*     */       
-/*  66 */       if (!OpenGlHelper.func_148822_b()) {
+/*  66 */       if (!OpenGlHelper.isFramebufferEnabled()) {
 /*  67 */         bufferedimage = new BufferedImage(displayWidth, displayHeight, 1);
 /*  68 */         bufferedimage.setRGB(0, 0, displayWidth, displayHeight, pixelValues, 0, displayWidth);
 /*     */       } else {
-/*  70 */         bufferedimage = new BufferedImage(framebufferMc.field_147621_c, framebufferMc.field_147618_d, 1);
-/*  71 */         int l = framebufferMc.field_147620_b - framebufferMc.field_147618_d;
+/*  70 */         bufferedimage = new BufferedImage(framebufferMc.framebufferWidth, framebufferMc.framebufferHeight, 1);
+/*  71 */         int l = framebufferMc.framebufferTextureHeight - framebufferMc.framebufferHeight;
 /*     */         
-/*  73 */         for (int i1 = l; i1 < framebufferMc.field_147620_b; i1++) {
-/*  74 */           for (int j1 = 0; j1 < framebufferMc.field_147621_c; j1++) {
-/*  75 */             bufferedimage.setRGB(j1, i1 - l, pixelValues[i1 * framebufferMc.field_147622_a + j1]);
+/*  73 */         for (int i1 = l; i1 < framebufferMc.framebufferTextureHeight; i1++) {
+/*  74 */           for (int j1 = 0; j1 < framebufferMc.framebufferWidth; j1++) {
+/*  75 */             bufferedimage.setRGB(j1, i1 - l, pixelValues[i1 * framebufferMc.framebufferTextureWidth + j1]);
 /*     */           }
 /*     */         } 
 /*     */       } 
@@ -140,9 +140,9 @@
 /* 140 */       modList.addAll(CoreModManager.getReparseableCoremods());
 /*     */     } 
 /*     */     
-/* 143 */     Minecraft mc = Minecraft.func_71410_x();
+/* 143 */     Minecraft mc = Minecraft.getMinecraft();
 /* 144 */     MCH_FileSearch search = new MCH_FileSearch();
-/* 145 */     File[] files = search.listFiles((new File(mc.field_71412_D, "mods")).getAbsolutePath(), "*.jar");
+/* 145 */     File[] files = search.listFiles((new File(mc.mcDataDir, "mods")).getAbsolutePath(), "*.jar");
 /* 146 */     modList.add(TextFormatting.YELLOW + "=== Manifest ===");
 /*     */     
 /* 148 */     for (File file : files) {
@@ -180,7 +180,7 @@
 /*     */     } 
 /*     */     
 /* 182 */     search = new MCH_FileSearch();
-/* 183 */     files = search.listFiles((new File(mc.field_71412_D, "mods")).getAbsolutePath(), "*.litemod");
+/* 183 */     files = search.listFiles((new File(mc.mcDataDir, "mods")).getAbsolutePath(), "*.litemod");
 /* 184 */     modList.add(TextFormatting.LIGHT_PURPLE + "=== LiteLoader ===");
 /*     */     
 /* 186 */     for (File file : files) {

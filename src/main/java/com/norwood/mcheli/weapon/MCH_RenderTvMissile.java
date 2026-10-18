@@ -18,12 +18,12 @@
 /*    */   
 /*    */   public MCH_RenderTvMissile(RenderManager renderManager) {
 /* 20 */     super(renderManager);
-/* 21 */     this.field_76989_e = 0.5F;
+/* 21 */     this.shadowSize = 0.5F;
 /*    */   }
 /*    */   
 /*    */   public void renderBullet(MCH_EntityBaseBullet entity, double posX, double posY, double posZ, float par8, float par9) {
 /* 25 */     MCH_EntityAircraft ac = null;
-/* 26 */     Entity ridingEntity = (Minecraft.func_71410_x()).field_71439_g.func_184187_bx();
+/* 26 */     Entity ridingEntity = (Minecraft.getMinecraft()).player.getRidingEntity();
 /* 27 */     if (ridingEntity instanceof MCH_EntityAircraft) {
 /* 28 */       ac = (MCH_EntityAircraft)ridingEntity;
 /* 29 */     } else if (ridingEntity instanceof MCH_EntitySeat) {
@@ -32,12 +32,12 @@
 /* 32 */       ac = ((MCH_EntityUavStation)ridingEntity).getControlAircract();
 /*    */     } 
 /*    */     
-/* 35 */     if ((ac == null || ac.isRenderBullet((Entity)entity, (Entity)(Minecraft.func_71410_x()).field_71439_g)) && 
+/* 35 */     if ((ac == null || ac.isRenderBullet((Entity)entity, (Entity)(Minecraft.getMinecraft()).player)) && 
 /* 36 */       entity instanceof MCH_EntityBaseBullet) {
 /* 37 */       GL11.glPushMatrix();
 /* 38 */       GL11.glTranslated(posX, posY, posZ);
-/* 39 */       GL11.glRotatef(-entity.field_70177_z, 0.0F, 1.0F, 0.0F);
-/* 40 */       GL11.glRotatef(-entity.field_70125_A, -1.0F, 0.0F, 0.0F);
+/* 39 */       GL11.glRotatef(-entity.rotationYaw, 0.0F, 1.0F, 0.0F);
+/* 40 */       GL11.glRotatef(-entity.rotationPitch, -1.0F, 0.0F, 0.0F);
 /* 41 */       renderModel(entity);
 /* 42 */       GL11.glPopMatrix();
 /*    */     } 

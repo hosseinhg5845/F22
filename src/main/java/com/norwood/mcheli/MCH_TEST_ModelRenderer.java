@@ -9,7 +9,7 @@
 /*  9 */     super(par1ModelBase);
 /*    */   }
 /*    */   
-/*    */   public void func_78785_a(float par1) {
+/*    */   public void render(float par1) {
 /* 13 */     GL11.glPushMatrix();
 /* 14 */     GL11.glScaled(0.2D, -0.2D, 0.2D);
 /* 15 */     MCH_ModelManager.render("helicopters", "ah-64");

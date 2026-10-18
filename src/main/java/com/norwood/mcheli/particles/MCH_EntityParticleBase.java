@@ -13,28 +13,28 @@
 /*    */   
 /*    */   public MCH_EntityParticleBase(World par1World, double x, double y, double z, double mx, double my, double mz) {
 /* 15 */     super(par1World, x, y, z, mx, my, mz);
-/* 16 */     this.field_187129_i = mx;
-/* 17 */     this.field_187130_j = my;
-/* 18 */     this.field_187131_k = mz;
+/* 16 */     this.motionX = mx;
+/* 17 */     this.motionY = my;
+/* 18 */     this.motionZ = mz;
 /* 19 */     this.isEffectedWind = false;
-/* 20 */     this.particleMaxScale = this.field_70544_f;
+/* 20 */     this.particleMaxScale = this.particleScale;
 /*    */   }
 /*    */   
 /*    */   public MCH_EntityParticleBase setParticleScale(float scale) {
-/* 24 */     this.field_70544_f = scale;
+/* 24 */     this.particleScale = scale;
 /* 25 */     return this;
 /*    */   }
 /*    */   
 /*    */   public void setParticleMaxAge(int age) {
-/* 29 */     this.field_70547_e = age;
+/* 29 */     this.particleMaxAge = age;
 /*    */   }
 /*    */   
-/*    */   public void func_70536_a(int par1) {
-/* 33 */     this.field_94054_b = par1 % 8;
-/* 34 */     this.field_94055_c = par1 / 8;
+/*    */   public void setParticleTextureIndex(int par1) {
+/* 33 */     this.particleTextureIndexX = par1 % 8;
+/* 34 */     this.particleTextureIndexY = par1 / 8;
 /*    */   }
 /*    */   
-/*    */   public int func_70537_b() {
+/*    */   public int getFXLayer() {
 /* 38 */     return 2;
 /*    */   }
 /*    */ }

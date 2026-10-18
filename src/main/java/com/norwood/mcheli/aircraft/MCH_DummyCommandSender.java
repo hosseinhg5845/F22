@@ -12,30 +12,30 @@
 /* 12 */   public static final MCH_DummyCommandSender instance = new MCH_DummyCommandSender();
 /*    */   
 /*    */   public static void execCommand(String s) {
-/* 15 */     ICommandManager icommandmanager = MCH_Utils.getServer().func_71187_D();
-/* 16 */     icommandmanager.func_71556_a(instance, s);
+/* 15 */     ICommandManager icommandmanager = MCH_Utils.getServer().getCommandManager();
+/* 16 */     icommandmanager.executeCommand(instance, s);
 /*    */   }
 /*    */   @NotNull
-/*    */   public String func_70005_c_() {
+/*    */   public String getName() {
 /* 20 */     return "";
 /*    */   }
 /*    */   @NotNull
-/*    */   public ITextComponent func_145748_c_() {
+/*    */   public ITextComponent getDisplayName() {
 /* 24 */     return null;
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   public void func_145747_a(@NotNull ITextComponent component) {}
+/*    */   public void sendMessage(@NotNull ITextComponent component) {}
 /*    */   
-/*    */   public boolean func_70003_b(int permLevel, @NotNull String commandName) {
+/*    */   public boolean canUseCommand(int permLevel, @NotNull String commandName) {
 /* 31 */     return true;
 /*    */   }
 /*    */   @NotNull
-/*    */   public World func_130014_f_() {
+/*    */   public World getEntityWorld() {
 /* 35 */     return null;
 /*    */   }
 /*    */   
-/*    */   public MinecraftServer func_184102_h() {
+/*    */   public MinecraftServer getServer() {
 /* 39 */     return MCH_Utils.getServer();
 /*    */   }
 /*    */ }

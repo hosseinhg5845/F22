@@ -82,22 +82,22 @@ import net.minecraft.entity.MoverType;
 /*      */ public abstract class MCH_EntityAircraft extends W_EntityContainer implements MCH_IEntityLockChecker, MCH_IEntityCanRideAircraft, IEntityAdditionalSpawnData, IEntitySinglePassenger, ITargetMarkerObject {
 /*      */   public static final float Y_OFFSET = 0.35F;
 /*      */   public static final byte LIMIT_GROUND_PITCH = 40;
-/*   80 */   protected static final DataParameter<Integer> PART_STAT = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187192_b); public static final byte LIMIT_GROUND_ROLL = 40; public static final int CAMERA_PITCH_MIN = -30; public static final int CAMERA_PITCH_MAX = 70;
+/*   80 */   protected static final DataParameter<Integer> PART_STAT = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.VARINT); public static final byte LIMIT_GROUND_ROLL = 40; public static final int CAMERA_PITCH_MIN = -30; public static final int CAMERA_PITCH_MAX = 70;
 /*      */   protected static final int PART_ID_CANOPY = 0;
 /*      */   protected static final int PART_ID_NOZZLE = 1;
 /*      */   protected static final int PART_ID_LANDINGGEAR = 2;
 /*      */   protected static final int PART_ID_WING = 3;
 /*      */   protected static final int PART_ID_HATCH = 4;
-/*   86 */   private static final DataParameter<Integer> DAMAGE = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187192_b);
-/*   87 */   private static final DataParameter<String> ID_TYPE = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187194_d);
-/*   88 */   private static final DataParameter<String> TEXTURE_NAME = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187194_d);
-/*   89 */   private static final DataParameter<Integer> UAV_STATION = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187192_b);
-/*   90 */   private static final DataParameter<Integer> STATUS = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187192_b);
-/*   91 */   private static final DataParameter<Integer> USE_WEAPON = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187192_b);
-/*   92 */   private static final DataParameter<Integer> FUEL = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187192_b);
-/*   93 */   private static final DataParameter<Integer> ROT_ROLL = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187192_b);
-/*   94 */   private static final DataParameter<String> COMMAND = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187194_d);
-/*   95 */   private static final DataParameter<Integer> THROTTLE = EntityDataManager.func_187226_a(MCH_EntityAircraft.class, DataSerializers.field_187192_b);
+/*   86 */   private static final DataParameter<Integer> DAMAGE = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.VARINT);
+/*   87 */   private static final DataParameter<String> ID_TYPE = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.STRING);
+/*   88 */   private static final DataParameter<String> TEXTURE_NAME = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.STRING);
+/*   89 */   private static final DataParameter<Integer> UAV_STATION = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.VARINT);
+/*   90 */   private static final DataParameter<Integer> STATUS = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.VARINT);
+/*   91 */   private static final DataParameter<Integer> USE_WEAPON = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.VARINT);
+/*   92 */   private static final DataParameter<Integer> FUEL = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.VARINT);
+/*   93 */   private static final DataParameter<Integer> ROT_ROLL = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.VARINT);
+/*   94 */   private static final DataParameter<String> COMMAND = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.STRING);
+/*   95 */   private static final DataParameter<Integer> THROTTLE = EntityDataManager.createKey(MCH_EntityAircraft.class, DataSerializers.VARINT);
 /*   96 */   private static final MCH_EntitySeat[] seatsDummy = new MCH_EntitySeat[0];
 /*      */   public final MCH_MissileDetector missileDetector;
 /*   98 */   public final HashMap<Entity, Integer> noCollisionEntities = new HashMap<>();
@@ -233,7 +233,7 @@ import net.minecraft.entity.MoverType;
 /*  228 */     this.isRequestedSyncStatus = false;
 /*  229 */     setAcInfo((MCH_AircraftInfo)null);
 /*  230 */     this.dropContentsWhenDead = false;
-/*  231 */     this.field_70158_ak = true;
+/*  231 */     this.ignoreFrustumCheck = true;
 /*  232 */     this.flareDv = new MCH_Flare(world, this);
 /*  233 */     this.currentFlareIndex = 0;
 /*  234 */     this.entityRadar = new MCH_Radar(world);
@@ -260,14 +260,14 @@ import net.minecraft.entity.MoverType;
 /*  255 */     this.pilotSeat.parent = this;
 /*  256 */     this.partEntities = new Entity[] { (Entity)this.pilotSeat };
 /*  257 */     setTextureName("");
-/*  258 */     this.camera = new MCH_Camera(world, (Entity)this, this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/*  258 */     this.camera = new MCH_Camera(world, (Entity)this, this.posX, this.posY, this.posZ);
 /*  259 */     setCameraId(0);
 /*  260 */     this.lastRiddenByEntity = null;
 /*  261 */     this.lastRidingEntity = null;
 /*  262 */     this.soundUpdater = MCH_MOD.proxy.CreateSoundUpdater(this);
 /*  263 */     this.countOnUpdate = 0;
 /*  264 */     setTowChainEntity((MCH_EntityChain)null);
-/*  265 */     this.dummyWeapon = new MCH_WeaponSet((MCH_WeaponBase)new MCH_WeaponDummy(this.field_70170_p, Vec3d.field_186680_a, 0.0F, 0.0F, "", null));
+/*  265 */     this.dummyWeapon = new MCH_WeaponSet((MCH_WeaponBase)new MCH_WeaponDummy(this.world, Vec3d.ZERO, 0.0F, 0.0F, "", null));
 /*  266 */     this.useWeaponStat = 0;
 /*  267 */     this.hitStatus = 0;
 /*  268 */     this.repairCount = 0;
@@ -291,29 +291,29 @@ import net.minecraft.entity.MoverType;
 /*  286 */     this.prevRotationRoll = 0.0F;
 /*  287 */     this.lowPassPartialTicks = new MCH_LowPassFilterFloat(10);
 /*  288 */     this.extraBoundingBox = new MCH_BoundingBox[0];
-/*  289 */     func_174826_a(new MCH_AircraftBoundingBox(this));
+/*  289 */     setEntityBoundingBox(new MCH_AircraftBoundingBox(this));
 /*  290 */     this.lastBBDamageFactor = 1.0F;
 /*  291 */     this.inventory = new MCH_AircraftInventory(this);
 /*  292 */     this.fuelConsumption = 0.0D;
 /*  293 */     this.fuelSuppliedCount = 0;
 /*  294 */     this.canRideRackStatus = false;
 /*  295 */     this.isParachuting = false;
-/*  296 */     this.prevPosition = new MCH_Queue(10, Vec3d.field_186680_a);
+/*  296 */     this.prevPosition = new MCH_Queue(10, Vec3d.ZERO);
 /*  297 */     this.lastSearchLightYaw = this.lastSearchLightPitch = 0.0F;
 /*      */   }
 /*      */   
 /*      */   @Nullable
 /*      */   public static MCH_EntityAircraft getAircraft_RiddenOrControl(@Nullable Entity rider) {
 /*  302 */     if (rider != null) {
-/*  303 */       if (rider.func_184187_bx() instanceof MCH_EntityAircraft) {
-/*  304 */         return (MCH_EntityAircraft)rider.func_184187_bx();
+/*  303 */       if (rider.getRidingEntity() instanceof MCH_EntityAircraft) {
+/*  304 */         return (MCH_EntityAircraft)rider.getRidingEntity();
 /*      */       }
 /*      */       
-/*  307 */       if (rider.func_184187_bx() instanceof MCH_EntitySeat) {
-/*  308 */         return ((MCH_EntitySeat)rider.func_184187_bx()).getParent();
+/*  307 */       if (rider.getRidingEntity() instanceof MCH_EntitySeat) {
+/*  308 */         return ((MCH_EntitySeat)rider.getRidingEntity()).getParent();
 /*      */       }
 /*      */       
-/*  311 */       Entity entity = rider.func_184187_bx(); if (entity instanceof MCH_EntityUavStation) { MCH_EntityUavStation uavStation = (MCH_EntityUavStation)entity;
+/*  311 */       Entity entity = rider.getRidingEntity(); if (entity instanceof MCH_EntityUavStation) { MCH_EntityUavStation uavStation = (MCH_EntityUavStation)entity;
 /*  312 */         return uavStation.getControlAircract(); }
 /*      */     
 /*      */     } 
@@ -322,50 +322,50 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public static boolean isSeatPassenger(@Nullable Entity rider) {
-/*  320 */     return (rider != null && rider.func_184187_bx() instanceof MCH_EntitySeat);
+/*  320 */     return (rider != null && rider.getRidingEntity() instanceof MCH_EntitySeat);
 /*      */   }
 /*      */   
 /*      */   private static boolean getCollisionBoxes(@Nullable Entity entityIn, AxisAlignedBB aabb, List<AxisAlignedBB> outList) {
-/*  324 */     int i = MathHelper.func_76128_c(aabb.field_72340_a) - 1;
-/*  325 */     int j = MathHelper.func_76143_f(aabb.field_72336_d) + 1;
-/*  326 */     int k = MathHelper.func_76128_c(aabb.field_72338_b) - 1;
-/*  327 */     int l = MathHelper.func_76143_f(aabb.field_72337_e) + 1;
-/*  328 */     int i1 = MathHelper.func_76128_c(aabb.field_72339_c) - 1;
-/*  329 */     int j1 = MathHelper.func_76143_f(aabb.field_72334_f) + 1;
-/*  330 */     WorldBorder worldborder = entityIn.field_70170_p.func_175723_af();
-/*  331 */     boolean flag = entityIn.func_174832_aS();
-/*  332 */     boolean flag1 = entityIn.field_70170_p.func_191503_g(entityIn);
-/*  333 */     IBlockState iblockstate = Blocks.field_150348_b.func_176223_P();
-/*  334 */     BlockPos.PooledMutableBlockPos blockpos = BlockPos.PooledMutableBlockPos.func_185346_s();
+/*  324 */     int i = MathHelper.floor(aabb.minX) - 1;
+/*  325 */     int j = MathHelper.ceil(aabb.maxX) + 1;
+/*  326 */     int k = MathHelper.floor(aabb.minY) - 1;
+/*  327 */     int l = MathHelper.ceil(aabb.maxY) + 1;
+/*  328 */     int i1 = MathHelper.floor(aabb.minZ) - 1;
+/*  329 */     int j1 = MathHelper.ceil(aabb.maxZ) + 1;
+/*  330 */     WorldBorder worldborder = entityIn.world.getWorldBorder();
+/*  331 */     boolean flag = entityIn.isOutsideBorder();
+/*  332 */     boolean flag1 = entityIn.world.isInsideWorldBorder(entityIn);
+/*  333 */     IBlockState iblockstate = Blocks.STONE.getDefaultState();
+/*  334 */     BlockPos.PooledMutableBlockPos blockpos = BlockPos.PooledMutableBlockPos.retain();
 /*      */     
 /*      */     try {
 /*  337 */       for (int k1 = i; k1 < j; k1++) {
 /*  338 */         for (int l1 = i1; l1 < j1; l1++) {
 /*  339 */           boolean flag2 = (k1 == i || k1 == j - 1);
 /*  340 */           boolean flag3 = (l1 == i1 || l1 == j1 - 1);
-/*  341 */           if ((!flag2 || !flag3) && entityIn.field_70170_p.func_175667_e((BlockPos)blockpos.func_181079_c(k1, 64, l1))) {
+/*  341 */           if ((!flag2 || !flag3) && entityIn.world.isBlockLoaded((BlockPos)blockpos.setPos(k1, 64, l1))) {
 /*  342 */             for (int i2 = k; i2 < l; i2++) {
 /*  343 */               if ((!flag2 && !flag3) || i2 != l - 1) {
 /*  344 */                 IBlockState iblockstate1; if (flag == flag1) {
-/*  345 */                   entityIn.func_174821_h(!flag1);
+/*  345 */                   entityIn.setOutsideBorder(!flag1);
 /*      */                 }
 /*      */                 
-/*  348 */                 blockpos.func_181079_c(k1, i2, l1);
+/*  348 */                 blockpos.setPos(k1, i2, l1);
 /*      */                 
-/*  350 */                 if (!worldborder.func_177746_a((BlockPos)blockpos) && flag1) {
+/*  350 */                 if (!worldborder.contains((BlockPos)blockpos) && flag1) {
 /*  351 */                   iblockstate1 = iblockstate;
 /*      */                 } else {
-/*  353 */                   iblockstate1 = entityIn.field_70170_p.func_180495_p((BlockPos)blockpos);
+/*  353 */                   iblockstate1 = entityIn.world.getBlockState((BlockPos)blockpos);
 /*      */                 } 
 /*      */                 
-/*  356 */                 iblockstate1.func_185908_a(entityIn.field_70170_p, (BlockPos)blockpos, aabb, outList, entityIn, false);
+/*  356 */                 iblockstate1.addCollisionBoxToList(entityIn.world, (BlockPos)blockpos, aabb, outList, entityIn, false);
 /*      */               } 
 /*      */             } 
 /*      */           }
 /*      */         } 
 /*      */       } 
 /*      */     } finally {
-/*  363 */       blockpos.func_185344_t();
+/*  363 */       blockpos.release();
 /*      */     } 
 /*      */     
 /*  366 */     return !outList.isEmpty();
@@ -375,17 +375,17 @@ import net.minecraft.entity.MoverType;
 /*  370 */     List<AxisAlignedBB> list = new ArrayList<>();
 /*  371 */     getCollisionBoxes(entityIn, aabb, list);
 /*  372 */     if (entityIn != null) {
-/*  373 */       List<Entity> list1 = entityIn.field_70170_p.func_72839_b(entityIn, aabb.func_186662_g(0.25D));
+/*  373 */       List<Entity> list1 = entityIn.world.getEntitiesWithinAABBExcludingEntity(entityIn, aabb.grow(0.25D));
 /*      */       
 /*  375 */       for (Entity entity : list1) {
 /*  376 */         if (!W_Lib.isEntityLivingBase(entity) && !(entity instanceof MCH_EntitySeat) && !(entity instanceof MCH_EntityHitBox)) {
-/*  377 */           AxisAlignedBB axisalignedbb = entity.func_70046_E();
-/*  378 */           if (axisalignedbb != null && axisalignedbb.func_72326_a(aabb)) {
+/*  377 */           AxisAlignedBB axisalignedbb = entity.getCollisionBoundingBox();
+/*  378 */           if (axisalignedbb != null && axisalignedbb.intersects(aabb)) {
 /*  379 */             list.add(axisalignedbb);
 /*      */           }
 /*      */           
-/*  382 */           axisalignedbb = entityIn.func_70114_g(entity);
-/*  383 */           if (axisalignedbb != null && axisalignedbb.func_72326_a(aabb)) {
+/*  382 */           axisalignedbb = entityIn.getCollisionBox(entity);
+/*  383 */           if (axisalignedbb != null && axisalignedbb.intersects(aabb)) {
 /*  384 */             list.add(axisalignedbb);
 /*      */           }
 /*      */         } 
@@ -404,46 +404,46 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */ 
 /*      */   
-/*      */   protected void func_70088_a() {
-/*  403 */     super.func_70088_a();
-/*  404 */     this.field_70180_af.func_187214_a(ID_TYPE, "");
-/*  405 */     this.field_70180_af.func_187214_a(DAMAGE, Integer.valueOf(0));
-/*  406 */     this.field_70180_af.func_187214_a(STATUS, Integer.valueOf(0));
-/*  407 */     this.field_70180_af.func_187214_a(USE_WEAPON, Integer.valueOf(0));
-/*  408 */     this.field_70180_af.func_187214_a(FUEL, Integer.valueOf(0));
-/*  409 */     this.field_70180_af.func_187214_a(TEXTURE_NAME, "");
-/*  410 */     this.field_70180_af.func_187214_a(UAV_STATION, Integer.valueOf(0));
-/*  411 */     this.field_70180_af.func_187214_a(ROT_ROLL, Integer.valueOf(0));
-/*  412 */     this.field_70180_af.func_187214_a(COMMAND, "");
-/*  413 */     this.field_70180_af.func_187214_a(THROTTLE, Integer.valueOf(0));
-/*  414 */     this.field_70180_af.func_187214_a(PART_STAT, Integer.valueOf(0));
-/*  415 */     if (!this.field_70170_p.field_72995_K) {
+/*      */   protected void entityInit() {
+/*  403 */     super.entityInit();
+/*  404 */     this.dataManager.register(ID_TYPE, "");
+/*  405 */     this.dataManager.register(DAMAGE, Integer.valueOf(0));
+/*  406 */     this.dataManager.register(STATUS, Integer.valueOf(0));
+/*  407 */     this.dataManager.register(USE_WEAPON, Integer.valueOf(0));
+/*  408 */     this.dataManager.register(FUEL, Integer.valueOf(0));
+/*  409 */     this.dataManager.register(TEXTURE_NAME, "");
+/*  410 */     this.dataManager.register(UAV_STATION, Integer.valueOf(0));
+/*  411 */     this.dataManager.register(ROT_ROLL, Integer.valueOf(0));
+/*  412 */     this.dataManager.register(COMMAND, "");
+/*  413 */     this.dataManager.register(THROTTLE, Integer.valueOf(0));
+/*  414 */     this.dataManager.register(PART_STAT, Integer.valueOf(0));
+/*  415 */     if (!this.world.isRemote) {
 /*  416 */       setCommonStatus(3, MCH_Config.InfinityAmmo.prmBool);
 /*  417 */       setCommonStatus(4, MCH_Config.InfinityFuel.prmBool);
 /*  418 */       setGunnerStatus(true);
 /*      */     } 
 /*      */     
-/*  421 */     getEntityData().func_74778_a("EntityType", getEntityType());
+/*  421 */     getEntityData().setString("EntityType", getEntityType());
 /*      */   }
 /*      */   
 /*      */   public float getServerRoll() {
-/*  425 */     return ((Integer)this.field_70180_af.func_187225_a(ROT_ROLL)).shortValue();
+/*  425 */     return ((Integer)this.dataManager.get(ROT_ROLL)).shortValue();
 /*      */   }
 /*      */   
 /*      */   public float getRotYaw() {
-/*  429 */     return this.field_70177_z;
+/*  429 */     return this.rotationYaw;
 /*      */   }
 /*      */   
 /*      */   public void setRotYaw(float f) {
-/*  433 */     this.field_70177_z = f;
+/*  433 */     this.rotationYaw = f;
 /*      */   }
 /*      */   
 /*      */   public float getRotPitch() {
-/*  437 */     return this.field_70125_A;
+/*  437 */     return this.rotationPitch;
 /*      */   }
 /*      */   
 /*      */   public void setRotPitch(float f) {
-/*  441 */     this.field_70125_A = f;
+/*  441 */     this.rotationPitch = f;
 /*      */   }
 /*      */   
 /*      */   public float getRotRoll() {
@@ -472,18 +472,18 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public float calcRotYaw(float partialTicks) {
-/*  470 */     return this.field_70126_B + (getRotYaw() - this.field_70126_B) * partialTicks;
+/*  470 */     return this.prevRotationYaw + (getRotYaw() - this.prevRotationYaw) * partialTicks;
 /*      */   }
 /*      */   
 /*      */   public float calcRotPitch(float partialTicks) {
-/*  474 */     return this.field_70127_C + (getRotPitch() - this.field_70127_C) * partialTicks;
+/*  474 */     return this.prevRotationPitch + (getRotPitch() - this.prevRotationPitch) * partialTicks;
 /*      */   }
 /*      */   
 /*      */   public float calcRotRoll(float partialTicks) {
 /*  478 */     return this.prevRotationRoll + (getRotRoll() - this.prevRotationRoll) * partialTicks;
 /*      */   }
 /*      */   
-/*      */   protected void func_70101_b(float y, float p) {
+/*      */   protected void setRotation(float y, float p) {
 /*  482 */     setRotYaw(y % 360.0F);
 /*  483 */     setRotPitch(p % 360.0F);
 /*      */   }
@@ -509,19 +509,19 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   public void setCommand(String s, EntityPlayer player) {
-/*  507 */     if (!this.field_70170_p.field_72995_K && MCH_Command.canUseCommand((Entity)player)) {
+/*  507 */     if (!this.world.isRemote && MCH_Command.canUseCommand((Entity)player)) {
 /*  508 */       setCommandForce(s);
 /*      */     }
 /*      */   }
 /*      */   
 /*      */   public void setCommandForce(String s) {
-/*  513 */     if (!this.field_70170_p.field_72995_K) {
-/*  514 */       this.field_70180_af.func_187227_b(COMMAND, s);
+/*  513 */     if (!this.world.isRemote) {
+/*  514 */       this.dataManager.set(COMMAND, s);
 /*      */     }
 /*      */   }
 /*      */   
 /*      */   public String getCommand() {
-/*  519 */     return (String)this.field_70180_af.func_187225_a(COMMAND);
+/*  519 */     return (String)this.dataManager.get(COMMAND);
 /*      */   }
 /*      */   
 /*      */   public String getKindName() {
@@ -533,13 +533,13 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public String getTypeName() {
-/*  531 */     return (String)this.field_70180_af.func_187225_a(ID_TYPE);
+/*  531 */     return (String)this.dataManager.get(ID_TYPE);
 /*      */   }
 /*      */   
 /*      */   public void setTypeName(String s) {
 /*  535 */     String beforeType = getTypeName();
 /*  536 */     if (s != null && !s.isEmpty() && s.compareTo(beforeType) != 0) {
-/*  537 */       this.field_70180_af.func_187227_b(ID_TYPE, s);
+/*  537 */       this.dataManager.set(ID_TYPE, s);
 /*  538 */       changeType(s);
 /*  539 */       initRotationYaw(getRotYaw());
 /*      */     } 
@@ -572,8 +572,8 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void openGui(EntityPlayer player) {
-/*  570 */     if (!this.field_70170_p.field_72995_K) {
-/*  571 */       player.openGui(MCH_MOD.instance, 1, this.field_70170_p, (int)this.field_70165_t, (int)this.field_70163_u, (int)this.field_70161_v);
+/*  570 */     if (!this.world.isRemote) {
+/*  571 */       player.openGui(MCH_MOD.instance, 1, this.world, (int)this.posX, (int)this.posY, (int)this.posZ);
 /*      */     }
 /*      */   }
 /*      */   
@@ -584,17 +584,17 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public void setUavStation(MCH_EntityUavStation uavSt) {
 /*  581 */     this.uavStation = uavSt;
-/*  582 */     if (!this.field_70170_p.field_72995_K) {
+/*  582 */     if (!this.world.isRemote) {
 /*  583 */       if (uavSt != null) {
-/*  584 */         this.field_70180_af.func_187227_b(UAV_STATION, Integer.valueOf(W_Entity.getEntityId((Entity)uavSt)));
+/*  584 */         this.dataManager.set(UAV_STATION, Integer.valueOf(W_Entity.getEntityId((Entity)uavSt)));
 /*      */       } else {
-/*  586 */         this.field_70180_af.func_187227_b(UAV_STATION, Integer.valueOf(0));
+/*  586 */         this.dataManager.set(UAV_STATION, Integer.valueOf(0));
 /*      */       } 
 /*      */     }
 /*      */   }
 /*      */   
 /*      */   public boolean isCreative(@Nullable Entity entity) {
-/*  592 */     return ((entity instanceof EntityPlayer && ((EntityPlayer)entity).field_71075_bZ.field_75098_d) || (entity instanceof MCH_EntityGunner && ((MCH_EntityGunner)entity).isCreative));
+/*  592 */     return ((entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isCreativeMode) || (entity instanceof MCH_EntityGunner && ((MCH_EntityGunner)entity).isCreative));
 /*      */   }
 /*      */ 
 /*      */   
@@ -603,7 +603,7 @@ import net.minecraft.entity.MoverType;
 /*  598 */     if (isUAV() && this.uavStation != null) {
 /*  599 */       return this.uavStation.getRiddenByEntity();
 /*      */     }
-/*  601 */     List<Entity> passengers = func_184188_bt();
+/*  601 */     List<Entity> passengers = getPassengers();
 /*  602 */     return passengers.isEmpty() ? null : passengers.get(0);
 /*      */   }
 /*      */ 
@@ -617,7 +617,7 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void setCommonStatus(int bit, boolean b, boolean writeClient) {
-/*  615 */     if (!this.field_70170_p.field_72995_K || writeClient) {
+/*  615 */     if (!this.world.isRemote || writeClient) {
 /*  616 */       int bofore = this.commonStatus;
 /*  617 */       int mask = 1 << bit;
 /*  618 */       if (b) {
@@ -627,14 +627,14 @@ import net.minecraft.entity.MoverType;
 /*      */       } 
 /*      */       
 /*  624 */       if (bofore != this.commonStatus) {
-/*  625 */         MCH_Lib.DbgLog(this.field_70170_p, "setCommonStatus : %08X -> %08X ", new Object[] { this.field_70180_af.func_187225_a(STATUS), Integer.valueOf(this.commonStatus) });
-/*  626 */         this.field_70180_af.func_187227_b(STATUS, Integer.valueOf(this.commonStatus));
+/*  625 */         MCH_Lib.DbgLog(this.world, "setCommonStatus : %08X -> %08X ", new Object[] { this.dataManager.get(STATUS), Integer.valueOf(this.commonStatus) });
+/*  626 */         this.dataManager.set(STATUS, Integer.valueOf(this.commonStatus));
 /*      */       } 
 /*      */     } 
 /*      */   }
 /*      */   
 /*      */   public double getThrottle() {
-/*  632 */     return 0.05D * ((Integer)this.field_70180_af.func_187225_a(THROTTLE)).intValue();
+/*  632 */     return 0.05D * ((Integer)this.dataManager.get(THROTTLE)).intValue();
 /*      */   }
 /*      */   
 /*      */   public void setThrottle(double t) {
@@ -643,7 +643,7 @@ import net.minecraft.entity.MoverType;
 /*  638 */       n = 1;
 /*      */     }
 /*      */     
-/*  641 */     this.field_70180_af.func_187227_b(THROTTLE, Integer.valueOf(n));
+/*  641 */     this.dataManager.set(THROTTLE, Integer.valueOf(n));
 /*      */   }
 /*      */   
 /*      */   public int getMaxHP() {
@@ -655,7 +655,7 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public int getDamageTaken() {
-/*  653 */     return ((Integer)this.field_70180_af.func_187225_a(DAMAGE)).intValue();
+/*  653 */     return ((Integer)this.dataManager.get(DAMAGE)).intValue();
 /*      */   }
 /*      */   
 /*      */   public void setDamageTaken(int par1) {
@@ -667,7 +667,7 @@ import net.minecraft.entity.MoverType;
 /*  662 */       par1 = getMaxHP();
 /*      */     }
 /*      */     
-/*  665 */     this.field_70180_af.func_187227_b(DAMAGE, Integer.valueOf(par1));
+/*  665 */     this.dataManager.set(DAMAGE, Integer.valueOf(par1));
 /*      */   }
 /*      */   
 /*      */   public void destroyAircraft() {
@@ -688,14 +688,14 @@ import net.minecraft.entity.MoverType;
 /*  683 */       setDespawnCount(20 * MCH_Config.DespawnCount.prmInt);
 /*      */     } 
 /*      */     
-/*  686 */     this.rotDestroyedPitch = this.field_70146_Z.nextFloat() - 0.5F;
-/*  687 */     this.rotDestroyedRoll = (this.field_70146_Z.nextFloat() - 0.5F) * 0.5F;
+/*  686 */     this.rotDestroyedPitch = this.rand.nextFloat() - 0.5F;
+/*  687 */     this.rotDestroyedRoll = (this.rand.nextFloat() - 0.5F) * 0.5F;
 /*  688 */     this.rotDestroyedYaw = 0.0F;
 /*  689 */     if (isUAV() && getRiddenByEntity() != null) {
-/*  690 */       getRiddenByEntity().func_184210_p();
+/*  690 */       getRiddenByEntity().dismountRidingEntity();
 /*      */     }
 /*      */     
-/*  693 */     if (!this.field_70170_p.field_72995_K) {
+/*  693 */     if (!this.world.isRemote) {
 /*  694 */       ejectSeat(getRiddenByEntity());
 /*  695 */       Entity entity = getEntityBySeatId(1);
 /*  696 */       if (entity != null) {
@@ -703,23 +703,23 @@ import net.minecraft.entity.MoverType;
 /*      */       }
 /*      */       
 /*  700 */       float dmg = MCH_Config.KillPassengersWhenDestroyed.prmBool ? 100000.0F : 0.001F;
-/*  701 */       DamageSource dse = DamageSource.field_76377_j;
-/*  702 */       if (this.field_70170_p.func_175659_aa() == EnumDifficulty.PEACEFUL) {
+/*  701 */       DamageSource dse = DamageSource.GENERIC;
+/*  702 */       if (this.world.getDifficulty() == EnumDifficulty.PEACEFUL) {
 /*  703 */         if (this.lastAttackedEntity instanceof EntityPlayer) {
-/*  704 */           dse = DamageSource.func_76365_a((EntityPlayer)this.lastAttackedEntity);
+/*  704 */           dse = DamageSource.causePlayerDamage((EntityPlayer)this.lastAttackedEntity);
 /*      */         }
 /*      */       } else {
-/*  707 */         dse = DamageSource.func_94539_a(new Explosion(this.field_70170_p, this.lastAttackedEntity, this.field_70165_t, this.field_70163_u, this.field_70161_v, 1.0F, false, true));
+/*  707 */         dse = DamageSource.causeExplosionDamage(new Explosion(this.world, this.lastAttackedEntity, this.posX, this.posY, this.posZ, 1.0F, false, true));
 /*      */       } 
 /*      */       
 /*  710 */       Entity riddenByEntity = getRiddenByEntity();
 /*  711 */       if (riddenByEntity != null) {
-/*  712 */         riddenByEntity.func_70097_a(dse, dmg);
+/*  712 */         riddenByEntity.attackEntityFrom(dse, dmg);
 /*      */       }
 /*      */       
 /*  715 */       for (MCH_EntitySeat seat : getSeats()) {
 /*  716 */         if (seat != null && seat.getRiddenByEntity() != null) {
-/*  717 */           seat.getRiddenByEntity().func_70097_a(dse, dmg);
+/*  717 */           seat.getRiddenByEntity().attackEntityFrom(dse, dmg);
 /*      */         }
 /*      */       } 
 /*      */     } 
@@ -746,14 +746,14 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   @SideOnly(Side.CLIENT)
-/*      */   public int func_70070_b() {
+/*      */   public int getBrightnessForRender() {
 /*  745 */     if (haveSearchLight() && isSearchLightON()) {
 /*  746 */       return 15728880;
 /*      */     }
-/*  748 */     int i = MathHelper.func_76128_c(this.field_70165_t);
-/*  749 */     int j = MathHelper.func_76128_c(this.field_70161_v);
-/*  750 */     if (this.field_70170_p.func_175667_e(new BlockPos(i, 0, j))) {
-/*  751 */       double d0 = ((func_174813_aQ()).field_72337_e - (func_174813_aQ()).field_72338_b) * 0.66D;
+/*  748 */     int i = MathHelper.floor(this.posX);
+/*  749 */     int j = MathHelper.floor(this.posZ);
+/*  750 */     if (this.world.isBlockLoaded(new BlockPos(i, 0, j))) {
+/*  751 */       double d0 = ((getEntityBoundingBox()).maxY - (getEntityBoundingBox()).minY) * 0.66D;
 /*  752 */       float fo = (getAcInfo() != null) ? (getAcInfo()).submergedDamageHeight : 0.0F;
 /*  753 */       if (canFloatWater()) {
 /*  754 */         fo = (getAcInfo()).floatOffset;
@@ -764,8 +764,8 @@ import net.minecraft.entity.MoverType;
 /*  759 */         fo++;
 /*      */       } 
 /*      */       
-/*  762 */       int k = MathHelper.func_76128_c(this.field_70163_u + fo + d0);
-/*  763 */       int val = this.field_70170_p.func_175626_b(new BlockPos(i, k, j), 0);
+/*  762 */       int k = MathHelper.floor(this.posY + fo + d0);
+/*  763 */       int val = this.world.getCombinedLight(new BlockPos(i, k, j), 0);
 /*  764 */       int low = val & 0xFFFF;
 /*  765 */       int high = val >> 16 & 0xFFFF;
 /*  766 */       if (high < this.brightnessHigh) {
@@ -822,7 +822,7 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public void onAcInfoReloaded() {
 /*  819 */     if (getAcInfo() != null) {
-/*  820 */       func_70105_a((getAcInfo()).bodyWidth, (getAcInfo()).bodyHeight);
+/*  820 */       setSize((getAcInfo()).bodyWidth, (getAcInfo()).bodyHeight);
 /*      */     }
 /*      */   }
 /*      */   
@@ -835,8 +835,8 @@ import net.minecraft.entity.MoverType;
 /*  830 */       buffer.writeShort(name.length);
 /*  831 */       buffer.writeBytes(name);
 /*      */     } else {
-/*  833 */       buffer.writeFloat(this.field_70131_O);
-/*  834 */       buffer.writeFloat(this.field_70130_N);
+/*  833 */       buffer.writeFloat(this.height);
+/*  834 */       buffer.writeFloat(this.width);
 /*  835 */       buffer.writeFloat(4.0F);
 /*  836 */       buffer.writeShort(0);
 /*      */     } 
@@ -846,7 +846,7 @@ import net.minecraft.entity.MoverType;
 /*      */     try {
 /*  842 */       float height = data.readFloat();
 /*  843 */       float width = data.readFloat();
-/*  844 */       func_70105_a(width, height);
+/*  844 */       setSize(width, height);
 /*  845 */       this.thirdPersonDist = data.readFloat();
 /*  846 */       int len = data.readShort();
 /*  847 */       if (len > 0) {
@@ -861,22 +861,22 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */ 
 /*      */   
-/*      */   protected void func_70037_a(NBTTagCompound nbt) {
-/*  860 */     setDespawnCount(nbt.func_74762_e("AcDespawnCount"));
-/*  861 */     setTextureName(nbt.func_74779_i("TextureName"));
-/*  862 */     setCommonUniqueId(nbt.func_74779_i("AircraftUniqueId"));
-/*  863 */     setRotRoll(nbt.func_74760_g("AcRoll"));
+/*      */   protected void readEntityFromNBT(NBTTagCompound nbt) {
+/*  860 */     setDespawnCount(nbt.getInteger("AcDespawnCount"));
+/*  861 */     setTextureName(nbt.getString("TextureName"));
+/*  862 */     setCommonUniqueId(nbt.getString("AircraftUniqueId"));
+/*  863 */     setRotRoll(nbt.getFloat("AcRoll"));
 /*  864 */     this.prevRotationRoll = getRotRoll();
-/*  865 */     this.prevLastRiderYaw = this.lastRiderYaw = nbt.func_74760_g("AcLastRYaw");
-/*  866 */     this.prevLastRiderPitch = this.lastRiderPitch = nbt.func_74760_g("AcLastRPitch");
-/*  867 */     setPartStatus(nbt.func_74762_e("PartStatus"));
-/*  868 */     setTypeName(nbt.func_74779_i("TypeName"));
-/*  869 */     super.func_70037_a(nbt);
+/*  865 */     this.prevLastRiderYaw = this.lastRiderYaw = nbt.getFloat("AcLastRYaw");
+/*  866 */     this.prevLastRiderPitch = this.lastRiderPitch = nbt.getFloat("AcLastRPitch");
+/*  867 */     setPartStatus(nbt.getInteger("PartStatus"));
+/*  868 */     setTypeName(nbt.getString("TypeName"));
+/*  869 */     super.readEntityFromNBT(nbt);
 /*  870 */     getGuiInventory().readEntityFromNBT(nbt);
-/*  871 */     setCommandForce(nbt.func_74779_i("AcCommand"));
-/*  872 */     setGunnerStatus(nbt.func_74767_n("AcGunnerStatus"));
-/*  873 */     setFuel(nbt.func_74762_e("AcFuel"));
-/*  874 */     int[] wa_list = nbt.func_74759_k("AcWeaponsAmmo");
+/*  871 */     setCommandForce(nbt.getString("AcCommand"));
+/*  872 */     setGunnerStatus(nbt.getBoolean("AcGunnerStatus"));
+/*  873 */     setFuel(nbt.getInteger("AcFuel"));
+/*  874 */     int[] wa_list = nbt.getIntArray("AcWeaponsAmmo");
 /*      */     
 /*  876 */     for (int i = 0; i < wa_list.length; i++) {
 /*  877 */       getWeapon(i).setRestAllAmmoNum(wa_list[i]);
@@ -885,36 +885,36 @@ import net.minecraft.entity.MoverType;
 /*      */     
 /*  881 */     if (getDespawnCount() > 0) {
 /*  882 */       setDamageTaken(getMaxHP());
-/*  883 */     } else if (nbt.func_74764_b("AcDamage")) {
-/*  884 */       setDamageTaken(nbt.func_74762_e("AcDamage"));
+/*  883 */     } else if (nbt.hasKey("AcDamage")) {
+/*  884 */       setDamageTaken(nbt.getInteger("AcDamage"));
 /*      */     } 
 /*      */     
-/*  887 */     if (haveSearchLight() && nbt.func_74764_b("SearchLight")) {
-/*  888 */       setSearchLight(nbt.func_74767_n("SearchLight"));
+/*  887 */     if (haveSearchLight() && nbt.hasKey("SearchLight")) {
+/*  888 */       setSearchLight(nbt.getBoolean("SearchLight"));
 /*      */     }
 /*      */     
-/*  891 */     this.dismountedUserCtrl = nbt.func_74767_n("AcDismounted");
+/*  891 */     this.dismountedUserCtrl = nbt.getBoolean("AcDismounted");
 /*      */   }
 /*      */ 
 /*      */   
-/*      */   protected void func_70014_b(NBTTagCompound nbt) {
-/*  896 */     nbt.func_74778_a("TextureName", getTextureName());
-/*  897 */     nbt.func_74778_a("AircraftUniqueId", getCommonUniqueId());
-/*  898 */     nbt.func_74778_a("TypeName", getTypeName());
-/*  899 */     nbt.func_74768_a("PartStatus", getPartStatus() & getLastPartStatusMask());
-/*  900 */     nbt.func_74768_a("AcFuel", getFuel());
-/*  901 */     nbt.func_74768_a("AcDespawnCount", getDespawnCount());
-/*  902 */     nbt.func_74776_a("AcRoll", getRotRoll());
-/*  903 */     nbt.func_74757_a("SearchLight", isSearchLightON());
-/*  904 */     nbt.func_74776_a("AcLastRYaw", getLastRiderYaw());
-/*  905 */     nbt.func_74776_a("AcLastRPitch", getLastRiderPitch());
-/*  906 */     nbt.func_74778_a("AcCommand", getCommand());
-/*  907 */     if (!nbt.func_74764_b("AcGunnerStatus")) {
+/*      */   protected void writeEntityToNBT(NBTTagCompound nbt) {
+/*  896 */     nbt.setString("TextureName", getTextureName());
+/*  897 */     nbt.setString("AircraftUniqueId", getCommonUniqueId());
+/*  898 */     nbt.setString("TypeName", getTypeName());
+/*  899 */     nbt.setInteger("PartStatus", getPartStatus() & getLastPartStatusMask());
+/*  900 */     nbt.setInteger("AcFuel", getFuel());
+/*  901 */     nbt.setInteger("AcDespawnCount", getDespawnCount());
+/*  902 */     nbt.setFloat("AcRoll", getRotRoll());
+/*  903 */     nbt.setBoolean("SearchLight", isSearchLightON());
+/*  904 */     nbt.setFloat("AcLastRYaw", getLastRiderYaw());
+/*  905 */     nbt.setFloat("AcLastRPitch", getLastRiderPitch());
+/*  906 */     nbt.setString("AcCommand", getCommand());
+/*  907 */     if (!nbt.hasKey("AcGunnerStatus")) {
 /*  908 */       setGunnerStatus(true);
 /*      */     }
 /*      */     
-/*  911 */     nbt.func_74757_a("AcGunnerStatus", getGunnerStatus());
-/*  912 */     super.func_70014_b(nbt);
+/*  911 */     nbt.setBoolean("AcGunnerStatus", getGunnerStatus());
+/*  912 */     super.writeEntityToNBT(nbt);
 /*  913 */     getGuiInventory().writeEntityToNBT(nbt);
 /*  914 */     int[] wa_list = new int[getWeaponNum()];
 /*      */     
@@ -922,28 +922,28 @@ import net.minecraft.entity.MoverType;
 /*  917 */       wa_list[i] = getWeapon(i).getRestAllAmmoNum() + getWeapon(i).getAmmoNum();
 /*      */     }
 /*      */     
-/*  920 */     nbt.func_74782_a("AcWeaponsAmmo", (NBTBase)W_NBTTag.newTagIntArray("AcWeaponsAmmo", wa_list));
-/*  921 */     nbt.func_74768_a("AcDamage", getDamageTaken());
-/*  922 */     nbt.func_74757_a("AcDismounted", this.dismountedUserCtrl);
+/*  920 */     nbt.setTag("AcWeaponsAmmo", (NBTBase)W_NBTTag.newTagIntArray("AcWeaponsAmmo", wa_list));
+/*  921 */     nbt.setInteger("AcDamage", getDamageTaken());
+/*  922 */     nbt.setBoolean("AcDismounted", this.dismountedUserCtrl);
 /*      */   }
 /*      */ 
 /*      */   
-/*      */   public boolean func_70097_a(DamageSource damageSource, float org_damage) {
+/*      */   public boolean attackEntityFrom(DamageSource damageSource, float org_damage) {
 /*  927 */     float damageFactor = this.lastBBDamageFactor;
 /*  928 */     this.lastBBDamageFactor = 1.0F;
-/*  929 */     if (func_180431_b(damageSource))
+/*  929 */     if (isEntityInvulnerable(damageSource))
 /*  930 */       return false; 
-/*  931 */     if (this.field_70128_L)
+/*  931 */     if (this.isDead)
 /*  932 */       return false; 
 /*  933 */     if (this.timeSinceHit > 0) {
 /*  934 */       return false;
 /*      */     }
-/*  936 */     String dmt = damageSource.func_76355_l();
+/*  936 */     String dmt = damageSource.getDamageType();
 /*  937 */     if (dmt.equalsIgnoreCase("inFire"))
 /*  938 */       return false; 
 /*  939 */     if (dmt.equalsIgnoreCase("cactus"))
 /*  940 */       return false; 
-/*  941 */     if (this.field_70170_p.field_72995_K) {
+/*  941 */     if (this.world.isRemote) {
 /*  942 */       return true;
 /*      */     }
 /*  944 */     float damage = MCH_Config.applyDamageByExternal((Entity)this, damageSource, org_damage);
@@ -951,21 +951,21 @@ import net.minecraft.entity.MoverType;
 /*  946 */       damage = 0.0F;
 /*      */     }
 /*      */     
-/*  949 */     if (damageSource == DamageSource.field_76380_i) {
-/*  950 */       func_70106_y();
+/*  949 */     if (damageSource == DamageSource.OUT_OF_WORLD) {
+/*  950 */       setDead();
 /*      */     }
 /*      */     
 /*  953 */     if (!MCH_Multiplay.canAttackEntity(damageSource, (Entity)this)) {
 /*  954 */       return false;
 /*      */     }
 /*  956 */     if (dmt.equalsIgnoreCase("lava")) {
-/*  957 */       damage *= (this.field_70146_Z.nextInt(8) + 2);
+/*  957 */       damage *= (this.rand.nextInt(8) + 2);
 /*  958 */       this.timeSinceHit = 2;
 /*      */     } 
 /*      */     
 /*  961 */     if (dmt.startsWith("explosion")) {
 /*  962 */       this.timeSinceHit = 1;
-/*  963 */     } else if (isMountedEntity(damageSource.func_76346_g())) {
+/*  963 */     } else if (isMountedEntity(damageSource.getTrueSource())) {
 /*  964 */       return false;
 /*      */     } 
 /*      */     
@@ -975,7 +975,7 @@ import net.minecraft.entity.MoverType;
 /*      */     
 /*  971 */     boolean isCreative = false;
 /*  972 */     boolean isSneaking = false;
-/*  973 */     Entity entity = damageSource.func_76346_g();
+/*  973 */     Entity entity = damageSource.getTrueSource();
 /*  974 */     if (entity instanceof EntityLivingBase) {
 /*  975 */       this.lastAttackedEntity = entity;
 /*      */     }
@@ -983,14 +983,14 @@ import net.minecraft.entity.MoverType;
 /*  978 */     boolean isDamegeSourcePlayer = false;
 /*  979 */     boolean playDamageSound = false;
 /*  980 */     if (entity instanceof EntityPlayer) { EntityPlayer player = (EntityPlayer)entity;
-/*  981 */       isCreative = player.field_71075_bZ.field_75098_d;
-/*  982 */       isSneaking = player.func_70093_af();
+/*  981 */       isCreative = player.capabilities.isCreativeMode;
+/*  982 */       isSneaking = player.isSneaking();
 /*  983 */       if (dmt.equalsIgnoreCase("player")) {
 /*  984 */         if (isCreative) {
 /*  985 */           isDamegeSourcePlayer = true;
 /*  986 */         } else if (getAcInfo() != null && !(getAcInfo()).creativeOnly && !MCH_Config.PreventingBroken.prmBool) {
 /*  987 */           if (MCH_Config.BreakableOnlyPickaxe.prmBool) {
-/*  988 */             if (!player.func_184614_ca().func_190926_b() && player.func_184614_ca().func_77973_b() instanceof net.minecraft.item.ItemPickaxe) {
+/*  988 */             if (!player.getHeldItemMainhand().isEmpty() && player.getHeldItemMainhand().getItem() instanceof net.minecraft.item.ItemPickaxe) {
 /*  989 */               isDamegeSourcePlayer = true;
 /*      */             }
 /*      */           } else {
@@ -1019,7 +1019,7 @@ import net.minecraft.entity.MoverType;
 /* 1014 */           damage *= acInfo.armorDamageFactor;
 /* 1015 */           damage -= acInfo.armorMinDamage;
 /* 1016 */           if (damage <= 0.0F) {
-/* 1017 */             MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityAircraft.attackEntityFrom:no damage=%.1f -> %.1f(factor=%.2f):%s", new Object[] {
+/* 1017 */             MCH_Lib.DbgLog(this.world, "MCH_EntityAircraft.attackEntityFrom:no damage=%.1f -> %.1f(factor=%.2f):%s", new Object[] {
 /* 1018 */                   Float.valueOf(org_damage), Float.valueOf(damage), Float.valueOf(damageFactor), dmt
 /*      */                 });
 /* 1020 */             return false;
@@ -1030,11 +1030,11 @@ import net.minecraft.entity.MoverType;
 /*      */           }
 /*      */         } 
 /*      */         
-/* 1028 */         MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityAircraft.attackEntityFrom:damage=%.1f(factor=%.2f):%s", new Object[] { Float.valueOf(damage), Float.valueOf(damageFactor), dmt });
+/* 1028 */         MCH_Lib.DbgLog(this.world, "MCH_EntityAircraft.attackEntityFrom:damage=%.1f(factor=%.2f):%s", new Object[] { Float.valueOf(damage), Float.valueOf(damageFactor), dmt });
 /* 1029 */         setDamageTaken(getDamageTaken() + (int)damage);
 /*      */       } 
 /*      */       
-/* 1032 */       func_70018_K();
+/* 1032 */       markVelocityChanged();
 /* 1033 */       if (getDamageTaken() >= getMaxHP() || isDamegeSourcePlayer) {
 /* 1034 */         if (!isDamegeSourcePlayer) {
 /* 1035 */           setDamageTaken(getMaxHP());
@@ -1053,20 +1053,20 @@ import net.minecraft.entity.MoverType;
 /* 1048 */             explosionByCrash(0.0D);
 /* 1049 */             this.damageSinceDestroyed = getMaxHP();
 /*      */           } else {
-/* 1051 */             MCH_Explosion.newExplosion(this.field_70170_p, null, entity, this.field_70165_t, this.field_70163_u, this.field_70161_v, 2.0F, 2.0F, true, true, true, true, 5);
+/* 1051 */             MCH_Explosion.newExplosion(this.world, null, entity, this.posX, this.posY, this.posZ, 2.0F, 2.0F, true, true, true, true, 5);
 /*      */           } 
 /*      */         } else {
 /* 1054 */           if (getAcInfo() != null && getAcInfo().getItem() != null) {
 /* 1055 */             if (isCreative) {
 /* 1056 */               if (MCH_Config.DropItemInCreativeMode.prmBool && !isSneaking) {
-/* 1057 */                 func_145778_a(getAcInfo().getItem(), 1, 0.0F);
+/* 1057 */                 dropItemWithOffset(getAcInfo().getItem(), 1, 0.0F);
 /*      */               }
 /*      */               
 /* 1060 */               if (!MCH_Config.DropItemInCreativeMode.prmBool && isSneaking) {
-/* 1061 */                 func_145778_a(getAcInfo().getItem(), 1, 0.0F);
+/* 1061 */                 dropItemWithOffset(getAcInfo().getItem(), 1, 0.0F);
 /*      */               }
 /*      */             } else {
-/* 1064 */               func_145778_a(getAcInfo().getItem(), 1, 0.0F);
+/* 1064 */               dropItemWithOffset(getAcInfo().getItem(), 1, 0.0F);
 /*      */             } 
 /*      */           }
 /*      */           
@@ -1078,7 +1078,7 @@ import net.minecraft.entity.MoverType;
 /*      */     } 
 /*      */     
 /* 1075 */     if (playDamageSound) {
-/* 1076 */       W_WorldFunc.MOD_playSoundAtEntity((Entity)this, "helidmg", 1.0F, 0.9F + this.field_70146_Z.nextFloat() * 0.1F);
+/* 1076 */       W_WorldFunc.MOD_playSoundAtEntity((Entity)this, "helidmg", 1.0F, 0.9F + this.rand.nextFloat() * 0.1F);
 /*      */     }
 /*      */     
 /* 1079 */     return true;
@@ -1093,92 +1093,92 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public void destruct() {
 /* 1090 */     if (getRiddenByEntity() != null) {
-/* 1091 */       getRiddenByEntity().func_184210_p();
+/* 1091 */       getRiddenByEntity().dismountRidingEntity();
 /*      */     }
 /*      */     
 /* 1094 */     setDead(true);
 /*      */   }
 /*      */   
 /*      */   @Nullable
-/*      */   public EntityItem func_70099_a(ItemStack is, float par2) {
-/* 1099 */     if (is.func_190916_E() == 0) {
+/*      */   public EntityItem entityDropItem(ItemStack is, float par2) {
+/* 1099 */     if (is.getCount() == 0) {
 /* 1100 */       return null;
 /*      */     }
 /* 1102 */     setAcDataToItem(is);
-/* 1103 */     return super.func_70099_a(is, par2);
+/* 1103 */     return super.entityDropItem(is, par2);
 /*      */   }
 /*      */ 
 /*      */   
 /*      */   public void setAcDataToItem(ItemStack is) {
-/* 1108 */     if (!is.func_77942_o()) {
-/* 1109 */       is.func_77982_d(new NBTTagCompound());
+/* 1108 */     if (!is.hasTagCompound()) {
+/* 1109 */       is.setTagCompound(new NBTTagCompound());
 /*      */     }
 /*      */     
-/* 1112 */     NBTTagCompound nbt = is.func_77978_p();
-/* 1113 */     nbt.func_74778_a("MCH_Command", getCommand());
+/* 1112 */     NBTTagCompound nbt = is.getTagCompound();
+/* 1113 */     nbt.setString("MCH_Command", getCommand());
 /* 1114 */     if (MCH_Config.ItemFuel.prmBool) {
-/* 1115 */       nbt.func_74768_a("MCH_Fuel", getFuel());
+/* 1115 */       nbt.setInteger("MCH_Fuel", getFuel());
 /*      */     }
 /*      */     
 /* 1118 */     if (MCH_Config.ItemDamage.prmBool) {
-/* 1119 */       is.func_77964_b(getDamageTaken());
+/* 1119 */       is.setItemDamage(getDamageTaken());
 /*      */     }
 /*      */   }
 /*      */   
 /*      */   public void getAcDataFromItem(ItemStack is) {
-/* 1124 */     if (is.func_77942_o()) {
-/* 1125 */       NBTTagCompound nbt = is.func_77978_p();
-/* 1126 */       setCommandForce(nbt.func_74779_i("MCH_Command"));
+/* 1124 */     if (is.hasTagCompound()) {
+/* 1125 */       NBTTagCompound nbt = is.getTagCompound();
+/* 1126 */       setCommandForce(nbt.getString("MCH_Command"));
 /* 1127 */       if (MCH_Config.ItemFuel.prmBool) {
-/* 1128 */         setFuel(nbt.func_74762_e("MCH_Fuel"));
+/* 1128 */         setFuel(nbt.getInteger("MCH_Fuel"));
 /*      */       }
 /*      */       
 /* 1131 */       if (MCH_Config.ItemDamage.prmBool) {
-/* 1132 */         setDamageTaken(is.func_77960_j());
+/* 1132 */         setDamageTaken(is.getMetadata());
 /*      */       }
 /*      */     } 
 /*      */   }
 /*      */ 
 /*      */   
-/*      */   public boolean func_70300_a(EntityPlayer player) {
+/*      */   public boolean isUsableByPlayer(EntityPlayer player) {
 /* 1139 */     if (isUAV())
-/* 1140 */       return super.func_70300_a(player); 
-/* 1141 */     if (!this.field_70128_L) {
-/* 1142 */       return (getSeatIdByEntity((Entity)player) >= 0) ? ((player.func_70068_e((Entity)this) <= 4096.0D)) : ((player.func_70068_e((Entity)this) <= 64.0D));
+/* 1140 */       return super.isUsableByPlayer(player); 
+/* 1141 */     if (!this.isDead) {
+/* 1142 */       return (getSeatIdByEntity((Entity)player) >= 0) ? ((player.getDistanceSq((Entity)this) <= 4096.0D)) : ((player.getDistanceSq((Entity)this) <= 64.0D));
 /*      */     }
 /* 1144 */     return false;
 /*      */   }
 /*      */ 
 /*      */   
-/*      */   public void func_70108_f(@NotNull Entity par1Entity) {}
+/*      */   public void applyEntityCollision(@NotNull Entity par1Entity) {}
 /*      */ 
 /*      */   
-/*      */   public void func_70024_g(double par1, double par3, double par5) {}
+/*      */   public void addVelocity(double par1, double par3, double par5) {}
 /*      */ 
 /*      */   
 /*      */   @SideOnly(Side.CLIENT)
-/*      */   public void func_70016_h(double par1, double par3, double par5) {
-/* 1156 */     this.velocityX = this.field_70159_w = par1;
-/* 1157 */     this.velocityY = this.field_70181_x = par3;
-/* 1158 */     this.velocityZ = this.field_70179_y = par5;
+/*      */   public void setVelocity(double par1, double par3, double par5) {
+/* 1156 */     this.velocityX = this.motionX = par1;
+/* 1157 */     this.velocityY = this.motionY = par3;
+/* 1158 */     this.velocityZ = this.motionZ = par5;
 /*      */   }
 /*      */   
 /*      */   public void onFirstUpdate() {
-/* 1162 */     if (!this.field_70170_p.field_72995_K) {
+/* 1162 */     if (!this.world.isRemote) {
 /* 1163 */       setCommonStatus(3, MCH_Config.InfinityAmmo.prmBool);
 /* 1164 */       setCommonStatus(4, MCH_Config.InfinityFuel.prmBool);
 /*      */     } 
 /*      */   }
 /*      */   
 /*      */   public void onRidePilotFirstUpdate() {
-/* 1169 */     if (this.field_70170_p.field_72995_K && W_Lib.isClientPlayer(getRiddenByEntity())) {
+/* 1169 */     if (this.world.isRemote && W_Lib.isClientPlayer(getRiddenByEntity())) {
 /* 1170 */       updateClientSettings(0);
 /*      */     }
 /*      */     
 /* 1173 */     Entity pilot = getRiddenByEntity();
 /* 1174 */     if (pilot != null) {
-/* 1175 */       pilot.field_70177_z = getLastRiderYaw();
-/* 1176 */       pilot.field_70125_A = getLastRiderPitch();
+/* 1175 */       pilot.rotationYaw = getLastRiderYaw();
+/* 1176 */       pilot.rotationPitch = getLastRiderPitch();
 /*      */     } 
 /*      */     
 /* 1179 */     this.keepOnRideRotation = false;
@@ -1204,11 +1204,11 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public boolean canMouseRot() {
-/* 1202 */     return (!this.field_70128_L && getRiddenByEntity() != null && !isDestroyed());
+/* 1202 */     return (!this.isDead && getRiddenByEntity() != null && !isDestroyed());
 /*      */   }
 /*      */   
 /*      */   public boolean canUpdateYaw(Entity player) {
-/* 1206 */     if (func_184187_bx() != null) {
+/* 1206 */     if (getRidingEntity() != null) {
 /* 1207 */       return false;
 /*      */     }
 /* 1209 */     return (getCountOnUpdate() >= 30 && MCH_Lib.getBlockIdY((Entity)this, 3, -2) == 0);
@@ -1220,7 +1220,7 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public boolean canUpdateRoll(Entity player) {
-/* 1218 */     if (func_184187_bx() != null) {
+/* 1218 */     if (getRidingEntity() != null) {
 /* 1219 */       return false;
 /*      */     }
 /* 1221 */     return (getCountOnUpdate() >= 30 && MCH_Lib.getBlockIdY((Entity)this, 3, -2) == 0);
@@ -1369,7 +1369,7 @@ import net.minecraft.entity.MoverType;
 /* 1364 */       setRotRoll(v.z);
 /*      */     } 
 /*      */     
-/* 1367 */     if (MathHelper.func_76135_e(getRotPitch()) > 90.0F) {
+/* 1367 */     if (MathHelper.abs(getRotPitch()) > 90.0F) {
 /* 1368 */       MCH_Lib.DbgLog(true, "MCH_EntityAircraft.setAngles Error:Pitch=%.1f", new Object[] { Float.valueOf(getRotPitch()) });
 /*      */     }
 /*      */     
@@ -1382,37 +1382,37 @@ import net.minecraft.entity.MoverType;
 /*      */     }
 /*      */     
 /* 1379 */     this.prevRotationRoll = getRotRoll();
-/* 1380 */     this.field_70127_C = getRotPitch();
-/* 1381 */     if (func_184187_bx() == null) {
-/* 1382 */       this.field_70126_B = getRotYaw();
+/* 1380 */     this.prevRotationPitch = getRotPitch();
+/* 1381 */     if (getRidingEntity() == null) {
+/* 1382 */       this.prevRotationYaw = getRotYaw();
 /*      */     }
 /*      */     
 /* 1385 */     if (!isOverridePlayerYaw() && !fixRot) {
-/* 1386 */       player.func_70082_c(deltaX, 0.0F);
+/* 1386 */       player.turn(deltaX, 0.0F);
 /*      */     } else {
-/* 1388 */       if (func_184187_bx() == null) {
-/* 1389 */         player.field_70126_B = getRotYaw() + (fixRot ? fixYaw : 0.0F);
+/* 1388 */       if (getRidingEntity() == null) {
+/* 1389 */         player.prevRotationYaw = getRotYaw() + (fixRot ? fixYaw : 0.0F);
 /*      */       } else {
-/* 1391 */         if (getRotYaw() - player.field_70177_z > 180.0F) {
-/* 1392 */           player.field_70126_B += 360.0F;
+/* 1391 */         if (getRotYaw() - player.rotationYaw > 180.0F) {
+/* 1392 */           player.prevRotationYaw += 360.0F;
 /*      */         }
 /*      */         
-/* 1395 */         if (getRotYaw() - player.field_70177_z < -180.0F) {
-/* 1396 */           player.field_70126_B -= 360.0F;
+/* 1395 */         if (getRotYaw() - player.rotationYaw < -180.0F) {
+/* 1396 */           player.prevRotationYaw -= 360.0F;
 /*      */         }
 /*      */       } 
 /*      */       
-/* 1400 */       player.field_70177_z = getRotYaw() + (fixRot ? fixYaw : 0.0F);
+/* 1400 */       player.rotationYaw = getRotYaw() + (fixRot ? fixYaw : 0.0F);
 /*      */     } 
 /*      */     
 /* 1403 */     if (!isOverridePlayerPitch() && !fixRot) {
-/* 1404 */       player.func_70082_c(0.0F, deltaY);
+/* 1404 */       player.turn(0.0F, deltaY);
 /*      */     } else {
-/* 1406 */       player.field_70127_C = getRotPitch() + (fixRot ? fixPitch : 0.0F);
-/* 1407 */       player.field_70125_A = getRotPitch() + (fixRot ? fixPitch : 0.0F);
+/* 1406 */       player.prevRotationPitch = getRotPitch() + (fixRot ? fixPitch : 0.0F);
+/* 1407 */       player.rotationPitch = getRotPitch() + (fixRot ? fixPitch : 0.0F);
 /*      */     } 
 /*      */     
-/* 1410 */     if ((func_184187_bx() == null && ac_yaw != getRotYaw()) || ac_pitch != getRotPitch() || ac_roll != getRotRoll()) {
+/* 1410 */     if ((getRidingEntity() == null && ac_yaw != getRotYaw()) || ac_pitch != getRotPitch() || ac_roll != getRotRoll()) {
 /* 1411 */       this.aircraftRotChanged = true;
 /*      */     }
 /*      */   }
@@ -1437,16 +1437,16 @@ import net.minecraft.entity.MoverType;
 /* 1432 */     if (haveSearchLight() && isSearchLightON()) {
 /* 1433 */       for (MCH_AircraftInfo.SearchLight sl : (getAcInfo()).searchLights) {
 /* 1434 */         Vec3d pos = getTransformedPosition(sl.pos);
-/* 1435 */         double dist = entity.func_70092_e(pos.field_72450_a, pos.field_72448_b, pos.field_72449_c);
+/* 1435 */         double dist = entity.getDistanceSq(pos.x, pos.y, pos.z);
 /* 1436 */         if (dist > 2.0D && dist < (sl.height * sl.height + 20.0F)) {
-/* 1437 */           double h, v, cx = entity.field_70165_t - pos.field_72450_a;
-/* 1438 */           double cy = entity.field_70163_u - pos.field_72448_b;
-/* 1439 */           double cz = entity.field_70161_v - pos.field_72449_c;
+/* 1437 */           double h, v, cx = entity.posX - pos.x;
+/* 1438 */           double cy = entity.posY - pos.y;
+/* 1439 */           double cz = entity.posZ - pos.z;
 /*      */ 
 /*      */           
 /* 1442 */           if (!sl.fixDir) {
 /* 1443 */             Vec3d vv = MCH_Lib.RotVec3(0.0D, 0.0D, 1.0D, -this.lastSearchLightYaw + sl.yaw, -this.lastSearchLightPitch + sl.pitch, -getRotRoll());
-/* 1444 */             h = MCH_Lib.getPosAngle(vv.field_72450_a, vv.field_72449_c, cx, cz);
+/* 1444 */             h = MCH_Lib.getPosAngle(vv.x, vv.z, cx, cz);
 /* 1445 */             v = Math.atan2(cy, Math.sqrt(cx * cx + cz * cz)) * 180.0D / Math.PI;
 /* 1446 */             v = Math.abs(v + this.lastSearchLightPitch + sl.pitch);
 /*      */           } else {
@@ -1456,7 +1456,7 @@ import net.minecraft.entity.MoverType;
 /*      */             }
 /*      */             
 /* 1453 */             Vec3d vv = MCH_Lib.RotVec3(0.0D, 0.0D, 1.0D, -getRotYaw() + sl.yaw + stRot, -getRotPitch() + sl.pitch, -getRotRoll());
-/* 1454 */             h = MCH_Lib.getPosAngle(vv.field_72450_a, vv.field_72449_c, cx, cz);
+/* 1454 */             h = MCH_Lib.getPosAngle(vv.x, vv.z, cx, cz);
 /* 1455 */             v = Math.atan2(cy, Math.sqrt(cx * cx + cz * cz)) * 180.0D / Math.PI;
 /* 1456 */             v = Math.abs(v + getRotPitch() + sl.pitch);
 /*      */           } 
@@ -1479,9 +1479,9 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */ 
 /*      */   
-/*      */   public void func_70071_h_() {
+/*      */   public void onUpdate() {
 /* 1478 */     if (getCountOnUpdate() < 2) {
-/* 1479 */       this.prevPosition.clear(new Vec3d(this.field_70165_t, this.field_70163_u, this.field_70161_v));
+/* 1479 */       this.prevPosition.clear(new Vec3d(this.posX, this.posY, this.posZ));
 /*      */     }
 /*      */     
 /* 1482 */     this.prevCurrentThrottle = getCurrentThrottle();
@@ -1493,9 +1493,9 @@ import net.minecraft.entity.MoverType;
 /*      */     
 /* 1489 */     while (itr.hasNext()) {
 /* 1490 */       UnmountReserve ur = itr.next();
-/* 1491 */       if (ur.entity != null && !ur.entity.field_70128_L) {
-/* 1492 */         ur.entity.func_70107_b(ur.posX, ur.posY, ur.posZ);
-/* 1493 */         ur.entity.field_70143_R = this.field_70143_R;
+/* 1491 */       if (ur.entity != null && !ur.entity.isDead) {
+/* 1492 */         ur.entity.setPosition(ur.posX, ur.posY, ur.posZ);
+/* 1493 */         ur.entity.fallDistance = this.fallDistance;
 /*      */       } 
 /*      */       
 /* 1496 */       if (ur.cnt > 0) {
@@ -1510,46 +1510,46 @@ import net.minecraft.entity.MoverType;
 /* 1505 */     if (isDestroyed() && getCountOnUpdate() % 20 == 0) {
 /* 1506 */       for (int sid = 0; sid < getSeatNum() + 1; sid++) {
 /* 1507 */         Entity entity = getEntityBySeatId(sid);
-/* 1508 */         if (entity != null && (sid != 0 || !isUAV()) && MCH_Config.applyDamageVsEntity(entity, DamageSource.field_76372_a, 1.0F) > 0.0F) {
-/* 1509 */           entity.func_70015_d(5);
+/* 1508 */         if (entity != null && (sid != 0 || !isUAV()) && MCH_Config.applyDamageVsEntity(entity, DamageSource.IN_FIRE, 1.0F) > 0.0F) {
+/* 1509 */           entity.setFire(5);
 /*      */         }
 /*      */       } 
 /*      */     }
 /*      */     
-/* 1514 */     if ((this.aircraftRotChanged || this.aircraftRollRev) && this.field_70170_p.field_72995_K && getRiddenByEntity() != null) {
+/* 1514 */     if ((this.aircraftRotChanged || this.aircraftRollRev) && this.world.isRemote && getRiddenByEntity() != null) {
 /* 1515 */       MCH_PacketIndRotation.send(this);
 /* 1516 */       this.aircraftRotChanged = false;
 /* 1517 */       this.aircraftRollRev = false;
 /*      */     } 
 /*      */     
-/* 1520 */     if (!this.field_70170_p.field_72995_K && (int)this.prevRotationRoll != (int)getRotRoll()) {
-/* 1521 */       float roll = MathHelper.func_76142_g(getRotRoll());
-/* 1522 */       this.field_70180_af.func_187227_b(ROT_ROLL, Integer.valueOf((int)roll));
+/* 1520 */     if (!this.world.isRemote && (int)this.prevRotationRoll != (int)getRotRoll()) {
+/* 1521 */       float roll = MathHelper.wrapDegrees(getRotRoll());
+/* 1522 */       this.dataManager.set(ROT_ROLL, Integer.valueOf((int)roll));
 /*      */     } 
 /*      */     
 /* 1525 */     this.prevRotationRoll = getRotRoll();
-/* 1526 */     if (!this.field_70170_p.field_72995_K && isTargetDrone() && !isDestroyed() && getCountOnUpdate() > 20 && !canUseFuel()) {
+/* 1526 */     if (!this.world.isRemote && isTargetDrone() && !isDestroyed() && getCountOnUpdate() > 20 && !canUseFuel()) {
 /* 1527 */       setDamageTaken(getMaxHP());
 /* 1528 */       destroyAircraft();
-/* 1529 */       MCH_Explosion.newExplosion(this.field_70170_p, null, null, this.field_70165_t, this.field_70163_u, this.field_70161_v, 2.0F, 2.0F, true, true, true, true, 5);
+/* 1529 */       MCH_Explosion.newExplosion(this.world, null, null, this.posX, this.posY, this.posZ, 2.0F, 2.0F, true, true, true, true, 5);
 /*      */     } 
 /*      */     
-/* 1532 */     if (this.field_70170_p.field_72995_K && getAcInfo() != null && getHP() <= 0 && getDespawnCount() <= 0) {
+/* 1532 */     if (this.world.isRemote && getAcInfo() != null && getHP() <= 0 && getDespawnCount() <= 0) {
 /* 1533 */       destroyAircraft();
 /*      */     }
 /*      */     
-/* 1536 */     if (!this.field_70170_p.field_72995_K && getDespawnCount() > 0) {
+/* 1536 */     if (!this.world.isRemote && getDespawnCount() > 0) {
 /* 1537 */       setDespawnCount(getDespawnCount() - 1);
 /* 1538 */       if (getDespawnCount() <= 1) {
 /* 1539 */         setDead(true);
 /*      */       }
 /*      */     } 
 /*      */     
-/* 1543 */     super.func_70071_h_();
-/* 1544 */     if (func_70021_al() != null) {
-/* 1545 */       for (Entity e : func_70021_al()) {
+/* 1543 */     super.onUpdate();
+/* 1544 */     if (getParts() != null) {
+/* 1545 */       for (Entity e : getParts()) {
 /* 1546 */         if (e != null) {
-/* 1547 */           e.func_70071_h_();
+/* 1547 */           e.onUpdate();
 /*      */         }
 /*      */       } 
 /*      */     }
@@ -1577,14 +1577,14 @@ import net.minecraft.entity.MoverType;
 /* 1572 */       this.countOnUpdate = 1;
 /*      */     }
 /*      */     
-/* 1575 */     if (this.field_70170_p.field_72995_K) {
-/* 1576 */       this.commonStatus = ((Integer)this.field_70180_af.func_187225_a(STATUS)).intValue();
+/* 1575 */     if (this.world.isRemote) {
+/* 1576 */       this.commonStatus = ((Integer)this.dataManager.get(STATUS)).intValue();
 /*      */     }
 /*      */     
-/* 1579 */     this.field_70143_R = 0.0F;
+/* 1579 */     this.fallDistance = 0.0F;
 /* 1580 */     Entity riddenByEntity = getRiddenByEntity();
 /* 1581 */     if (riddenByEntity != null) {
-/* 1582 */       riddenByEntity.field_70143_R = 0.0F;
+/* 1582 */       riddenByEntity.fallDistance = 0.0F;
 /*      */     }
 /*      */     
 /* 1585 */     if (this.missileDetector != null) {
@@ -1595,7 +1595,7 @@ import net.minecraft.entity.MoverType;
 /* 1590 */       this.soundUpdater.update();
 /*      */     }
 /*      */     
-/* 1593 */     if (getTowChainEntity() != null && (getTowChainEntity()).field_70128_L) {
+/* 1593 */     if (getTowChainEntity() != null && (getTowChainEntity()).isDead) {
 /* 1594 */       setTowChainEntity((MCH_EntityChain)null);
 /*      */     }
 /*      */     
@@ -1603,21 +1603,21 @@ import net.minecraft.entity.MoverType;
 /* 1598 */     autoRepair();
 /* 1599 */     int ft = getFlareTick();
 /* 1600 */     this.flareDv.update();
-/* 1601 */     if (!this.field_70170_p.field_72995_K && getFlareTick() == 0 && ft != 0) {
+/* 1601 */     if (!this.world.isRemote && getFlareTick() == 0 && ft != 0) {
 /* 1602 */       setCommonStatus(0, false);
 /*      */     }
 /*      */     
 /* 1605 */     Entity ex = getRiddenByEntity();
-/* 1606 */     if (ex != null && !ex.field_70128_L && !isDestroyed()) {
-/* 1607 */       this.lastRiderYaw = ex.field_70177_z;
-/* 1608 */       this.prevLastRiderYaw = ex.field_70126_B;
-/* 1609 */       this.lastRiderPitch = ex.field_70125_A;
-/* 1610 */       this.prevLastRiderPitch = ex.field_70127_C;
-/* 1611 */     } else if (getTowedChainEntity() != null || func_184187_bx() != null) {
-/* 1612 */       this.lastRiderYaw = this.field_70177_z;
-/* 1613 */       this.prevLastRiderYaw = this.field_70126_B;
-/* 1614 */       this.lastRiderPitch = this.field_70125_A;
-/* 1615 */       this.prevLastRiderPitch = this.field_70127_C;
+/* 1606 */     if (ex != null && !ex.isDead && !isDestroyed()) {
+/* 1607 */       this.lastRiderYaw = ex.rotationYaw;
+/* 1608 */       this.prevLastRiderYaw = ex.prevRotationYaw;
+/* 1609 */       this.lastRiderPitch = ex.rotationPitch;
+/* 1610 */       this.prevLastRiderPitch = ex.prevRotationPitch;
+/* 1611 */     } else if (getTowedChainEntity() != null || getRidingEntity() != null) {
+/* 1612 */       this.lastRiderYaw = this.rotationYaw;
+/* 1613 */       this.prevLastRiderYaw = this.prevRotationYaw;
+/* 1614 */       this.lastRiderPitch = this.rotationPitch;
+/* 1615 */       this.prevLastRiderPitch = this.prevRotationPitch;
 /*      */     } 
 /*      */     
 /* 1618 */     updatePartCameraRotate();
@@ -1630,8 +1630,8 @@ import net.minecraft.entity.MoverType;
 /*      */     }
 /*      */     
 /* 1627 */     updateExtraBoundingBox();
-/* 1628 */     boolean prevOnGround = this.field_70122_E;
-/* 1629 */     double prevMotionY = this.field_70181_x;
+/* 1628 */     boolean prevOnGround = this.onGround;
+/* 1629 */     double prevMotionY = this.motionY;
 /* 1630 */     onUpdateAircraft();
 /* 1631 */     if (getAcInfo() != null) {
 /* 1632 */       updateParts(getPartStatus());
@@ -1645,30 +1645,30 @@ import net.minecraft.entity.MoverType;
 /* 1640 */       updateRecoil(1.0F);
 /*      */     }
 /*      */     
-/* 1643 */     if (!this.field_70170_p.field_72995_K && isDestroyed() && !isExploded() && !prevOnGround && this.field_70122_E && prevMotionY < -0.2D) {
+/* 1643 */     if (!this.world.isRemote && isDestroyed() && !isExploded() && !prevOnGround && this.onGround && prevMotionY < -0.2D) {
 /* 1644 */       explosionByCrash(prevMotionY);
 /* 1645 */       this.damageSinceDestroyed = getMaxHP();
 /*      */     } 
 /*      */     
 /* 1648 */     onUpdate_PartRotation();
 /* 1649 */     onUpdate_ParticleSmoke();
-/* 1650 */     updateSeatsPosition(this.field_70165_t, this.field_70163_u, this.field_70161_v, false);
+/* 1650 */     updateSeatsPosition(this.posX, this.posY, this.posZ, false);
 /* 1651 */     updateHitBoxPosition();
 /* 1652 */     onUpdate_CollisionGroundDamage();
 /* 1653 */     onUpdate_UnmountCrew();
 /* 1654 */     onUpdate_Repelling();
 /* 1655 */     checkRideRack();
-/* 1656 */     if (this.lastRidingEntity == null && func_184187_bx() != null) {
-/* 1657 */       onRideEntity(func_184187_bx());
+/* 1656 */     if (this.lastRidingEntity == null && getRidingEntity() != null) {
+/* 1657 */       onRideEntity(getRidingEntity());
 /*      */     }
 /*      */     
 /* 1660 */     this.lastRiddenByEntity = getRiddenByEntity();
-/* 1661 */     this.lastRidingEntity = func_184187_bx();
-/* 1662 */     this.prevPosition.put(new Vec3d(this.field_70165_t, this.field_70163_u, this.field_70161_v));
+/* 1661 */     this.lastRidingEntity = getRidingEntity();
+/* 1662 */     this.prevPosition.put(new Vec3d(this.posX, this.posY, this.posZ));
 /*      */   }
 /*      */   
 /*      */   private void updateNoCollisionEntities() {
-/* 1666 */     if (!this.field_70170_p.field_72995_K && 
+/* 1666 */     if (!this.world.isRemote && 
 /* 1667 */       getCountOnUpdate() % 10 == 0) {
 /* 1668 */       for (int i = 0; i < 1 + getSeatNum(); i++) {
 /* 1669 */         Entity e = getEntityBySeatId(i);
@@ -1685,13 +1685,13 @@ import net.minecraft.entity.MoverType;
 /* 1680 */         this.noCollisionEntities.put((getTowedChainEntity()).towEntity, Integer.valueOf(60));
 /*      */       }
 /*      */       
-/* 1683 */       if (func_184187_bx() instanceof MCH_EntitySeat) {
-/* 1684 */         MCH_EntityAircraft ac = ((MCH_EntitySeat)func_184187_bx()).getParent();
+/* 1683 */       if (getRidingEntity() instanceof MCH_EntitySeat) {
+/* 1684 */         MCH_EntityAircraft ac = ((MCH_EntitySeat)getRidingEntity()).getParent();
 /* 1685 */         if (ac != null) {
 /* 1686 */           this.noCollisionEntities.put(ac, Integer.valueOf(60));
 /*      */         }
-/* 1688 */       } else if (func_184187_bx() != null) {
-/* 1689 */         this.noCollisionEntities.put(func_184187_bx(), Integer.valueOf(60));
+/* 1688 */       } else if (getRidingEntity() != null) {
+/* 1689 */         this.noCollisionEntities.put(getRidingEntity(), Integer.valueOf(60));
 /*      */       } 
 /*      */       
 /* 1692 */       this.noCollisionEntities.replaceAll((k, v) -> Integer.valueOf(((Integer)this.noCollisionEntities.get(k)).intValue() - 1));
@@ -1702,7 +1702,7 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   public void updateControl() {
-/* 1700 */     if (!this.field_70170_p.field_72995_K) {
+/* 1700 */     if (!this.world.isRemote) {
 /* 1701 */       setCommonStatus(7, this.moveLeft);
 /* 1702 */       setCommonStatus(8, this.moveRight);
 /* 1703 */       setCommonStatus(9, this.throttleUp);
@@ -1717,9 +1717,9 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public void updateRecoil(float partialTicks) {
 /* 1714 */     if (this.recoilCount > 0 && this.recoilCount >= 12) {
-/* 1715 */       float pitch = MathHelper.func_76134_b((float)((this.recoilYaw - getRotRoll()) * Math.PI / 180.0D));
-/* 1716 */       float roll = MathHelper.func_76126_a((float)((this.recoilYaw - getRotRoll()) * Math.PI / 180.0D));
-/* 1717 */       float recoil = MathHelper.func_76134_b((float)((this.recoilCount * 6) * Math.PI / 180.0D)) * this.recoilValue;
+/* 1715 */       float pitch = MathHelper.cos((float)((this.recoilYaw - getRotRoll()) * Math.PI / 180.0D));
+/* 1716 */       float roll = MathHelper.sin((float)((this.recoilYaw - getRotRoll()) * Math.PI / 180.0D));
+/* 1717 */       float recoil = MathHelper.cos((float)((this.recoilCount * 6) * Math.PI / 180.0D)) * this.recoilValue;
 /* 1718 */       setRotPitch(getRotPitch() + recoil * pitch * partialTicks);
 /* 1719 */       setRotRoll(getRotRoll() + recoil * roll * partialTicks);
 /*      */     } 
@@ -1744,12 +1744,12 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public void updateExtraBoundingBox() {
 /* 1741 */     for (MCH_BoundingBox bb : this.extraBoundingBox) {
-/* 1742 */       bb.updatePosition(this.field_70165_t, this.field_70163_u, this.field_70161_v, getRotYaw(), getRotPitch(), getRotRoll());
+/* 1742 */       bb.updatePosition(this.posX, this.posY, this.posZ, getRotYaw(), getRotPitch(), getRotRoll());
 /*      */     }
 /*      */   }
 /*      */   
 /*      */   public void updatePartWheel() {
-/* 1747 */     if (this.field_70170_p.field_72995_K && 
+/* 1747 */     if (this.world.isRemote && 
 /* 1748 */       getAcInfo() != null) {
 /* 1749 */       this.prevRotWheel = this.rotWheel;
 /* 1750 */       this.prevRotYawWheel = this.rotYawWheel;
@@ -1794,7 +1794,7 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   public void updatePartCrawlerTrack() {
-/* 1792 */     if (this.field_70170_p.field_72995_K && 
+/* 1792 */     if (this.world.isRemote && 
 /* 1793 */       getAcInfo() != null) {
 /* 1794 */       this.prevRotTrackRoller[0] = this.rotTrackRoller[0];
 /* 1795 */       this.prevRotTrackRoller[1] = this.rotTrackRoller[1];
@@ -1893,15 +1893,15 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   public void checkServerNoMove() {
-/* 1891 */     if (!this.field_70170_p.field_72995_K) {
-/* 1892 */       double moti = this.field_70159_w * this.field_70159_w + this.field_70181_x * this.field_70181_x + this.field_70179_y * this.field_70179_y;
+/* 1891 */     if (!this.world.isRemote) {
+/* 1892 */       double moti = this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ;
 /* 1893 */       if (moti < 1.0E-4D) {
 /* 1894 */         if (this.serverNoMoveCount < 20) {
 /* 1895 */           this.serverNoMoveCount++;
 /* 1896 */           if (this.serverNoMoveCount >= 20) {
 /* 1897 */             this.serverNoMoveCount = 0;
-/* 1898 */             if (this.field_70170_p instanceof WorldServer) {
-/* 1899 */               ((WorldServer)this.field_70170_p).func_73039_n().func_151247_a((Entity)this, (Packet)new SPacketEntityVelocity(func_145782_y(), 0.0D, 0.0D, 0.0D));
+/* 1898 */             if (this.world instanceof WorldServer) {
+/* 1899 */               ((WorldServer)this.world).getEntityTracker().sendToTracking((Entity)this, (Packet)new SPacketEntityVelocity(getEntityId(), 0.0D, 0.0D, 0.0D));
 /*      */             }
 /*      */           } 
 /*      */         } 
@@ -1912,7 +1912,7 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public boolean haveRotPart() {
-/* 1910 */     return (this.field_70170_p.field_72995_K && 
+/* 1910 */     return (this.world.isRemote && 
 /* 1911 */       getAcInfo() != null && this.rotPartRotation.length > 0 && this.rotPartRotation.length == 
 /*      */       
 /* 1913 */       (getAcInfo()).partRotPart.size());
@@ -1942,7 +1942,7 @@ import net.minecraft.entity.MoverType;
 /*      */   public int getAlt(double px, double py, double pz) {
 /* 1938 */     int i = 0;
 /*      */     
-/* 1940 */     while (i < 256 && py - i > 0.0D && (py - i >= 256.0D || 0 == W_WorldFunc.getBlockId(this.field_70170_p, (int)px, (int)py - i, (int)pz))) {
+/* 1940 */     while (i < 256 && py - i > 0.0D && (py - i >= 256.0D || 0 == W_WorldFunc.getBlockId(this.world, (int)px, (int)py - i, (int)pz))) {
 /* 1941 */       i++;
 /*      */     }
 /*      */     
@@ -1956,9 +1956,9 @@ import net.minecraft.entity.MoverType;
 /*      */   private void onUpdate_Repelling() {
 /* 1952 */     if (getAcInfo() != null && getAcInfo().haveRepellingHook()) {
 /* 1953 */       if (isRepelling()) {
-/* 1954 */         int alt = getAlt(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/* 1954 */         int alt = getAlt(this.posX, this.posY, this.posZ);
 /* 1955 */         if (this.ropesLength > -50.0F && this.ropesLength > -alt) {
-/* 1956 */           this.ropesLength = (float)(this.ropesLength - (this.field_70170_p.field_72995_K ? 0.30000001192092896D : 0.25D));
+/* 1956 */           this.ropesLength = (float)(this.ropesLength - (this.world.isRemote ? 0.30000001192092896D : 0.25D));
 /*      */         }
 /*      */       } else {
 /* 1959 */         this.ropesLength = 0.0F;
@@ -1974,7 +1974,7 @@ import net.minecraft.entity.MoverType;
 /* 1969 */         this.tickRepelling = 0;
 /* 1970 */       } else if (this.tickRepelling < 60) {
 /* 1971 */         this.tickRepelling++;
-/* 1972 */       } else if (!this.field_70170_p.field_72995_K) {
+/* 1972 */       } else if (!this.world.isRemote) {
 /* 1973 */         for (int ropeIdx = 0; ropeIdx < (getAcInfo()).repellingHooks.size(); ropeIdx++) {
 /* 1974 */           MCH_AircraftInfo.RepellingHook hook = (getAcInfo()).repellingHooks.get(ropeIdx);
 /* 1975 */           if (getCountOnUpdate() % hook.interval == 0) {
@@ -1987,10 +1987,10 @@ import net.minecraft.entity.MoverType;
 /* 1982 */                 !(getSeatInfo(i + 1) instanceof MCH_SeatRackInfo)) {
 /* 1983 */                 Entity entity = seat.getRiddenByEntity();
 /* 1984 */                 Vec3d dropPos = getTransformedPosition(hook.pos, (Vec3d)this.prevPosition.oldest());
-/* 1985 */                 seat.field_70165_t = dropPos.field_72450_a;
-/* 1986 */                 seat.field_70163_u = dropPos.field_72448_b - 2.0D;
-/* 1987 */                 seat.field_70161_v = dropPos.field_72449_c;
-/* 1988 */                 entity.func_184210_p();
+/* 1985 */                 seat.posX = dropPos.x;
+/* 1986 */                 seat.posY = dropPos.y - 2.0D;
+/* 1987 */                 seat.posZ = dropPos.z;
+/* 1988 */                 entity.dismountRidingEntity();
 /* 1989 */                 unmountEntityRepelling(entity, dropPos, ropeIdx);
 /* 1990 */                 this.lastUsedRopeIndex = ropeIdx;
 /*      */                 break;
@@ -2003,16 +2003,16 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void unmountEntityRepelling(Entity entity, Vec3d dropPos, int ropeIdx) {
-/* 2001 */     entity.field_70165_t = dropPos.field_72450_a;
-/* 2002 */     entity.field_70163_u = dropPos.field_72448_b - 2.0D;
-/* 2003 */     entity.field_70161_v = dropPos.field_72449_c;
-/* 2004 */     MCH_EntityHide hideEntity = new MCH_EntityHide(this.field_70170_p, entity.field_70165_t, entity.field_70163_u, entity.field_70161_v);
+/* 2001 */     entity.posX = dropPos.x;
+/* 2002 */     entity.posY = dropPos.y - 2.0D;
+/* 2003 */     entity.posZ = dropPos.z;
+/* 2004 */     MCH_EntityHide hideEntity = new MCH_EntityHide(this.world, entity.posX, entity.posY, entity.posZ);
 /* 2005 */     hideEntity.setParent(this, entity, ropeIdx);
-/* 2006 */     hideEntity.field_70159_w = entity.field_70159_w = 0.0D;
-/* 2007 */     hideEntity.field_70181_x = entity.field_70181_x = 0.0D;
-/* 2008 */     hideEntity.field_70179_y = entity.field_70179_y = 0.0D;
-/* 2009 */     hideEntity.field_70143_R = entity.field_70143_R = 0.0F;
-/* 2010 */     this.field_70170_p.func_72838_d((Entity)hideEntity);
+/* 2006 */     hideEntity.motionX = entity.motionX = 0.0D;
+/* 2007 */     hideEntity.motionY = entity.motionY = 0.0D;
+/* 2008 */     hideEntity.motionZ = entity.motionZ = 0.0D;
+/* 2009 */     hideEntity.fallDistance = entity.fallDistance = 0.0F;
+/* 2010 */     this.world.spawnEntity((Entity)hideEntity);
 /*      */   }
 /*      */   
 /*      */   private void onUpdate_UnmountCrew() {
@@ -2030,21 +2030,21 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   public void unmountAircraft() {
-/* 2028 */     Vec3d v = new Vec3d(this.field_70165_t, this.field_70163_u, this.field_70161_v);
-/* 2029 */     if (func_184187_bx() instanceof MCH_EntitySeat) {
-/* 2030 */       MCH_EntityAircraft ac = ((MCH_EntitySeat)func_184187_bx()).getParent();
+/* 2028 */     Vec3d v = new Vec3d(this.posX, this.posY, this.posZ);
+/* 2029 */     if (getRidingEntity() instanceof MCH_EntitySeat) {
+/* 2030 */       MCH_EntityAircraft ac = ((MCH_EntitySeat)getRidingEntity()).getParent();
 /* 2031 */       MCH_SeatInfo seatInfo = ac.getSeatInfo((Entity)this);
 /* 2032 */       if (seatInfo instanceof MCH_SeatRackInfo) {
 /* 2033 */         v = ((MCH_SeatRackInfo)seatInfo).getEntryPos();
 /* 2034 */         v = ac.getTransformedPosition(v);
 /*      */       } 
-/* 2036 */     } else if (func_184187_bx() instanceof net.minecraft.entity.item.EntityMinecartEmpty) {
+/* 2036 */     } else if (getRidingEntity() instanceof net.minecraft.entity.item.EntityMinecartEmpty) {
 /* 2037 */       this.dismountedUserCtrl = true;
 /*      */     } 
 /*      */     
-/* 2040 */     func_70012_b(v.field_72450_a, v.field_72448_b, v.field_72449_c, getRotYaw(), getRotPitch());
-/* 2041 */     func_184210_p();
-/* 2042 */     func_70012_b(v.field_72450_a, v.field_72448_b, v.field_72449_c, getRotYaw(), getRotPitch());
+/* 2040 */     setLocationAndAngles(v.x, v.y, v.z, getRotYaw(), getRotPitch());
+/* 2041 */     dismountRidingEntity();
+/* 2042 */     setLocationAndAngles(v.x, v.y, v.z, getRotYaw(), getRotPitch());
 /*      */   }
 /*      */   
 /*      */   public boolean canUnmount(Entity entity) {
@@ -2064,14 +2064,14 @@ import net.minecraft.entity.MoverType;
 /* 2059 */         if (seat != null) {
 /* 2060 */           this.lastUsedRopeIndex = (this.lastUsedRopeIndex + 1) % (getAcInfo()).repellingHooks.size();
 /* 2061 */           Vec3d dropPos = getTransformedPosition(((MCH_AircraftInfo.RepellingHook)(getAcInfo()).repellingHooks.get(this.lastUsedRopeIndex)).pos, (Vec3d)this.prevPosition.oldest());
-/* 2062 */           dropPos = dropPos.func_72441_c(0.0D, -2.0D, 0.0D);
-/* 2063 */           seat.field_70165_t = dropPos.field_72450_a;
-/* 2064 */           seat.field_70163_u = dropPos.field_72448_b;
-/* 2065 */           seat.field_70161_v = dropPos.field_72449_c;
-/* 2066 */           entity.func_184210_p();
-/* 2067 */           entity.field_70165_t = dropPos.field_72450_a;
-/* 2068 */           entity.field_70163_u = dropPos.field_72448_b;
-/* 2069 */           entity.field_70161_v = dropPos.field_72449_c;
+/* 2062 */           dropPos = dropPos.addVector(0.0D, -2.0D, 0.0D);
+/* 2063 */           seat.posX = dropPos.x;
+/* 2064 */           seat.posY = dropPos.y;
+/* 2065 */           seat.posZ = dropPos.z;
+/* 2066 */           entity.dismountRidingEntity();
+/* 2067 */           entity.posX = dropPos.x;
+/* 2068 */           entity.posY = dropPos.y;
+/* 2069 */           entity.posZ = dropPos.z;
 /* 2070 */           unmountEntityRepelling(entity, dropPos, this.lastUsedRopeIndex);
 /*      */         } else {
 /* 2072 */           MCH_Lib.Log((Entity)this, "Error:MCH_EntityAircraft.unmount seat=null : " + entity, new Object[0]);
@@ -2080,13 +2080,13 @@ import net.minecraft.entity.MoverType;
 /* 2075 */         MCH_EntitySeat seat = getSeatByEntity(entity);
 /* 2076 */         if (seat != null) {
 /* 2077 */           Vec3d dropPos = getTransformedPosition((getAcInfo()).mobDropOption.pos, (Vec3d)this.prevPosition.oldest());
-/* 2078 */           seat.field_70165_t = dropPos.field_72450_a;
-/* 2079 */           seat.field_70163_u = dropPos.field_72448_b;
-/* 2080 */           seat.field_70161_v = dropPos.field_72449_c;
-/* 2081 */           entity.func_184210_p();
-/* 2082 */           entity.field_70165_t = dropPos.field_72450_a;
-/* 2083 */           entity.field_70163_u = dropPos.field_72448_b;
-/* 2084 */           entity.field_70161_v = dropPos.field_72449_c;
+/* 2078 */           seat.posX = dropPos.x;
+/* 2079 */           seat.posY = dropPos.y;
+/* 2080 */           seat.posZ = dropPos.z;
+/* 2081 */           entity.dismountRidingEntity();
+/* 2082 */           entity.posX = dropPos.x;
+/* 2083 */           entity.posY = dropPos.y;
+/* 2084 */           entity.posZ = dropPos.z;
 /* 2085 */           dropEntityParachute(entity);
 /*      */         } else {
 /* 2087 */           MCH_Lib.Log((Entity)this, "Error:MCH_EntityAircraft.unmount seat=null : " + entity, new Object[0]);
@@ -2104,7 +2104,7 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   public void onUpdate_RidingEntity() {
-/* 2102 */     if (!this.field_70170_p.field_72995_K && this.waitMountEntity == 0 && getCountOnUpdate() > 20 && canMountWithNearEmptyMinecart()) {
+/* 2102 */     if (!this.world.isRemote && this.waitMountEntity == 0 && getCountOnUpdate() > 20 && canMountWithNearEmptyMinecart()) {
 /* 2103 */       mountWithNearEmptyMinecart();
 /*      */     }
 /*      */     
@@ -2112,46 +2112,46 @@ import net.minecraft.entity.MoverType;
 /* 2107 */       this.waitMountEntity--;
 /*      */     }
 /*      */     
-/* 2110 */     if (!this.field_70170_p.field_72995_K && func_184187_bx() != null) {
+/* 2110 */     if (!this.world.isRemote && getRidingEntity() != null) {
 /* 2111 */       setRotRoll(getRotRoll() * 0.9F);
 /* 2112 */       setRotPitch(getRotPitch() * 0.95F);
-/* 2113 */       Entity re = func_184187_bx();
-/* 2114 */       float target = MathHelper.func_76142_g(re.field_70177_z + 90.0F);
-/* 2115 */       if (target - this.field_70177_z > 180.0F) {
+/* 2113 */       Entity re = getRidingEntity();
+/* 2114 */       float target = MathHelper.wrapDegrees(re.rotationYaw + 90.0F);
+/* 2115 */       if (target - this.rotationYaw > 180.0F) {
 /* 2116 */         target -= 360.0F;
 /*      */       }
 /*      */       
-/* 2119 */       if (target - this.field_70177_z < -180.0F) {
+/* 2119 */       if (target - this.rotationYaw < -180.0F) {
 /* 2120 */         target += 360.0F;
 /*      */       }
 /*      */       
-/* 2123 */       if (this.field_70173_aa % 2 == 0);
+/* 2123 */       if (this.ticksExisted % 2 == 0);
 /*      */ 
 /*      */       
-/* 2126 */       float dist = 50.0F * (float)re.func_70092_e(re.field_70169_q, re.field_70167_r, re.field_70166_s);
+/* 2126 */       float dist = 50.0F * (float)re.getDistanceSq(re.prevPosX, re.prevPosY, re.prevPosZ);
 /* 2127 */       if (dist > 0.001D) {
-/* 2128 */         dist = MathHelper.func_76129_c(dist);
-/* 2129 */         float distYaw = MCH_Lib.RNG(target - this.field_70177_z, -dist, dist);
-/* 2130 */         this.field_70177_z += distYaw;
+/* 2128 */         dist = MathHelper.sqrt(dist);
+/* 2129 */         float distYaw = MCH_Lib.RNG(target - this.rotationYaw, -dist, dist);
+/* 2130 */         this.rotationYaw += distYaw;
 /*      */       } 
 /*      */       
-/* 2133 */       double bkPosX = this.field_70165_t;
-/* 2134 */       double bkPosY = this.field_70163_u;
-/* 2135 */       double bkPosZ = this.field_70161_v;
-/* 2136 */       if ((func_184187_bx()).field_70128_L) {
-/* 2137 */         func_184210_p();
+/* 2133 */       double bkPosX = this.posX;
+/* 2134 */       double bkPosY = this.posY;
+/* 2135 */       double bkPosZ = this.posZ;
+/* 2136 */       if ((getRidingEntity()).isDead) {
+/* 2137 */         dismountRidingEntity();
 /* 2138 */         this.waitMountEntity = 20;
 /* 2139 */       } else if (getCurrentThrottle() > 0.8D) {
-/* 2140 */         this.field_70159_w = (func_184187_bx()).field_70159_w;
-/* 2141 */         this.field_70181_x = (func_184187_bx()).field_70181_x;
-/* 2142 */         this.field_70179_y = (func_184187_bx()).field_70179_y;
-/* 2143 */         func_184210_p();
+/* 2140 */         this.motionX = (getRidingEntity()).motionX;
+/* 2141 */         this.motionY = (getRidingEntity()).motionY;
+/* 2142 */         this.motionZ = (getRidingEntity()).motionZ;
+/* 2143 */         dismountRidingEntity();
 /* 2144 */         this.waitMountEntity = 20;
 /*      */       } 
 /*      */       
-/* 2147 */       this.field_70165_t = bkPosX;
-/* 2148 */       this.field_70163_u = bkPosY;
-/* 2149 */       this.field_70161_v = bkPosZ;
+/* 2147 */       this.posX = bkPosX;
+/* 2148 */       this.posY = bkPosY;
+/* 2149 */       this.posZ = bkPosZ;
 /*      */     } 
 /*      */   }
 /*      */   
@@ -2165,40 +2165,40 @@ import net.minecraft.entity.MoverType;
 /* 2160 */       exp = 15.0F;
 /*      */     }
 /*      */     
-/* 2163 */     MCH_Lib.DbgLog(this.field_70170_p, "OnGroundAfterDestroyed:motionY=%.3f", new Object[] { Float.valueOf((float)prevMotionY) });
-/* 2164 */     MCH_Explosion.newExplosion(this.field_70170_p, null, null, this.field_70165_t, this.field_70163_u, this.field_70161_v, exp, (exp >= 2.0F) ? (exp * 0.5F) : 1.0F, true, true, true, true, 5);
+/* 2163 */     MCH_Lib.DbgLog(this.world, "OnGroundAfterDestroyed:motionY=%.3f", new Object[] { Float.valueOf((float)prevMotionY) });
+/* 2164 */     MCH_Explosion.newExplosion(this.world, null, null, this.posX, this.posY, this.posZ, exp, (exp >= 2.0F) ? (exp * 0.5F) : 1.0F, true, true, true, true, 5);
 /*      */   }
 /*      */   
 /*      */   public void onUpdate_CollisionGroundDamage() {
 /* 2168 */     if (!isDestroyed()) {
-/* 2169 */       if (MCH_Lib.getBlockIdY((Entity)this, 3, -3) > 0 && !this.field_70170_p.field_72995_K) {
-/* 2170 */         float roll = MathHelper.func_76135_e(MathHelper.func_76142_g(getRotRoll()));
-/* 2171 */         float pitch = MathHelper.func_76135_e(MathHelper.func_76142_g(getRotPitch()));
+/* 2169 */       if (MCH_Lib.getBlockIdY((Entity)this, 3, -3) > 0 && !this.world.isRemote) {
+/* 2170 */         float roll = MathHelper.abs(MathHelper.wrapDegrees(getRotRoll()));
+/* 2171 */         float pitch = MathHelper.abs(MathHelper.wrapDegrees(getRotPitch()));
 /* 2172 */         if (roll > getGiveDamageRot() || pitch > getGiveDamageRot()) {
-/* 2173 */           float dmg = MathHelper.func_76135_e(roll) + MathHelper.func_76135_e(pitch);
+/* 2173 */           float dmg = MathHelper.abs(roll) + MathHelper.abs(pitch);
 /* 2174 */           if (dmg < 90.0F) {
-/* 2175 */             dmg *= 0.4F * (float)func_70011_f(this.field_70169_q, this.field_70167_r, this.field_70166_s);
+/* 2175 */             dmg *= 0.4F * (float)getDistance(this.prevPosX, this.prevPosY, this.prevPosZ);
 /*      */           } else {
 /* 2177 */             dmg *= 0.4F;
 /*      */           } 
 /*      */           
-/* 2180 */           if (dmg > 1.0F && this.field_70146_Z.nextInt(4) == 0) {
-/* 2181 */             func_70097_a(DamageSource.field_76368_d, dmg);
+/* 2180 */           if (dmg > 1.0F && this.rand.nextInt(4) == 0) {
+/* 2181 */             attackEntityFrom(DamageSource.IN_WALL, dmg);
 /*      */           }
 /*      */         } 
 /*      */       } 
 /*      */       
 /* 2186 */       if (getCountOnUpdate() % 30 == 0 && (
 /* 2187 */         getAcInfo() == null || !(getAcInfo()).isFloat) && 
-/* 2188 */         MCH_Lib.isBlockInWater(this.field_70170_p, (int)(this.field_70165_t + 0.5D), 
-/* 2189 */           (int)(this.field_70163_u + 1.5D + (getAcInfo()).submergedDamageHeight), (int)(this.field_70161_v + 0.5D))) {
+/* 2188 */         MCH_Lib.isBlockInWater(this.world, (int)(this.posX + 0.5D), 
+/* 2189 */           (int)(this.posY + 1.5D + (getAcInfo()).submergedDamageHeight), (int)(this.posZ + 0.5D))) {
 /*      */         
 /* 2191 */         int hp = getMaxHP() / 10;
 /* 2192 */         if (hp <= 0) {
 /* 2193 */           hp = 1;
 /*      */         }
 /*      */         
-/* 2196 */         attackEntityFrom(DamageSource.field_76368_d, hp);
+/* 2196 */         attackEntityFrom(DamageSource.IN_WALL, hp);
 /*      */       } 
 /*      */     } 
 /*      */   }
@@ -2209,18 +2209,18 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public void applyServerPositionAndRotation() {
 /* 2206 */     double rpinc = this.aircraftPosRotInc;
-/* 2207 */     double yaw = MathHelper.func_76138_g(this.aircraftYaw - getRotYaw());
-/* 2208 */     double roll = MathHelper.func_76142_g(getServerRoll() - getRotRoll());
-/* 2209 */     if (!isDestroyed() && (!W_Lib.isClientPlayer(getRiddenByEntity()) || func_184187_bx() != null)) {
+/* 2207 */     double yaw = MathHelper.wrapDegrees(this.aircraftYaw - getRotYaw());
+/* 2208 */     double roll = MathHelper.wrapDegrees(getServerRoll() - getRotRoll());
+/* 2209 */     if (!isDestroyed() && (!W_Lib.isClientPlayer(getRiddenByEntity()) || getRidingEntity() != null)) {
 /* 2210 */       setRotYaw((float)(getRotYaw() + yaw / rpinc));
 /* 2211 */       setRotPitch((float)(getRotPitch() + (this.aircraftPitch - getRotPitch()) / rpinc));
 /* 2212 */       setRotRoll((float)(getRotRoll() + roll / rpinc));
 /*      */     } 
 /*      */     
-/* 2215 */     func_70107_b(this.field_70165_t + (this.aircraftX - this.field_70165_t) / rpinc, this.field_70163_u + (this.aircraftY - this.field_70163_u) / rpinc, this.field_70161_v + (this.aircraftZ - this.field_70161_v) / rpinc);
+/* 2215 */     setPosition(this.posX + (this.aircraftX - this.posX) / rpinc, this.posY + (this.aircraftY - this.posY) / rpinc, this.posZ + (this.aircraftZ - this.posZ) / rpinc);
 /*      */ 
 /*      */     
-/* 2218 */     func_70101_b(getRotYaw(), getRotPitch());
+/* 2218 */     setRotation(getRotYaw(), getRotPitch());
 /* 2219 */     this.aircraftPosRotInc--;
 /*      */   }
 /*      */   
@@ -2255,7 +2255,7 @@ import net.minecraft.entity.MoverType;
 /*      */     
 /* 2251 */     int damage = getDamageTaken();
 /* 2252 */     if (damage > 0) {
-/* 2253 */       if (!this.field_70170_p.field_72995_K) {
+/* 2253 */       if (!this.world.isRemote) {
 /* 2254 */         setDamageTaken(damage - tpd);
 /*      */       }
 /*      */       
@@ -2268,9 +2268,9 @@ import net.minecraft.entity.MoverType;
 /*      */   public void repairOtherAircraft() {
 /* 2264 */     float range = (getAcInfo() != null) ? (getAcInfo()).repairOtherVehiclesRange : 0.0F;
 /* 2265 */     if (range > 0.0F && 
-/* 2266 */       !this.field_70170_p.field_72995_K && getCountOnUpdate() % 20 == 0) {
+/* 2266 */       !this.world.isRemote && getCountOnUpdate() % 20 == 0) {
 /*      */       
-/* 2268 */       List<MCH_EntityAircraft> list = this.field_70170_p.func_72872_a(MCH_EntityAircraft.class, func_70046_E().func_72314_b(range, range, range));
+/* 2268 */       List<MCH_EntityAircraft> list = this.world.getEntitiesWithinAABB(MCH_EntityAircraft.class, getCollisionBoundingBox().grow(range, range, range));
 /*      */       
 /* 2270 */       for (MCH_EntityAircraft ac : list) {
 /* 2271 */         if (!W_Entity.isEqual((Entity)this, (Entity)ac) && ac.getHP() < ac.getMaxHP()) {
@@ -2283,17 +2283,17 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   protected void regenerationMob() {
 /* 2280 */     if (!isDestroyed() && 
-/* 2281 */       !this.field_70170_p.field_72995_K && 
+/* 2281 */       !this.world.isRemote && 
 /* 2282 */       getAcInfo() != null && (getAcInfo()).regeneration && getRiddenByEntity() != null) {
 /* 2283 */       MCH_EntitySeat[] st = getSeats();
 /*      */       
 /* 2285 */       for (MCH_EntitySeat s : st) {
-/* 2286 */         if (s != null && !s.field_70128_L) {
+/* 2286 */         if (s != null && !s.isDead) {
 /* 2287 */           Entity e = s.getRiddenByEntity();
-/* 2288 */           if (W_Lib.isEntityLivingBase(e) && !e.field_70128_L) {
-/* 2289 */             PotionEffect pe = W_Entity.getActivePotionEffect(e, MobEffects.field_76428_l);
-/* 2290 */             if (pe == null || pe.func_76459_b() < 500) {
-/* 2291 */               W_Entity.addPotionEffect(e, new PotionEffect(MobEffects.field_76428_l, 250, 0, true, true));
+/* 2288 */           if (W_Lib.isEntityLivingBase(e) && !e.isDead) {
+/* 2289 */             PotionEffect pe = W_Entity.getActivePotionEffect(e, MobEffects.REGENERATION);
+/* 2290 */             if (pe == null || pe.getDuration() < 500) {
+/* 2291 */               W_Entity.addPotionEffect(e, new PotionEffect(MobEffects.REGENERATION, 250, 0, true, true));
 /*      */             }
 /*      */           } 
 /*      */         } 
@@ -2308,14 +2308,14 @@ import net.minecraft.entity.MoverType;
 /* 2303 */     double d0 = 0.0D;
 /*      */     
 /* 2305 */     for (int i = 0; i < b0; i++) {
-/* 2306 */       double d1 = (func_174813_aQ()).field_72338_b + ((func_174813_aQ()).field_72337_e - (func_174813_aQ()).field_72338_b) * i / b0 - 0.125D;
-/* 2307 */       double d2 = (func_174813_aQ()).field_72338_b + ((func_174813_aQ()).field_72337_e - (func_174813_aQ()).field_72338_b) * (i + 1) / b0 - 0.125D;
+/* 2306 */       double d1 = (getEntityBoundingBox()).minY + ((getEntityBoundingBox()).maxY - (getEntityBoundingBox()).minY) * i / b0 - 0.125D;
+/* 2307 */       double d2 = (getEntityBoundingBox()).minY + ((getEntityBoundingBox()).maxY - (getEntityBoundingBox()).minY) * (i + 1) / b0 - 0.125D;
 /* 2308 */       d1 += (getAcInfo()).floatOffset;
 /* 2309 */       d2 += (getAcInfo()).floatOffset;
 /* 2310 */       AxisAlignedBB axisalignedbb = W_AxisAlignedBB.getAABB(
-/* 2311 */           (func_174813_aQ()).field_72340_a, d1, (func_174813_aQ()).field_72339_c, (func_174813_aQ()).field_72336_d, d2, (func_174813_aQ()).field_72334_f);
+/* 2311 */           (getEntityBoundingBox()).minX, d1, (getEntityBoundingBox()).minZ, (getEntityBoundingBox()).maxX, d2, (getEntityBoundingBox()).maxZ);
 /*      */       
-/* 2313 */       if (this.field_70170_p.func_72875_a(axisalignedbb, Material.field_151586_h)) {
+/* 2313 */       if (this.world.isMaterialInBB(axisalignedbb, Material.WATER)) {
 /* 2314 */         d0 += 1.0D / b0;
 /*      */       }
 /*      */     } 
@@ -2328,15 +2328,15 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public boolean canSupply() {
-/* 2326 */     return canFloatWater() ? ((MCH_Lib.getBlockIdY((Entity)this, 1, -3) != 0)) : ((MCH_Lib.getBlockIdY((Entity)this, 1, -3) != 0 && !func_70090_H()));
+/* 2326 */     return canFloatWater() ? ((MCH_Lib.getBlockIdY((Entity)this, 1, -3) != 0)) : ((MCH_Lib.getBlockIdY((Entity)this, 1, -3) != 0 && !isInWater()));
 /*      */   }
 /*      */   
 /*      */   public int getFuel() {
-/* 2330 */     return ((Integer)this.field_70180_af.func_187225_a(FUEL)).intValue();
+/* 2330 */     return ((Integer)this.dataManager.get(FUEL)).intValue();
 /*      */   }
 /*      */   
 /*      */   public void setFuel(int fuel) {
-/* 2334 */     if (!this.field_70170_p.field_72995_K) {
+/* 2334 */     if (!this.world.isRemote) {
 /* 2335 */       if (fuel < 0) {
 /* 2336 */         fuel = 0;
 /*      */       }
@@ -2346,7 +2346,7 @@ import net.minecraft.entity.MoverType;
 /*      */       }
 /*      */       
 /* 2343 */       if (fuel != getFuel()) {
-/* 2344 */         this.field_70180_af.func_187227_b(FUEL, Integer.valueOf(fuel));
+/* 2344 */         this.dataManager.set(FUEL, Integer.valueOf(fuel));
 /*      */       }
 /*      */     } 
 /*      */   }
@@ -2371,13 +2371,13 @@ import net.minecraft.entity.MoverType;
 /*      */   public void supplyFuel() {
 /* 2367 */     float range = (getAcInfo() != null) ? (getAcInfo()).fuelSupplyRange : 0.0F;
 /* 2368 */     if (range > 0.0F && 
-/* 2369 */       !this.field_70170_p.field_72995_K && getCountOnUpdate() % 10 == 0) {
+/* 2369 */       !this.world.isRemote && getCountOnUpdate() % 10 == 0) {
 /*      */       
-/* 2371 */       List<MCH_EntityAircraft> list = this.field_70170_p.func_72872_a(MCH_EntityAircraft.class, func_70046_E().func_72314_b(range, range, range));
+/* 2371 */       List<MCH_EntityAircraft> list = this.world.getEntitiesWithinAABB(MCH_EntityAircraft.class, getCollisionBoundingBox().grow(range, range, range));
 /*      */       
 /* 2373 */       for (MCH_EntityAircraft ac : list) {
 /* 2374 */         if (!W_Entity.isEqual((Entity)this, (Entity)ac)) {
-/* 2375 */           if ((!this.field_70122_E || ac.canSupply()) && ac.getFuel() < ac.getMaxFuel()) {
+/* 2375 */           if ((!this.onGround || ac.canSupply()) && ac.getFuel() < ac.getMaxFuel()) {
 /* 2376 */             int fc = ac.getMaxFuel() - ac.getFuel();
 /* 2377 */             if (fc > 30) {
 /* 2378 */               fc = 30;
@@ -2399,7 +2399,7 @@ import net.minecraft.entity.MoverType;
 /* 2394 */         this.fuelSuppliedCount--;
 /*      */       }
 /*      */       
-/* 2397 */       if (!isDestroyed() && !this.field_70170_p.field_72995_K) {
+/* 2397 */       if (!isDestroyed() && !this.world.isRemote) {
 /* 2398 */         if (getCountOnUpdate() % 20 == 0 && getFuel() > 1 && getThrottle() > 0.0D && this.fuelSuppliedCount <= 0) {
 /* 2399 */           double t = getThrottle() * 1.4D;
 /* 2400 */           if (t > 1.0D) {
@@ -2419,17 +2419,17 @@ import net.minecraft.entity.MoverType;
 /* 2414 */           for (int i = 0; i < 3; i++) {
 /* 2415 */             if (curFuel < getMaxFuel()) {
 /* 2416 */               ItemStack fuel = getGuiInventory().getFuelSlotItemStack(i);
-/* 2417 */               if (!fuel.func_190926_b() && fuel.func_77973_b() instanceof MCH_ItemFuel && fuel.func_77960_j() < fuel.func_77958_k()) {
+/* 2417 */               if (!fuel.isEmpty() && fuel.getItem() instanceof MCH_ItemFuel && fuel.getMetadata() < fuel.getMaxDamage()) {
 /* 2418 */                 int fc = getMaxFuel() - curFuel;
 /* 2419 */                 if (fc > 100) {
 /* 2420 */                   fc = 100;
 /*      */                 }
 /*      */                 
-/* 2423 */                 if (fuel.func_77960_j() > fuel.func_77958_k() - fc) {
-/* 2424 */                   fc = fuel.func_77958_k() - fuel.func_77960_j();
+/* 2423 */                 if (fuel.getMetadata() > fuel.getMaxDamage() - fc) {
+/* 2424 */                   fc = fuel.getMaxDamage() - fuel.getMetadata();
 /*      */                 }
 /*      */                 
-/* 2427 */                 fuel.func_77964_b(fuel.func_77960_j() + fc);
+/* 2427 */                 fuel.setItemDamage(fuel.getMetadata() + fc);
 /* 2428 */                 curFuel += fc;
 /*      */               } 
 /*      */             } 
@@ -2450,10 +2450,10 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void updateSupplyAmmo() {
-/* 2448 */     if (!this.field_70170_p.field_72995_K) {
+/* 2448 */     if (!this.world.isRemote) {
 /*      */ 
 /*      */       
-/* 2451 */       boolean isReloading = (getRiddenByEntity() instanceof EntityPlayer && !(getRiddenByEntity()).field_70128_L && ((EntityPlayer)getRiddenByEntity()).field_71070_bA instanceof MCH_AircraftGuiContainer);
+/* 2451 */       boolean isReloading = (getRiddenByEntity() instanceof EntityPlayer && !(getRiddenByEntity()).isDead && ((EntityPlayer)getRiddenByEntity()).openContainer instanceof MCH_AircraftGuiContainer);
 /*      */       
 /* 2453 */       setCommonStatus(2, isReloading);
 /* 2454 */       if (!isDestroyed() && this.beforeSupplyAmmo && !isReloading) {
@@ -2474,7 +2474,7 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void supplyAmmo(int weaponID) {
-/* 2472 */     if (this.field_70170_p.field_72995_K) {
+/* 2472 */     if (this.world.isRemote) {
 /* 2473 */       MCH_WeaponSet ws = getWeapon(weaponID);
 /* 2474 */       ws.supplyRestAllAmmo();
 /*      */     } else {
@@ -2489,20 +2489,20 @@ import net.minecraft.entity.MoverType;
 /* 2484 */           for (MCH_WeaponInfo.RoundItem ri : (ws.getInfo()).roundItems) {
 /* 2485 */             int num = ri.num;
 /*      */             
-/* 2487 */             for (int i = 0; i < player.field_71071_by.field_70462_a.size(); i++) {
-/* 2488 */               ItemStack itemStack = (ItemStack)player.field_71071_by.field_70462_a.get(i);
-/* 2489 */               if (!itemStack.func_190926_b() && itemStack.func_77969_a(ri.itemStack)) {
-/* 2490 */                 if (itemStack.func_77973_b() != W_Item.getItemByName("water_bucket") && itemStack.func_77973_b() != W_Item.getItemByName("lava_bucket")) {
-/* 2491 */                   if (itemStack.func_190916_E() > num) {
-/* 2492 */                     itemStack.func_190918_g(num);
+/* 2487 */             for (int i = 0; i < player.inventory.mainInventory.size(); i++) {
+/* 2488 */               ItemStack itemStack = (ItemStack)player.inventory.mainInventory.get(i);
+/* 2489 */               if (!itemStack.isEmpty() && itemStack.isItemEqual(ri.itemStack)) {
+/* 2490 */                 if (itemStack.getItem() != W_Item.getItemByName("water_bucket") && itemStack.getItem() != W_Item.getItemByName("lava_bucket")) {
+/* 2491 */                   if (itemStack.getCount() > num) {
+/* 2492 */                     itemStack.shrink(num);
 /* 2493 */                     num = 0;
 /*      */                   } else {
-/* 2495 */                     num -= itemStack.func_190916_E();
-/* 2496 */                     itemStack.func_190920_e(0);
-/* 2497 */                     player.field_71071_by.field_70462_a.set(i, ItemStack.field_190927_a);
+/* 2495 */                     num -= itemStack.getCount();
+/* 2496 */                     itemStack.setCount(0);
+/* 2497 */                     player.inventory.mainInventory.set(i, ItemStack.EMPTY);
 /*      */                   } 
-/* 2499 */                 } else if (itemStack.func_190916_E() == 1) {
-/* 2500 */                   player.field_71071_by.func_70299_a(i, new ItemStack(W_Item.getItemByName("bucket"), 1));
+/* 2499 */                 } else if (itemStack.getCount() == 1) {
+/* 2500 */                   player.inventory.setInventorySlotContents(i, new ItemStack(W_Item.getItemByName("bucket"), 1));
 /* 2501 */                   num--;
 /*      */                 } 
 /*      */               }
@@ -2522,9 +2522,9 @@ import net.minecraft.entity.MoverType;
 /*      */   public void supplyAmmoToOtherAircraft() {
 /* 2518 */     float range = (getAcInfo() != null) ? (getAcInfo()).ammoSupplyRange : 0.0F;
 /* 2519 */     if (range > 0.0F && 
-/* 2520 */       !this.field_70170_p.field_72995_K && getCountOnUpdate() % 40 == 0) {
+/* 2520 */       !this.world.isRemote && getCountOnUpdate() % 40 == 0) {
 /*      */       
-/* 2522 */       List<MCH_EntityAircraft> list = this.field_70170_p.func_72872_a(MCH_EntityAircraft.class, func_70046_E().func_72314_b(range, range, range));
+/* 2522 */       List<MCH_EntityAircraft> list = this.world.getEntitiesWithinAABB(MCH_EntityAircraft.class, getCollisionBoundingBox().grow(range, range, range));
 /*      */       
 /* 2524 */       for (MCH_EntityAircraft ac : list) {
 /* 2525 */         if (!W_Entity.isEqual((Entity)this, (Entity)ac) && ac.canSupply()) {
@@ -2567,9 +2567,9 @@ import net.minecraft.entity.MoverType;
 /* 2562 */     for (MCH_WeaponInfo.RoundItem ri : (ws.getInfo()).roundItems) {
 /* 2563 */       int num = ri.num;
 /*      */       
-/* 2565 */       for (ItemStack itemStack : player.field_71071_by.field_70462_a) {
-/* 2566 */         if (!itemStack.func_190926_b() && itemStack.func_77969_a(ri.itemStack)) {
-/* 2567 */           num -= itemStack.func_190916_E();
+/* 2565 */       for (ItemStack itemStack : player.inventory.mainInventory) {
+/* 2566 */         if (!itemStack.isEmpty() && itemStack.isItemEqual(ri.itemStack)) {
+/* 2567 */           num -= itemStack.getCount();
 /*      */         }
 /*      */         
 /* 2570 */         if (num <= 0) {
@@ -2588,12 +2588,12 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   public String getTextureName() {
-/* 2586 */     return (String)this.field_70180_af.func_187225_a(TEXTURE_NAME);
+/* 2586 */     return (String)this.dataManager.get(TEXTURE_NAME);
 /*      */   }
 /*      */   
 /*      */   public MCH_EntityAircraft setTextureName(@Nullable String name) {
 /* 2590 */     if (name != null && !name.isEmpty()) {
-/* 2591 */       this.field_70180_af.func_187227_b(TEXTURE_NAME, name);
+/* 2591 */       this.dataManager.set(TEXTURE_NAME, name);
 /*      */     }
 /*      */     
 /* 2594 */     return this;
@@ -2689,183 +2689,183 @@ import net.minecraft.entity.MoverType;
 /* 2684 */     return this.entityRadar.getEnemyList();
 /*      */   }
 /*      */   
-/*      */   public void func_70091_d(@NotNull MoverType type, double x, double y, double z) {
+/*      */   public void move(@NotNull MoverType type, double x, double y, double z) {
 /* 2688 */     if (getAcInfo() != null) {
-/* 2689 */       this.field_70170_p.field_72984_F.func_76320_a("move");
+/* 2689 */       this.world.profiler.startSection("move");
 /* 2690 */       double d2 = x;
 /* 2691 */       double d3 = y;
 /* 2692 */       double d4 = z;
-/* 2693 */       List<AxisAlignedBB> list1 = getCollisionBoxes((Entity)this, func_174813_aQ().func_72321_a(x, y, z));
-/* 2694 */       AxisAlignedBB axisalignedbb = func_174813_aQ();
+/* 2693 */       List<AxisAlignedBB> list1 = getCollisionBoxes((Entity)this, getEntityBoundingBox().expand(x, y, z));
+/* 2694 */       AxisAlignedBB axisalignedbb = getEntityBoundingBox();
 /* 2695 */       if (y != 0.0D) {
 /* 2696 */         for (AxisAlignedBB axisAlignedBB : list1) {
-/* 2697 */           y = axisAlignedBB.func_72323_b(func_174813_aQ(), y);
+/* 2697 */           y = axisAlignedBB.calculateYOffset(getEntityBoundingBox(), y);
 /*      */         }
 /*      */         
-/* 2700 */         func_174826_a(func_174813_aQ().func_72317_d(0.0D, y, 0.0D));
+/* 2700 */         setEntityBoundingBox(getEntityBoundingBox().offset(0.0D, y, 0.0D));
 /*      */       } 
 /*      */       
-/* 2703 */       boolean flag = (this.field_70122_E || (d3 != y && d3 < 0.0D));
+/* 2703 */       boolean flag = (this.onGround || (d3 != y && d3 < 0.0D));
 /* 2704 */       if (x != 0.0D) {
 /* 2705 */         for (AxisAlignedBB axisAlignedBB : list1) {
-/* 2706 */           x = axisAlignedBB.func_72316_a(func_174813_aQ(), x);
+/* 2706 */           x = axisAlignedBB.calculateXOffset(getEntityBoundingBox(), x);
 /*      */         }
 /*      */         
 /* 2709 */         if (x != 0.0D) {
-/* 2710 */           func_174826_a(func_174813_aQ().func_72317_d(x, 0.0D, 0.0D));
+/* 2710 */           setEntityBoundingBox(getEntityBoundingBox().offset(x, 0.0D, 0.0D));
 /*      */         }
 /*      */       } 
 /*      */       
 /* 2714 */       if (z != 0.0D)
 /*      */       {
-/* 2716 */         func_174826_a(func_174813_aQ().func_72317_d(0.0D, 0.0D, z));
+/* 2716 */         setEntityBoundingBox(getEntityBoundingBox().offset(0.0D, 0.0D, z));
 /*      */       }
 /*      */       
-/* 2719 */       if (this.field_70138_W > 0.0F && flag && (d2 != x || d4 != z)) {
+/* 2719 */       if (this.stepHeight > 0.0F && flag && (d2 != x || d4 != z)) {
 /* 2720 */         double d14 = x;
 /* 2721 */         double d6 = y;
 /* 2722 */         double d7 = z;
-/* 2723 */         AxisAlignedBB axisalignedbb1 = func_174813_aQ();
-/* 2724 */         func_174826_a(axisalignedbb);
-/* 2725 */         y = this.field_70138_W;
-/* 2726 */         List<AxisAlignedBB> list = getCollisionBoxes((Entity)this, func_174813_aQ().func_72321_a(d2, y, d4));
-/* 2727 */         AxisAlignedBB axisalignedbb2 = func_174813_aQ();
-/* 2728 */         AxisAlignedBB axisalignedbb3 = axisalignedbb2.func_72321_a(d2, 0.0D, d4);
+/* 2723 */         AxisAlignedBB axisalignedbb1 = getEntityBoundingBox();
+/* 2724 */         setEntityBoundingBox(axisalignedbb);
+/* 2725 */         y = this.stepHeight;
+/* 2726 */         List<AxisAlignedBB> list = getCollisionBoxes((Entity)this, getEntityBoundingBox().expand(d2, y, d4));
+/* 2727 */         AxisAlignedBB axisalignedbb2 = getEntityBoundingBox();
+/* 2728 */         AxisAlignedBB axisalignedbb3 = axisalignedbb2.expand(d2, 0.0D, d4);
 /* 2729 */         double d8 = y;
 /*      */         
 /* 2731 */         for (AxisAlignedBB axisAlignedBB1 : list) {
-/* 2732 */           d8 = axisAlignedBB1.func_72323_b(axisalignedbb3, d8);
+/* 2732 */           d8 = axisAlignedBB1.calculateYOffset(axisalignedbb3, d8);
 /*      */         }
 /*      */         
-/* 2735 */         axisalignedbb2 = axisalignedbb2.func_72317_d(0.0D, d8, 0.0D);
+/* 2735 */         axisalignedbb2 = axisalignedbb2.offset(0.0D, d8, 0.0D);
 /* 2736 */         double d18 = d2;
 /*      */         
 /* 2738 */         for (AxisAlignedBB element : list) {
-/* 2739 */           d18 = element.func_72316_a(axisalignedbb2, d18);
+/* 2739 */           d18 = element.calculateXOffset(axisalignedbb2, d18);
 /*      */         }
 /*      */         
-/* 2742 */         axisalignedbb2 = axisalignedbb2.func_72317_d(d18, 0.0D, 0.0D);
+/* 2742 */         axisalignedbb2 = axisalignedbb2.offset(d18, 0.0D, 0.0D);
 /* 2743 */         double d19 = d4;
 /*      */         
 /* 2745 */         for (AxisAlignedBB item : list) {
-/* 2746 */           d19 = item.func_72322_c(axisalignedbb2, d19);
+/* 2746 */           d19 = item.calculateZOffset(axisalignedbb2, d19);
 /*      */         }
 /*      */         
-/* 2749 */         axisalignedbb2 = axisalignedbb2.func_72317_d(0.0D, 0.0D, d19);
-/* 2750 */         AxisAlignedBB axisalignedbb4 = func_174813_aQ();
+/* 2749 */         axisalignedbb2 = axisalignedbb2.offset(0.0D, 0.0D, d19);
+/* 2750 */         AxisAlignedBB axisalignedbb4 = getEntityBoundingBox();
 /* 2751 */         double d20 = y;
 /*      */         
 /* 2753 */         for (AxisAlignedBB value : list) {
-/* 2754 */           d20 = value.func_72323_b(axisalignedbb4, d20);
+/* 2754 */           d20 = value.calculateYOffset(axisalignedbb4, d20);
 /*      */         }
 /*      */         
-/* 2757 */         axisalignedbb4 = axisalignedbb4.func_72317_d(0.0D, d20, 0.0D);
+/* 2757 */         axisalignedbb4 = axisalignedbb4.offset(0.0D, d20, 0.0D);
 /* 2758 */         double d21 = d2;
 /*      */         
 /* 2760 */         for (AxisAlignedBB bb : list) {
-/* 2761 */           d21 = bb.func_72316_a(axisalignedbb4, d21);
+/* 2761 */           d21 = bb.calculateXOffset(axisalignedbb4, d21);
 /*      */         }
 /*      */         
-/* 2764 */         axisalignedbb4 = axisalignedbb4.func_72317_d(d21, 0.0D, 0.0D);
+/* 2764 */         axisalignedbb4 = axisalignedbb4.offset(d21, 0.0D, 0.0D);
 /* 2765 */         double d22 = d4;
 /*      */         
 /* 2767 */         for (AxisAlignedBB alignedBB : list) {
-/* 2768 */           d22 = alignedBB.func_72322_c(axisalignedbb4, d22);
+/* 2768 */           d22 = alignedBB.calculateZOffset(axisalignedbb4, d22);
 /*      */         }
 /*      */         
-/* 2771 */         axisalignedbb4 = axisalignedbb4.func_72317_d(0.0D, 0.0D, d22);
+/* 2771 */         axisalignedbb4 = axisalignedbb4.offset(0.0D, 0.0D, d22);
 /* 2772 */         double d23 = d18 * d18 + d19 * d19;
 /* 2773 */         double d9 = d21 * d21 + d22 * d22;
 /* 2774 */         if (d23 > d9) {
 /* 2775 */           x = d18;
 /* 2776 */           z = d19;
 /* 2777 */           y = -d8;
-/* 2778 */           func_174826_a(axisalignedbb2);
+/* 2778 */           setEntityBoundingBox(axisalignedbb2);
 /*      */         } else {
 /* 2780 */           x = d21;
 /* 2781 */           z = d22;
 /* 2782 */           y = -d20;
-/* 2783 */           func_174826_a(axisalignedbb4);
+/* 2783 */           setEntityBoundingBox(axisalignedbb4);
 /*      */         } 
 /*      */         
 /* 2786 */         for (AxisAlignedBB axisAlignedBB : list) {
-/* 2787 */           y = axisAlignedBB.func_72323_b(func_174813_aQ(), y);
+/* 2787 */           y = axisAlignedBB.calculateYOffset(getEntityBoundingBox(), y);
 /*      */         }
 /*      */         
-/* 2790 */         func_174826_a(func_174813_aQ().func_72317_d(0.0D, y, 0.0D));
+/* 2790 */         setEntityBoundingBox(getEntityBoundingBox().offset(0.0D, y, 0.0D));
 /* 2791 */         if (d14 * d14 + d7 * d7 >= x * x + z * z) {
 /* 2792 */           x = d14;
 /* 2793 */           y = d6;
 /* 2794 */           z = d7;
-/* 2795 */           func_174826_a(axisalignedbb1);
+/* 2795 */           setEntityBoundingBox(axisalignedbb1);
 /*      */         } 
 /*      */       } 
 /*      */       
-/* 2799 */       this.field_70170_p.field_72984_F.func_76319_b();
-/* 2800 */       this.field_70170_p.field_72984_F.func_76320_a("rest");
-/* 2801 */       func_174829_m();
-/* 2802 */       this.field_70123_F = (d2 != x || d4 != z);
-/* 2803 */       this.field_70124_G = (d3 != y);
-/* 2804 */       this.field_70122_E = (this.field_70124_G && d3 < 0.0D);
-/* 2805 */       this.field_70132_H = (this.field_70123_F || this.field_70124_G);
-/* 2806 */       int j6 = MathHelper.func_76128_c(this.field_70165_t);
-/* 2807 */       int i1 = MathHelper.func_76128_c(this.field_70163_u - 0.20000000298023224D);
-/* 2808 */       int k6 = MathHelper.func_76128_c(this.field_70161_v);
+/* 2799 */       this.world.profiler.endSection();
+/* 2800 */       this.world.profiler.startSection("rest");
+/* 2801 */       resetPositionToBB();
+/* 2802 */       this.collidedHorizontally = (d2 != x || d4 != z);
+/* 2803 */       this.collidedVertically = (d3 != y);
+/* 2804 */       this.onGround = (this.collidedVertically && d3 < 0.0D);
+/* 2805 */       this.collided = (this.collidedHorizontally || this.collidedVertically);
+/* 2806 */       int j6 = MathHelper.floor(this.posX);
+/* 2807 */       int i1 = MathHelper.floor(this.posY - 0.20000000298023224D);
+/* 2808 */       int k6 = MathHelper.floor(this.posZ);
 /* 2809 */       BlockPos blockpos = new BlockPos(j6, i1, k6);
-/* 2810 */       IBlockState iblockstate = this.field_70170_p.func_180495_p(blockpos);
-/* 2811 */       if (iblockstate.func_185904_a() == Material.field_151579_a) {
-/* 2812 */         BlockPos blockpos1 = blockpos.func_177977_b();
-/* 2813 */         IBlockState iblockstate1 = this.field_70170_p.func_180495_p(blockpos1);
-/* 2814 */         Block block1 = iblockstate1.func_177230_c();
+/* 2810 */       IBlockState iblockstate = this.world.getBlockState(blockpos);
+/* 2811 */       if (iblockstate.getMaterial() == Material.AIR) {
+/* 2812 */         BlockPos blockpos1 = blockpos.down();
+/* 2813 */         IBlockState iblockstate1 = this.world.getBlockState(blockpos1);
+/* 2814 */         Block block1 = iblockstate1.getBlock();
 /* 2815 */         if (block1 instanceof net.minecraft.block.BlockFence || block1 instanceof net.minecraft.block.BlockWall || block1 instanceof net.minecraft.block.BlockFenceGate) {
 /* 2816 */           iblockstate = iblockstate1;
 /* 2817 */           blockpos = blockpos1;
 /*      */         } 
 /*      */       } 
 /*      */       
-/* 2821 */       func_184231_a(y, this.field_70122_E, iblockstate, blockpos);
+/* 2821 */       updateFallState(y, this.onGround, iblockstate, blockpos);
 /* 2822 */       if (d2 != x) {
-/* 2823 */         this.field_70159_w = 0.0D;
+/* 2823 */         this.motionX = 0.0D;
 /*      */       }
 /*      */       
 /* 2826 */       if (d4 != z) {
-/* 2827 */         this.field_70179_y = 0.0D;
+/* 2827 */         this.motionZ = 0.0D;
 /*      */       }
 /*      */       
-/* 2830 */       Block block = iblockstate.func_177230_c();
+/* 2830 */       Block block = iblockstate.getBlock();
 /* 2831 */       if (d3 != y) {
-/* 2832 */         block.func_176216_a(this.field_70170_p, (Entity)this);
+/* 2832 */         block.onLanded(this.world, (Entity)this);
 /*      */       }
 /*      */       
 /*      */       try {
-/* 2836 */         func_145775_I();
+/* 2836 */         doBlockCollisions();
 /* 2837 */       } catch (Throwable var45) {
-/* 2838 */         CrashReport crashreport = CrashReport.func_85055_a(var45, "Checking entity block collision");
-/* 2839 */         CrashReportCategory crashreportcategory = crashreport.func_85058_a("Entity being checked for collision");
-/* 2840 */         func_85029_a(crashreportcategory);
+/* 2838 */         CrashReport crashreport = CrashReport.makeCrashReport(var45, "Checking entity block collision");
+/* 2839 */         CrashReportCategory crashreportcategory = crashreport.makeCategory("Entity being checked for collision");
+/* 2840 */         addEntityCrashInfo(crashreportcategory);
 /* 2841 */         throw new ReportedException(crashreport);
 /*      */       } 
 /*      */       
-/* 2844 */       this.field_70170_p.field_72984_F.func_76319_b();
+/* 2844 */       this.world.profiler.endSection();
 /*      */     } 
 /*      */   }
 /*      */   
 /*      */   protected void onUpdate_updateBlock() {
 /* 2849 */     if (MCH_Config.Collision_DestroyBlock.prmBool) {
 /* 2850 */       for (int l = 0; l < 4; l++) {
-/* 2851 */         int i1 = MathHelper.func_76128_c(this.field_70165_t + ((l % 2) - 0.5D) * 0.8D);
-/* 2852 */         int j1 = MathHelper.func_76128_c(this.field_70161_v + (l / 2.0D - 0.5D) * 0.8D);
+/* 2851 */         int i1 = MathHelper.floor(this.posX + ((l % 2) - 0.5D) * 0.8D);
+/* 2852 */         int j1 = MathHelper.floor(this.posZ + (l / 2.0D - 0.5D) * 0.8D);
 /*      */         
 /* 2854 */         for (int k1 = 0; k1 < 2; k1++) {
-/* 2855 */           int l1 = MathHelper.func_76128_c(this.field_70163_u) + k1;
-/* 2856 */           Block block = W_WorldFunc.getBlock(this.field_70170_p, i1, l1, j1);
+/* 2855 */           int l1 = MathHelper.floor(this.posY) + k1;
+/* 2856 */           Block block = W_WorldFunc.getBlock(this.world, i1, l1, j1);
 /* 2857 */           if (!W_Block.isNull(block)) {
 /* 2858 */             if (block == W_Block.getSnowLayer()) {
-/* 2859 */               this.field_70170_p.func_175698_g(new BlockPos(i1, l1, j1));
+/* 2859 */               this.world.setBlockToAir(new BlockPos(i1, l1, j1));
 /*      */             }
 /*      */             
-/* 2862 */             if (block == W_Blocks.field_150392_bi || block == W_Blocks.field_150414_aQ) {
-/* 2863 */               W_WorldFunc.destroyBlock(this.field_70170_p, i1, l1, j1, false);
+/* 2862 */             if (block == W_Blocks.WATERLILY || block == W_Blocks.CAKE) {
+/* 2863 */               W_WorldFunc.destroyBlock(this.world, i1, l1, j1, false);
 /*      */             }
 /*      */           } 
 /*      */         } 
@@ -2874,7 +2874,7 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void onUpdate_ParticleSmoke() {
-/* 2872 */     if (this.field_70170_p.field_72995_K && 
+/* 2872 */     if (this.world.isRemote && 
 /* 2873 */       getCurrentThrottle() > 0.10000000149011612D) {
 /* 2874 */       float yaw = getRotYaw();
 /* 2875 */       float pitch = getRotPitch();
@@ -2887,23 +2887,23 @@ import net.minecraft.entity.MoverType;
 /* 2882 */             MCH_WeaponInfo wi = wb.getInfo();
 /* 2883 */             if (wi != null) {
 /* 2884 */               Vec3d rot = MCH_Lib.RotVec3(0.0D, 0.0D, 1.0D, -yaw - 180.0F + wb.fixRotationYaw, pitch - wb.fixRotationPitch, roll);
-/* 2885 */               if (this.field_70146_Z.nextFloat() <= getCurrentThrottle() * 1.5D) {
+/* 2885 */               if (this.rand.nextFloat() <= getCurrentThrottle() * 1.5D) {
 /* 2886 */                 Vec3d pos = MCH_Lib.RotVec3(wb.position, -yaw, -pitch, -roll);
-/* 2887 */                 double x = this.field_70165_t + pos.field_72450_a + rot.field_72450_a;
-/* 2888 */                 double y = this.field_70163_u + pos.field_72448_b + rot.field_72448_b;
-/* 2889 */                 double z = this.field_70161_v + pos.field_72449_c + rot.field_72449_c;
+/* 2887 */                 double x = this.posX + pos.x + rot.x;
+/* 2888 */                 double y = this.posY + pos.y + rot.y;
+/* 2889 */                 double z = this.posZ + pos.z + rot.z;
 /*      */                 
 /* 2891 */                 for (int smk = 0; smk < wi.smokeNum; smk++) {
-/* 2892 */                   float c = this.field_70146_Z.nextFloat() * 0.05F;
-/* 2893 */                   int maxAge = (int)(this.field_70146_Z.nextDouble() * wi.smokeMaxAge);
-/* 2894 */                   MCH_ParticleParam prm = new MCH_ParticleParam(this.field_70170_p, "smoke", x, y, z);
-/* 2895 */                   prm.setMotion(rot.field_72450_a * wi.acceleration + (this.field_70146_Z
-/* 2896 */                       .nextDouble() - 0.5D) * 0.2D, rot.field_72448_b * wi.acceleration + (this.field_70146_Z
-/* 2897 */                       .nextDouble() - 0.5D) * 0.2D, rot.field_72449_c * wi.acceleration + (this.field_70146_Z
+/* 2892 */                   float c = this.rand.nextFloat() * 0.05F;
+/* 2893 */                   int maxAge = (int)(this.rand.nextDouble() * wi.smokeMaxAge);
+/* 2894 */                   MCH_ParticleParam prm = new MCH_ParticleParam(this.world, "smoke", x, y, z);
+/* 2895 */                   prm.setMotion(rot.x * wi.acceleration + (this.rand
+/* 2896 */                       .nextDouble() - 0.5D) * 0.2D, rot.y * wi.acceleration + (this.rand
+/* 2897 */                       .nextDouble() - 0.5D) * 0.2D, rot.z * wi.acceleration + (this.rand
 /* 2898 */                       .nextDouble() - 0.5D) * 0.2D);
 /*      */                   
-/* 2900 */                   prm.size = (this.field_70146_Z.nextInt(5) + 5.0F) * wi.smokeSize;
-/* 2901 */                   prm.setColor(wi.color.a + this.field_70146_Z.nextFloat() * 0.05F, wi.color.r + c, wi.color.g + c, wi.color.b + c);
+/* 2900 */                   prm.size = (this.rand.nextInt(5) + 5.0F) * wi.smokeSize;
+/* 2901 */                   prm.setColor(wi.color.a + this.rand.nextFloat() * 0.05F, wi.color.r + c, wi.color.g + c, wi.color.b + c);
 /* 2902 */                   prm.age = maxAge;
 /* 2903 */                   prm.toWhite = true;
 /* 2904 */                   prm.diffusible = true;
@@ -2920,7 +2920,7 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   protected void onUpdate_ParticleSandCloud(boolean seaOnly) {
 /* 2917 */     if (!seaOnly || (getAcInfo()).enableSeaSurfaceParticle) {
-/* 2918 */       double particlePosY = (int)this.field_70163_u;
+/* 2918 */       double particlePosY = (int)this.posY;
 /* 2919 */       boolean b = false;
 /* 2920 */       float scale = (getAcInfo()).particlesScale * 3.0F;
 /* 2921 */       if (seaOnly) {
@@ -2940,14 +2940,14 @@ import net.minecraft.entity.MoverType;
 /* 2935 */       for (y = 0; y < rangeY && !b; y++) {
 /* 2936 */         for (int x = -1; x <= 1; x++) {
 /* 2937 */           for (int z = -1; z <= 1; z++) {
-/* 2938 */             Block block = W_WorldFunc.getBlock(this.field_70170_p, (int)(this.field_70165_t + 0.5D) + x, (int)(this.field_70163_u + 0.5D) - y, (int)(this.field_70161_v + 0.5D) + z);
-/* 2939 */             if (!b && !Block.func_149680_a(block, Blocks.field_150350_a)) {
+/* 2938 */             Block block = W_WorldFunc.getBlock(this.world, (int)(this.posX + 0.5D) + x, (int)(this.posY + 0.5D) - y, (int)(this.posZ + 0.5D) + z);
+/* 2939 */             if (!b && !Block.isEqualTo(block, Blocks.AIR)) {
 /* 2940 */               if (seaOnly && W_Block.isEqual(block, W_Block.getWater())) {
 /* 2941 */                 count--;
 /*      */               }
 /*      */               
 /* 2944 */               if (count <= 0) {
-/* 2945 */                 particlePosY = this.field_70163_u + 1.0D + (scale / 5.0F) - y;
+/* 2945 */                 particlePosY = this.posY + 1.0D + (scale / 5.0F) - y;
 /* 2946 */                 b = true;
 /* 2947 */                 x += 100;
 /*      */                 
@@ -2960,14 +2960,14 @@ import net.minecraft.entity.MoverType;
 /* 2955 */       double pn = (rangeY - y + 1) / 5.0D * scale / 2.0D;
 /* 2956 */       if (b && (getAcInfo()).particlesScale > 0.01F) {
 /* 2957 */         for (int k = 0; k < (int)(throttle * 6.0D * pn); k++) {
-/* 2958 */           float r = (float)(this.field_70146_Z.nextDouble() * Math.PI * 2.0D);
-/* 2959 */           double dx = MathHelper.func_76134_b(r);
-/* 2960 */           double dz = MathHelper.func_76126_a(r);
+/* 2958 */           float r = (float)(this.rand.nextDouble() * Math.PI * 2.0D);
+/* 2959 */           double dx = MathHelper.cos(r);
+/* 2960 */           double dz = MathHelper.sin(r);
 /*      */ 
 /*      */ 
 /*      */ 
 /*      */           
-/* 2965 */           MCH_ParticleParam prm = new MCH_ParticleParam(this.field_70170_p, "smoke", this.field_70165_t + dx * scale * 3.0D, particlePosY + (this.field_70146_Z.nextDouble() - 0.5D) * scale, this.field_70161_v + dz * scale * 3.0D, scale * dx * 0.3D, scale * -0.4D * 0.05D, scale * dz * 0.3D, scale * 5.0F);
+/* 2965 */           MCH_ParticleParam prm = new MCH_ParticleParam(this.world, "smoke", this.posX + dx * scale * 3.0D, particlePosY + (this.rand.nextDouble() - 0.5D) * scale, this.posZ + dz * scale * 3.0D, scale * dx * 0.3D, scale * -0.4D * 0.05D, scale * dz * 0.3D, scale * 5.0F);
 /*      */ 
 /*      */ 
 /*      */ 
@@ -2983,19 +2983,19 @@ import net.minecraft.entity.MoverType;
 /*      */     } 
 /*      */   }
 /*      */   
-/*      */   protected boolean func_70041_e_() {
+/*      */   protected boolean canTriggerWalking() {
 /* 2982 */     return false;
 /*      */   }
 /*      */   
-/*      */   public AxisAlignedBB func_70114_g(Entity par1Entity) {
-/* 2986 */     return par1Entity.func_174813_aQ();
+/*      */   public AxisAlignedBB getCollisionBox(Entity par1Entity) {
+/* 2986 */     return par1Entity.getEntityBoundingBox();
 /*      */   }
 /*      */   
-/*      */   public AxisAlignedBB func_70046_E() {
-/* 2990 */     return func_174813_aQ();
+/*      */   public AxisAlignedBB getCollisionBoundingBox() {
+/* 2990 */     return getEntityBoundingBox();
 /*      */   }
 /*      */   
-/*      */   public double func_70042_X() {
+/*      */   public double getMountedYOffset() {
 /* 2994 */     return 0.0D;
 /*      */   }
 /*      */   
@@ -3003,8 +3003,8 @@ import net.minecraft.entity.MoverType;
 /* 2998 */     return 2.0F;
 /*      */   }
 /*      */   
-/*      */   public boolean func_70067_L() {
-/* 3002 */     return !this.field_70128_L;
+/*      */   public boolean canBeCollidedWith() {
+/* 3002 */     return !this.isDead;
 /*      */   }
 /*      */   
 /*      */   public boolean useFlare(int type) {
@@ -3142,7 +3142,7 @@ import net.minecraft.entity.MoverType;
 /* 3137 */       if (this.seats != null) {
 /* 3138 */         for (int i = 0; i < this.seats.length; i++) {
 /* 3139 */           if (this.seats[i] != null) {
-/* 3140 */             this.seats[i].func_70106_y();
+/* 3140 */             this.seats[i].setDead();
 /* 3141 */             this.seats[i] = null;
 /*      */           } 
 /*      */         } 
@@ -3159,7 +3159,7 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public void setSeat(int idx, MCH_EntitySeat seat) {
 /* 3156 */     if (idx < this.seats.length) {
-/* 3157 */       MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityAircraft.setSeat SeatID=" + idx + " / seat[]" + ((this.seats[idx] != null) ? 1 : 0) + " / " + (
+/* 3157 */       MCH_Lib.DbgLog(this.world, "MCH_EntityAircraft.setSeat SeatID=" + idx + " / seat[]" + ((this.seats[idx] != null) ? 1 : 0) + " / " + (
 /* 3158 */           (seat.getRiddenByEntity() != null) ? 1 : 0), new Object[0]);
 /*      */       
 /* 3160 */       if (this.seats[idx] == null || this.seats[idx].getRiddenByEntity() != null);
@@ -3179,22 +3179,22 @@ import net.minecraft.entity.MoverType;
 /*      */   public void updateSeatsPosition(double px, double py, double pz, boolean setPrevPos) {
 /* 3175 */     MCH_SeatInfo[] info = getSeatsInfo();
 /* 3176 */     py += 0.3499999940395355D;
-/* 3177 */     if (this.pilotSeat != null && !this.pilotSeat.field_70128_L) {
-/* 3178 */       this.pilotSeat.field_70169_q = this.pilotSeat.field_70165_t;
-/* 3179 */       this.pilotSeat.field_70167_r = this.pilotSeat.field_70163_u;
-/* 3180 */       this.pilotSeat.field_70166_s = this.pilotSeat.field_70161_v;
-/* 3181 */       this.pilotSeat.func_70107_b(px, py, pz);
+/* 3177 */     if (this.pilotSeat != null && !this.pilotSeat.isDead) {
+/* 3178 */       this.pilotSeat.prevPosX = this.pilotSeat.posX;
+/* 3179 */       this.pilotSeat.prevPosY = this.pilotSeat.posY;
+/* 3180 */       this.pilotSeat.prevPosZ = this.pilotSeat.posZ;
+/* 3181 */       this.pilotSeat.setPosition(px, py, pz);
 /* 3182 */       if (info != null && info.length > 0 && info[0] != null) {
-/* 3183 */         Vec3d v = getTransformedPosition((info[0]).pos.field_72450_a, (info[0]).pos.field_72448_b, (info[0]).pos.field_72449_c, px, py, pz, (info[0]).rotSeat);
-/* 3184 */         this.pilotSeat.func_70107_b(v.field_72450_a, v.field_72448_b, v.field_72449_c);
+/* 3183 */         Vec3d v = getTransformedPosition((info[0]).pos.x, (info[0]).pos.y, (info[0]).pos.z, px, py, pz, (info[0]).rotSeat);
+/* 3184 */         this.pilotSeat.setPosition(v.x, v.y, v.z);
 /*      */       } 
 /*      */       
-/* 3187 */       this.pilotSeat.field_70125_A = getRotPitch();
-/* 3188 */       this.pilotSeat.field_70177_z = getRotYaw();
+/* 3187 */       this.pilotSeat.rotationPitch = getRotPitch();
+/* 3188 */       this.pilotSeat.rotationYaw = getRotYaw();
 /* 3189 */       if (setPrevPos) {
-/* 3190 */         this.pilotSeat.field_70169_q = this.pilotSeat.field_70165_t;
-/* 3191 */         this.pilotSeat.field_70167_r = this.pilotSeat.field_70163_u;
-/* 3192 */         this.pilotSeat.field_70166_s = this.pilotSeat.field_70161_v;
+/* 3190 */         this.pilotSeat.prevPosX = this.pilotSeat.posX;
+/* 3191 */         this.pilotSeat.prevPosY = this.pilotSeat.posY;
+/* 3192 */         this.pilotSeat.prevPosZ = this.pilotSeat.posZ;
 /*      */       } 
 /*      */     } 
 /*      */     
@@ -3202,23 +3202,23 @@ import net.minecraft.entity.MoverType;
 /*      */     
 /* 3198 */     for (MCH_EntitySeat seat : this.seats) {
 /* 3199 */       i++;
-/* 3200 */       if (seat != null && !seat.field_70128_L) {
+/* 3200 */       if (seat != null && !seat.isDead) {
 /* 3201 */         float offsetY = -0.5F;
-/* 3202 */         if (seat.getRiddenByEntity() == null || W_Lib.isClientPlayer(seat.getRiddenByEntity()) || (seat.getRiddenByEntity()).field_70131_O >= 1.0F);
+/* 3202 */         if (seat.getRiddenByEntity() == null || W_Lib.isClientPlayer(seat.getRiddenByEntity()) || (seat.getRiddenByEntity()).height >= 1.0F);
 /*      */ 
 /*      */         
-/* 3205 */         seat.field_70169_q = seat.field_70165_t;
-/* 3206 */         seat.field_70167_r = seat.field_70163_u;
-/* 3207 */         seat.field_70166_s = seat.field_70161_v;
+/* 3205 */         seat.prevPosX = seat.posX;
+/* 3206 */         seat.prevPosY = seat.posY;
+/* 3207 */         seat.prevPosZ = seat.posZ;
 /* 3208 */         MCH_SeatInfo si = (i < info.length) ? info[i] : info[0];
-/* 3209 */         Vec3d v = getTransformedPosition(si.pos.field_72450_a, si.pos.field_72448_b + offsetY, si.pos.field_72449_c, px, py, pz, si.rotSeat);
-/* 3210 */         seat.func_70107_b(v.field_72450_a, v.field_72448_b, v.field_72449_c);
-/* 3211 */         seat.field_70125_A = getRotPitch();
-/* 3212 */         seat.field_70177_z = getRotYaw();
+/* 3209 */         Vec3d v = getTransformedPosition(si.pos.x, si.pos.y + offsetY, si.pos.z, px, py, pz, si.rotSeat);
+/* 3210 */         seat.setPosition(v.x, v.y, v.z);
+/* 3211 */         seat.rotationPitch = getRotPitch();
+/* 3212 */         seat.rotationYaw = getRotYaw();
 /* 3213 */         if (setPrevPos) {
-/* 3214 */           seat.field_70169_q = seat.field_70165_t;
-/* 3215 */           seat.field_70167_r = seat.field_70163_u;
-/* 3216 */           seat.field_70166_s = seat.field_70161_v;
+/* 3214 */           seat.prevPosX = seat.posX;
+/* 3215 */           seat.prevPosY = seat.posY;
+/* 3216 */           seat.prevPosZ = seat.posZ;
 /*      */         } 
 /*      */         
 /* 3219 */         if (si instanceof MCH_SeatRackInfo) {
@@ -3235,51 +3235,51 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   @SideOnly(Side.CLIENT)
-/*      */   public void func_180426_a(double par1, double par3, double par5, float par7, float par8, int par9, boolean teleport) {
+/*      */   public void setPositionAndRotationDirect(double par1, double par3, double par5, float par7, float par8, int par9, boolean teleport) {
 /* 3234 */     this.aircraftPosRotInc = par9 + getClientPositionDelayCorrection();
 /* 3235 */     this.aircraftX = par1;
 /* 3236 */     this.aircraftY = par3;
 /* 3237 */     this.aircraftZ = par5;
 /* 3238 */     this.aircraftYaw = par7;
 /* 3239 */     this.aircraftPitch = par8;
-/* 3240 */     this.field_70159_w = this.velocityX;
-/* 3241 */     this.field_70181_x = this.velocityY;
-/* 3242 */     this.field_70179_y = this.velocityZ;
+/* 3240 */     this.motionX = this.velocityX;
+/* 3241 */     this.motionY = this.velocityY;
+/* 3242 */     this.motionZ = this.velocityZ;
 /*      */   }
 /*      */   
 /*      */   public void updateRiderPosition(Entity passenger, double px, double py, double pz) {
 /* 3246 */     MCH_SeatInfo[] info = getSeatsInfo();
-/* 3247 */     if (func_184196_w(passenger) && !passenger.field_70128_L) {
+/* 3247 */     if (isPassenger(passenger) && !passenger.isDead) {
 /* 3248 */       Vec3d v; float riddenEntityYOffset = 0.0F;
 /* 3249 */       if (!(passenger instanceof EntityPlayer) || !W_Lib.isClientPlayer(passenger));
 /*      */ 
 /*      */ 
 /*      */       
 /* 3253 */       if (info != null && info.length > 0) {
-/* 3254 */         v = getTransformedPosition((info[0]).pos.field_72450_a, (info[0]).pos.field_72448_b + riddenEntityYOffset - 0.5D, (info[0]).pos.field_72449_c, px, py + 0.3499999940395355D, pz, (info[0]).rotSeat);
+/* 3254 */         v = getTransformedPosition((info[0]).pos.x, (info[0]).pos.y + riddenEntityYOffset - 0.5D, (info[0]).pos.z, px, py + 0.3499999940395355D, pz, (info[0]).rotSeat);
 /*      */       } else {
 /* 3256 */         v = getTransformedPosition(0.0D, (riddenEntityYOffset - 1.0F), 0.0D);
 /*      */       } 
 /*      */       
-/* 3259 */       passenger.func_70107_b(v.field_72450_a, v.field_72448_b, v.field_72449_c);
+/* 3259 */       passenger.setPosition(v.x, v.y, v.z);
 /*      */     } 
 /*      */   }
 /*      */   
-/*      */   public void func_184232_k(@NotNull Entity passenger) {
-/* 3264 */     updateRiderPosition(passenger, this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/*      */   public void updatePassenger(@NotNull Entity passenger) {
+/* 3264 */     updateRiderPosition(passenger, this.posX, this.posY, this.posZ);
 /*      */   }
 /*      */   
 /*      */   public Vec3d calcOnTurretPos(Vec3d pos) {
 /* 3268 */     float ry = getLastRiderYaw();
 /* 3269 */     if (getRiddenByEntity() != null) {
-/* 3270 */       ry = (getRiddenByEntity()).field_70177_z;
+/* 3270 */       ry = (getRiddenByEntity()).rotationYaw;
 /*      */     }
 /*      */     
-/* 3273 */     Vec3d tpos = (getAcInfo()).turretPosition.func_72441_c(0.0D, pos.field_72448_b, 0.0D);
-/* 3274 */     Vec3d v = pos.func_72441_c(-tpos.field_72450_a, -tpos.field_72448_b, -tpos.field_72449_c);
+/* 3273 */     Vec3d tpos = (getAcInfo()).turretPosition.addVector(0.0D, pos.y, 0.0D);
+/* 3274 */     Vec3d v = pos.addVector(-tpos.x, -tpos.y, -tpos.z);
 /* 3275 */     v = MCH_Lib.RotVec3(v, -ry, 0.0F, 0.0F);
 /* 3276 */     Vec3d vv = MCH_Lib.RotVec3(tpos, -getRotYaw(), -getRotPitch(), -getRotRoll());
-/* 3277 */     return v.func_178787_e(vv);
+/* 3277 */     return v.add(vv);
 /*      */   }
 /*      */   
 /*      */   public float getLastRiderYaw() {
@@ -3292,26 +3292,26 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   @SideOnly(Side.CLIENT)
 /*      */   public void setupAllRiderRenderPosition(float tick, EntityPlayer player) {
-/* 3290 */     double x = this.field_70142_S + (this.field_70165_t - this.field_70142_S) * tick;
-/* 3291 */     double y = this.field_70137_T + (this.field_70163_u - this.field_70137_T) * tick;
-/* 3292 */     double z = this.field_70136_U + (this.field_70161_v - this.field_70136_U) * tick;
+/* 3290 */     double x = this.lastTickPosX + (this.posX - this.lastTickPosX) * tick;
+/* 3291 */     double y = this.lastTickPosY + (this.posY - this.lastTickPosY) * tick;
+/* 3292 */     double z = this.lastTickPosZ + (this.posZ - this.lastTickPosZ) * tick;
 /* 3293 */     updateRiderPosition(getRiddenByEntity(), x, y, z);
 /* 3294 */     updateSeatsPosition(x, y, z, true);
 /*      */     
 /* 3296 */     for (int i = 0; i < getSeatNum() + 1; i++) {
 /* 3297 */       Entity e = getEntityBySeatId(i);
 /* 3298 */       if (e != null) {
-/* 3299 */         e.field_70142_S = e.field_70165_t;
-/* 3300 */         e.field_70137_T = e.field_70163_u;
-/* 3301 */         e.field_70136_U = e.field_70161_v;
+/* 3299 */         e.lastTickPosX = e.posX;
+/* 3300 */         e.lastTickPosY = e.posY;
+/* 3301 */         e.lastTickPosZ = e.posZ;
 /*      */       } 
 /*      */     } 
 /*      */     
 /* 3305 */     if (getTVMissile() != null && W_Lib.isClientPlayer((getTVMissile()).shootingEntity)) {
 /* 3306 */       MCH_EntityTvMissile mCH_EntityTvMissile = getTVMissile();
-/* 3307 */       x = ((Entity)mCH_EntityTvMissile).field_70169_q + (((Entity)mCH_EntityTvMissile).field_70165_t - ((Entity)mCH_EntityTvMissile).field_70169_q) * tick;
-/* 3308 */       y = ((Entity)mCH_EntityTvMissile).field_70167_r + (((Entity)mCH_EntityTvMissile).field_70163_u - ((Entity)mCH_EntityTvMissile).field_70167_r) * tick;
-/* 3309 */       z = ((Entity)mCH_EntityTvMissile).field_70166_s + (((Entity)mCH_EntityTvMissile).field_70161_v - ((Entity)mCH_EntityTvMissile).field_70166_s) * tick;
+/* 3307 */       x = ((Entity)mCH_EntityTvMissile).prevPosX + (((Entity)mCH_EntityTvMissile).posX - ((Entity)mCH_EntityTvMissile).prevPosX) * tick;
+/* 3308 */       y = ((Entity)mCH_EntityTvMissile).prevPosY + (((Entity)mCH_EntityTvMissile).posY - ((Entity)mCH_EntityTvMissile).prevPosY) * tick;
+/* 3309 */       z = ((Entity)mCH_EntityTvMissile).prevPosZ + (((Entity)mCH_EntityTvMissile).posZ - ((Entity)mCH_EntityTvMissile).prevPosZ) * tick;
 /* 3310 */       MCH_ViewEntityDummy.setCameraPosition(x, y, z);
 /*      */     } else {
 /* 3312 */       MCH_AircraftInfo.CameraPosition cpi = getCameraPosInfo();
@@ -3324,7 +3324,7 @@ import net.minecraft.entity.MoverType;
 /* 3319 */           v = MCH_Lib.RotVec3(cpi.pos, -getRotYaw(), -getRotPitch(), -getRotRoll());
 /*      */         } 
 /*      */         
-/* 3322 */         MCH_ViewEntityDummy.setCameraPosition(x + v.field_72450_a, y + v.field_72448_b, z + v.field_72449_c);
+/* 3322 */         MCH_ViewEntityDummy.setCameraPosition(x + v.x, y + v.y, z + v.z);
 /* 3323 */         if (!cpi.fixRot);
 /*      */       } 
 /*      */     } 
@@ -3335,53 +3335,53 @@ import net.minecraft.entity.MoverType;
 /* 3330 */     if (turret) {
 /* 3331 */       float ry = getLastRiderYaw();
 /* 3332 */       if (getRiddenByEntity() != null) {
-/* 3333 */         ry = (getRiddenByEntity()).field_70177_z;
+/* 3333 */         ry = (getRiddenByEntity()).rotationYaw;
 /*      */       }
 /*      */       
-/* 3336 */       Vec3d tpos = (getAcInfo()).turretPosition.func_72441_c(0.0D, pos.field_72448_b, 0.0D);
-/* 3337 */       Vec3d v = pos.func_72441_c(-tpos.field_72450_a, -tpos.field_72448_b, -tpos.field_72449_c);
+/* 3336 */       Vec3d tpos = (getAcInfo()).turretPosition.addVector(0.0D, pos.y, 0.0D);
+/* 3337 */       Vec3d v = pos.addVector(-tpos.x, -tpos.y, -tpos.z);
 /* 3338 */       v = MCH_Lib.RotVec3(v, -ry, 0.0F, 0.0F);
 /* 3339 */       Vec3d vv = MCH_Lib.RotVec3(tpos, -getRotYaw(), -getRotPitch(), -getRotRoll());
-/* 3340 */       return v.func_178787_e(vv);
+/* 3340 */       return v.add(vv);
 /*      */     } 
-/* 3342 */     return Vec3d.field_186680_a;
+/* 3342 */     return Vec3d.ZERO;
 /*      */   }
 /*      */ 
 /*      */   
 /*      */   public Vec3d getTransformedPosition(Vec3d v) {
-/* 3347 */     return getTransformedPosition(v.field_72450_a, v.field_72448_b, v.field_72449_c);
+/* 3347 */     return getTransformedPosition(v.x, v.y, v.z);
 /*      */   }
 /*      */   
 /*      */   public Vec3d getTransformedPosition(double x, double y, double z) {
-/* 3351 */     return getTransformedPosition(x, y, z, this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/* 3351 */     return getTransformedPosition(x, y, z, this.posX, this.posY, this.posZ);
 /*      */   }
 /*      */   
 /*      */   public Vec3d getTransformedPosition(Vec3d v, Vec3d pos) {
-/* 3355 */     return getTransformedPosition(v.field_72450_a, v.field_72448_b, v.field_72449_c, pos.field_72450_a, pos.field_72448_b, pos.field_72449_c);
+/* 3355 */     return getTransformedPosition(v.x, v.y, v.z, pos.x, pos.y, pos.z);
 /*      */   }
 /*      */   
 /*      */   public Vec3d getTransformedPosition(Vec3d v, double px, double py, double pz) {
-/* 3359 */     return getTransformedPosition(v.field_72450_a, v.field_72448_b, v.field_72449_c, this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/* 3359 */     return getTransformedPosition(v.x, v.y, v.z, this.posX, this.posY, this.posZ);
 /*      */   }
 /*      */   
 /*      */   public Vec3d getTransformedPosition(double x, double y, double z, double px, double py, double pz) {
 /* 3363 */     Vec3d v = MCH_Lib.RotVec3(x, y, z, -getRotYaw(), -getRotPitch(), -getRotRoll());
-/* 3364 */     return v.func_72441_c(px, py, pz);
+/* 3364 */     return v.addVector(px, py, pz);
 /*      */   }
 /*      */   
 /*      */   public Vec3d getTransformedPosition(double x, double y, double z, double px, double py, double pz, boolean rotSeat) {
 /* 3368 */     if (rotSeat && getAcInfo() != null) {
 /* 3369 */       MCH_AircraftInfo info = getAcInfo();
-/* 3370 */       Vec3d tv = MCH_Lib.RotVec3(x - info.turretPosition.field_72450_a, y - info.turretPosition.field_72448_b, z - info.turretPosition.field_72449_c, 
+/* 3370 */       Vec3d tv = MCH_Lib.RotVec3(x - info.turretPosition.x, y - info.turretPosition.y, z - info.turretPosition.z, 
 /* 3371 */           -getLastRiderYaw() + getRotYaw(), 0.0F, 0.0F);
 /*      */       
-/* 3373 */       x = tv.field_72450_a + info.turretPosition.field_72450_a;
-/* 3374 */       y = tv.field_72448_b + info.turretPosition.field_72450_a;
-/* 3375 */       z = tv.field_72449_c + info.turretPosition.field_72450_a;
+/* 3373 */       x = tv.x + info.turretPosition.x;
+/* 3374 */       y = tv.y + info.turretPosition.x;
+/* 3375 */       z = tv.z + info.turretPosition.x;
 /*      */     } 
 /*      */     
 /* 3378 */     Vec3d v = MCH_Lib.RotVec3(x, y, z, -getRotYaw(), -getRotPitch(), -getRotRoll());
-/* 3379 */     return v.func_72441_c(px, py, pz);
+/* 3379 */     return v.addVector(px, py, pz);
 /*      */   }
 /*      */   
 /*      */   protected MCH_SeatInfo[] getSeatsInfo() {
@@ -3428,17 +3428,17 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void createSeats(String uuid) {
-/* 3426 */     if (!this.field_70170_p.field_72995_K && 
+/* 3426 */     if (!this.world.isRemote && 
 /* 3427 */       !uuid.isEmpty()) {
 /* 3428 */       setCommonUniqueId(uuid);
 /* 3429 */       this.seats = new MCH_EntitySeat[getSeatNum()];
 /*      */       
 /* 3431 */       for (int i = 0; i < this.seats.length; i++) {
-/* 3432 */         this.seats[i] = new MCH_EntitySeat(this.field_70170_p, this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/* 3432 */         this.seats[i] = new MCH_EntitySeat(this.world, this.posX, this.posY, this.posZ);
 /* 3433 */         (this.seats[i]).parentUniqueID = getCommonUniqueId();
 /* 3434 */         (this.seats[i]).seatID = i;
 /* 3435 */         this.seats[i].setParent(this);
-/* 3436 */         this.field_70170_p.func_72838_d((Entity)this.seats[i]);
+/* 3436 */         this.world.spawnEntity((Entity)this.seats[i]);
 /*      */       } 
 /*      */     } 
 /*      */   }
@@ -3452,8 +3452,8 @@ import net.minecraft.entity.MoverType;
 /*      */     
 /* 3448 */     for (MCH_EntitySeat seat : getSeats()) {
 /* 3449 */       if (seat != null && seat.getRiddenByEntity() == null && !isMountedEntity((Entity)player) && canRideSeatOrRack(seatId, (Entity)player)) {
-/* 3450 */         if (!this.field_70170_p.field_72995_K) {
-/* 3451 */           player.func_184220_m((Entity)seat);
+/* 3450 */         if (!this.world.isRemote) {
+/* 3451 */           player.startRiding((Entity)seat);
 /*      */         }
 /*      */         
 /*      */         break;
@@ -3470,12 +3470,12 @@ import net.minecraft.entity.MoverType;
 /* 3465 */       if (entity instanceof EntityPlayer || entity instanceof MCH_EntityGunner);
 /*      */ 
 /*      */       
-/* 3468 */       if (this.field_70170_p.field_72995_K && MCH_Lib.getClientPlayer() == entity) {
+/* 3468 */       if (this.world.isRemote && MCH_Lib.getClientPlayer() == entity) {
 /* 3469 */         switchGunnerFreeLookMode(false);
 /*      */       }
 /*      */       
 /* 3472 */       initCurrentWeapon(entity);
-/* 3473 */       MCH_Lib.DbgLog(this.field_70170_p, "onMountEntitySeat:%d", new Object[] { Integer.valueOf(W_Entity.getEntityId(entity)) });
+/* 3473 */       MCH_Lib.DbgLog(this.world, "onMountEntitySeat:%d", new Object[] { Integer.valueOf(W_Entity.getEntityId(entity)) });
 /* 3474 */       Entity pilot = getRiddenByEntity();
 /* 3475 */       int sid = getSeatIdByEntity(entity);
 /* 3476 */       if (sid == 1 && (getAcInfo() == null || !(getAcInfo()).isEnableConcurrentGunnerMode)) {
@@ -3491,14 +3491,14 @@ import net.minecraft.entity.MoverType;
 /* 3486 */         MCH_AircraftInfo.Weapon w = getAcInfo().getWeaponById(cwid);
 /* 3487 */         if (w != null && getWeaponSeatID(getWeaponInfoById(cwid), w) == sid) {
 /* 3488 */           int next = getNextWeaponID(pilot, 1);
-/* 3489 */           MCH_Lib.DbgLog(this.field_70170_p, "onMountEntitySeat:%d:->%d", new Object[] { Integer.valueOf(W_Entity.getEntityId(pilot)), Integer.valueOf(next) });
+/* 3489 */           MCH_Lib.DbgLog(this.world, "onMountEntitySeat:%d:->%d", new Object[] { Integer.valueOf(W_Entity.getEntityId(pilot)), Integer.valueOf(next) });
 /* 3490 */           if (next >= 0) {
 /* 3491 */             switchWeapon(pilot, next);
 /*      */           }
 /*      */         } 
 /*      */       } 
 /*      */       
-/* 3496 */       if (this.field_70170_p.field_72995_K) {
+/* 3496 */       if (this.world.isRemote) {
 /* 3497 */         updateClientSettings(sid);
 /*      */       }
 /*      */     } 
@@ -3519,13 +3519,13 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   protected void mountWithNearEmptyMinecart() {
-/* 3517 */     if (func_184187_bx() == null) {
+/* 3517 */     if (getRidingEntity() == null) {
 /* 3518 */       int d = 2;
 /* 3519 */       if (this.dismountedUserCtrl) {
 /* 3520 */         d = 6;
 /*      */       }
 /*      */       
-/* 3523 */       List<Entity> list = this.field_70170_p.func_72839_b((Entity)this, func_174813_aQ().func_72314_b(d, d, d));
+/* 3523 */       List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity((Entity)this, getEntityBoundingBox().grow(d, d, d));
 /* 3524 */       if (!list.isEmpty()) {
 /* 3525 */         for (Entity entity : list) {
 /* 3526 */           if (entity instanceof net.minecraft.entity.item.EntityMinecartEmpty) {
@@ -3533,10 +3533,10 @@ import net.minecraft.entity.MoverType;
 /*      */               return;
 /*      */             }
 /*      */             
-/* 3531 */             if (!entity.func_184207_aI() && entity.func_70104_M()) {
+/* 3531 */             if (!entity.isBeingRidden() && entity.canBePushed()) {
 /* 3532 */               this.waitMountEntity = 20;
-/* 3533 */               MCH_Lib.DbgLog(this.field_70170_p.field_72995_K, "MCH_EntityAircraft.mountWithNearEmptyMinecart:" + entity, new Object[0]);
-/* 3534 */               func_184220_m(entity);
+/* 3533 */               MCH_Lib.DbgLog(this.world.isRemote, "MCH_EntityAircraft.mountWithNearEmptyMinecart:" + entity, new Object[0]);
+/* 3534 */               startRiding(entity);
 /*      */               
 /*      */               return;
 /*      */             } 
@@ -3562,12 +3562,12 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   public void onUnmountPlayerSeat(MCH_EntitySeat seat, Entity entity) {
-/* 3560 */     MCH_Lib.DbgLog(this.field_70170_p, "onUnmountPlayerSeat:%d", new Object[] { Integer.valueOf(W_Entity.getEntityId(entity)) });
+/* 3560 */     MCH_Lib.DbgLog(this.world, "onUnmountPlayerSeat:%d", new Object[] { Integer.valueOf(W_Entity.getEntityId(entity)) });
 /* 3561 */     int sid = getSeatIdByEntity(entity);
 /* 3562 */     this.camera.initCamera(sid, entity);
 /* 3563 */     MCH_SeatInfo seatInfo = getSeatInfo(seat.seatID + 1);
 /* 3564 */     if (seatInfo != null) {
-/* 3565 */       setUnmountPosition(entity, new Vec3d(seatInfo.pos.field_72450_a, 0.0D, seatInfo.pos.field_72449_c));
+/* 3565 */       setUnmountPosition(entity, new Vec3d(seatInfo.pos.x, 0.0D, seatInfo.pos.z));
 /*      */     }
 /*      */     
 /* 3568 */     if (!isRidePlayer()) {
@@ -3585,8 +3585,8 @@ import net.minecraft.entity.MoverType;
 /*      */     
 /* 3581 */     for (MCH_EntitySeat seat : this.seats) {
 /* 3582 */       if (seat != null) {
-/* 3583 */         if (!seat.field_70128_L) {
-/* 3584 */           seat.field_70143_R = 0.0F;
+/* 3583 */         if (!seat.isDead) {
+/* 3584 */           seat.fallDistance = 0.0F;
 /*      */         }
 /*      */       } else {
 /* 3587 */         b = true;
@@ -3595,7 +3595,7 @@ import net.minecraft.entity.MoverType;
 /*      */     
 /* 3591 */     if (b) {
 /* 3592 */       if (this.seatSearchCount > 40) {
-/* 3593 */         if (this.field_70170_p.field_72995_K) {
+/* 3593 */         if (this.world.isRemote) {
 /* 3594 */           MCH_PacketSeatListRequest.requestSeatList(this);
 /*      */         } else {
 /* 3596 */           searchSeat();
@@ -3609,10 +3609,10 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void searchSeat() {
-/* 3607 */     List<MCH_EntitySeat> list = this.field_70170_p.func_72872_a(MCH_EntitySeat.class, func_174813_aQ().func_72314_b(60.0D, 60.0D, 60.0D));
+/* 3607 */     List<MCH_EntitySeat> list = this.world.getEntitiesWithinAABB(MCH_EntitySeat.class, getEntityBoundingBox().grow(60.0D, 60.0D, 60.0D));
 /*      */     
 /* 3609 */     for (MCH_EntitySeat seat : list) {
-/* 3610 */       if (!seat.field_70128_L && seat.parentUniqueID
+/* 3610 */       if (!seat.isDead && seat.parentUniqueID
 /* 3611 */         .equals(getCommonUniqueId()) && seat.seatID >= 0 && seat.seatID < 
 /*      */         
 /* 3613 */         getSeatNum() && this.seats[seat.seatID] == null) {
@@ -3632,22 +3632,22 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */ 
 /*      */   
-/*      */   public void func_70106_y() {
+/*      */   public void setDead() {
 /* 3631 */     setDead(false);
 /*      */   }
 /*      */   
 /*      */   public void setDead(boolean dropItems) {
 /* 3635 */     this.dropContentsWhenDead = dropItems;
-/* 3636 */     super.func_70106_y();
+/* 3636 */     super.setDead();
 /* 3637 */     if (getRiddenByEntity() != null) {
-/* 3638 */       getRiddenByEntity().func_184210_p();
+/* 3638 */       getRiddenByEntity().dismountRidingEntity();
 /*      */     }
 /*      */     
 /* 3641 */     getGuiInventory().setDead();
 /*      */     
 /* 3643 */     for (MCH_EntitySeat s : this.seats) {
 /* 3644 */       if (s != null) {
-/* 3645 */         s.func_70106_y();
+/* 3645 */         s.setDead();
 /*      */       }
 /*      */     } 
 /*      */     
@@ -3656,17 +3656,17 @@ import net.minecraft.entity.MoverType;
 /*      */     }
 /*      */     
 /* 3653 */     if (getTowChainEntity() != null) {
-/* 3654 */       getTowChainEntity().func_70106_y();
+/* 3654 */       getTowChainEntity().setDead();
 /* 3655 */       setTowChainEntity((MCH_EntityChain)null);
 /*      */     } 
 /*      */     
-/* 3658 */     for (Entity e : func_70021_al()) {
+/* 3658 */     for (Entity e : getParts()) {
 /* 3659 */       if (e != null) {
-/* 3660 */         e.func_70106_y();
+/* 3660 */         e.setDead();
 /*      */       }
 /*      */     } 
 /*      */     
-/* 3664 */     MCH_Lib.DbgLog(this.field_70170_p, "setDead:" + ((getAcInfo() != null) ? (getAcInfo()).name : "null"), new Object[0]);
+/* 3664 */     MCH_Lib.DbgLog(this.world, "setDead:" + ((getAcInfo() != null) ? (getAcInfo()).name : "null"), new Object[0]);
 /*      */   }
 /*      */   
 /*      */   public void unmountEntity() {
@@ -3679,8 +3679,8 @@ import net.minecraft.entity.MoverType;
 /* 3674 */     if (getRiddenByEntity() != null) {
 /* 3675 */       rByEntity = getRiddenByEntity();
 /* 3676 */       this.camera.initCamera(0, rByEntity);
-/* 3677 */       if (!this.field_70170_p.field_72995_K) {
-/* 3678 */         getRiddenByEntity().func_184210_p();
+/* 3677 */       if (!this.world.isRemote) {
+/* 3678 */         getRiddenByEntity().dismountRidingEntity();
 /*      */       }
 /* 3680 */     } else if (this.lastRiddenByEntity != null) {
 /* 3681 */       rByEntity = this.lastRiddenByEntity;
@@ -3689,7 +3689,7 @@ import net.minecraft.entity.MoverType;
 /*      */       }
 /*      */     } 
 /*      */     
-/* 3687 */     MCH_Lib.DbgLog(this.field_70170_p, "unmountEntity:" + rByEntity, new Object[0]);
+/* 3687 */     MCH_Lib.DbgLog(this.world, "unmountEntity:" + rByEntity, new Object[0]);
 /* 3688 */     if (!isRidePlayer()) {
 /* 3689 */       switchGunnerMode(false);
 /*      */     }
@@ -3697,8 +3697,8 @@ import net.minecraft.entity.MoverType;
 /* 3692 */     setCommonStatus(1, false);
 /* 3693 */     if (!isUAV()) {
 /* 3694 */       setUnmountPosition(rByEntity, (getSeatsInfo()[0]).pos);
-/* 3695 */     } else if (rByEntity != null && rByEntity.func_184187_bx() instanceof MCH_EntityUavStation) {
-/* 3696 */       rByEntity.func_184210_p();
+/* 3695 */     } else if (rByEntity != null && rByEntity.getRidingEntity() instanceof MCH_EntityUavStation) {
+/* 3696 */       rByEntity.dismountRidingEntity();
 /*      */     } 
 /*      */     
 /* 3699 */     this.lastRiddenByEntity = null;
@@ -3707,8 +3707,8 @@ import net.minecraft.entity.MoverType;
 /*      */     }
 /*      */   }
 /*      */   
-/*      */   public Entity func_184187_bx() {
-/* 3706 */     return super.func_184187_bx();
+/*      */   public Entity getRidingEntity() {
+/* 3706 */     return super.getRidingEntity();
 /*      */   }
 /*      */   
 /*      */   public void startUnmountCrew() {
@@ -3755,11 +3755,11 @@ import net.minecraft.entity.MoverType;
 /*      */   public Vec3d getRopePos(int ropeIndex) {
 /* 3751 */     return (getAcInfo() != null && getAcInfo().haveRepellingHook() && ropeIndex < (getAcInfo()).repellingHooks.size()) ? 
 /* 3752 */       getTransformedPosition(((MCH_AircraftInfo.RepellingHook)(getAcInfo()).repellingHooks.get(ropeIndex)).pos) : 
-/* 3753 */       new Vec3d(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/* 3753 */       new Vec3d(this.posX, this.posY, this.posZ);
 /*      */   }
 /*      */   
 /*      */   private void startRepelling() {
-/* 3757 */     MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityAircraft.startRepelling()", new Object[0]);
+/* 3757 */     MCH_Lib.DbgLog(this.world, "MCH_EntityAircraft.startRepelling()", new Object[0]);
 /* 3758 */     setRepellingStat(true);
 /* 3759 */     this.throttleUp = false;
 /* 3760 */     this.throttleDown = false;
@@ -3769,14 +3769,14 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   private void stopRepelling() {
-/* 3767 */     MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityAircraft.stopRepelling()", new Object[0]);
+/* 3767 */     MCH_Lib.DbgLog(this.world, "MCH_EntityAircraft.stopRepelling()", new Object[0]);
 /* 3768 */     setRepellingStat(false);
 /*      */   }
 /*      */   
 /*      */   public boolean canStartRepelling() {
 /* 3772 */     if (getAcInfo().haveRepellingHook() && isHovering() && abs(getRotPitch()) < 3.0F && abs(getRotRoll()) < 3.0F) {
-/* 3773 */       Vec3d v = ((Vec3d)this.prevPosition.oldest()).func_72441_c(-this.field_70165_t, -this.field_70163_u, -this.field_70161_v);
-/* 3774 */       return (v.func_72433_c() < 0.3D);
+/* 3773 */       Vec3d v = ((Vec3d)this.prevPosition.oldest()).addVector(-this.posX, -this.posY, -this.posZ);
+/* 3774 */       return (v.lengthVector() < 0.3D);
 /*      */     } 
 /*      */     
 /* 3777 */     return false;
@@ -3794,20 +3794,20 @@ import net.minecraft.entity.MoverType;
 /* 3789 */             if (getSeatIdByEntity(entity) > 1) {
 /* 3790 */               ret = true;
 /* 3791 */               Vec3d dropPos = getTransformedPosition((getAcInfo()).mobDropOption.pos, (Vec3d)this.prevPosition.oldest());
-/* 3792 */               (this.seats[i]).field_70165_t = dropPos.field_72450_a;
-/* 3793 */               (this.seats[i]).field_70163_u = dropPos.field_72448_b;
-/* 3794 */               (this.seats[i]).field_70161_v = dropPos.field_72449_c;
-/* 3795 */               entity.func_184210_p();
-/* 3796 */               entity.field_70165_t = dropPos.field_72450_a;
-/* 3797 */               entity.field_70163_u = dropPos.field_72448_b;
-/* 3798 */               entity.field_70161_v = dropPos.field_72449_c;
+/* 3792 */               (this.seats[i]).posX = dropPos.x;
+/* 3793 */               (this.seats[i]).posY = dropPos.y;
+/* 3794 */               (this.seats[i]).posZ = dropPos.z;
+/* 3795 */               entity.dismountRidingEntity();
+/* 3796 */               entity.posX = dropPos.x;
+/* 3797 */               entity.posY = dropPos.y;
+/* 3798 */               entity.posZ = dropPos.z;
 /* 3799 */               dropEntityParachute(entity);
 /*      */               break;
 /*      */             } 
 /*      */           } else {
 /* 3803 */             ret = true;
 /* 3804 */             setUnmountPosition((Entity)this.seats[i], (pos[i + 1]).pos);
-/* 3805 */             entity.func_184210_p();
+/* 3805 */             entity.dismountRidingEntity();
 /* 3806 */             setUnmountPosition(entity, (pos[i + 1]).pos);
 /*      */           } 
 /*      */         }
@@ -3824,13 +3824,13 @@ import net.minecraft.entity.MoverType;
 /* 3819 */       if (info != null && info.unmountPosition != null) {
 /* 3820 */         v = getTransformedPosition(info.unmountPosition);
 /*      */       } else {
-/* 3822 */         double x = pos.field_72450_a;
+/* 3822 */         double x = pos.x;
 /* 3823 */         x = (x >= 0.0D) ? (x + 3.0D) : (x - 3.0D);
-/* 3824 */         v = getTransformedPosition(x, 2.0D, pos.field_72449_c);
+/* 3824 */         v = getTransformedPosition(x, 2.0D, pos.z);
 /*      */       } 
 /*      */       
-/* 3827 */       rByEntity.func_70107_b(v.field_72450_a, v.field_72448_b, v.field_72449_c);
-/* 3828 */       this.listUnmountReserve.add(new UnmountReserve(this, rByEntity, v.field_72450_a, v.field_72448_b, v.field_72449_c));
+/* 3827 */       rByEntity.setPosition(v.x, v.y, v.z);
+/* 3828 */       this.listUnmountReserve.add(new UnmountReserve(this, rByEntity, v.x, v.y, v.z));
 /*      */     } 
 /*      */   }
 /*      */   
@@ -3838,7 +3838,7 @@ import net.minecraft.entity.MoverType;
 /* 3833 */     if (entity != null && this.seats != null && this.seats.length != 0) {
 /* 3834 */       for (MCH_EntitySeat seat : this.seats) {
 /* 3835 */         if (seat != null && seat.getRiddenByEntity() != null && W_Entity.isEqual(seat.getRiddenByEntity(), entity)) {
-/* 3836 */           entity.func_184210_p();
+/* 3836 */           entity.dismountRidingEntity();
 /*      */         }
 /*      */       } 
 /*      */     }
@@ -3872,23 +3872,23 @@ import net.minecraft.entity.MoverType;
 /*      */   public void ejectSeatSub(Entity entity, int sid) {
 /* 3868 */     Vec3d pos = (getSeatInfo(sid) != null) ? (getSeatInfo(sid)).pos : null;
 /* 3869 */     if (pos != null) {
-/* 3870 */       Vec3d vec3d = getTransformedPosition(pos.field_72450_a, pos.field_72448_b + 2.0D, pos.field_72449_c);
-/* 3871 */       entity.func_70107_b(vec3d.field_72450_a, vec3d.field_72448_b, vec3d.field_72449_c);
+/* 3870 */       Vec3d vec3d = getTransformedPosition(pos.x, pos.y + 2.0D, pos.z);
+/* 3871 */       entity.setPosition(vec3d.x, vec3d.y, vec3d.z);
 /*      */     } 
 /*      */     
 /* 3874 */     Vec3d v = MCH_Lib.RotVec3(0.0D, 2.0D, 0.0D, -getRotYaw(), -getRotPitch(), -getRotRoll());
-/* 3875 */     entity.field_70159_w = this.field_70159_w + v.field_72450_a + (this.field_70146_Z.nextFloat() - 0.5D) * 0.1D;
-/* 3876 */     entity.field_70181_x = this.field_70181_x + v.field_72448_b;
-/* 3877 */     entity.field_70179_y = this.field_70179_y + v.field_72449_c + (this.field_70146_Z.nextFloat() - 0.5D) * 0.1D;
-/* 3878 */     MCH_EntityParachute parachute = new MCH_EntityParachute(this.field_70170_p, entity.field_70165_t, entity.field_70163_u, entity.field_70161_v);
-/* 3879 */     parachute.field_70177_z = entity.field_70177_z;
-/* 3880 */     parachute.field_70159_w = entity.field_70159_w;
-/* 3881 */     parachute.field_70181_x = entity.field_70181_x;
-/* 3882 */     parachute.field_70179_y = entity.field_70179_y;
-/* 3883 */     parachute.field_70143_R = entity.field_70143_R;
+/* 3875 */     entity.motionX = this.motionX + v.x + (this.rand.nextFloat() - 0.5D) * 0.1D;
+/* 3876 */     entity.motionY = this.motionY + v.y;
+/* 3877 */     entity.motionZ = this.motionZ + v.z + (this.rand.nextFloat() - 0.5D) * 0.1D;
+/* 3878 */     MCH_EntityParachute parachute = new MCH_EntityParachute(this.world, entity.posX, entity.posY, entity.posZ);
+/* 3879 */     parachute.rotationYaw = entity.rotationYaw;
+/* 3880 */     parachute.motionX = entity.motionX;
+/* 3881 */     parachute.motionY = entity.motionY;
+/* 3882 */     parachute.motionZ = entity.motionZ;
+/* 3883 */     parachute.fallDistance = entity.fallDistance;
 /* 3884 */     parachute.user = entity;
 /* 3885 */     parachute.setType(2);
-/* 3886 */     this.field_70170_p.func_72838_d((Entity)parachute);
+/* 3886 */     this.world.spawnEntity((Entity)parachute);
 /* 3887 */     if (getAcInfo().haveCanopy() && isCanopyClose()) {
 /* 3888 */       openCanopy_EjectSeat();
 /*      */     }
@@ -3907,13 +3907,13 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public int getMountedEntityNum() {
 /* 3904 */     int num = 0;
-/* 3905 */     if (getRiddenByEntity() != null && !(getRiddenByEntity()).field_70128_L) {
+/* 3905 */     if (getRiddenByEntity() != null && !(getRiddenByEntity()).isDead) {
 /* 3906 */       num++;
 /*      */     }
 /*      */     
 /* 3909 */     if (this.seats != null) {
 /* 3910 */       for (MCH_EntitySeat seat : this.seats) {
-/* 3911 */         if (seat != null && seat.getRiddenByEntity() != null && !(seat.getRiddenByEntity()).field_70128_L) {
+/* 3911 */         if (seat != null && seat.getRiddenByEntity() != null && !(seat.getRiddenByEntity()).isDead) {
 /* 3912 */           num++;
 /*      */         }
 /*      */       } 
@@ -3923,10 +3923,10 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void mountMobToSeats() {
-/* 3921 */     List<EntityLivingBase> list = this.field_70170_p.func_72872_a(W_Lib.getEntityLivingBaseClass(), func_174813_aQ().func_72314_b(3.0D, 2.0D, 3.0D));
+/* 3921 */     List<EntityLivingBase> list = this.world.getEntitiesWithinAABB(W_Lib.getEntityLivingBaseClass(), getEntityBoundingBox().grow(3.0D, 2.0D, 3.0D));
 /*      */     
 /* 3923 */     for (Entity entity : list) {
-/* 3924 */       if (!(entity instanceof EntityPlayer) && entity.func_184187_bx() == null) {
+/* 3924 */       if (!(entity instanceof EntityPlayer) && entity.getRidingEntity() == null) {
 /* 3925 */         int sid = 1;
 /*      */         
 /* 3927 */         for (MCH_EntitySeat seat : getSeats()) {
@@ -3935,7 +3935,7 @@ import net.minecraft.entity.MoverType;
 /*      */               break;
 /*      */             }
 /*      */             
-/* 3933 */             entity.func_184220_m((Entity)seat);
+/* 3933 */             entity.startRiding((Entity)seat);
 /*      */           } 
 /*      */           
 /* 3936 */           sid++;
@@ -3951,7 +3951,7 @@ import net.minecraft.entity.MoverType;
 /*      */       }
 /*      */       
 /* 3948 */       Block block = MCH_Lib.getBlockY((Entity)this, 1, -3, true);
-/* 3949 */       if (block == null || W_Block.isEqual(block, Blocks.field_150350_a)) {
+/* 3949 */       if (block == null || W_Block.isEqual(block, Blocks.AIR)) {
 /*      */         return;
 /*      */       }
 /*      */     } 
@@ -3962,27 +3962,27 @@ import net.minecraft.entity.MoverType;
 /* 3957 */       MCH_EntitySeat seat = getSeat(sid);
 /* 3958 */       MCH_SeatInfo mCH_SeatInfo = getSeatInfo(1 + sid); if (mCH_SeatInfo instanceof MCH_SeatRackInfo) { MCH_SeatRackInfo info = (MCH_SeatRackInfo)mCH_SeatInfo; if (seat != null && seat.getRiddenByEntity() == null) {
 /* 3959 */           Vec3d v = MCH_Lib.RotVec3(
-/* 3960 */               (info.getEntryPos()).field_72450_a, (info.getEntryPos()).field_72448_b, (info.getEntryPos()).field_72449_c, -getRotYaw(), -getRotPitch(), -getRotRoll());
+/* 3960 */               (info.getEntryPos()).x, (info.getEntryPos()).y, (info.getEntryPos()).z, -getRotYaw(), -getRotPitch(), -getRotRoll());
 /*      */           
-/* 3962 */           v = v.func_72441_c(this.field_70165_t, this.field_70163_u, this.field_70161_v);
-/* 3963 */           AxisAlignedBB bb = new AxisAlignedBB(v.field_72450_a, v.field_72448_b, v.field_72449_c, v.field_72450_a, v.field_72448_b, v.field_72449_c);
+/* 3962 */           v = v.addVector(this.posX, this.posY, this.posZ);
+/* 3963 */           AxisAlignedBB bb = new AxisAlignedBB(v.x, v.y, v.z, v.x, v.y, v.z);
 /* 3964 */           float range = info.range;
-/* 3965 */           List<Entity> list = this.field_70170_p.func_72839_b((Entity)this, bb.func_72314_b(range, range, range));
+/* 3965 */           List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity((Entity)this, bb.grow(range, range, range));
 /*      */           
 /* 3967 */           for (Entity entity : list) {
 /* 3968 */             if (canRideSeatOrRack(1 + sid, entity)) {
 /* 3969 */               if (entity instanceof MCH_IEntityCanRideAircraft) {
 /* 3970 */                 if (((MCH_IEntityCanRideAircraft)entity).canRideAircraft(this, sid, info)) {
-/* 3971 */                   MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityAircraft.mountEntityToRack:%d:%s", new Object[] { Integer.valueOf(sid), entity });
-/* 3972 */                   entity.func_184220_m((Entity)seat);
+/* 3971 */                   MCH_Lib.DbgLog(this.world, "MCH_EntityAircraft.mountEntityToRack:%d:%s", new Object[] { Integer.valueOf(sid), entity });
+/* 3972 */                   entity.startRiding((Entity)seat);
 /* 3973 */                   countRideEntity++; break;
 /*      */                 }  continue;
 /*      */               } 
-/* 3976 */               if (entity.func_184187_bx() == null) {
+/* 3976 */               if (entity.getRidingEntity() == null) {
 /* 3977 */                 NBTTagCompound nbt = entity.getEntityData();
-/* 3978 */                 if (nbt.func_74764_b("CanMountEntity") && nbt.func_74767_n("CanMountEntity")) {
-/* 3979 */                   MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityAircraft.mountEntityToRack:%d:%s:%s", new Object[] { Integer.valueOf(sid), entity, entity.getClass() });
-/* 3980 */                   entity.func_184220_m((Entity)seat);
+/* 3978 */                 if (nbt.hasKey("CanMountEntity") && nbt.getBoolean("CanMountEntity")) {
+/* 3979 */                   MCH_Lib.DbgLog(this.world, "MCH_EntityAircraft.mountEntityToRack:%d:%s:%s", new Object[] { Integer.valueOf(sid), entity, entity.getClass() });
+/* 3980 */                   entity.startRiding((Entity)seat);
 /* 3981 */                   countRideEntity++;
 /*      */                   break;
 /*      */                 } 
@@ -3993,7 +3993,7 @@ import net.minecraft.entity.MoverType;
 /*      */     
 /*      */     } 
 /* 3990 */     if (countRideEntity > 0) {
-/* 3991 */       W_WorldFunc.DEF_playSoundEffect(this.field_70170_p, this.field_70165_t, this.field_70163_u, this.field_70161_v, "random.click", 1.0F, 1.0F);
+/* 3991 */       W_WorldFunc.DEF_playSoundEffect(this.world, this.posX, this.posY, this.posZ, "random.click", 1.0F, 1.0F);
 /*      */     }
 /*      */   }
 /*      */   
@@ -4004,25 +4004,25 @@ import net.minecraft.entity.MoverType;
 /* 3999 */           Entity entity = seat.getRiddenByEntity();
 /* 4000 */           Vec3d pos = info.getEntryPos();
 /* 4001 */           if (entity instanceof MCH_EntityAircraft) {
-/* 4002 */             if (pos.field_72449_c >= (getAcInfo()).bbZ) {
-/* 4003 */               pos = pos.func_72441_c(0.0D, 0.0D, 12.0D);
+/* 4002 */             if (pos.z >= (getAcInfo()).bbZ) {
+/* 4003 */               pos = pos.addVector(0.0D, 0.0D, 12.0D);
 /*      */             } else {
-/* 4005 */               pos = pos.func_72441_c(0.0D, 0.0D, -12.0D);
+/* 4005 */               pos = pos.addVector(0.0D, 0.0D, -12.0D);
 /*      */             } 
 /*      */           }
 /*      */           
-/* 4009 */           Vec3d v = MCH_Lib.RotVec3(pos.field_72450_a, pos.field_72448_b, pos.field_72449_c, -getRotYaw(), -getRotPitch(), -getRotRoll());
-/* 4010 */           seat.field_70165_t = entity.field_70165_t = this.field_70165_t + v.field_72450_a;
-/* 4011 */           seat.field_70163_u = entity.field_70163_u = this.field_70163_u + v.field_72448_b;
-/* 4012 */           seat.field_70161_v = entity.field_70161_v = this.field_70161_v + v.field_72449_c;
-/* 4013 */           UnmountReserve ur = new UnmountReserve(this, entity, entity.field_70165_t, entity.field_70163_u, entity.field_70161_v);
+/* 4009 */           Vec3d v = MCH_Lib.RotVec3(pos.x, pos.y, pos.z, -getRotYaw(), -getRotPitch(), -getRotRoll());
+/* 4010 */           seat.posX = entity.posX = this.posX + v.x;
+/* 4011 */           seat.posY = entity.posY = this.posY + v.y;
+/* 4012 */           seat.posZ = entity.posZ = this.posZ + v.z;
+/* 4013 */           UnmountReserve ur = new UnmountReserve(this, entity, entity.posX, entity.posY, entity.posZ);
 /* 4014 */           ur.cnt = 8;
 /* 4015 */           this.listUnmountReserve.add(ur);
-/* 4016 */           entity.func_184210_p();
+/* 4016 */           entity.dismountRidingEntity();
 /* 4017 */           if (MCH_Lib.getBlockIdY((Entity)this, 3, -20) > 0) {
-/* 4018 */             MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityAircraft.unmountEntityFromRack:%d:%s", new Object[] { Integer.valueOf(sid), entity }); break;
+/* 4018 */             MCH_Lib.DbgLog(this.world, "MCH_EntityAircraft.unmountEntityFromRack:%d:%s", new Object[] { Integer.valueOf(sid), entity }); break;
 /*      */           } 
-/* 4020 */           MCH_Lib.DbgLog(this.field_70170_p, "MCH_EntityAircraft.unmountEntityFromRack:%d Parachute:%s", new Object[] { Integer.valueOf(sid), entity });
+/* 4020 */           MCH_Lib.DbgLog(this.world, "MCH_EntityAircraft.unmountEntityFromRack:%d Parachute:%s", new Object[] { Integer.valueOf(sid), entity });
 /* 4021 */           dropEntityParachute(entity);
 /*      */           break;
 /*      */         }  }
@@ -4031,24 +4031,24 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void dropEntityParachute(Entity entity) {
-/* 4029 */     entity.field_70159_w = this.field_70159_w;
-/* 4030 */     entity.field_70181_x = this.field_70181_x;
-/* 4031 */     entity.field_70179_y = this.field_70179_y;
-/* 4032 */     MCH_EntityParachute parachute = new MCH_EntityParachute(this.field_70170_p, entity.field_70165_t, entity.field_70163_u, entity.field_70161_v);
-/* 4033 */     parachute.field_70177_z = entity.field_70177_z;
-/* 4034 */     parachute.field_70159_w = entity.field_70159_w;
-/* 4035 */     parachute.field_70181_x = entity.field_70181_x;
-/* 4036 */     parachute.field_70179_y = entity.field_70179_y;
-/* 4037 */     parachute.field_70143_R = entity.field_70143_R;
+/* 4029 */     entity.motionX = this.motionX;
+/* 4030 */     entity.motionY = this.motionY;
+/* 4031 */     entity.motionZ = this.motionZ;
+/* 4032 */     MCH_EntityParachute parachute = new MCH_EntityParachute(this.world, entity.posX, entity.posY, entity.posZ);
+/* 4033 */     parachute.rotationYaw = entity.rotationYaw;
+/* 4034 */     parachute.motionX = entity.motionX;
+/* 4035 */     parachute.motionY = entity.motionY;
+/* 4036 */     parachute.motionZ = entity.motionZ;
+/* 4037 */     parachute.fallDistance = entity.fallDistance;
 /* 4038 */     parachute.user = entity;
 /* 4039 */     parachute.setType(3);
-/* 4040 */     this.field_70170_p.func_72838_d((Entity)parachute);
+/* 4040 */     this.world.spawnEntity((Entity)parachute);
 /*      */   }
 /*      */   
 /*      */   public void rideRack() {
-/* 4044 */     if (func_184187_bx() == null) {
-/* 4045 */       AxisAlignedBB bb = func_70046_E();
-/* 4046 */       List<Entity> list = this.field_70170_p.func_72839_b((Entity)this, bb.func_72314_b(60.0D, 60.0D, 60.0D));
+/* 4044 */     if (getRidingEntity() == null) {
+/* 4045 */       AxisAlignedBB bb = getCollisionBoundingBox();
+/* 4046 */       List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity((Entity)this, bb.grow(60.0D, 60.0D, 60.0D));
 /*      */       
 /* 4048 */       for (Entity entity : list) {
 /* 4049 */         if (entity instanceof MCH_EntityAircraft) { MCH_EntityAircraft ac = (MCH_EntityAircraft)entity;
@@ -4060,15 +4060,15 @@ import net.minecraft.entity.MoverType;
 /* 4055 */                   if (seat != null && seat.getRiddenByEntity() == null) {
 /* 4056 */                     Vec3d v = ac.getTransformedPosition(info.getEntryPos());
 /* 4057 */                     float r = info.range;
-/* 4058 */                     if (this.field_70165_t >= v.field_72450_a - r && this.field_70165_t <= v.field_72450_a + r && this.field_70163_u >= v.field_72448_b - r && this.field_70163_u <= v.field_72448_b + r && this.field_70161_v >= v.field_72449_c - r && this.field_70161_v <= v.field_72449_c + r && 
+/* 4058 */                     if (this.posX >= v.x - r && this.posX <= v.x + r && this.posY >= v.y - r && this.posY <= v.y + r && this.posZ >= v.z - r && this.posZ <= v.z + r && 
 /*      */ 
 /*      */ 
 /*      */ 
 /*      */ 
 /*      */                       
 /* 4064 */                       canRideAircraft(ac, sid, info)) {
-/* 4065 */                       W_WorldFunc.DEF_playSoundEffect(this.field_70170_p, this.field_70165_t, this.field_70163_u, this.field_70161_v, "random.click", 1.0F, 1.0F);
-/* 4066 */                       func_184220_m((Entity)seat);
+/* 4065 */                       W_WorldFunc.DEF_playSoundEffect(this.world, this.posX, this.posY, this.posZ, "random.click", 1.0F, 1.0F);
+/* 4066 */                       startRiding((Entity)seat);
 /*      */                       return;
 /*      */                     } 
 /*      */                   } 
@@ -4107,9 +4107,9 @@ import net.minecraft.entity.MoverType;
 /*      */   public void checkRideRack() {
 /* 4103 */     if (getCountOnUpdate() % 10 == 0) {
 /* 4104 */       this.canRideRackStatus = false;
-/* 4105 */       if (func_184187_bx() == null) {
-/* 4106 */         AxisAlignedBB bb = func_70046_E();
-/* 4107 */         List<Entity> list = this.field_70170_p.func_72839_b((Entity)this, bb.func_72314_b(60.0D, 60.0D, 60.0D));
+/* 4105 */       if (getRidingEntity() == null) {
+/* 4106 */         AxisAlignedBB bb = getCollisionBoundingBox();
+/* 4107 */         List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity((Entity)this, bb.grow(60.0D, 60.0D, 60.0D));
 /*      */         
 /* 4109 */         for (Entity entity : list) {
 /* 4110 */           if (entity instanceof MCH_EntityAircraft) { MCH_EntityAircraft ac = (MCH_EntityAircraft)entity;
@@ -4121,7 +4121,7 @@ import net.minecraft.entity.MoverType;
 /* 4116 */                   if (seat != null && seat.getRiddenByEntity() == null) {
 /* 4117 */                     Vec3d v = ac.getTransformedPosition(info.getEntryPos());
 /* 4118 */                     float r = info.range;
-/* 4119 */                     if (this.field_70165_t >= v.field_72450_a - r && this.field_70165_t <= v.field_72450_a + r && this.field_70163_u >= v.field_72448_b - r && this.field_70163_u <= v.field_72448_b + r && this.field_70161_v >= v.field_72449_c - r && this.field_70161_v <= v.field_72449_c + r && 
+/* 4119 */                     if (this.posX >= v.x - r && this.posX <= v.x + r && this.posY >= v.y - r && this.posY <= v.y + r && this.posZ >= v.z - r && this.posZ <= v.z + r && 
 /*      */ 
 /*      */ 
 /*      */ 
@@ -4142,16 +4142,16 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public boolean canRideRack() {
-/* 4140 */     return (func_184187_bx() == null && this.canRideRackStatus);
+/* 4140 */     return (getRidingEntity() == null && this.canRideRackStatus);
 /*      */   }
 /*      */ 
 /*      */   
 /*      */   public boolean canRideAircraft(MCH_EntityAircraft ac, int seatID, MCH_SeatRackInfo info) {
 /* 4145 */     if (getAcInfo() == null)
 /* 4146 */       return false; 
-/* 4147 */     if (ac.func_184187_bx() != null)
+/* 4147 */     if (ac.getRidingEntity() != null)
 /* 4148 */       return false; 
-/* 4149 */     if (func_184187_bx() != null) {
+/* 4149 */     if (getRidingEntity() != null) {
 /* 4150 */       return false;
 /*      */     }
 /* 4152 */     boolean canRide = false;
@@ -4210,12 +4210,12 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   public boolean isMountedSameTeamEntity(@Nullable EntityLivingBase player) {
-/* 4208 */     if (player != null && player.func_96124_cp() != null) {
-/* 4209 */       if (getRiddenByEntity() instanceof EntityLivingBase && player.func_184191_r(getRiddenByEntity())) {
+/* 4208 */     if (player != null && player.getTeam() != null) {
+/* 4209 */       if (getRiddenByEntity() instanceof EntityLivingBase && player.isOnSameTeam(getRiddenByEntity())) {
 /* 4210 */         return true;
 /*      */       }
 /* 4212 */       for (MCH_EntitySeat seat : getSeats()) {
-/* 4213 */         if (seat != null && seat.getRiddenByEntity() instanceof EntityLivingBase && player.func_184191_r(seat.getRiddenByEntity())) {
+/* 4213 */         if (seat != null && seat.getRiddenByEntity() instanceof EntityLivingBase && player.isOnSameTeam(seat.getRiddenByEntity())) {
 /* 4214 */           return true;
 /*      */         }
 /*      */       } 
@@ -4232,7 +4232,7 @@ import net.minecraft.entity.MoverType;
 /*      */       
 /* 4228 */       if (getRiddenByEntity() instanceof EntityLivingBase) {
 /* 4229 */         EntityLivingBase target = (EntityLivingBase)getRiddenByEntity();
-/* 4230 */         if (player.func_96124_cp() != null && target.func_96124_cp() != null && !player.func_184191_r((Entity)target)) {
+/* 4230 */         if (player.getTeam() != null && target.getTeam() != null && !player.isOnSameTeam((Entity)target)) {
 /* 4231 */           return true;
 /*      */         }
 /*      */       } 
@@ -4240,7 +4240,7 @@ import net.minecraft.entity.MoverType;
 /* 4235 */       for (MCH_EntitySeat seat : getSeats()) {
 /* 4236 */         if (seat != null && seat.getRiddenByEntity() instanceof EntityLivingBase) {
 /* 4237 */           EntityLivingBase target = (EntityLivingBase)seat.getRiddenByEntity();
-/* 4238 */           if (player.func_96124_cp() != null && target.func_96124_cp() != null && !player.func_184191_r((Entity)target)) {
+/* 4238 */           if (player.getTeam() != null && target.getTeam() != null && !player.isOnSameTeam((Entity)target)) {
 /* 4239 */             return true;
 /*      */           }
 /*      */         } 
@@ -4272,7 +4272,7 @@ import net.minecraft.entity.MoverType;
 /* 4267 */       Entity entity = getEntityBySeatId(i);
 /* 4268 */       if (entity instanceof EntityPlayer || entity instanceof MCH_EntityGunner) {
 /* 4269 */         EntityLivingBase riddenEntity = (EntityLivingBase)entity;
-/* 4270 */         if (riddenEntity.func_96124_cp() != null && !riddenEntity.func_184191_r((Entity)player)) {
+/* 4270 */         if (riddenEntity.getTeam() != null && !riddenEntity.isOnSameTeam((Entity)player)) {
 /* 4271 */           return false;
 /*      */         }
 /*      */       } 
@@ -4283,12 +4283,12 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public boolean processInitialInteract(EntityPlayer player, boolean ss, EnumHand hand) {
 /* 4280 */     this.switchSeat = ss;
-/* 4281 */     boolean ret = func_184230_a(player, hand);
+/* 4281 */     boolean ret = processInitialInteract(player, hand);
 /* 4282 */     this.switchSeat = false;
 /* 4283 */     return ret;
 /*      */   }
 /*      */   
-/*      */   public boolean func_184230_a(@NotNull EntityPlayer player, @NotNull EnumHand hand) {
+/*      */   public boolean processInitialInteract(@NotNull EntityPlayer player, @NotNull EnumHand hand) {
 /* 4287 */     if (isDestroyed())
 /* 4288 */       return false; 
 /* 4289 */     if (getAcInfo() == null)
@@ -4296,23 +4296,23 @@ import net.minecraft.entity.MoverType;
 /* 4291 */     if (!checkTeam(player)) {
 /* 4292 */       return false;
 /*      */     }
-/* 4294 */     ItemStack itemStack = player.func_184586_b(hand);
-/* 4295 */     if (!itemStack.func_190926_b() && itemStack.func_77973_b() instanceof com.norwood.mcheli.tool.MCH_ItemWrench) {
-/* 4296 */       if (!this.field_70170_p.field_72995_K && player.func_70093_af()) {
+/* 4294 */     ItemStack itemStack = player.getHeldItem(hand);
+/* 4295 */     if (!itemStack.isEmpty() && itemStack.getItem() instanceof com.norwood.mcheli.tool.MCH_ItemWrench) {
+/* 4296 */       if (!this.world.isRemote && player.isSneaking()) {
 /* 4297 */         switchNextTextureName();
 /*      */       }
 /*      */       
 /* 4300 */       return false;
-/* 4301 */     }  if (!itemStack.func_190926_b() && itemStack.func_77973_b() instanceof com.norwood.mcheli.mob.MCH_ItemSpawnGunner)
+/* 4301 */     }  if (!itemStack.isEmpty() && itemStack.getItem() instanceof com.norwood.mcheli.mob.MCH_ItemSpawnGunner)
 /* 4302 */       return false; 
-/* 4303 */     if (player.func_70093_af()) {
+/* 4303 */     if (player.isSneaking()) {
 /* 4304 */       displayInventory(player);
 /* 4305 */       return false;
 /* 4306 */     }  if (!(getAcInfo()).canRide)
 /* 4307 */       return false; 
 /* 4308 */     if (getRiddenByEntity() != null || isUAV())
 /* 4309 */       return interactFirstSeat(player); 
-/* 4310 */     if (player.func_184187_bx() instanceof MCH_EntitySeat)
+/* 4310 */     if (player.getRidingEntity() instanceof MCH_EntitySeat)
 /* 4311 */       return false; 
 /* 4312 */     if (!canRideSeatOrRack(0, (Entity)player)) {
 /* 4313 */       return false;
@@ -4331,8 +4331,8 @@ import net.minecraft.entity.MoverType;
 /* 4326 */     closeCanopy();
 /* 4327 */     this.lastRiddenByEntity = null;
 /* 4328 */     initRadar();
-/* 4329 */     if (!this.field_70170_p.field_72995_K) {
-/* 4330 */       player.func_184220_m((Entity)this);
+/* 4329 */     if (!this.world.isRemote) {
+/* 4330 */       player.startRiding((Entity)this);
 /* 4331 */       if (!this.keepOnRideRotation) {
 /* 4332 */         mountMobToSeats();
 /*      */       }
@@ -4403,7 +4403,7 @@ import net.minecraft.entity.MoverType;
 /* 4398 */           if (W_Entity.isEqual(seat.getRiddenByEntity(), entity)) {
 /* 4399 */             isFound = true;
 /* 4400 */           } else if (isFound && seat.getRiddenByEntity() == null) {
-/* 4401 */             entity.func_184220_m((Entity)seat);
+/* 4401 */             entity.startRiding((Entity)seat);
 /*      */             
 /*      */             return;
 /*      */           } 
@@ -4441,7 +4441,7 @@ import net.minecraft.entity.MoverType;
 /* 4436 */           if (W_Entity.isEqual(seat.getRiddenByEntity(), entity)) {
 /* 4437 */             isFound = true;
 /* 4438 */           } else if (isFound && seat.getRiddenByEntity() == null) {
-/* 4439 */             entity.func_184220_m((Entity)seat);
+/* 4439 */             entity.startRiding((Entity)seat);
 /*      */             
 /*      */             return;
 /*      */           } 
@@ -4450,7 +4450,7 @@ import net.minecraft.entity.MoverType;
 /* 4445 */       for (int ix = this.seats.length - 1; ix >= 0; ix--) {
 /* 4446 */         MCH_EntitySeat seat = this.seats[ix];
 /* 4447 */         if (!(getSeatInfo(ix + 1) instanceof MCH_SeatRackInfo) && seat != null && seat.getRiddenByEntity() == null) {
-/* 4448 */           entity.func_184220_m((Entity)seat);
+/* 4448 */           entity.startRiding((Entity)seat);
 /*      */           return;
 /*      */         } 
 /*      */       } 
@@ -4459,7 +4459,7 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */ 
 /*      */   
-/*      */   public Entity[] func_70021_al() {
+/*      */   public Entity[] getParts() {
 /* 4458 */     return this.partEntities;
 /*      */   }
 /*      */   
@@ -4483,7 +4483,7 @@ import net.minecraft.entity.MoverType;
 /*      */ 
 /*      */   
 /*      */   public boolean isSkipNormalRender() {
-/* 4481 */     return func_184187_bx() instanceof MCH_EntitySeat;
+/* 4481 */     return getRidingEntity() instanceof MCH_EntitySeat;
 /*      */   }
 /*      */   
 /*      */   public boolean isRenderBullet(Entity entity, Entity rider) {
@@ -4495,17 +4495,17 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void updateCamera(double x, double y, double z) {
-/* 4493 */     if (this.field_70170_p.field_72995_K) {
+/* 4493 */     if (this.world.isRemote) {
 /* 4494 */       if (getTVMissile() != null) {
-/* 4495 */         this.camera.setPosition(this.TVmissile.field_70165_t, this.TVmissile.field_70163_u, this.TVmissile.field_70161_v);
+/* 4495 */         this.camera.setPosition(this.TVmissile.posX, this.TVmissile.posY, this.TVmissile.posZ);
 /* 4496 */         this.camera.setCameraZoom(1.0F);
 /* 4497 */         this.TVmissile.isSpawnParticle = !isMissileCameraMode(this.TVmissile.shootingEntity);
 /*      */       } else {
 /* 4499 */         setTVMissile((MCH_EntityTvMissile)null);
 /* 4500 */         MCH_AircraftInfo.CameraPosition cpi = getCameraPosInfo();
-/* 4501 */         Vec3d cp = (cpi != null) ? cpi.pos : Vec3d.field_186680_a;
+/* 4501 */         Vec3d cp = (cpi != null) ? cpi.pos : Vec3d.ZERO;
 /* 4502 */         Vec3d v = MCH_Lib.RotVec3(cp, -getRotYaw(), -getRotPitch(), -getRotRoll());
-/* 4503 */         this.camera.setPosition(x + v.field_72450_a, y + v.field_72448_b, z + v.field_72449_c);
+/* 4503 */         this.camera.setPosition(x + v.x, y + v.y, z + v.z);
 /*      */       } 
 /*      */     }
 /*      */   }
@@ -4518,15 +4518,15 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void updatePartCameraRotate() {
-/* 4516 */     if (this.field_70170_p.field_72995_K) {
+/* 4516 */     if (this.world.isRemote) {
 /* 4517 */       Entity e = getEntityBySeatId(1);
 /* 4518 */       if (e == null) {
 /* 4519 */         e = getRiddenByEntity();
 /*      */       }
 /*      */       
 /* 4522 */       if (e != null) {
-/* 4523 */         this.camera.partRotationYaw = e.field_70177_z;
-/* 4524 */         float pitch = e.field_70125_A;
+/* 4523 */         this.camera.partRotationYaw = e.rotationYaw;
+/* 4524 */         float pitch = e.rotationPitch;
 /* 4525 */         this.camera.prevPartRotationYaw = this.camera.partRotationYaw;
 /* 4526 */         this.camera.prevPartRotationPitch = this.camera.partRotationPitch;
 /* 4527 */         this.camera.partRotationPitch = pitch;
@@ -4536,7 +4536,7 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   @Nullable
 /*      */   public MCH_EntityTvMissile getTVMissile() {
-/* 4534 */     return (this.TVmissile != null && !this.TVmissile.field_70128_L) ? this.TVmissile : null;
+/* 4534 */     return (this.TVmissile != null && !this.TVmissile.isDead) ? this.TVmissile : null;
 /*      */   }
 /*      */   
 /*      */   public void setTVMissile(MCH_EntityTvMissile entity) {
@@ -4556,7 +4556,7 @@ import net.minecraft.entity.MoverType;
 /* 4551 */         MCH_WeaponBase[] wb = new MCH_WeaponBase[ws.weapons.size()];
 /*      */         
 /* 4553 */         for (int j = 0; j < ws.weapons.size(); j++) {
-/* 4554 */           wb[j] = MCH_WeaponCreator.createWeapon(this.field_70170_p, ws.type, ((MCH_AircraftInfo.Weapon)ws.weapons
+/* 4554 */           wb[j] = MCH_WeaponCreator.createWeapon(this.world, ws.type, ((MCH_AircraftInfo.Weapon)ws.weapons
 /* 4555 */               .get(j)).pos, ((MCH_AircraftInfo.Weapon)ws.weapons.get(j)).yaw, ((MCH_AircraftInfo.Weapon)ws.weapons.get(j)).pitch, this, ((MCH_AircraftInfo.Weapon)ws.weapons.get(j)).turret);
 /*      */           
 /* 4557 */           (wb[j]).aircraft = this;
@@ -4589,12 +4589,12 @@ import net.minecraft.entity.MoverType;
 /* 4584 */         id = getWeaponNum() - 1;
 /*      */       }
 /*      */       
-/* 4587 */       MCH_Lib.DbgLog(this.field_70170_p, "switchWeapon:" + W_Entity.getEntityId(entity) + " -> " + id, new Object[0]);
+/* 4587 */       MCH_Lib.DbgLog(this.world, "switchWeapon:" + W_Entity.getEntityId(entity) + " -> " + id, new Object[0]);
 /* 4588 */       getCurrentWeapon(entity).reload();
 /* 4589 */       this.currentWeaponID[sid] = id;
 /* 4590 */       MCH_WeaponSet ws = getCurrentWeapon(entity);
-/* 4591 */       ws.onSwitchWeapon(this.field_70170_p.field_72995_K, isInfinityAmmo(entity));
-/* 4592 */       if (!this.field_70170_p.field_72995_K) {
+/* 4591 */       ws.onSwitchWeapon(this.world.isRemote, isInfinityAmmo(entity));
+/* 4592 */       if (!this.world.isRemote) {
 /* 4593 */         MCH_PacketNotifyWeaponID.send((Entity)this, sid, id, ws.getAmmoNum(), ws.getRestAllAmmoNum());
 /*      */       }
 /*      */     } 
@@ -4612,7 +4612,7 @@ import net.minecraft.entity.MoverType;
 /* 4607 */         id = getWeaponNum() - 1;
 /*      */       }
 /*      */       
-/* 4610 */       MCH_Lib.DbgLog(this.field_70170_p, "switchWeapon:seatID=" + sid + ", WeaponID=" + id, new Object[0]);
+/* 4610 */       MCH_Lib.DbgLog(this.world, "switchWeapon:seatID=" + sid + ", WeaponID=" + id, new Object[0]);
 /* 4611 */       this.currentWeaponID[sid] = id;
 /*      */     } 
 /*      */   }
@@ -4663,13 +4663,13 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public void initCurrentWeapon(Entity entity) {
 /* 4660 */     int sid = getSeatIdByEntity(entity);
-/* 4661 */     MCH_Lib.DbgLog(this.field_70170_p, "initCurrentWeapon:" + W_Entity.getEntityId(entity) + ":%d", new Object[] { Integer.valueOf(sid) });
+/* 4661 */     MCH_Lib.DbgLog(this.world, "initCurrentWeapon:" + W_Entity.getEntityId(entity) + ":%d", new Object[] { Integer.valueOf(sid) });
 /* 4662 */     if (sid >= 0 && sid < this.currentWeaponID.length) {
 /* 4663 */       this.currentWeaponID[sid] = -1;
 /* 4664 */       if (entity instanceof EntityPlayer || entity instanceof MCH_EntityGunner) {
 /* 4665 */         this.currentWeaponID[sid] = getNextWeaponID(entity, 1);
 /* 4666 */         switchWeapon(entity, getCurrentWeaponID(entity));
-/* 4667 */         if (this.field_70170_p.field_72995_K) {
+/* 4667 */         if (this.world.isRemote) {
 /* 4668 */           MCH_PacketIndNotifyAmmoNum.send(this, -1);
 /*      */         }
 /*      */       } 
@@ -4696,7 +4696,7 @@ import net.minecraft.entity.MoverType;
 /* 4691 */     if (this.lastCalcLandInDistanceCount != getCountOnUpdate() && getCountOnUpdate() % 5 == 0) {
 /* 4692 */       this.lastCalcLandInDistanceCount = getCountOnUpdate();
 /* 4693 */       MCH_WeaponParam prm = new MCH_WeaponParam();
-/* 4694 */       prm.setPosition(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/* 4694 */       prm.setPosition(this.posX, this.posY, this.posZ);
 /* 4695 */       prm.entity = (Entity)this;
 /* 4696 */       prm.user = user;
 /* 4697 */       prm.isInfinity = isInfinityAmmo(prm.user);
@@ -4718,7 +4718,7 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public boolean useCurrentWeapon(Entity user) {
 /* 4715 */     MCH_WeaponParam prm = new MCH_WeaponParam();
-/* 4716 */     prm.setPosition(this.field_70165_t, this.field_70163_u, this.field_70161_v);
+/* 4716 */     prm.setPosition(this.posX, this.posY, this.posZ);
 /* 4717 */     prm.entity = (Entity)this;
 /* 4718 */     prm.user = user;
 /* 4719 */     return useCurrentWeapon(prm);
@@ -4742,7 +4742,7 @@ import net.minecraft.entity.MoverType;
 /*      */             }
 /*      */           } 
 /*      */           
-/* 4740 */           if (!this.field_70170_p.field_72995_K) {
+/* 4740 */           if (!this.world.isRemote) {
 /* 4741 */             int shift = 0;
 /*      */             
 /* 4743 */             for (MCH_WeaponSet wsx : this.weapons) {
@@ -4820,7 +4820,7 @@ import net.minecraft.entity.MoverType;
 /* 4815 */     if (i >= getWeaponNum()) {
 /* 4816 */       return -1;
 /*      */     }
-/* 4818 */     MCH_Lib.DbgLog(this.field_70170_p, "getNextWeaponID:%d:->%d", new Object[] { Integer.valueOf(W_Entity.getEntityId(entity)), Integer.valueOf(id) });
+/* 4818 */     MCH_Lib.DbgLog(this.world, "getNextWeaponID:%d:->%d", new Object[] { Integer.valueOf(W_Entity.getEntityId(entity)), Integer.valueOf(id) });
 /* 4819 */     return id;
 /*      */   }
 /*      */ 
@@ -4888,16 +4888,16 @@ import net.minecraft.entity.MoverType;
 /* 4883 */     if (getAcInfo() != null && 
 /* 4884 */       getAcInfo().getWeaponNum() > 0) {
 /* 4885 */       int prevUseWeaponStat = this.useWeaponStat;
-/* 4886 */       if (!this.field_70170_p.field_72995_K) {
+/* 4886 */       if (!this.world.isRemote) {
 /* 4887 */         this.useWeaponStat |= getUsedWeaponStat();
-/* 4888 */         this.field_70180_af.func_187227_b(USE_WEAPON, Integer.valueOf(this.useWeaponStat));
+/* 4888 */         this.dataManager.set(USE_WEAPON, Integer.valueOf(this.useWeaponStat));
 /* 4889 */         this.useWeaponStat = 0;
 /*      */       } else {
-/* 4891 */         this.useWeaponStat = ((Integer)this.field_70180_af.func_187225_a(USE_WEAPON)).intValue();
+/* 4891 */         this.useWeaponStat = ((Integer)this.dataManager.get(USE_WEAPON)).intValue();
 /*      */       } 
 /*      */       
-/* 4894 */       float yaw = MathHelper.func_76142_g(getRotYaw());
-/* 4895 */       float pitch = MathHelper.func_76142_g(getRotPitch());
+/* 4894 */       float yaw = MathHelper.wrapDegrees(getRotYaw());
+/* 4895 */       float pitch = MathHelper.wrapDegrees(getRotPitch());
 /* 4896 */       int id = 0;
 /*      */       
 /* 4898 */       for (int wid = 0; wid < this.weapons.length; wid++) {
@@ -4935,10 +4935,10 @@ import net.minecraft.entity.MoverType;
 /*      */             } 
 /*      */           } 
 /*      */           
-/* 4933 */           if (this.field_70170_p.field_72995_K && isUsed) {
+/* 4933 */           if (this.world.isRemote && isUsed) {
 /* 4934 */             Vec3d wrv = MCH_Lib.RotVec3(0.0D, 0.0D, -1.0D, -w.rotationYaw - yaw, -w.rotationPitch);
 /* 4935 */             Vec3d spv = w.getCurrentWeapon().getShotPos((Entity)this);
-/* 4936 */             spawnParticleMuzzleFlash(this.field_70170_p, w.getInfo(), this.field_70165_t + spv.field_72450_a, this.field_70163_u + spv.field_72448_b, this.field_70161_v + spv.field_72449_c, wrv);
+/* 4936 */             spawnParticleMuzzleFlash(this.world, w.getInfo(), this.posX + spv.x, this.posY + spv.y, this.posZ + spv.z, wrv);
 /*      */           } 
 /*      */           
 /* 4939 */           w.updateWeapon((Entity)this, isUsed, index);
@@ -4955,13 +4955,13 @@ import net.minecraft.entity.MoverType;
 /*      */           
 /* 4951 */           if (!(entity instanceof EntityPlayer) && !(entity instanceof MCH_EntityGunner)) {
 /* 4952 */             w.rotationTurretYaw = getLastRiderYaw() - getRotYaw();
-/* 4953 */             if (getTowedChainEntity() != null || func_184187_bx() != null) {
+/* 4953 */             if (getTowedChainEntity() != null || getRidingEntity() != null) {
 /* 4954 */               w.rotationYaw = 0.0F;
 /*      */             }
 /*      */           } else {
 /* 4957 */             if ((int)wi.minYaw != 0 || (int)wi.maxYaw != 0) {
-/* 4958 */               float ty = wi.turret ? (MathHelper.func_76142_g(getLastRiderYaw()) - yaw) : 0.0F;
-/* 4959 */               float ey = MathHelper.func_76142_g(entity.field_70177_z - yaw - wi.defaultYaw - ty);
+/* 4958 */               float ty = wi.turret ? (MathHelper.wrapDegrees(getLastRiderYaw()) - yaw) : 0.0F;
+/* 4959 */               float ey = MathHelper.wrapDegrees(entity.rotationYaw - yaw - wi.defaultYaw - ty);
 /* 4960 */               if (Math.abs((int)wi.minYaw) < 360 && Math.abs((int)wi.maxYaw) < 360) {
 /* 4961 */                 float targetYaw = MCH_Lib.RNG(ey, wi.minYaw, wi.maxYaw);
 /* 4962 */                 float wy = w.rotationYaw - wi.defaultYaw - ty;
@@ -4985,7 +4985,7 @@ import net.minecraft.entity.MoverType;
 /*      */               } 
 /*      */             } 
 /*      */             
-/* 4983 */             float ep = MathHelper.func_76142_g(entity.field_70125_A - pitch);
+/* 4983 */             float ep = MathHelper.wrapDegrees(entity.rotationPitch - pitch);
 /* 4984 */             w.rotationPitch = MCH_Lib.RNG(ep, wi.minPitch, wi.maxPitch);
 /* 4985 */             w.rotationTurretYaw = 0.0F;
 /*      */           } 
@@ -5004,8 +5004,8 @@ import net.minecraft.entity.MoverType;
 /* 4999 */     if (getAcInfo() != null && 
 /* 5000 */       getAcInfo().getWeaponNum() > 0 && 
 /* 5001 */       !isDestroyed()) {
-/* 5002 */       float yaw = MathHelper.func_76142_g(getRotYaw());
-/* 5003 */       float pitch = MathHelper.func_76142_g(getRotPitch());
+/* 5002 */       float yaw = MathHelper.wrapDegrees(getRotYaw());
+/* 5003 */       float pitch = MathHelper.wrapDegrees(getRotPitch());
 /*      */       
 /* 5005 */       for (int wid = 0; wid < this.weapons.length; wid++) {
 /* 5006 */         MCH_WeaponSet w = this.weapons[wid];
@@ -5020,8 +5020,8 @@ import net.minecraft.entity.MoverType;
 /* 5015 */             w.rotationTurretYaw = getLastRiderYaw() - getRotYaw();
 /*      */           } else {
 /* 5017 */             if ((int)wi.minYaw != 0 || (int)wi.maxYaw != 0) {
-/* 5018 */               float ty = wi.turret ? (MathHelper.func_76142_g(getLastRiderYaw()) - yaw) : 0.0F;
-/* 5019 */               float ey = MathHelper.func_76142_g(entity.field_70177_z - yaw - wi.defaultYaw - ty);
+/* 5018 */               float ty = wi.turret ? (MathHelper.wrapDegrees(getLastRiderYaw()) - yaw) : 0.0F;
+/* 5019 */               float ey = MathHelper.wrapDegrees(entity.rotationYaw - yaw - wi.defaultYaw - ty);
 /* 5020 */               if (Math.abs((int)wi.minYaw) < 360 && Math.abs((int)wi.maxYaw) < 360) {
 /* 5021 */                 float targetYaw = MCH_Lib.RNG(ey, wi.minYaw, wi.maxYaw);
 /* 5022 */                 float wy = w.rotationYaw - wi.defaultYaw - ty;
@@ -5045,7 +5045,7 @@ import net.minecraft.entity.MoverType;
 /*      */               } 
 /*      */             } 
 /*      */             
-/* 5043 */             float ep = MathHelper.func_76142_g(entity.field_70125_A - pitch);
+/* 5043 */             float ep = MathHelper.wrapDegrees(entity.rotationPitch - pitch);
 /* 5044 */             w.rotationPitch = MCH_Lib.RNG(ep, wi.minPitch, wi.maxPitch);
 /* 5045 */             w.rotationTurretYaw = 0.0F;
 /*      */           } 
@@ -5061,25 +5061,25 @@ import net.minecraft.entity.MoverType;
 /*      */   private void spawnParticleMuzzleFlash(World w, MCH_WeaponInfo wi, double px, double py, double pz, Vec3d wrv) {
 /* 5057 */     if (wi.listMuzzleFlashSmoke != null) {
 /* 5058 */       for (MCH_WeaponInfo.MuzzleFlash mf : wi.listMuzzleFlashSmoke) {
-/* 5059 */         double x = px + -wrv.field_72450_a * mf.dist;
-/* 5060 */         double y = py + -wrv.field_72448_b * mf.dist;
-/* 5061 */         double z = pz + -wrv.field_72449_c * mf.dist;
+/* 5059 */         double x = px + -wrv.x * mf.dist;
+/* 5060 */         double y = py + -wrv.y * mf.dist;
+/* 5061 */         double z = pz + -wrv.z * mf.dist;
 /* 5062 */         MCH_ParticleParam p = new MCH_ParticleParam(w, "smoke", px, py, pz);
 /* 5063 */         p.size = mf.size;
 /*      */         
 /* 5065 */         for (int i = 0; i < mf.num; i++) {
-/* 5066 */           p.a = mf.a * 0.9F + w.field_73012_v.nextFloat() * 0.1F;
-/* 5067 */           float color = w.field_73012_v.nextFloat() * 0.1F;
+/* 5066 */           p.a = mf.a * 0.9F + w.rand.nextFloat() * 0.1F;
+/* 5067 */           float color = w.rand.nextFloat() * 0.1F;
 /* 5068 */           p.r = color + mf.r * 0.9F;
 /* 5069 */           p.g = color + mf.g * 0.9F;
 /* 5070 */           p.b = color + mf.b * 0.9F;
-/* 5071 */           p.age = (int)(mf.age + 0.1D * mf.age * w.field_73012_v.nextFloat());
-/* 5072 */           p.posX = x + (w.field_73012_v.nextDouble() - 0.5D) * mf.range;
-/* 5073 */           p.posY = y + (w.field_73012_v.nextDouble() - 0.5D) * mf.range;
-/* 5074 */           p.posZ = z + (w.field_73012_v.nextDouble() - 0.5D) * mf.range;
-/* 5075 */           p.motionX = w.field_73012_v.nextDouble() * ((p.posX < x) ? -0.2D : 0.2D);
-/* 5076 */           p.motionY = w.field_73012_v.nextDouble() * ((p.posY < y) ? -0.03D : 0.03D);
-/* 5077 */           p.motionZ = w.field_73012_v.nextDouble() * ((p.posZ < z) ? -0.2D : 0.2D);
+/* 5071 */           p.age = (int)(mf.age + 0.1D * mf.age * w.rand.nextFloat());
+/* 5072 */           p.posX = x + (w.rand.nextDouble() - 0.5D) * mf.range;
+/* 5073 */           p.posY = y + (w.rand.nextDouble() - 0.5D) * mf.range;
+/* 5074 */           p.posZ = z + (w.rand.nextDouble() - 0.5D) * mf.range;
+/* 5075 */           p.motionX = w.rand.nextDouble() * ((p.posX < x) ? -0.2D : 0.2D);
+/* 5076 */           p.motionY = w.rand.nextDouble() * ((p.posY < y) ? -0.03D : 0.03D);
+/* 5077 */           p.motionZ = w.rand.nextDouble() * ((p.posZ < z) ? -0.2D : 0.2D);
 /* 5078 */           MCH_ParticlesUtil.spawnParticle(p);
 /*      */         } 
 /*      */       } 
@@ -5087,8 +5087,8 @@ import net.minecraft.entity.MoverType;
 /*      */     
 /* 5083 */     if (wi.listMuzzleFlash != null) {
 /* 5084 */       for (MCH_WeaponInfo.MuzzleFlash mf : wi.listMuzzleFlash) {
-/* 5085 */         float color = this.field_70146_Z.nextFloat() * 0.1F + 0.9F;
-/* 5086 */         MCH_ParticlesUtil.spawnParticleExplode(this.field_70170_p, px + -wrv.field_72450_a * mf.dist, py + -wrv.field_72448_b * mf.dist, pz + -wrv.field_72449_c * mf.dist, mf.size, color * mf.r, color * mf.g, color * mf.b, mf.a, mf.age + w.field_73012_v
+/* 5085 */         float color = this.rand.nextFloat() * 0.1F + 0.9F;
+/* 5086 */         MCH_ParticlesUtil.spawnParticleExplode(this.world, px + -wrv.x * mf.dist, py + -wrv.y * mf.dist, pz + -wrv.z * mf.dist, mf.size, color * mf.r, color * mf.g, color * mf.b, mf.a, mf.age + w.rand
 /*      */ 
 /*      */ 
 /*      */ 
@@ -5154,8 +5154,8 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void initRotationYaw(float yaw) {
-/* 5152 */     this.field_70177_z = yaw;
-/* 5153 */     this.field_70126_B = yaw;
+/* 5152 */     this.rotationYaw = yaw;
+/* 5153 */     this.prevRotationYaw = yaw;
 /* 5154 */     this.lastRiderYaw = yaw;
 /* 5155 */     this.lastSearchLightYaw = yaw;
 /*      */     
@@ -5181,7 +5181,7 @@ import net.minecraft.entity.MoverType;
 /* 5176 */       this.prevRotPartRotation = new float[info.partRotPart.size()];
 /* 5177 */       this.extraBoundingBox = createExtraBoundingBox();
 /* 5178 */       this.partEntities = createParts();
-/* 5179 */       this.field_70138_W = info.stepHeight;
+/* 5179 */       this.stepHeight = info.stepHeight;
 /*      */     } 
 /*      */   }
 /*      */ 
@@ -5206,11 +5206,11 @@ import net.minecraft.entity.MoverType;
 /*      */   
 /*      */   public void updateUAV() {
 /* 5203 */     if (isUAV()) {
-/* 5204 */       if (this.field_70170_p.field_72995_K) {
-/* 5205 */         int eid = ((Integer)this.field_70180_af.func_187225_a(UAV_STATION)).intValue();
+/* 5204 */       if (this.world.isRemote) {
+/* 5205 */         int eid = ((Integer)this.dataManager.get(UAV_STATION)).intValue();
 /* 5206 */         if (eid > 0) {
 /* 5207 */           if (this.uavStation == null) {
-/* 5208 */             Entity uavEntity = this.field_70170_p.func_73045_a(eid);
+/* 5208 */             Entity uavEntity = this.world.getEntityByID(eid);
 /* 5209 */             if (uavEntity instanceof MCH_EntityUavStation) {
 /* 5210 */               this.uavStation = (MCH_EntityUavStation)uavEntity;
 /* 5211 */               this.uavStation.setControlAircract(this);
@@ -5221,16 +5221,16 @@ import net.minecraft.entity.MoverType;
 /* 5216 */           this.uavStation = null;
 /*      */         } 
 /* 5218 */       } else if (this.uavStation != null) {
-/* 5219 */         double udx = this.field_70165_t - this.uavStation.field_70165_t;
-/* 5220 */         double udz = this.field_70161_v - this.uavStation.field_70161_v;
+/* 5219 */         double udx = this.posX - this.uavStation.posX;
+/* 5220 */         double udz = this.posZ - this.uavStation.posZ;
 /* 5221 */         if (udx * udx + udz * udz > 15129.0D) {
 /* 5222 */           this.uavStation.setControlAircract(null);
 /* 5223 */           setUavStation((MCH_EntityUavStation)null);
-/* 5224 */           attackEntityFrom(DamageSource.field_76380_i, getMaxHP() + 10);
+/* 5224 */           attackEntityFrom(DamageSource.OUT_OF_WORLD, getMaxHP() + 10);
 /*      */         } 
 /*      */       } 
 /*      */       
-/* 5228 */       if (this.uavStation != null && this.uavStation.field_70128_L) {
+/* 5228 */       if (this.uavStation != null && this.uavStation.isDead) {
 /* 5229 */         this.uavStation = null;
 /*      */       }
 /*      */     } 
@@ -5244,16 +5244,16 @@ import net.minecraft.entity.MoverType;
 /* 5239 */         setCurrentThrottle(this.beforeHoverThrottle);
 /* 5240 */         this.isGunnerMode = false;
 /* 5241 */         this.camera.setCameraZoom(1.0F);
-/* 5242 */         getCurrentWeapon(pilot).onSwitchWeapon(this.field_70170_p.field_72995_K, isInfinityAmmo(pilot));
+/* 5242 */         getCurrentWeapon(pilot).onSwitchWeapon(this.world.isRemote, isInfinityAmmo(pilot));
 /* 5243 */       } else if (!this.isGunnerMode && mode) {
 /* 5244 */         this.beforeHoverThrottle = getCurrentThrottle();
 /* 5245 */         this.isGunnerMode = true;
 /* 5246 */         this.camera.setCameraZoom(1.0F);
-/* 5247 */         getCurrentWeapon(pilot).onSwitchWeapon(this.field_70170_p.field_72995_K, isInfinityAmmo(pilot));
+/* 5247 */         getCurrentWeapon(pilot).onSwitchWeapon(this.world.isRemote, isInfinityAmmo(pilot));
 /*      */       } 
 /*      */     }
 /*      */     
-/* 5251 */     MCH_Lib.DbgLog(this.field_70170_p, "switchGunnerMode %s->%s", new Object[] { debug_bk_mode ? "ON" : "OFF", mode ? "ON" : "OFF" });
+/* 5251 */     MCH_Lib.DbgLog(this.world, "switchGunnerMode %s->%s", new Object[] { debug_bk_mode ? "ON" : "OFF", mode ? "ON" : "OFF" });
 /*      */   }
 /*      */   
 /*      */   public boolean canSwitchGunnerMode() {
@@ -5298,8 +5298,8 @@ import net.minecraft.entity.MoverType;
 /* 5293 */       this.isHoveringMode = mode;
 /* 5294 */       Entity riddenByEntity = getRiddenByEntity();
 /* 5295 */       if (riddenByEntity != null) {
-/* 5296 */         riddenByEntity.field_70125_A = 0.0F;
-/* 5297 */         riddenByEntity.field_70127_C = 0.0F;
+/* 5296 */         riddenByEntity.rotationPitch = 0.0F;
+/* 5297 */         riddenByEntity.prevRotationPitch = 0.0F;
 /*      */       } 
 /*      */     } 
 /*      */   }
@@ -5326,7 +5326,7 @@ import net.minecraft.entity.MoverType;
 /* 5321 */     if (id >= st.length || !(st[id]).gunner) {
 /* 5322 */       return false;
 /*      */     }
-/* 5324 */     return (!this.field_70170_p.field_72995_K || !(st[id]).switchgunner || this.isGunnerModeOtherSeat);
+/* 5324 */     return (!this.world.isRemote || !(st[id]).switchgunner || this.isGunnerModeOtherSeat);
 /*      */   }
 /*      */ 
 /*      */ 
@@ -5380,13 +5380,13 @@ import net.minecraft.entity.MoverType;
 /*      */         } 
 /*      */       } 
 /*      */       
-/* 5378 */       if (!isDestroyed() && !this.field_70170_p.field_72995_K && this.partLandingGear != null)
+/* 5378 */       if (!isDestroyed() && !this.world.isRemote && this.partLandingGear != null)
 /*      */       {
 /* 5380 */         if (!isLandingGearFolded() && this.partLandingGear.getFactor() <= 0.1F) {
 /* 5381 */           int blockId = MCH_Lib.getBlockIdY((Entity)this, 3, -20);
-/* 5382 */           if ((getCurrentThrottle() <= 0.800000011920929D || this.field_70122_E || blockId != 0) && 
+/* 5382 */           if ((getCurrentThrottle() <= 0.800000011920929D || this.onGround || blockId != 0) && 
 /* 5383 */             (getAcInfo()).isFloat && (
-/* 5384 */             func_70090_H() || MCH_Lib.getBlockY((Entity)this, 3, -20, true) == W_Block.getWater())) {
+/* 5384 */             isInWater() || MCH_Lib.getBlockY((Entity)this, 3, -20, true) == W_Block.getWater())) {
 /* 5385 */             this.partLandingGear.setStatusServer(true);
 /*      */           }
 /* 5387 */         } else if (isLandingGearFolded() && this.partLandingGear.getFactor() >= 0.9F) {
@@ -5394,7 +5394,7 @@ import net.minecraft.entity.MoverType;
 /* 5389 */           if (getCurrentThrottle() < getUnfoldLandingGearThrottle() && blockId != 0) {
 /* 5390 */             boolean unfold = true;
 /* 5391 */             if ((getAcInfo()).isFloat) {
-/* 5392 */               blockId = MCH_Lib.getBlockIdY(this.field_70170_p, this.field_70165_t, this.field_70163_u + 1.0D + (getAcInfo()).floatOffset, this.field_70161_v, 1, 65386, true);
+/* 5392 */               blockId = MCH_Lib.getBlockIdY(this.world, this.posX, this.posY + 1.0D + (getAcInfo()).floatOffset, this.posZ, 1, 65386, true);
 /* 5393 */               if (W_Block.isEqual(blockId, W_Block.getWater())) {
 /* 5394 */                 unfold = false;
 /*      */               }
@@ -5416,11 +5416,11 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   private int getPartStatus() {
-/* 5414 */     return ((Integer)this.field_70180_af.func_187225_a(PART_STAT)).intValue();
+/* 5414 */     return ((Integer)this.dataManager.get(PART_STAT)).intValue();
 /*      */   }
 /*      */   
 /*      */   private void setPartStatus(int n) {
-/* 5418 */     this.field_70180_af.func_187227_b(PART_STAT, Integer.valueOf(n));
+/* 5418 */     this.dataManager.set(PART_STAT, Integer.valueOf(n));
 /*      */   }
 /*      */   
 /*      */   protected void initPartRotation(float yaw, float pitch) {
@@ -5524,7 +5524,7 @@ import net.minecraft.entity.MoverType;
 /* 5519 */       return false;
 /*      */     }
 /* 5521 */     Block block = MCH_Lib.getBlockY((Entity)this, 3, -10, true);
-/* 5522 */     return (!isLandingGearFolded() && block == W_Blocks.field_150350_a);
+/* 5522 */     return (!isLandingGearFolded() && block == W_Blocks.AIR);
 /*      */   }
 /*      */ 
 /*      */   
@@ -5625,7 +5625,7 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void setBrake(boolean b) {
-/* 5623 */     if (!this.field_70170_p.field_72995_K) {
+/* 5623 */     if (!this.world.isRemote) {
 /* 5624 */       setCommonStatus(11, b);
 /*      */     }
 /*      */   }
@@ -5635,13 +5635,13 @@ import net.minecraft.entity.MoverType;
 /*      */   }
 /*      */   
 /*      */   public void setGunnerStatus(boolean b) {
-/* 5633 */     if (!this.field_70170_p.field_72995_K) {
+/* 5633 */     if (!this.world.isRemote) {
 /* 5634 */       setCommonStatus(12, b);
 /*      */     }
 /*      */   }
 /*      */ 
 /*      */   
-/*      */   public int func_70302_i_() {
+/*      */   public int getSizeInventory() {
 /* 5640 */     return (getAcInfo() != null) ? (getAcInfo()).inventorySize : 0;
 /*      */   }
 /*      */ 
@@ -5678,23 +5678,23 @@ import net.minecraft.entity.MoverType;
 /* 5673 */     this.towedChainEntity = towedChainEntity;
 /*      */   }
 /*      */   
-/*      */   public void func_174826_a(@NotNull AxisAlignedBB bb) {
-/* 5677 */     super.func_174826_a(new MCH_AircraftBoundingBox(this, bb));
+/*      */   public void setEntityBoundingBox(@NotNull AxisAlignedBB bb) {
+/* 5677 */     super.setEntityBoundingBox(new MCH_AircraftBoundingBox(this, bb));
 /*      */   }
 /*      */ 
 /*      */   
 /*      */   public double getX() {
-/* 5682 */     return this.field_70165_t;
+/* 5682 */     return this.posX;
 /*      */   }
 /*      */ 
 /*      */   
 /*      */   public double getY() {
-/* 5687 */     return this.field_70163_u;
+/* 5687 */     return this.posY;
 /*      */   }
 /*      */ 
 /*      */   
 /*      */   public double getZ() {
-/* 5692 */     return this.field_70161_v;
+/* 5692 */     return this.posZ;
 /*      */   }
 /*      */ 
 /*      */   

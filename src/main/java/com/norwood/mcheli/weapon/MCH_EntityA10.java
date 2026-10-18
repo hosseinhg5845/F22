@@ -17,7 +17,7 @@
 /*     */ 
 /*     */ public class MCH_EntityA10
 /*     */   extends W_Entity {
-/*  20 */   private static final DataParameter<String> WEAPON_NAME = EntityDataManager.func_187226_a(MCH_EntityA10.class, DataSerializers.field_187194_d);
+/*  20 */   private static final DataParameter<String> WEAPON_NAME = EntityDataManager.createKey(MCH_EntityA10.class, DataSerializers.STRING);
 /*  21 */   static int snd_num = 0;
 /*  22 */   public final int DESPAWN_COUNT = 70;
 /*  23 */   public int despawnCount = 0;
@@ -34,47 +34,47 @@
 /*     */   
 /*     */   public MCH_EntityA10(World world) {
 /*  36 */     super(world);
-/*  37 */     this.field_70158_ak = true;
-/*  38 */     this.field_70156_m = false;
-/*  39 */     func_70105_a(5.0F, 3.0F);
-/*  40 */     this.field_70159_w = 0.0D;
-/*  41 */     this.field_70181_x = 0.0D;
-/*  42 */     this.field_70179_y = 0.0D;
+/*  37 */     this.ignoreFrustumCheck = true;
+/*  38 */     this.preventEntitySpawning = false;
+/*  39 */     setSize(5.0F, 3.0F);
+/*  40 */     this.motionX = 0.0D;
+/*  41 */     this.motionY = 0.0D;
+/*  42 */     this.motionZ = 0.0D;
 /*  43 */     this.power = 32;
 /*  44 */     this.acceleration = 4.0F;
 /*  45 */     this.explosionPower = 1;
 /*  46 */     this.isFlaming = false;
 /*  47 */     this.shootingEntity = null;
 /*  48 */     this.shootingAircraft = null;
-/*  49 */     this.field_70178_ae = true;
+/*  49 */     this.isImmuneToFire = true;
 /*  50 */     this._renderDistanceWeight *= 10.0D;
 /*     */   }
 /*     */   
 /*     */   public MCH_EntityA10(World world, double x, double y, double z) {
 /*  54 */     this(world);
-/*  55 */     this.field_70142_S = this.field_70169_q = this.field_70165_t = x;
-/*  56 */     this.field_70137_T = this.field_70167_r = this.field_70163_u = y;
-/*  57 */     this.field_70136_U = this.field_70166_s = this.field_70161_v = z;
+/*  55 */     this.lastTickPosX = this.prevPosX = this.posX = x;
+/*  56 */     this.lastTickPosY = this.prevPosY = this.posY = y;
+/*  57 */     this.lastTickPosZ = this.prevPosZ = this.posZ = z;
 /*     */   }
 /*     */   
-/*     */   protected boolean func_70041_e_() {
+/*     */   protected boolean canTriggerWalking() {
 /*  61 */     return false;
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   protected void func_70088_a() {
-/*  66 */     this.field_70180_af.func_187214_a(WEAPON_NAME, "");
+/*     */   protected void entityInit() {
+/*  66 */     this.dataManager.register(WEAPON_NAME, "");
 /*     */   }
 /*     */   
 /*     */   public String getWeaponName() {
-/*  70 */     return (String)this.field_70180_af.func_187225_a(WEAPON_NAME);
+/*  70 */     return (String)this.dataManager.get(WEAPON_NAME);
 /*     */   }
 /*     */   
 /*     */   public void setWeaponName(String s) {
 /*  74 */     if (s != null && !s.isEmpty()) {
 /*  75 */       this.weaponInfo = MCH_WeaponInfoManager.get(s);
-/*  76 */       if (this.weaponInfo != null && !this.field_70170_p.field_72995_K) {
-/*  77 */         this.field_70180_af.func_187227_b(WEAPON_NAME, s);
+/*  76 */       if (this.weaponInfo != null && !this.world.isRemote) {
+/*  77 */         this.dataManager.set(WEAPON_NAME, s);
 /*     */       }
 /*     */     } 
 /*     */   }
@@ -84,49 +84,49 @@
 /*  84 */     return this.weaponInfo;
 /*     */   }
 /*     */   
-/*     */   public AxisAlignedBB func_70114_g(Entity par1Entity) {
-/*  88 */     return par1Entity.func_174813_aQ();
+/*     */   public AxisAlignedBB getCollisionBox(Entity par1Entity) {
+/*  88 */     return par1Entity.getEntityBoundingBox();
 /*     */   }
 /*     */   
-/*     */   public AxisAlignedBB func_70046_E() {
-/*  92 */     return func_174813_aQ();
+/*     */   public AxisAlignedBB getCollisionBoundingBox() {
+/*  92 */     return getEntityBoundingBox();
 /*     */   }
 /*     */ 
 /*     */   
-/*     */   public boolean func_70097_a(DamageSource par1DamageSource, float par2) {
+/*     */   public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
 /*  97 */     return false;
 /*     */   }
 /*     */   
-/*     */   public void func_70106_y() {
-/* 101 */     super.func_70106_y();
+/*     */   public void setDead() {
+/* 101 */     super.setDead();
 /*     */   }
 /*     */   
-/*     */   public void func_70071_h_() {
-/* 105 */     super.func_70071_h_();
-/* 106 */     if (!this.field_70128_L) {
+/*     */   public void onUpdate() {
+/* 105 */     super.onUpdate();
+/* 106 */     if (!this.isDead) {
 /* 107 */       this.despawnCount++;
 /*     */     }
 /*     */     
 /* 110 */     if (this.weaponInfo == null) {
 /* 111 */       setWeaponName(getWeaponName());
 /* 112 */       if (this.weaponInfo == null) {
-/* 113 */         func_70106_y();
+/* 113 */         setDead();
 /*     */         
 /*     */         return;
 /*     */       } 
 /*     */     } 
-/* 118 */     if (this.field_70170_p.field_72995_K) {
+/* 118 */     if (this.world.isRemote) {
 /* 119 */       onUpdate_Client();
 /*     */     } else {
 /* 121 */       onUpdate_Server();
 /*     */     } 
 /*     */     
-/* 124 */     if (!this.field_70128_L) {
+/* 124 */     if (!this.isDead) {
 /* 125 */       if (this.despawnCount <= 20) {
-/* 126 */         this.field_70181_x = -0.3D;
+/* 126 */         this.motionY = -0.3D;
 /*     */       } else {
-/* 128 */         func_70107_b(this.field_70165_t + this.field_70159_w, this.field_70163_u + this.field_70181_x, this.field_70161_v + this.field_70179_y);
-/* 129 */         this.field_70181_x += 0.02D;
+/* 128 */         setPosition(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
+/* 129 */         this.motionY += 0.02D;
 /*     */       } 
 /*     */     }
 /*     */   }
@@ -140,9 +140,9 @@
 /*     */   }
 /*     */   
 /*     */   private void onUpdate_Server() {
-/* 143 */     if (!this.field_70128_L) {
+/* 143 */     if (!this.isDead) {
 /* 144 */       if (this.despawnCount > 70) {
-/* 145 */         func_70106_y();
+/* 145 */         setDead();
 /* 146 */       } else if (this.despawnCount > 0 && this.shotCount < 40) {
 /* 147 */         for (int i = 0; i < 2; i++) {
 /* 148 */           shotGAU8(true, this.shotCount);
@@ -150,7 +150,7 @@
 /*     */         } 
 /*     */         
 /* 152 */         if (this.shotCount == 38) {
-/* 153 */           W_WorldFunc.MOD_playSoundEffect(this.field_70170_p, this.field_70165_t, this.field_70163_u, this.field_70161_v, "gau-8_snd", 150.0F, 1.0F);
+/* 153 */           W_WorldFunc.MOD_playSoundEffect(this.world, this.posX, this.posY, this.posZ, "gau-8_snd", 150.0F, 1.0F);
 /*     */         }
 /*     */       } 
 /*     */     }
@@ -159,12 +159,12 @@
 /*     */   protected void shotGAU8(boolean playSound, int cnt) {
 /* 160 */     float yaw = (90 * this.direction);
 /* 161 */     float pitch = 30.0F;
-/* 162 */     double x = this.field_70165_t;
-/* 163 */     double y = this.field_70163_u;
-/* 164 */     double z = this.field_70161_v;
-/* 165 */     double tX = this.field_70146_Z.nextDouble() - 0.5D;
+/* 162 */     double x = this.posX;
+/* 163 */     double y = this.posY;
+/* 164 */     double z = this.posZ;
+/* 165 */     double tX = this.rand.nextDouble() - 0.5D;
 /* 166 */     double tY = -2.6D;
-/* 167 */     double tZ = this.field_70146_Z.nextDouble() - 0.5D;
+/* 167 */     double tZ = this.rand.nextDouble() - 0.5D;
 /* 168 */     if (this.direction == 0) {
 /* 169 */       tZ += 10.0D;
 /* 170 */       z += cnt * 0.6D;
@@ -185,27 +185,27 @@
 /* 185 */       x += cnt * 0.6D;
 /*     */     } 
 /*     */     
-/* 188 */     double dist = MathHelper.func_76133_a(tX * tX + tY * tY + tZ * tZ);
+/* 188 */     double dist = MathHelper.sqrt(tX * tX + tY * tY + tZ * tZ);
 /* 189 */     tX = tX * 4.0D / dist;
 /* 190 */     tY = tY * 4.0D / dist;
 /* 191 */     tZ = tZ * 4.0D / dist;
-/* 192 */     MCH_EntityBullet e = new MCH_EntityBullet(this.field_70170_p, x, y, z, tX, tY, tZ, yaw, pitch, this.acceleration);
+/* 192 */     MCH_EntityBullet e = new MCH_EntityBullet(this.world, x, y, z, tX, tY, tZ, yaw, pitch, this.acceleration);
 /* 193 */     e.setName(getWeaponName());
 /* 194 */     e.explosionPower = (this.shotCount % 4 == 0) ? this.explosionPower : 0;
 /* 195 */     e.setPower(this.power);
 /* 196 */     e.shootingEntity = this.shootingEntity;
 /* 197 */     e.shootingAircraft = this.shootingAircraft;
-/* 198 */     this.field_70170_p.func_72838_d((Entity)e);
+/* 198 */     this.world.spawnEntity((Entity)e);
 /*     */   }
 /*     */   
-/*     */   protected void func_70014_b(NBTTagCompound par1NBTTagCompound) {
-/* 202 */     par1NBTTagCompound.func_74778_a("WeaponName", getWeaponName());
+/*     */   protected void writeEntityToNBT(NBTTagCompound par1NBTTagCompound) {
+/* 202 */     par1NBTTagCompound.setString("WeaponName", getWeaponName());
 /*     */   }
 /*     */   
-/*     */   protected void func_70037_a(NBTTagCompound par1NBTTagCompound) {
+/*     */   protected void readEntityFromNBT(NBTTagCompound par1NBTTagCompound) {
 /* 206 */     this.despawnCount = 200;
-/* 207 */     if (par1NBTTagCompound.func_74764_b("WeaponName")) {
-/* 208 */       setWeaponName(par1NBTTagCompound.func_74779_i("WeaponName"));
+/* 207 */     if (par1NBTTagCompound.hasKey("WeaponName")) {
+/* 208 */       setWeaponName(par1NBTTagCompound.getString("WeaponName"));
 /*     */     }
 /*     */   }
 /*     */   

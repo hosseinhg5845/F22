@@ -17,7 +17,7 @@
 /*    */   }
 /*    */   
 /*    */   public void setScale(float s) {
-/* 20 */     this.field_70544_f = s;
+/* 20 */     this.particleScale = s;
 /*    */   }
 /*    */ 
 /*    */ 
@@ -32,11 +32,11 @@
 /*    */     implements IParticleFactory
 /*    */   {
 /*    */     @Nullable
-/*    */     public Particle func_178902_a(int particleID, @NotNull World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_) {
-/* 36 */       IBlockState iblockstate = Block.func_176220_d(p_178902_15_[0]);
-/* 37 */       return (iblockstate.func_185901_i() == EnumBlockRenderType.INVISIBLE) ? 
+/*    */     public Particle createParticle(int particleID, @NotNull World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn, double ySpeedIn, double zSpeedIn, int... p_178902_15_) {
+/* 36 */       IBlockState iblockstate = Block.getStateById(p_178902_15_[0]);
+/* 37 */       return (iblockstate.getRenderType() == EnumBlockRenderType.INVISIBLE) ? 
 /* 38 */         null : 
-/* 39 */         (Particle)(new MCH_EntityBlockDustFX(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, iblockstate)).func_174845_l();
+/* 39 */         (Particle)(new MCH_EntityBlockDustFX(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, iblockstate)).init();
 /*    */     }
 /*    */   }
 /*    */ }

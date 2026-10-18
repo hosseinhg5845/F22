@@ -17,7 +17,7 @@
 /*    */   
 /*    */   public MCH_RenderHeli(RenderManager renderManager) {
 /* 19 */     super(renderManager);
-/* 20 */     this.field_76989_e = 2.0F;
+/* 20 */     this.shadowSize = 2.0F;
 /*    */   }
 /*    */ 
 /*    */ 
@@ -46,7 +46,7 @@
 /* 46 */       MCH_Rotor rotor = heli.rotors[i];
 /* 47 */       GL11.glPushMatrix();
 /* 48 */       if (rotorInfo.oldRenderMethod) {
-/* 49 */         GL11.glTranslated(rotorInfo.pos.field_72450_a, rotorInfo.pos.field_72448_b, rotorInfo.pos.field_72449_c);
+/* 49 */         GL11.glTranslated(rotorInfo.pos.x, rotorInfo.pos.y, rotorInfo.pos.z);
 /*    */       }
 /*    */       
 /* 52 */       for (MCH_Blade b : rotor.blades) {
@@ -60,12 +60,12 @@
 /*    */         } 
 /*    */         
 /* 62 */         if (!rotorInfo.oldRenderMethod) {
-/* 63 */           GL11.glTranslated(rotorInfo.pos.field_72450_a, rotorInfo.pos.field_72448_b, rotorInfo.pos.field_72449_c);
+/* 63 */           GL11.glTranslated(rotorInfo.pos.x, rotorInfo.pos.y, rotorInfo.pos.z);
 /*    */         }
 /*    */         
-/* 66 */         GL11.glRotatef(prevRot + (rot - prevRot) * tickTime, (float)rotorInfo.rot.field_72450_a, (float)rotorInfo.rot.field_72448_b, (float)rotorInfo.rot.field_72449_c);
+/* 66 */         GL11.glRotatef(prevRot + (rot - prevRot) * tickTime, (float)rotorInfo.rot.x, (float)rotorInfo.rot.y, (float)rotorInfo.rot.z);
 /* 67 */         if (!rotorInfo.oldRenderMethod) {
-/* 68 */           GL11.glTranslated(-rotorInfo.pos.field_72450_a, -rotorInfo.pos.field_72448_b, -rotorInfo.pos.field_72449_c);
+/* 68 */           GL11.glTranslated(-rotorInfo.pos.x, -rotorInfo.pos.y, -rotorInfo.pos.z);
 /*    */         }
 /*    */         
 /* 71 */         renderPart(rotorInfo.model, info.model, rotorInfo.modelName);

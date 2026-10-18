@@ -12,16 +12,16 @@
 /* 12 */     this.player = player;
 /*    */   }
 /*    */   
-/*    */   public void func_75142_b() {
-/* 16 */     super.func_75142_b();
+/*    */   public void detectAndSendChanges() {
+/* 16 */     super.detectAndSendChanges();
 /*    */   }
 /*    */   
-/*    */   public boolean func_75145_c(@NotNull EntityPlayer player) {
+/*    */   public boolean canInteractWith(@NotNull EntityPlayer player) {
 /* 20 */     return true;
 /*    */   }
 /*    */   @NotNull
-/*    */   public ItemStack func_82846_b(@NotNull EntityPlayer par1EntityPlayer, int par2) {
-/* 24 */     return ItemStack.field_190927_a;
+/*    */   public ItemStack transferStackInSlot(@NotNull EntityPlayer par1EntityPlayer, int par2) {
+/* 24 */     return ItemStack.EMPTY;
 /*    */   }
 /*    */ }
 

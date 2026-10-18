@@ -12,12 +12,12 @@
 /* 12 */   public static final MCH_SimpleTrigger VILLAGER_HURT_BULLET = create("villager_hurt_bullet");
 /*    */   
 /*    */   public static void registerTriggers() {
-/* 15 */     CriteriaTriggers.func_192118_a((ICriterionTrigger)PUT_AIRCRAFT);
-/* 16 */     CriteriaTriggers.func_192118_a((ICriterionTrigger)SUPPLY_AMMO);
-/* 17 */     CriteriaTriggers.func_192118_a((ICriterionTrigger)SUPPLY_FUEL);
-/* 18 */     CriteriaTriggers.func_192118_a((ICriterionTrigger)RELIEF_SUPPLIES);
-/* 19 */     CriteriaTriggers.func_192118_a((ICriterionTrigger)RIDING_VALKYRIES);
-/* 20 */     CriteriaTriggers.func_192118_a((ICriterionTrigger)VILLAGER_HURT_BULLET);
+/* 15 */     CriteriaTriggers.register((ICriterionTrigger)PUT_AIRCRAFT);
+/* 16 */     CriteriaTriggers.register((ICriterionTrigger)SUPPLY_AMMO);
+/* 17 */     CriteriaTriggers.register((ICriterionTrigger)SUPPLY_FUEL);
+/* 18 */     CriteriaTriggers.register((ICriterionTrigger)RELIEF_SUPPLIES);
+/* 19 */     CriteriaTriggers.register((ICriterionTrigger)RIDING_VALKYRIES);
+/* 20 */     CriteriaTriggers.register((ICriterionTrigger)VILLAGER_HURT_BULLET);
 /*    */   }
 /*    */   
 /*    */   private static MCH_SimpleTrigger create(String shortName) {

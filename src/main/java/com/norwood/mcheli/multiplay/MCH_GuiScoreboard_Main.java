@@ -16,17 +16,17 @@
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   public void func_73866_w_() {
-/* 20 */     super.func_73866_w_();
+/*    */   public void initGui() {
+/* 20 */     super.initGui();
 /* 21 */     if (this.buttonSwitchPVP == null) {
-/* 22 */       this.field_147003_i = 0;
-/* 23 */       this.field_147009_r = 0;
-/* 24 */       int WIDTH = getScoreboradWidth(this.field_146297_k) * 3 / 4;
+/* 22 */       this.guiLeft = 0;
+/* 23 */       this.guiTop = 0;
+/* 24 */       int WIDTH = getScoreboradWidth(this.mc) * 3 / 4;
 /* 25 */       if (WIDTH < 80) {
 /* 26 */         WIDTH = 80;
 /*    */       }
 /*    */       
-/* 29 */       int LEFT = getScoreBoardLeft(this.field_146297_k, getTeamNum() + 1, 0) / 4;
+/* 29 */       int LEFT = getScoreBoardLeft(this.mc, getTeamNum() + 1, 0) / 4;
 /* 30 */       this.buttonSwitchPVP = new W_GuiButton(1024, LEFT, 80, WIDTH, 20, "");
 /* 31 */       this.listGui.add(this.buttonSwitchPVP);
 /* 32 */       W_GuiButton btn = new W_GuiButton(256, LEFT, 100, WIDTH, 20, "Team shuffle");
@@ -42,24 +42,24 @@
 /*    */     } 
 /*    */   }
 /*    */   
-/*    */   protected void func_73869_a(char c, int code) {
+/*    */   protected void keyTyped(char c, int code) {
 /* 46 */     if (code == 1) {
-/* 47 */       this.field_146297_k.field_71439_g.func_71053_j();
+/* 47 */       this.mc.player.closeScreen();
 /*    */     }
 /*    */   }
 /*    */ 
 /*    */   
 /*    */   public void updateScreenButtons(List<GuiButton> list) {
 /* 53 */     for (GuiButton o : list) {
-/* 54 */       if (o.field_146127_k == 1024) {
-/* 55 */         o.field_146126_j = "PVP : " + (MCH_ServerSettings.enablePVP ? "ON" : "OFF");
+/* 54 */       if (o.id == 1024) {
+/* 55 */         o.displayString = "PVP : " + (MCH_ServerSettings.enablePVP ? "ON" : "OFF");
 /*    */       }
 /*    */     } 
 /*    */   }
 /*    */   
-/*    */   protected void func_146284_a(@NotNull GuiButton btn) {
-/* 61 */     if (btn.field_146124_l) {
-/* 62 */       switch (btn.field_146127_k) {
+/*    */   protected void actionPerformed(@NotNull GuiButton btn) {
+/* 61 */     if (btn.enabled) {
+/* 62 */       switch (btn.id) {
 /*    */         case 256:
 /* 64 */           MCH_PacketIndMultiplayCommand.send(256, "");
 /*    */           break;
@@ -84,8 +84,8 @@
 /*    */   }
 /*    */ 
 /*    */   
-/*    */   protected void func_146976_a(float par1, int par2, int par3) {
-/* 88 */     drawList(this.field_146297_k, this.field_146289_q, true);
+/*    */   protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
+/* 88 */     drawList(this.mc, this.fontRenderer, true);
 /*    */   }
 /*    */ }
 

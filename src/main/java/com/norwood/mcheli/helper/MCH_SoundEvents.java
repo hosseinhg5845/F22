@@ -38,7 +38,7 @@
 /*    */   
 /*    */   public static void playSound(World w, double x, double y, double z, String name, float volume, float pitch) {
 /* 40 */     SoundEvent sound = getSound(name);
-/* 41 */     w.func_184148_a(null, x, y, z, sound, SoundCategory.MASTER, volume, pitch);
+/* 41 */     w.playSound(null, x, y, z, sound, SoundCategory.MASTER, volume, pitch);
 /*    */   }
 /*    */   
 /*    */   public static SoundEvent getSound(String name) {

@@ -15,7 +15,7 @@
 /*    */   
 /*    */   public MCH_RenderCartridge(RenderManager renderManager) {
 /* 17 */     super(renderManager);
-/* 18 */     this.field_76989_e = 0.0F;
+/* 18 */     this.shadowSize = 0.0F;
 /*    */   }
 /*    */   
 /*    */   public void doRender(MCH_EntityCartridge entity, double posX, double posY, double posZ, float par8, float tickTime) {
@@ -24,15 +24,15 @@
 /* 24 */       GL11.glPushMatrix();
 /* 25 */       GL11.glTranslated(posX, posY, posZ);
 /* 26 */       GL11.glScalef(entity.getScale(), entity.getScale(), entity.getScale());
-/* 27 */       float prevYaw = entity.field_70126_B;
-/* 28 */       if (entity.field_70177_z - prevYaw < -180.0F) {
+/* 27 */       float prevYaw = entity.prevRotationYaw;
+/* 28 */       if (entity.rotationYaw - prevYaw < -180.0F) {
 /* 29 */         prevYaw -= 360.0F;
-/* 30 */       } else if (prevYaw - entity.field_70177_z < -180.0F) {
+/* 30 */       } else if (prevYaw - entity.rotationYaw < -180.0F) {
 /* 31 */         prevYaw += 360.0F;
 /*    */       } 
 /*    */       
-/* 34 */       float yaw = -(prevYaw + (entity.field_70177_z - prevYaw) * tickTime);
-/* 35 */       float pitch = entity.field_70127_C + (entity.field_70125_A - entity.field_70127_C) * tickTime;
+/* 34 */       float yaw = -(prevYaw + (entity.rotationYaw - prevYaw) * tickTime);
+/* 35 */       float pitch = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * tickTime;
 /* 36 */       GL11.glRotatef(yaw, 0.0F, 1.0F, 0.0F);
 /* 37 */       GL11.glRotatef(pitch, 1.0F, 0.0F, 0.0F);
 /* 38 */       bindTexture("textures/bullets/" + entity.texture_name + ".png");

@@ -15,7 +15,7 @@
 /*    */   
 /*    */   public MCH_RenderThrowable(RenderManager renderManager) {
 /* 17 */     super(renderManager);
-/* 18 */     this.field_76989_e = 0.0F;
+/* 18 */     this.shadowSize = 0.0F;
 /*    */   }
 /*    */   
 /*    */   public void doRender(MCH_EntityThrowable entity, double posX, double posY, double posZ, float par8, float tickTime) {
@@ -23,9 +23,9 @@
 /* 23 */     if (info != null) {
 /* 24 */       GL11.glPushMatrix();
 /* 25 */       GL11.glTranslated(posX, posY, posZ);
-/* 26 */       GL11.glRotatef(entity.field_70177_z, 0.0F, -1.0F, 0.0F);
-/* 27 */       GL11.glRotatef(entity.field_70125_A, 1.0F, 0.0F, 0.0F);
-/* 28 */       setCommonRenderParam(true, entity.func_70070_b());
+/* 26 */       GL11.glRotatef(entity.rotationYaw, 0.0F, -1.0F, 0.0F);
+/* 27 */       GL11.glRotatef(entity.rotationPitch, 1.0F, 0.0F, 0.0F);
+/* 28 */       setCommonRenderParam(true, entity.getBrightnessForRender());
 /* 29 */       if (info.model != null) {
 /* 30 */         bindTexture("textures/throwable/" + info.name + ".png");
 /* 31 */         info.model.renderAll();
