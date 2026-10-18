@@ -55,7 +55,7 @@
 /*     */   }
 /*     */   
 /*     */   public int hex2dec(String s) {
-/*  58 */     return (!s.startsWith("0x") && !s.startsWith("0X") && s.indexOf(false) != 35) ? (int)(Long.decode("0x" + s).longValue() & 0xFFFFFFFFFFFFFFFFL) : (int)(Long.decode(s).longValue() & 0xFFFFFFFFFFFFFFFFL);
+/*  58 */     return (!s.startsWith("0x") && !s.startsWith("0X") && s.indexOf('#') != 35) ? (int)(Long.decode("0x" + s).longValue() & 0xFFFFFFFFFFFFFFFFL) : (int)(Long.decode(s).longValue() & 0xFFFFFFFFFFFFFFFFL);
 /*     */   }
 /*     */   
 /*     */   public String[] splitParam(String data) {

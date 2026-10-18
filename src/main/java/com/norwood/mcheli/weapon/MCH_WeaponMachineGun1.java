@@ -1,4 +1,5 @@
 /*    */ package com.norwood.mcheli.weapon;
+import com.norwood.mcheli.MCH_Lib;
 /*    */ import java.util.Objects;
 /*    */ import net.minecraft.entity.Entity;
 /*    */ import net.minecraft.util.math.Vec3d;

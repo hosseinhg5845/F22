@@ -1,4 +1,5 @@
 /*    */ package com.norwood.mcheli.weapon;
+import com.norwood.mcheli.MCH_Lib;
 /*    */ import com.norwood.mcheli.wrapper.W_Entity;
 /*    */ import net.minecraft.client.renderer.entity.RenderManager;
 /*    */ import net.minecraft.entity.Entity;

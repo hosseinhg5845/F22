@@ -5,7 +5,8 @@
 /*    */ import net.minecraft.entity.Entity;
 /*    */ import net.minecraft.util.ResourceLocation;
 /*    */ import net.minecraftforge.fml.client.registry.IRenderFactory;
-/*    */ import net.minecraftforge.fml.relauncher.SideOnly;
+/*    */ import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 /*    */ import org.lwjgl.opengl.GL11;
 /*    */ 
 /*    */ @SideOnly(Side.CLIENT)

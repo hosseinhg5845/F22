@@ -26,7 +26,7 @@
 /*    */   }
 /*    */   
 /*    */   public static String getNameForItem(Item item) {
-/* 29 */     return ForgeRegistries.ITEMS.getKey((IForgeRegistryEntry)item).toString();
+/* 29 */     return ForgeRegistries.ITEMS.getKey(item).toString();
 /*    */   }
 /*    */   @NotNull
 /*    */   public static Item getItemFromBlock(@NotNull Block block) {

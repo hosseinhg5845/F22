@@ -1,4 +1,12 @@
 /*      */ package com.norwood.mcheli.aircraft;
+import com.norwood.mcheli.command.MCH_Command;
+import com.norwood.mcheli.mob.MCH_EntityGunner;
+import com.norwood.mcheli.multiplay.MCH_Multiplay;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.network.Packet;
+import net.minecraft.util.ReportedException;
+import net.minecraft.network.play.server.SPacketEntityVelocity;
+import com.norwood.mcheli.wrapper.W_NBTTag;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import com.norwood.mcheli.helper.entity.IEntitySinglePassenger;
 import com.norwood.mcheli.helper.entity.ITargetMarkerObject;

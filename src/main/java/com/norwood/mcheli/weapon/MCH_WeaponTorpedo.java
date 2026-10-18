@@ -7,6 +7,7 @@
 /*     */ import net.minecraft.util.math.RayTraceResult;
 /*     */ import net.minecraft.util.math.Vec3d;
 /*     */ import net.minecraft.world.World;
+import java.util.Objects;
 /*     */ 
 /*     */ public class MCH_WeaponTorpedo extends MCH_WeaponBase {
 /*     */   public MCH_WeaponTorpedo(World w, Vec3d v, float yaw, float pitch, String nm, MCH_WeaponInfo wi) {

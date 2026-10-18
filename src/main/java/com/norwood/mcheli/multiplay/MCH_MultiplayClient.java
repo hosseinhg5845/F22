@@ -18,6 +18,8 @@
 /*     */ import java.util.jar.JarFile;
 /*     */ import java.util.zip.ZipEntry;
 /*     */ import javax.imageio.ImageIO;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 /*     */ import net.minecraft.client.Minecraft;
 /*     */ import net.minecraft.client.renderer.OpenGlHelper;
 /*     */ import net.minecraft.client.renderer.texture.TextureUtil;

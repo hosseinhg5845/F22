@@ -392,7 +392,7 @@
 /* 392 */     if (xc.isAssignableFrom(yc) && x instanceof Comparable)
 /* 393 */       return ((Comparable<Object>)x).compareTo(y); 
 /* 394 */     if (yc.isAssignableFrom(xc) && y instanceof Comparable)
-/* 395 */       return -((Comparable)y).compareTo((T)x); 
+/* 395 */       return -((Comparable)y).compareTo((Object)x); 
 /* 396 */     if (x.equals(y)) {
 /* 397 */       return 0;
 /*     */     }
