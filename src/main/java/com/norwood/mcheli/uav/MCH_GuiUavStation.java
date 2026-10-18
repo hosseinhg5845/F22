@@ -30,7 +30,7 @@
 /*     */   final MCH_EntityUavStation uavStation; private GuiButton buttonContinue;
 /*     */   protected void drawGuiContainerForegroundLayer(int param1, int param2) {
 /*  32 */     if (this.uavStation != null) {
-/*  33 */       MCH_TankInfo mCH_TankInfo; ItemStack item = this.uavStation.getStackInSlot(0);
+/*  33 */       MCH_TankInfo mCH_TankInfo = null; ItemStack item = this.uavStation.getStackInSlot(0);
 /*  34 */       MCH_AircraftInfo info = null;
 /*  35 */       if (!item.isEmpty() && item.getItem() instanceof com.norwood.mcheli.plane.MCP_ItemPlane) {
 /*  36 */         MCP_PlaneInfo mCP_PlaneInfo = MCP_PlaneInfoManager.getFromItem(item.getItem());
