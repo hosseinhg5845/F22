@@ -43,8 +43,8 @@
 /*     */     } 
 /*     */   }
 /*     */   private Entity searchTarget(EntityPlayer player) {
-/*     */     MCH_EntityGunner mCH_EntityGunner;
-/*     */     MCH_EntityAircraft mCH_EntityAircraft;
+/*     */     MCH_EntityGunner mCH_EntityGunner = null;
+/*     */     MCH_EntityAircraft mCH_EntityAircraft = null;
 /*  48 */     float f = 1.0F;
 /*  49 */     float pitch = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * f;
 /*  50 */     float yaw = player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * f;
@@ -70,7 +70,7 @@
 /*     */     } 
 /*     */     
 /*  72 */     if (mCH_EntityGunner == null) {
-/*  73 */       MCH_EntitySeat mCH_EntitySeat; MCH_ItemSpawnGunner item = (MCH_ItemSpawnGunner)player.getHeldItemMainhand().getItem();
+/*  73 */       MCH_EntitySeat mCH_EntitySeat = null; MCH_ItemSpawnGunner item = (MCH_ItemSpawnGunner)player.getHeldItemMainhand().getItem();
 /*  74 */       if (item.targetType == 1 && !player.world.isRemote) {
 /*  75 */         player.getTeam();
 /*     */       }
