@@ -19,7 +19,7 @@
 /*    */   }
 /*    */   
 /*    */   public static PropertyDirection8 create(String name, Predicate<EnumDirection8> filter) {
-/* 22 */     return create(name, Collections2.filter(Lists.newArrayList((Object[])EnumDirection8.values()), filter));
+/* 22 */     return create(name, Collections2.filter(Lists.newArrayList(EnumDirection8.values()), filter));
 /*    */   }
 /*    */   
 /*    */   public static PropertyDirection8 create(String name, Collection<EnumDirection8> allowedValues) {

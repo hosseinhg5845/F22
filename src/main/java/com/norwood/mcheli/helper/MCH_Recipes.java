@@ -26,7 +26,7 @@
 /* 26 */     MCH_ItemRecipe.registerItemRecipe(event.getRegistry());
 /*    */     
 /* 28 */     for (IRecipe recipe : registryWrapper) {
-/* 29 */       event.getRegistry().register((IForgeRegistryEntry)recipe);
+/* 29 */       event.getRegistry().register(recipe);
 /*    */     }
 /*    */   }
 /*    */   

@@ -41,7 +41,7 @@
 /* 41 */       for (String key : listMultimap.keySet()) {
 /* 42 */         cnt++;
 /*    */         
-/* 44 */         String sounds = Joiner.on(",").join((Iterable)listMultimap.get(key).stream().map(namex -> '"' + MCH_Utils.suffix(namex).toString() + '"').collect(Collectors.toList()));
+/* 44 */         String sounds = Joiner.on(",").join((Iterable)listMultimap.get(key).stream().map(namex -> '"' + MCH_Utils.suffix((String)namex).toString() + '"').collect(Collectors.toList()));
 /* 45 */         String line = "\"" + key + "\": {\"category\": \"master\",\"sounds\": [" + sounds + "]}";
 /* 46 */         if (cnt < listMultimap.keySet().size()) {
 /* 47 */           line = line + ",";

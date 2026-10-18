@@ -101,7 +101,7 @@ import com.norwood.mcheli.helper.MCH_Utils;
 /*     */   protected ContentEntry makeEntry(String filepath, @Nullable IContentFactory factory, boolean reload) throws IOException {
 /*     */     List<String> lines;
 /* 100 */     BufferedReader bufferedreader = new BufferedReader(new InputStreamReader(getInputStreamByName(filepath), StandardCharsets.UTF_8)); 
-/* 101 */     try { lines = bufferedreader.lines().collect((Collector)Collectors.toList());
+/* 101 */     try { lines = (List<String>)bufferedreader.lines().collect(Collectors.toList());
 /* 102 */       bufferedreader.close(); } catch (Throwable throwable) { try { bufferedreader.close(); } catch (Throwable throwable1) { throwable.addSuppressed(throwable1); }
 /*     */        throw throwable; }
 /* 104 */      return new ContentEntry(filepath, this.domain, factory, lines, reload);

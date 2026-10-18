@@ -23,7 +23,7 @@
 /*    */   @SubscribeEvent
 /*    */   static void onItemRegistryEvent(RegistryEvent.Register<Item> event) {
 /* 25 */     for (Item item : registryWrapper) {
-/* 26 */       event.getRegistry().register((IForgeRegistryEntry)item);
+/* 26 */       event.getRegistry().register(item);
 /*    */     }
 /*    */   }
 /*    */   
@@ -41,7 +41,7 @@
 /*    */   }
 /*    */   
 /*    */   public static String getName(Item item) {
-/* 44 */     return ForgeRegistries.ITEMS.getKey((IForgeRegistryEntry)item).toString();
+/* 44 */     return ForgeRegistries.ITEMS.getKey(item).toString();
 /*    */   }
 /*    */ }
 

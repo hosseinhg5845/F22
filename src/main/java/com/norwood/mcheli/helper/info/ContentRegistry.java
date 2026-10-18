@@ -103,7 +103,7 @@
 /*     */     }
 /*     */     
 /*     */     public void put(E content) {
-/* 106 */       ContentRegistry.putTable(this.map, (TYPE)content);
+/* 106 */       ContentRegistry.putTable(this.map, content);
 /*     */     }
 /*     */     
 /*     */     public ContentRegistry<E> build() {

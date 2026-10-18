@@ -197,7 +197,7 @@
 /*     */             
 /* 198 */             W_Face face = parseFace(currentLine, lineCount);
 /* 199 */             this.currentGroupObject.faces.add(face); continue;
-/* 200 */           }  if ((currentLine.startsWith("g ") | currentLine.startsWith("o ")) != 0 && currentLine.charAt(2) == '$') {
+/* 200 */           }  if ((currentLine.startsWith("g ") || currentLine.startsWith("o ")) && currentLine.charAt(2) == '$') {
 /* 201 */             W_GroupObject group = parseGroupObject(currentLine, lineCount);
 /* 202 */             if (group != null && this.currentGroupObject != null) {
 /* 203 */               this.groupObjects.add(this.currentGroupObject);

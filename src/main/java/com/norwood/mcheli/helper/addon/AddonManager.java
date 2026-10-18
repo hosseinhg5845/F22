@@ -31,7 +31,7 @@
 /*     */   }
 /*     */   
 /*     */   public static List<AddonPack> getLoadedAddons() {
-/*  34 */     return (List<AddonPack>)ImmutableList.builder()
+/*  34 */     return ImmutableList.<AddonPack>builder()
 /*  35 */       .addAll(ADDON_LIST.values())
 /*  36 */       .build();
 /*     */   }

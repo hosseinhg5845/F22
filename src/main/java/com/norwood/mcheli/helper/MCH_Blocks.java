@@ -17,7 +17,7 @@
 /*    */   @SubscribeEvent
 /*    */   static void onBlockRegisterEvent(RegistryEvent.Register<Block> event) {
 /* 19 */     for (Block block : registryWrapper) {
-/* 20 */       event.getRegistry().register((IForgeRegistryEntry)block);
+/* 20 */       event.getRegistry().register(block);
 /*    */     }
 /*    */   }
 /*    */   
